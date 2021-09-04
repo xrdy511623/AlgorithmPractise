@@ -6,6 +6,11 @@ type TreeNode struct {
 	Right *TreeNode
 }
 
+type Node struct {
+	Val      int
+	Children []*Node
+}
+
 var node10 = &TreeNode{1, nil, nil}
 var node9 = &TreeNode{5, nil, nil}
 var node8 = &TreeNode{2, nil, nil}
@@ -18,11 +23,11 @@ var node2 = &TreeNode{4, node4, nil}
 var node1 = &TreeNode{5, node2, node3}
 
 /*
-二叉树的遍历问题
+二叉树的遍历问题,一般都可以通过DFS(递归)和BFS(迭代)解决
 */
 
 /*
-1 先序，中序和后序遍历,分别采用DFS(深度优先遍历,递归)和BFS(广度优先遍历，迭代)解决
+1.1 先序，中序和后序遍历,分别采用DFS(深度优先遍历,递归)和BFS(广度优先遍历，迭代)解决
 二叉树示例如下:
 		   5
          /  \
@@ -142,6 +147,79 @@ func ReverseArray(array []int) []int {
 }
 
 /*
+1.2进阶，N叉树的前序遍历
+定一个N叉树，返回其节点值的前序遍历 。
+N叉树在输入中按层序遍历进行序列化表示，每组子节点由空值null分隔（请参见示例）。
+   			1
+		/   \  \
+	    3   2   4
+      /  \
+      5   6
+
+最后应返回[1,3,5,6,2,4]
+*/
+
+// PreOrderOfnTress, node节点Children中的子节点逆序入栈，出栈时先进后出依次添加到结果集中
+func PreOrderOfnTress(root *Node) []int {
+	var res []int
+	if root == nil {
+		return res
+	}
+	stack := []*Node{root}
+	for len(stack) != 0 {
+		node := stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
+		res = append(res, node.Val)
+		if len(node.Children) != 0 {
+			stack = append(stack, reverseNodes(node.Children)...)
+		}
+	}
+
+	return res
+}
+
+func reverseNodes(nodes []*Node) []*Node {
+	length := len(nodes)
+	for i := 0; i < length/2; i++ {
+		temp := nodes[length-1-i]
+		nodes[length-1-i] = nodes[i]
+		nodes[i] = temp
+	}
+	return nodes
+}
+
+/*
+1.3进阶，N叉树的后序遍历
+定一个N叉树，返回其节点值的前序遍历 。
+N叉树在输入中按层序遍历进行序列化表示，每组子节点由空值null分隔（请参见示例）。
+   			1
+		/   \  \
+	    3   2   4
+      /  \
+      5   6
+
+最后应返回[5，6，3，2，4，1]
+*/
+
+// PostOrderOfnTress, 与1.2类似，只是node节点Children中的子节点是顺序入栈，最后对结果集逆序即可。
+func PostOrderOfnTress(root *Node) []int {
+	var res []int
+	if root == nil {
+		return res
+	}
+	stack := []*Node{root}
+	for len(stack) != 0 {
+		node := stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
+		res = append(res, node.Val)
+		if len(node.Children) != 0 {
+			stack = append(stack, node.Children...)
+		}
+	}
+	return ReverseArray(res)
+}
+
+/*
 2 层序遍历，利用BFS(广度优先遍历，迭代)解决
 */
 
@@ -255,7 +333,7 @@ func zigzagLevelOrder(root *TreeNode) [][]int {
 		return res
 	}
 	queue := []*TreeNode{root}
-	symbol := 0
+	level := 0
 	for len(queue) != 0 {
 		levelSize := len(queue)
 		var curLevel []int
@@ -270,12 +348,210 @@ func zigzagLevelOrder(root *TreeNode) [][]int {
 				queue = append(queue, node.Right)
 			}
 		}
-		symbol++
-		if symbol%2 == 0 {
+		level++
+		if level%2 == 0 {
 			res = append(res, ReverseArray(curLevel))
 		} else {
 			res = append(res, curLevel)
 		}
 	}
 	return res
+}
+
+/*
+2.5 二叉树的层平均值
+给定一个非空二叉树, 返回一个由每层节点平均值组成的数组。
+*/
+func AverageOfBinaryTree(root *TreeNode) []float64 {
+	var res []float64
+	if root == nil {
+		return res
+	}
+	queue := []*TreeNode{root}
+	for len(queue) != 0 {
+		levelSize := len(queue)
+		var curLevel []int
+		for i := 0; i < levelSize; i++ {
+			node := queue[0]
+			queue = queue[1:]
+			curLevel = append(curLevel, node.Val)
+			if node.Left != nil {
+				queue = append(queue, node.Left)
+			}
+			if node.Right != nil {
+				queue = append(queue, node.Right)
+			}
+		}
+		res = append(res, GetAverageOfArray(curLevel))
+	}
+	return res
+}
+
+func GetAverageOfArray(s []int) float64 {
+	var sum int
+	for _, v := range s {
+		sum += v
+	}
+	return float64(sum) / float64(len(s))
+}
+
+/*
+N叉树的层序遍历
+2.6 给定一个N叉树，返回其节点值的层序遍历。（即从左到右，逐层遍历）。
+树的序列化输入是用层序遍历，每组子节点都由null值分隔（参见示例）。
+			1
+		/   \  \
+	    3   2   4
+      /  \
+      5   6
+譬如对以上N叉树，最终应返回[[1],[3,2,4],[5,6]]
+*/
+
+// LevelorderofnTress 解决思路与二叉树的层序遍历一样，BFS解决即可
+func LevelorderofnTress(root *Node) [][]int {
+	var res [][]int
+	if root == nil {
+		return res
+	}
+	queue := []*Node{root}
+	for len(queue) != 0 {
+		levelSize := len(queue)
+		var curLevel []int
+		for i := 0; i < levelSize; i++ {
+			node := queue[0]
+			queue = queue[1:]
+			curLevel = append(curLevel, node.Val)
+			if len(node.Children) != 0 {
+				for _, v := range node.Children {
+					queue = append(queue, v)
+				}
+			}
+		}
+		res = append(res, curLevel)
+	}
+	return res
+}
+
+/*
+进阶
+3 根据两种遍历结果构造二叉树
+*/
+
+/*
+3.1 给定一棵二叉树的前序遍历preorder与中序遍历inorder结果集。请构造二叉树并返回其根节点。
+preorder和inorder均无重复元素
+*/
+
+/*
+方案1
+buildTreeFromPreAndIn
+从preorder找到根节点的值，即preorder[0],然后利用哈希表到inorder中找到其对应的位置index
+而且不管是preorder还是inorder，其左右子树的长度都是相等的，所以根节点的左子树范围为
+preorder[1:index+1], inorder[:index]; 而根节点的右子树范围为preorder[:index+1:], inorder[index+1:]
+*/
+
+func buildTreeFromPreAndIn(preorder []int, inorder []int) *TreeNode {
+	if len(preorder) <= 0 || len(inorder) <= 0 || len(preorder) != len(inorder) {
+		return nil
+	}
+	hashTable := make(map[int]int)
+	for i, v := range inorder {
+		hashTable[v] = i
+	}
+	index := hashTable[preorder[0]]
+	root := &TreeNode{preorder[0], nil, nil}
+	root.Left = buildTreeFromPreAndIn(preorder[1:index+1], inorder[:index])
+	root.Right = buildTreeFromPreAndIn(preorder[index+1:], inorder[index+1:])
+	return root
+}
+
+/*
+方案2
+buildTreeFromPreAndInSimple
+方案1时间和空间复杂度都太高，不推荐，这里推荐方案2，与方案1不同，从根节点开始递归的确定节点的左右子节点的过程
+只依赖于中序遍历结果集的左右子树范围。
+*/
+func BuildTreeFromPreAndInSimple(preorder []int, inorder []int) *TreeNode {
+	if len(preorder) <= 0 || len(inorder) <= 0 || len(preorder) != len(inorder) {
+		return nil
+	}
+	hashTable := make(map[int]int)
+	for i, v := range inorder {
+		hashTable[v] = i
+	}
+	var dfs func(left, right int) *TreeNode
+	dfs = func(left, right int) *TreeNode {
+		if left > right {
+			return nil
+		}
+		val := preorder[0]
+		preorder = preorder[1:]
+		root := &TreeNode{val, nil, nil}
+		index := hashTable[val]
+		root.Left = dfs(left, index-1)
+		root.Right = dfs(index+1, right)
+		return root
+	}
+	return dfs(0, len(inorder)-1)
+}
+
+/*
+3.2 给定一棵二叉树的后序遍历postorder与中序遍历inorder结果集。请构造二叉树并返回其根节点。
+postorder和inorder均无重复元素
+*/
+
+func BuildTreeFromPostAndIn(inorder []int, postorder []int) *TreeNode {
+	if len(postorder) <= 0 || len(inorder) <= 0 || len(postorder) != len(inorder) {
+		return nil
+	}
+	hashTable := make(map[int]int)
+	for i, v := range inorder {
+		hashTable[v] = i
+	}
+	var dfs func(left, right int) *TreeNode
+	dfs = func(left, right int) *TreeNode {
+		if left > right {
+			return nil
+		}
+		val := postorder[len(postorder)-1]
+		postorder = postorder[:len(postorder)-1]
+		root := &TreeNode{val, nil, nil}
+		index := hashTable[val]
+		// 想一想，为什么要先设置右子节点，如果先设置左子节点就会出错，why?
+		root.Right = dfs(index+1, right)
+		root.Left = dfs(left, index-1)
+		return root
+	}
+	return dfs(0, len(inorder)-1)
+}
+
+/*
+3.3 根据前序和后序遍历构造二叉树
+返回与给定的前序和后序遍历匹配的任何二叉树。
+*/
+
+func ConstructFromPrePost(preorder []int, postorder []int) *TreeNode {
+	if len(preorder) == 0 {
+		return nil
+	}
+	root := &TreeNode{preorder[0], nil, nil}
+	if len(preorder) == 1 {
+		return root
+	}
+	// 在postorder中找到左子树根节点的位置pos
+	pos := FindPosInArray(postorder, preorder[1])
+	// 根据pos确定左子树的范围
+	root.Left = ConstructFromPrePost(preorder[1:pos+2], postorder[:pos+1])
+	// 根据pos确定右子树的范围
+	root.Right = ConstructFromPrePost(preorder[pos+2:], postorder[pos+1:len(postorder)-1])
+	return root
+}
+
+func FindPosInArray(s []int, target int) int {
+	for index, value := range s {
+		if value == target {
+			return index
+		}
+	}
+	return -1
 }
