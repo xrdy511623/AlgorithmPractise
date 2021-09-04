@@ -1,6 +1,9 @@
-package travelProblem
+package pathSumProblem
 
-import "math"
+import (
+	"AlgorithmPractise/BinaryTree/travelProblem"
+	"math"
+)
 
 /*
 路径和问题
@@ -13,7 +16,7 @@ import "math"
 */
 
 // PathSum BFS解决，简单易懂效率高
-func PathSum(root *TreeNode, target int) [][]int {
+func PathSum(root *travelProblem.TreeNode, target int) [][]int {
 	var res [][]int
 	if root == nil {
 		return res
@@ -45,7 +48,7 @@ func PathSum(root *TreeNode, target int) [][]int {
 }
 
 type group struct {
-	Node *TreeNode
+	Node *travelProblem.TreeNode
 	Val  []int
 }
 
@@ -92,7 +95,7 @@ root = [10,5,-3,3,2,null,11,3,-2,null,1], sum = 8
     3.  -3 -> 11
 */
 
-func NumberOfPathSum(root *TreeNode, target int) int {
+func NumberOfPathSum(root *travelProblem.TreeNode, target int) int {
 	if root == nil {
 		return 0
 	}
@@ -155,15 +158,15 @@ func countTarget(s []int, target int) int {
 返回[2]，只有2出现两次，-5只出现1次。
 */
 
-func FindFrequentTreeSum(root *TreeNode) []int {
+func FindFrequentTreeSum(root *travelProblem.TreeNode) []int {
 	var res []int
 	if root == nil {
 		return res
 	}
 
 	treeSum := make(map[int]int)
-	var subTreeSum func(node *TreeNode) int
-	subTreeSum = func(node *TreeNode) int {
+	var subTreeSum func(node *travelProblem.TreeNode) int
+	subTreeSum = func(node *travelProblem.TreeNode) int {
 		if node == nil {
 			return 0
 		}
@@ -234,10 +237,10 @@ func FindFrequentTreeSum(root *TreeNode) []int {
 当遍历到null节点时，返回0，代表此处收益为0。
 */
 
-func maxPathSum(root *TreeNode) int {
+func maxPathSum(root *travelProblem.TreeNode) int {
 	maxSum := math.MinInt32
-	var dfs func(node *TreeNode) int
-	dfs = func(node *TreeNode) int {
+	var dfs func(node *travelProblem.TreeNode) int
+	dfs = func(node *travelProblem.TreeNode) int {
 		if node == nil {
 			return 0
 		}
