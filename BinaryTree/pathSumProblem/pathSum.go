@@ -47,6 +47,32 @@ func PathSum(root *travelProblem.TreeNode, target int) [][]int {
 	return res
 }
 
+// PathSumUseDfs, DFS递归也能解决
+func PathSumUseDfs(root *travelProblem.TreeNode, target int) [][]int {
+	var res [][]int
+	if root == nil {
+		return res
+	}
+	var dfs func(root *travelProblem.TreeNode, path []int, target int)
+	dfs = func(node *travelProblem.TreeNode, path []int, target int) {
+		if node.Left == nil && node.Right == nil && sumOfArray(path) == target {
+			res = append(res, path)
+		}
+		temp := copySlice(path)
+		if node.Left != nil {
+			temp1 := append(temp, node.Left.Val)
+			dfs(node.Left, temp1, target)
+		}
+		if node.Right != nil {
+			temp2 := append(temp, node.Right.Val)
+			dfs(node.Right, temp2, target)
+		}
+	}
+	path := []int{root.Val}
+	dfs(root, path, target)
+	return res
+}
+
 type group struct {
 	Node *travelProblem.TreeNode
 	Val  []int
@@ -183,7 +209,6 @@ func FindFrequentTreeSum(root *travelProblem.TreeNode) []int {
 			mostFrequent = v
 		}
 	}
-
 	for k, v := range treeSum {
 		if v == mostFrequent {
 			res = append(res, k)
@@ -197,7 +222,6 @@ func FindFrequentTreeSum(root *travelProblem.TreeNode) []int {
 给定一个非空二叉树，返回其最大路径和。
 本题中，路径被定义为一条从树中任意节点出发，达到任意节点的序列。该路径至少包含一个节点，
 且不一定经过根节点。
-
 示例 1:
 
 输入: [1,2,3]
@@ -209,7 +233,6 @@ func FindFrequentTreeSum(root *travelProblem.TreeNode) []int {
 输出: 6
 
 示例2:
-
 输入: [-10,9,20,null,null,15,7]
 
 		  -10
@@ -264,4 +287,40 @@ func max(a, b int) int {
 	} else {
 		return b
 	}
+}
+
+/*
+1.5 左叶子之和
+计算给定二叉树的所有左叶子之和。
+示例：
+    3
+   / \
+  9  20
+    /  \
+   15   7
+
+在这个二叉树中，有两个左叶子，分别是9和15，所以返回24
+*/
+
+// sumOfLeftLeaves easy
+func sumOfLeftLeaves(root *travelProblem.TreeNode) int {
+	var res int
+	if root == nil {
+		return res
+	}
+	queue := []*travelProblem.TreeNode{root}
+	for len(queue) != 0 {
+		node := queue[0]
+		queue = queue[1:]
+		if node.Left != nil && node.Left.Left == nil && node.Left.Right == nil {
+			res += node.Left.Val
+		}
+		if node.Left != nil {
+			queue = append(queue, node.Left)
+		}
+		if node.Right != nil {
+			queue = append(queue, node.Right)
+		}
+	}
+	return res
 }

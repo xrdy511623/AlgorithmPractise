@@ -528,6 +528,15 @@ func BuildTreeFromPostAndIn(inorder []int, postorder []int) *TreeNode {
 /*
 3.3 根据前序和后序遍历构造二叉树
 返回与给定的前序和后序遍历匹配的任何二叉树。
+思路:前序遍历序列pre和后序遍历序列post长度相等,左右子树的长度也相等
+pre:根左右
+post:左右根
+因此,pre[0]为根节点值,val=pre[1]如果存在,肯定是左子树根节点值,那么我们从post中找出
+该值val的pos,标记为index,则post中左子树的范围就是post[:index+1],相应的pre中左子树的
+范围就是往后顺延一位(前序是根左右,要去掉根节点的索引0,从1开始,长度与post的左子树相等),
+也就是pre[1:index+2],相应的,post中右子树的范围就是post[index+1:len(post)-1](注意要去掉最后一位
+,因为post最后一位元素是根节点),pre中右子树的范围就是pre[index+2:]
+如此递归构建即可.
 */
 
 func ConstructFromPrePost(preorder []int, postorder []int) *TreeNode {
