@@ -95,9 +95,66 @@ func DeleteDuplicatesSimple(head *ListNode) *ListNode {
 	return head
 }
 
-// DeleteDuplicatesSimpleUseHashTable 用哈希表记录重复结点，但是这样需要创建哈希表，会额外
-// 增加算法的空间复杂度，不推荐。
+// DeleteDuplicatesSimpleUseHashTable 用哈希表记录重复结点，但是这样需要创建哈希表，会额外增加算法的空间复杂度，不推荐。
 func DeleteDuplicatesSimpleUseHashTable(head *ListNode) *ListNode {
+	if head == nil || head.Next == nil {
+		return head
+	}
+	cur := head
+	occurred := make(map[int]int)
+	occurred[head.Val] = 1
+	for cur.Next != nil {
+		node := cur.Next
+		if _, ok := occurred[node.Val]; !ok {
+			occurred[node.Val]++
+			cur = cur.Next
+		} else {
+			cur.Next = cur.Next.Next
+		}
+	}
+	return head
+}
+
+/*
+1.4 变形题 删除排序链表中的重复元素
+存在一个按升序排列的链表，给你这个链表的头节点head，请你删除链表中所有存在数字重复情况的节点，只保留原始链表中没有重复出现的数字。
+返回同样按升序排列的结果链表。
+譬如1-2-3-3-5
+返回1-2-5
+思路:只要当前节点重复，就将节点的Next指针向后移动，判断第一个重复节点的前驱节点pre的Next指针指向的节点是否是当前节点cur，如果是，证明没有重复节点，
+pre节点向后顺序移动即可，否则pre.Next便指向当前节点的Next节点，这样就跳过了所有重复节点
+*/
+
+func DeleteDuplicates(head *ListNode) *ListNode {
+	if head == nil || head.Next == nil {
+		return head
+	}
+
+	dummy := &ListNode{0, head}
+	pre, cur := dummy, head
+	for cur != nil {
+		for cur.Next != nil && cur.Val == cur.Next.Val {
+			cur = cur.Next
+		}
+
+		if pre.Next == cur {
+			pre = pre.Next
+		} else {
+			pre.Next = cur.Next
+		}
+
+		cur = cur.Next
+	}
+	return dummy.Next
+}
+
+/*
+1.5 进阶:移除未排序链表中的重复节点，只保留最开始出现的节点。
+譬如1-2-3-3-2-1
+思路:哈希表去重
+*/
+
+func RemoveDuplicateNodes(head *ListNode) *ListNode {
 	if head == nil || head.Next == nil {
 		return head
 	}
