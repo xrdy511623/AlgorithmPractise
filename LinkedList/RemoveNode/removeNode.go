@@ -77,6 +77,9 @@ func GetLengthOfLinkedList(head *ListNode) int {
 譬如1-2-3-3-5
 返回1-2-3-5
 */
+
+// DeleteDuplicatesSimple  从头结点开始遍历链表，遇有与其Next指针指向结点值相等的，则将该节点
+//Next指针指向Next.Next，这样便跳过了重复结点。
 func DeleteDuplicatesSimple(head *ListNode) *ListNode {
 	if head == nil || head.Next == nil {
 		return head
@@ -87,6 +90,27 @@ func DeleteDuplicatesSimple(head *ListNode) *ListNode {
 			cur.Next = cur.Next.Next
 		} else {
 			cur = cur.Next
+		}
+	}
+	return head
+}
+
+// DeleteDuplicatesSimpleUseHashTable 用哈希表记录重复结点，但是这样需要创建哈希表，会额外
+// 增加算法的空间复杂度，不推荐。
+func DeleteDuplicatesSimpleUseHashTable(head *ListNode) *ListNode {
+	if head == nil || head.Next == nil {
+		return head
+	}
+	cur := head
+	occurred := make(map[int]int)
+	occurred[head.Val] = 1
+	for cur.Next != nil {
+		node := cur.Next
+		if _, ok := occurred[node.Val]; !ok {
+			occurred[node.Val]++
+			cur = cur.Next
+		} else {
+			cur.Next = cur.Next.Next
 		}
 	}
 	return head
