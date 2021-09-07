@@ -1,15 +1,6 @@
 package RemoveNode
 
-type ListNode struct {
-	Val  int
-	Next *ListNode
-}
-
-type TreeNode struct {
-	Val   int
-	Left  *TreeNode
-	Right *TreeNode
-}
+import "AlgorithmPractise/LinkedList/Entitly"
 
 /*
 1.1
@@ -27,11 +18,11 @@ type TreeNode struct {
 
 // DeleteNode 思路:找到值等于val的目标节点target及其前驱节点pre，将pre.Next指向target的Next节点即可
 
-func DeleteNode(head *ListNode, val int) *ListNode {
+func DeleteNode(head *Entitly.ListNode, val int) *Entitly.ListNode {
 	if head == nil {
 		return nil
 	}
-	dummy := &ListNode{0, head}
+	dummy := &Entitly.ListNode{0, head}
 	pre, cur := dummy, head
 	for cur.Val != val {
 		pre = pre.Next
@@ -47,8 +38,8 @@ func DeleteNode(head *ListNode, val int) *ListNode {
 */
 
 // removeNthFromEnd, 思路与1.1大体类似，那就是找到该节点的前一个节点，将其Next指针指向该节点的Next节点即可
-func removeNthFromEnd(head *ListNode, n int) *ListNode {
-	dummy := &ListNode{0, head}
+func removeNthFromEnd(head *Entitly.ListNode, n int) *Entitly.ListNode {
+	dummy := &Entitly.ListNode{0, head}
 	pre := dummy
 	length := GetLengthOfLinkedList(head)
 	for i := 0; i < length-n; i++ {
@@ -58,7 +49,7 @@ func removeNthFromEnd(head *ListNode, n int) *ListNode {
 	return dummy.Next
 }
 
-func GetLengthOfLinkedList(head *ListNode) int {
+func GetLengthOfLinkedList(head *Entitly.ListNode) int {
 	length := 0
 	if head == nil {
 		return length
@@ -80,7 +71,7 @@ func GetLengthOfLinkedList(head *ListNode) int {
 
 // DeleteDuplicatesSimple  从头结点开始遍历链表，遇有与其Next指针指向结点值相等的，则将该节点
 //Next指针指向Next.Next，这样便跳过了重复结点。
-func DeleteDuplicatesSimple(head *ListNode) *ListNode {
+func DeleteDuplicatesSimple(head *Entitly.ListNode) *Entitly.ListNode {
 	if head == nil || head.Next == nil {
 		return head
 	}
@@ -90,26 +81,6 @@ func DeleteDuplicatesSimple(head *ListNode) *ListNode {
 			cur.Next = cur.Next.Next
 		} else {
 			cur = cur.Next
-		}
-	}
-	return head
-}
-
-// DeleteDuplicatesSimpleUseHashTable 用哈希表记录重复结点，但是这样需要创建哈希表，会额外增加算法的空间复杂度，不推荐。
-func DeleteDuplicatesSimpleUseHashTable(head *ListNode) *ListNode {
-	if head == nil || head.Next == nil {
-		return head
-	}
-	cur := head
-	occurred := make(map[int]int)
-	occurred[head.Val] = 1
-	for cur.Next != nil {
-		node := cur.Next
-		if _, ok := occurred[node.Val]; !ok {
-			occurred[node.Val]++
-			cur = cur.Next
-		} else {
-			cur.Next = cur.Next.Next
 		}
 	}
 	return head
@@ -125,12 +96,12 @@ func DeleteDuplicatesSimpleUseHashTable(head *ListNode) *ListNode {
 pre节点向后顺序移动即可，否则pre.Next便指向当前节点的Next节点，这样就跳过了所有重复节点
 */
 
-func DeleteDuplicates(head *ListNode) *ListNode {
+func DeleteDuplicates(head *Entitly.ListNode) *Entitly.ListNode {
 	if head == nil || head.Next == nil {
 		return head
 	}
 
-	dummy := &ListNode{0, head}
+	dummy := &Entitly.ListNode{0, head}
 	pre, cur := dummy, head
 	for cur != nil {
 		for cur.Next != nil && cur.Val == cur.Next.Val {
@@ -151,10 +122,11 @@ func DeleteDuplicates(head *ListNode) *ListNode {
 /*
 1.5 进阶:移除未排序链表中的重复节点，只保留最开始出现的节点。
 譬如1-2-3-3-2-1
-思路:哈希表去重
+返回1-2-3
+思路:哈希表去重,不能再使用1.3中的方法，因为这次是未排序链表，前面出现过的节点值在后面任意位置都可能再次出现
 */
 
-func RemoveDuplicateNodes(head *ListNode) *ListNode {
+func RemoveDuplicateNodes(head *Entitly.ListNode) *Entitly.ListNode {
 	if head == nil || head.Next == nil {
 		return head
 	}
