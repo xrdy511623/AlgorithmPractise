@@ -1,6 +1,6 @@
 package RemoveNode
 
-import "AlgorithmPractise/LinkedList/Entitly"
+import "AlgorithmPractise/LinkedList/Entity"
 
 /*
 1.1
@@ -18,11 +18,11 @@ import "AlgorithmPractise/LinkedList/Entitly"
 
 // DeleteNode 思路:找到值等于val的目标节点target及其前驱节点pre，将pre.Next指向target的Next节点即可
 
-func DeleteNode(head *Entitly.ListNode, val int) *Entitly.ListNode {
+func DeleteNode(head *Entity.ListNode, val int) *Entity.ListNode {
 	if head == nil {
 		return nil
 	}
-	dummy := &Entitly.ListNode{0, head}
+	dummy := &Entity.ListNode{0, head}
 	pre, cur := dummy, head
 	for cur.Val != val {
 		pre = pre.Next
@@ -38,8 +38,8 @@ func DeleteNode(head *Entitly.ListNode, val int) *Entitly.ListNode {
 */
 
 // removeNthFromEnd, 思路与1.1大体类似，那就是找到该节点的前一个节点，将其Next指针指向该节点的Next节点即可
-func removeNthFromEnd(head *Entitly.ListNode, n int) *Entitly.ListNode {
-	dummy := &Entitly.ListNode{0, head}
+func removeNthFromEnd(head *Entity.ListNode, n int) *Entity.ListNode {
+	dummy := &Entity.ListNode{0, head}
 	pre := dummy
 	length := GetLengthOfLinkedList(head)
 	for i := 0; i < length-n; i++ {
@@ -49,7 +49,7 @@ func removeNthFromEnd(head *Entitly.ListNode, n int) *Entitly.ListNode {
 	return dummy.Next
 }
 
-func GetLengthOfLinkedList(head *Entitly.ListNode) int {
+func GetLengthOfLinkedList(head *Entity.ListNode) int {
 	length := 0
 	if head == nil {
 		return length
@@ -71,7 +71,7 @@ func GetLengthOfLinkedList(head *Entitly.ListNode) int {
 
 // DeleteDuplicatesSimple  从头结点开始遍历链表，遇有与其Next指针指向结点值相等的，则将该节点
 //Next指针指向Next.Next，这样便跳过了重复结点。
-func DeleteDuplicatesSimple(head *Entitly.ListNode) *Entitly.ListNode {
+func DeleteDuplicatesSimple(head *Entity.ListNode) *Entity.ListNode {
 	if head == nil || head.Next == nil {
 		return head
 	}
@@ -96,12 +96,12 @@ func DeleteDuplicatesSimple(head *Entitly.ListNode) *Entitly.ListNode {
 pre节点向后顺序移动即可，否则pre.Next便指向当前节点的Next节点，这样就跳过了所有重复节点
 */
 
-func DeleteDuplicates(head *Entitly.ListNode) *Entitly.ListNode {
+func DeleteDuplicates(head *Entity.ListNode) *Entity.ListNode {
 	if head == nil || head.Next == nil {
 		return head
 	}
 
-	dummy := &Entitly.ListNode{0, head}
+	dummy := &Entity.ListNode{0, head}
 	pre, cur := dummy, head
 	for cur != nil {
 		for cur.Next != nil && cur.Val == cur.Next.Val {
@@ -126,7 +126,7 @@ func DeleteDuplicates(head *Entitly.ListNode) *Entitly.ListNode {
 思路:哈希表去重,不能再使用1.3中的方法，因为这次是未排序链表，前面出现过的节点值在后面任意位置都可能再次出现
 */
 
-func RemoveDuplicateNodes(head *Entitly.ListNode) *Entitly.ListNode {
+func RemoveDuplicateNodes(head *Entity.ListNode) *Entity.ListNode {
 	if head == nil || head.Next == nil {
 		return head
 	}

@@ -1,6 +1,6 @@
 package ReverseLinkedList
 
-import "AlgorithmPractise/LinkedList/Entitly"
+import "AlgorithmPractise/LinkedList/Entity"
 
 /*
 反转链表
@@ -14,11 +14,11 @@ import "AlgorithmPractise/LinkedList/Entitly"
 应返回2-1-4-3-6-5
 */
 
-func SwapPairs(head *Entitly.ListNode) *Entitly.ListNode {
+func SwapPairs(head *Entity.ListNode) *Entity.ListNode {
 	if head == nil || head.Next == nil {
 		return head
 	}
-	dummy := &Entitly.ListNode{0, head}
+	dummy := &Entity.ListNode{0, head}
 	pre, cur := dummy, head
 	for cur != nil && cur.Next != nil {
 		firstNode := cur
@@ -41,8 +41,8 @@ func SwapPairs(head *Entitly.ListNode) *Entitly.ListNode {
 */
 
 // 思路:迭代法，时间复杂度O(n),空间复杂度O(1)
-func ReverseLinkedList(head *Entitly.ListNode) *Entitly.ListNode {
-	var prev *Entitly.ListNode
+func ReverseLinkedList(head *Entity.ListNode) *Entity.ListNode {
+	var prev *Entity.ListNode
 	cur := head
 	for cur != nil {
 		cur.Next, prev, cur = prev, cur, cur.Next
@@ -60,8 +60,8 @@ k是一个正整数，它的值小于或等于链表的长度。
 你不能只是单纯的改变节点内部的值，而是需要实际进行节点交换。
 */
 
-func reverseKGroup(head *Entitly.ListNode, k int) *Entitly.ListNode {
-	dummy := &Entitly.ListNode{0, head}
+func reverseKGroup(head *Entity.ListNode, k int) *Entity.ListNode {
+	dummy := &Entity.ListNode{0, head}
 	pre := dummy
 	for head != nil {
 		tail := pre
@@ -87,8 +87,8 @@ func reverseKGroup(head *Entitly.ListNode, k int) *Entitly.ListNode {
 	return dummy.Next
 }
 
-func reverse(head, tail *Entitly.ListNode, k int) (*Entitly.ListNode, *Entitly.ListNode) {
-	var pre *Entitly.ListNode
+func reverse(head, tail *Entity.ListNode, k int) (*Entity.ListNode, *Entity.ListNode) {
+	var pre *Entity.ListNode
 	cur := head
 	for i := 0; i < k; i++ {
 		cur.Next, pre, cur = pre, cur, cur.Next
@@ -107,9 +107,9 @@ left=2,right=4
 指向head节点，将tail节点的Next指针指向ndx节点即可。
 */
 
-func ReverseBetween(head *Entitly.ListNode, left int, right int) *Entitly.ListNode {
+func ReverseBetween(head *Entity.ListNode, left int, right int) *Entity.ListNode {
 	k := right - left + 1
-	dummy := &Entitly.ListNode{0, head}
+	dummy := &Entity.ListNode{0, head}
 	cur := dummy
 	for i := 0; i < left-1; i++ {
 		cur = cur.Next

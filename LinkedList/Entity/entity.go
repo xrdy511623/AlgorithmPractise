@@ -1,4 +1,4 @@
-package Entitly
+package Entity
 
 type ListNode struct {
 	Val  int

@@ -1,17 +1,17 @@
 package travelProblem
 
-import "AlgorithmPractise/BinaryTree/Entitly"
+import "AlgorithmPractise/BinaryTree/Entity"
 
-var node10 = &Entitly.TreeNode{1, nil, nil}
-var node9 = &Entitly.TreeNode{5, nil, nil}
-var node8 = &Entitly.TreeNode{2, nil, nil}
-var node7 = &Entitly.TreeNode{7, nil, nil}
-var node6 = &Entitly.TreeNode{4, node9, node10}
-var node5 = &Entitly.TreeNode{13, nil, nil}
-var node4 = &Entitly.TreeNode{11, node7, node8}
-var node3 = &Entitly.TreeNode{8, node5, node6}
-var node2 = &Entitly.TreeNode{4, node4, nil}
-var node1 = &Entitly.TreeNode{5, node2, node3}
+var node10 = &Entity.TreeNode{1, nil, nil}
+var node9 = &Entity.TreeNode{5, nil, nil}
+var node8 = &Entity.TreeNode{2, nil, nil}
+var node7 = &Entity.TreeNode{7, nil, nil}
+var node6 = &Entity.TreeNode{4, node9, node10}
+var node5 = &Entity.TreeNode{13, nil, nil}
+var node4 = &Entity.TreeNode{11, node7, node8}
+var node3 = &Entity.TreeNode{8, node5, node6}
+var node2 = &Entity.TreeNode{4, node4, nil}
+var node1 = &Entity.TreeNode{5, node2, node3}
 
 /*
 二叉树的遍历问题,一般都可以通过DFS(递归)和BFS(迭代)解决
@@ -29,7 +29,7 @@ var node1 = &Entitly.TreeNode{5, node2, node3}
     7  2   	5   1
 */
 
-func PreOrderTravel(root *Entitly.TreeNode) []int {
+func PreOrderTravel(root *Entity.TreeNode) []int {
 	var res []int
 	if root == nil {
 		return res
@@ -42,12 +42,12 @@ func PreOrderTravel(root *Entitly.TreeNode) []int {
 }
 
 // PreOrderTravelUseIteration 用BFS解决，入栈是根右左，出栈添加到结果数组中则是根左右
-func PreOrderTravelUseIteration(root *Entitly.TreeNode) []int {
+func PreOrderTravelUseIteration(root *Entity.TreeNode) []int {
 	var res []int
 	if root == nil {
 		return res
 	}
-	stack := []*Entitly.TreeNode{root}
+	stack := []*Entity.TreeNode{root}
 	for len(stack) != 0 {
 		node := stack[len(stack)-1]
 		res = append(res, node.Val)
@@ -62,7 +62,7 @@ func PreOrderTravelUseIteration(root *Entitly.TreeNode) []int {
 	return res
 }
 
-func InOrderTravel(root *Entitly.TreeNode) []int {
+func InOrderTravel(root *Entity.TreeNode) []int {
 	var res []int
 	if root == nil {
 		return res
@@ -73,12 +73,12 @@ func InOrderTravel(root *Entitly.TreeNode) []int {
 	return res
 }
 
-func InOrderTravelUseIteration(root *Entitly.TreeNode) []int {
+func InOrderTravelUseIteration(root *Entity.TreeNode) []int {
 	var res []int
 	if root == nil {
 		return res
 	}
-	var stack []*Entitly.TreeNode
+	var stack []*Entity.TreeNode
 	for len(stack) != 0 || root != nil {
 		if root != nil {
 			stack = append(stack, root)
@@ -94,7 +94,7 @@ func InOrderTravelUseIteration(root *Entitly.TreeNode) []int {
 	return res
 }
 
-func PostOrderTravel(root *Entitly.TreeNode) []int {
+func PostOrderTravel(root *Entity.TreeNode) []int {
 	var res []int
 	if root == nil {
 		return res
@@ -106,12 +106,12 @@ func PostOrderTravel(root *Entitly.TreeNode) []int {
 }
 
 // PostOrderTravelUseIteration 入栈根左右，出栈根右左，逆序后即为满足要求的左右根
-func PostOrderTravelUseIteration(root *Entitly.TreeNode) []int {
+func PostOrderTravelUseIteration(root *Entity.TreeNode) []int {
 	var res []int
 	if root == nil {
 		return res
 	}
-	stack := []*Entitly.TreeNode{root}
+	stack := []*Entity.TreeNode{root}
 	for len(stack) != 0 {
 		node := stack[len(stack)-1]
 		res = append(res, node.Val)
@@ -151,12 +151,12 @@ N叉树在输入中按层序遍历进行序列化表示，每组子节点由空�
 */
 
 // PreOrderOfnTress, node节点Children中的子节点逆序入栈，出栈时先进后出依次添加到结果集中
-func PreOrderOfnTress(root *Entitly.Node) []int {
+func PreOrderOfnTress(root *Entity.Node) []int {
 	var res []int
 	if root == nil {
 		return res
 	}
-	stack := []*Entitly.Node{root}
+	stack := []*Entity.Node{root}
 	for len(stack) != 0 {
 		node := stack[len(stack)-1]
 		stack = stack[:len(stack)-1]
@@ -169,7 +169,7 @@ func PreOrderOfnTress(root *Entitly.Node) []int {
 	return res
 }
 
-func reverseNodes(nodes []*Entitly.Node) []*Entitly.Node {
+func reverseNodes(nodes []*Entity.Node) []*Entity.Node {
 	length := len(nodes)
 	for i := 0; i < length/2; i++ {
 		temp := nodes[length-1-i]
@@ -193,12 +193,12 @@ N叉树在输入中按层序遍历进行序列化表示，每组子节点由空�
 */
 
 // PostOrderOfnTress, 与1.2类似，只是node节点Children中的子节点是顺序入栈，最后对结果集逆序即可。
-func PostOrderOfnTress(root *Entitly.Node) []int {
+func PostOrderOfnTress(root *Entity.Node) []int {
 	var res []int
 	if root == nil {
 		return res
 	}
-	stack := []*Entitly.Node{root}
+	stack := []*Entity.Node{root}
 	for len(stack) != 0 {
 		node := stack[len(stack)-1]
 		stack = stack[:len(stack)-1]
@@ -219,12 +219,12 @@ func PostOrderOfnTress(root *Entitly.Node) []int {
 以上面的示例二叉树为例，最后应返回[5,4,8,11,13,4,7,2,5,1]
 */
 
-func LevelOrder(root *Entitly.TreeNode) []int {
+func LevelOrder(root *Entity.TreeNode) []int {
 	var res []int
 	if root == nil {
 		return res
 	}
-	queue := []*Entitly.TreeNode{root}
+	queue := []*Entity.TreeNode{root}
 	for i := 0; i < len(queue); i++ {
 		node := queue[i]
 		res = append(res, node.Val)
@@ -244,15 +244,15 @@ func LevelOrder(root *Entitly.TreeNode) []int {
 以上面的示例二叉树为例，最后应返回[[5],[4,8],[11,13,4],[7,2,5,1]]
 */
 
-func LevelOrderComplex(root *Entitly.TreeNode) [][]int {
+func LevelOrderComplex(root *Entity.TreeNode) [][]int {
 	var res [][]int
 	if root == nil {
 		return res
 	}
-	queue := []*Entitly.TreeNode{root}
+	queue := []*Entity.TreeNode{root}
 	level := 0
 	for len(queue) != 0 {
-		temp := []*Entitly.TreeNode{}
+		temp := []*Entity.TreeNode{}
 		res = append(res, []int{})
 		for _, node := range queue {
 			res[level] = append(res[level], node.Val)
@@ -275,15 +275,15 @@ func LevelOrderComplex(root *Entitly.TreeNode) [][]int {
 */
 
 // LevelOrderBottom, 与2.2类似，将得到的结果逆序即可满足要求
-func LevelOrderBottom(root *Entitly.TreeNode) [][]int {
+func LevelOrderBottom(root *Entity.TreeNode) [][]int {
 	var res [][]int
 	if root == nil {
 		return res
 	}
-	queue := []*Entitly.TreeNode{root}
+	queue := []*Entity.TreeNode{root}
 	level := 0
 	for len(queue) != 0 {
-		var temp []*Entitly.TreeNode
+		var temp []*Entity.TreeNode
 		res = append(res, []int{})
 		for _, node := range queue {
 			res[level] = append(res[level], node.Val)
@@ -318,12 +318,12 @@ func ReverseComplexArray(src [][]int) [][]int {
 */
 
 // zigzagLevelOrder, 与2.2类似，所不同的是要加入层数(level)的判断，根据层数来确定是否要对该层的节点值进行逆序
-func zigzagLevelOrder(root *Entitly.TreeNode) [][]int {
+func zigzagLevelOrder(root *Entity.TreeNode) [][]int {
 	var res [][]int
 	if root == nil {
 		return res
 	}
-	queue := []*Entitly.TreeNode{root}
+	queue := []*Entity.TreeNode{root}
 	level := 0
 	for len(queue) != 0 {
 		levelSize := len(queue)
@@ -353,12 +353,12 @@ func zigzagLevelOrder(root *Entitly.TreeNode) [][]int {
 2.5 二叉树的层平均值
 给定一个非空二叉树, 返回一个由每层节点平均值组成的数组。
 */
-func AverageOfBinaryTree(root *Entitly.TreeNode) []float64 {
+func AverageOfBinaryTree(root *Entity.TreeNode) []float64 {
 	var res []float64
 	if root == nil {
 		return res
 	}
-	queue := []*Entitly.TreeNode{root}
+	queue := []*Entity.TreeNode{root}
 	for len(queue) != 0 {
 		levelSize := len(queue)
 		var curLevel []int
@@ -399,12 +399,12 @@ N叉树的层序遍历
 */
 
 // LevelorderofnTress 解决思路与二叉树的层序遍历一样，BFS解决即可
-func LevelorderofnTress(root *Entitly.Node) [][]int {
+func LevelorderofnTress(root *Entity.Node) [][]int {
 	var res [][]int
 	if root == nil {
 		return res
 	}
-	queue := []*Entitly.Node{root}
+	queue := []*Entity.Node{root}
 	for len(queue) != 0 {
 		levelSize := len(queue)
 		var curLevel []int
@@ -441,7 +441,7 @@ buildTreeFromPreAndIn
 preorder[1:index+1], inorder[:index]; 而根节点的右子树范围为preorder[:index+1:], inorder[index+1:]
 */
 
-func buildTreeFromPreAndIn(preorder []int, inorder []int) *Entitly.TreeNode {
+func buildTreeFromPreAndIn(preorder []int, inorder []int) *Entity.TreeNode {
 	if len(preorder) <= 0 || len(inorder) <= 0 || len(preorder) != len(inorder) {
 		return nil
 	}
@@ -450,7 +450,7 @@ func buildTreeFromPreAndIn(preorder []int, inorder []int) *Entitly.TreeNode {
 		hashTable[v] = i
 	}
 	index := hashTable[preorder[0]]
-	root := &Entitly.TreeNode{preorder[0], nil, nil}
+	root := &Entity.TreeNode{preorder[0], nil, nil}
 	root.Left = buildTreeFromPreAndIn(preorder[1:index+1], inorder[:index])
 	root.Right = buildTreeFromPreAndIn(preorder[index+1:], inorder[index+1:])
 	return root
@@ -462,7 +462,7 @@ buildTreeFromPreAndInSimple
 方案1时间和空间复杂度都太高，不推荐，这里推荐方案2，与方案1不同，从根节点开始递归的确定节点的左右子节点的过程
 只依赖于中序遍历结果集的左右子树范围。
 */
-func BuildTreeFromPreAndInSimple(preorder []int, inorder []int) *Entitly.TreeNode {
+func BuildTreeFromPreAndInSimple(preorder []int, inorder []int) *Entity.TreeNode {
 	if len(preorder) <= 0 || len(inorder) <= 0 || len(preorder) != len(inorder) {
 		return nil
 	}
@@ -470,14 +470,14 @@ func BuildTreeFromPreAndInSimple(preorder []int, inorder []int) *Entitly.TreeNod
 	for i, v := range inorder {
 		hashTable[v] = i
 	}
-	var dfs func(left, right int) *Entitly.TreeNode
-	dfs = func(left, right int) *Entitly.TreeNode {
+	var dfs func(left, right int) *Entity.TreeNode
+	dfs = func(left, right int) *Entity.TreeNode {
 		if left > right {
 			return nil
 		}
 		val := preorder[0]
 		preorder = preorder[1:]
-		root := &Entitly.TreeNode{val, nil, nil}
+		root := &Entity.TreeNode{val, nil, nil}
 		index := hashTable[val]
 		root.Left = dfs(left, index-1)
 		root.Right = dfs(index+1, right)
@@ -491,7 +491,7 @@ func BuildTreeFromPreAndInSimple(preorder []int, inorder []int) *Entitly.TreeNod
 postorder和inorder均无重复元素
 */
 
-func BuildTreeFromPostAndIn(inorder []int, postorder []int) *Entitly.TreeNode {
+func BuildTreeFromPostAndIn(inorder []int, postorder []int) *Entity.TreeNode {
 	if len(postorder) <= 0 || len(inorder) <= 0 || len(postorder) != len(inorder) {
 		return nil
 	}
@@ -499,14 +499,14 @@ func BuildTreeFromPostAndIn(inorder []int, postorder []int) *Entitly.TreeNode {
 	for i, v := range inorder {
 		hashTable[v] = i
 	}
-	var dfs func(left, right int) *Entitly.TreeNode
-	dfs = func(left, right int) *Entitly.TreeNode {
+	var dfs func(left, right int) *Entity.TreeNode
+	dfs = func(left, right int) *Entity.TreeNode {
 		if left > right {
 			return nil
 		}
 		val := postorder[len(postorder)-1]
 		postorder = postorder[:len(postorder)-1]
-		root := &Entitly.TreeNode{val, nil, nil}
+		root := &Entity.TreeNode{val, nil, nil}
 		index := hashTable[val]
 		// 想一想，为什么要先设置右子节点，如果先设置左子节点就会出错，why?
 		root.Right = dfs(index+1, right)
@@ -530,11 +530,11 @@ post:左右根
 如此递归构建即可.
 */
 
-func ConstructFromPrePost(preorder []int, postorder []int) *Entitly.TreeNode {
+func ConstructFromPrePost(preorder []int, postorder []int) *Entity.TreeNode {
 	if len(preorder) == 0 {
 		return nil
 	}
-	root := &Entitly.TreeNode{preorder[0], nil, nil}
+	root := &Entity.TreeNode{preorder[0], nil, nil}
 	if len(preorder) == 1 {
 		return root
 	}
