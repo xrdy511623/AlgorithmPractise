@@ -2,16 +2,6 @@ package travelProblem
 
 import "AlgorithmPractise/BinaryTree/Entity"
 
-var node10 = &Entity.TreeNode{1, nil, nil}
-var node9 = &Entity.TreeNode{5, nil, nil}
-var node8 = &Entity.TreeNode{2, nil, nil}
-var node7 = &Entity.TreeNode{7, nil, nil}
-var node6 = &Entity.TreeNode{4, node9, node10}
-var node5 = &Entity.TreeNode{13, nil, nil}
-var node4 = &Entity.TreeNode{11, node7, node8}
-var node3 = &Entity.TreeNode{8, node5, node6}
-var node2 = &Entity.TreeNode{4, node4, nil}
-var node1 = &Entity.TreeNode{5, node2, node3}
 
 /*
 二叉树的遍历问题,一般都可以通过DFS(递归)和BFS(迭代)解决
