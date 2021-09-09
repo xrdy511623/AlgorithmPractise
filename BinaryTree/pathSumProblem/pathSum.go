@@ -47,7 +47,7 @@ func PathSum(root *Entity.TreeNode, target int) [][]int {
 	return res
 }
 
-// PathSumUseDfs, DFS递归也能解决
+// PathSumUseDfs DFS递归也能解决
 func PathSumUseDfs(root *Entity.TreeNode, target int) [][]int {
 	var res [][]int
 	if root == nil {

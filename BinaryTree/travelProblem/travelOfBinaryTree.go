@@ -2,7 +2,6 @@ package travelProblem
 
 import "AlgorithmPractise/BinaryTree/Entity"
 
-
 /*
 二叉树的遍历问题,一般都可以通过DFS(递归)和BFS(迭代)解决
 */
@@ -182,7 +181,7 @@ N叉树在输入中按层序遍历进行序列化表示，每组子节点由空�
 最后应返回[5，6，3，2，4，1]
 */
 
-// PostOrderOfnTress, 与1.2类似，只是node节点Children中的子节点是顺序入栈，最后对结果集逆序即可。
+// PostOrderOfnTress 与1.2类似，只是node节点Children中的子节点是顺序入栈，最后对结果集逆序即可。
 func PostOrderOfnTress(root *Entity.Node) []int {
 	var res []int
 	if root == nil {
@@ -264,7 +263,7 @@ func LevelOrderComplex(root *Entity.TreeNode) [][]int {
 以上面的示例二叉树为例，最后应返回[[7,2,5,1],[11,13,4],[4,8],[5]]
 */
 
-// LevelOrderBottom, 与2.2类似，将得到的结果逆序即可满足要求
+// LevelOrderBottom 与2.2类似，将得到的结果逆序即可满足要求
 func LevelOrderBottom(root *Entity.TreeNode) [][]int {
 	var res [][]int
 	if root == nil {
@@ -343,6 +342,7 @@ func zigzagLevelOrder(root *Entity.TreeNode) [][]int {
 2.5 二叉树的层平均值
 给定一个非空二叉树, 返回一个由每层节点平均值组成的数组。
 */
+
 func AverageOfBinaryTree(root *Entity.TreeNode) []float64 {
 	var res []float64
 	if root == nil {
@@ -452,6 +452,7 @@ buildTreeFromPreAndInSimple
 方案1时间和空间复杂度都太高，不推荐，这里推荐方案2，与方案1不同，从根节点开始递归的确定节点的左右子节点的过程
 只依赖于中序遍历结果集的左右子树范围。
 */
+
 func BuildTreeFromPreAndInSimple(preorder []int, inorder []int) *Entity.TreeNode {
 	if len(preorder) <= 0 || len(inorder) <= 0 || len(preorder) != len(inorder) {
 		return nil
