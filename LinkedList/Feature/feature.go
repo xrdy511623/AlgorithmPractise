@@ -143,3 +143,141 @@ func getIntersectionNode(headA, headB *Entity.ListNode) *Entity.ListNode {
 	}
 	return a
 }
+
+/*
+1.4 链表排序
+给你链表的头结点head，请将其按升序排列并返回 排序后的链表 。
+进阶：
+你可以在O(nlogn) 时间复杂度和常数级空间复杂度下，对链表进行排序吗？
+输入：head = [-1,5,3,4,0]
+输出：[-1,0,3,4,5]
+ */
+
+// 思路，归并排序解决
+func SortLinkedList(head *Entity.ListNode) *Entity.ListNode {
+	if head == nil || head.Next == nil {
+		return head
+	}
+	// 利用快慢指针寻找链表中间结点，将链表一分为二
+	slow, fast := head, head.Next
+	for fast != nil && fast.Next != nil {
+		fast = fast.Next.Next
+		slow = slow.Next
+	}
+	mid := slow.Next
+	slow.Next = nil
+	left, right := SortLinkedList(head), SortLinkedList(mid)
+	res := &Entity.ListNode{0, nil}
+	h := res
+	for left != nil && right != nil {
+		if left.Val < right.Val{
+			h.Next = left
+			left = left.Next
+		} else {
+			h.Next = right
+			right = right.Next
+		}
+		h = h.Next
+	}
+	if left != nil {
+		h.Next = left
+	} else {
+		h.Next = right
+	}
+
+	return res.Next
+	//return MergeLinkedList(left, right)
+}
+
+func MergeLinkedList(l1,l2 *Entity.ListNode) *Entity.ListNode {
+	dummy := &Entity.ListNode{0, nil}
+	cur := dummy
+	for l1 != nil && l2 != nil {
+		if l1.Val < l2.Val{
+			cur.Next = l1
+			l1 = l1.Next
+		} else {
+			cur.Next = l2
+			l2 = l2.Next
+		}
+		cur = cur.Next
+	}
+	if l1 != nil {
+		cur.Next = l1
+	} else {
+		cur.Next = l2
+	}
+
+	return dummy.Next
+}
+
+/*
+1.5 将两个升序链表合并为一个新的 升序 链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。
+输入：l1 = [1,2,4], l2 = [1,3,4]
+输出：[1,1,2,3,4,4]
+*/
+
+
+func mergeTwoLists(l1 *Entity.ListNode, l2 *Entity.ListNode) *Entity.ListNode {
+	dumy := &Entity.ListNode{0, nil}
+	cur := dumy
+	if l1 != nil && l2 != nil{
+		for l1 != nil && l2 != nil{
+			if l1.Val <= l2.Val{
+				cur.Next = l1
+				l1 = l1.Next
+			} else{
+				cur.Next = l2
+				l2 = l2.Next
+			}
+			cur = cur.Next
+		}
+
+		if l1 != nil{
+			cur.Next = l1
+		} else{
+			cur.Next = l2
+		}
+
+		return dumy.Next
+	}
+
+	if l1 != nil{
+		return l1
+	} else{
+		return l2
+	}
+}
+
+/*
+1.6 分隔链表
+给你一个链表的头节点 head 和一个特定值x ，请你对链表进行分隔，使得所有小于x的节点都出现在大于或等于x的节点之前。
+你应当保留两个分区中每个节点的初始相对位置。
+ */
+
+/*
+题目本质上就是将链表分为：
+1.小于x部分的链表按照原始顺序记为p
+2.大于等于x部分的链表按照原始顺序记为
+3.拼接两个链表，p --> q
+ */
+
+
+func PartitionlinkedList(head *Entity.ListNode, x int) *Entity.ListNode {
+	before_head, after_head := &Entity.ListNode{0, nil}, &Entity.ListNode{0, nil}
+	before, after := before_head, after_head
+	for head != nil {
+		if head.Val < x {
+			before.Next = head
+			before = before.Next
+		} else {
+			after.Next = head
+			after = after.Next
+		}
+		head = head.Next
+	}
+	// 拼接两个链表
+	after.Next = nil
+	before.Next = after_head.Next
+	return before_head.Next
+}
