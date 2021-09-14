@@ -270,18 +270,18 @@ func maxPathSum(root *Entity.TreeNode) int {
 		leftPath := dfs(node.Left)
 		rightPath := dfs(node.Right)
 		// 更新maxSum的值，左子树最大收益+右子树最大收益+节点本身的值
-		maxSum = max(maxSum, max(leftPath, 0)+max(rightPath, 0)+node.Val)
+		maxSum = Max(maxSum, Max(leftPath, 0)+Max(rightPath, 0)+node.Val)
 		if leftPath > rightPath {
-			return max(0, leftPath) + node.Val
+			return Max(0, leftPath) + node.Val
 		} else {
-			return max(0, rightPath) + node.Val
+			return Max(0, rightPath) + node.Val
 		}
 	}
 	dfs(root)
 	return maxSum
 }
 
-func max(a, b int) int {
+func Max(a, b int) int {
 	if a > b {
 		return a
 	} else {
