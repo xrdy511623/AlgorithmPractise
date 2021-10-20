@@ -46,7 +46,7 @@ func BinarySearchUseRecursion(array []int, item int) int {
 如果数组中不存在目标值target，返回[-1, -1]。
 */
 
-// 将问题分解为在有序数组中查找第一个等于目标值的元素以及查找最后一个等于目标值的元素
+// SearchRange 将问题分解为在有序数组中查找第一个等于目标值的元素以及查找最后一个等于目标值的元素
 func SearchRange(nums []int, target int) []int {
 	left := BinarySearchFirstEqualTarget(nums, target)
 	right := BinarySearchLastEqualTarget(nums, target)
@@ -67,9 +67,12 @@ func BinarySearchFirstEqualTarget(array []int, item int)int{
 		} else if array[mid] < item{
 			low = mid + 1
 		} else{
+			// 此时array[mid] = item, 因为是有序数组，如果mid=0说明就是第一个元素就是数组中第一个等于item的元素
+			// 或者mid!=0但是它的前一个元素小于item,也证明它是第一个等于item的元素，因为之前的元素都小于item
 			if (mid == 0) || (mid != 0 && array[mid-1]<item){
 				return mid
 			} else{
+				// 否则证明mid之前还有等于item的元素，所以我们应该在[low,mid-1]区间寻找第一个等于item的元素
 				high = mid -1
 			}
 		}
@@ -90,9 +93,12 @@ func BinarySearchLastEqualTarget(array []int, item int)int{
 		} else if array[mid] < item{
 			low = mid + 1
 		} else{
+			// 此时array[mid] = item, 因为是有序数组，如果mid=n-1说明数组末尾元素就是最后一个等于item的元素
+			// 或者mid!=n-1但是它的前一个元素大于item,也证明它是最后一个等于item的元素，因为它之后的元素都大于item
 			if (mid == n-1) ||(mid != n-1 && array[mid+1] > item){
 				return mid
 			} else{
+				// 否则证明mid之后还有等于item的元素，所以我们应该在[mid+1， high]区间寻找最后一个等于item的元素
 				low = mid + 1
 			}
 		}
