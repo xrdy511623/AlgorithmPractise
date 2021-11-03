@@ -9,7 +9,7 @@ import (
 1.1 反转二叉树
 */
 
-// 利用递归解决
+// ReverseBinaryTree 利用递归解决
 func ReverseBinaryTree(root *Entity.TreeNode) *Entity.TreeNode {
 	if root == nil {
 		return root
@@ -82,7 +82,7 @@ func MaxDepthUseDfs(root *Entity.TreeNode) int {
 1.3 二叉搜索树的最近公共祖先
 */
 
-// 迭代法解决
+// LowestCommonAncestor 迭代法解决
 func LowestCommonAncestor(root, p, q *Entity.TreeNode) *Entity.TreeNode {
 	for root != nil {
 		if p.Val < root.Val && q.Val < root.Val {
@@ -96,7 +96,7 @@ func LowestCommonAncestor(root, p, q *Entity.TreeNode) *Entity.TreeNode {
 	return nil
 }
 
-// 递归法解决
+// LowestCommonAncestorUseRecursion 递归法解决
 func LowestCommonAncestorUseRecursion(root, p, q *Entity.TreeNode) *Entity.TreeNode {
 	if p.Val < root.Val && q.Val < root.Val {
 		return LowestCommonAncestorUseRecursion(root.Left, p, q)
@@ -118,7 +118,7 @@ p != q
 p和q均存在于给定的二叉树中。
 */
 
-// 递归解决
+// NearestCommonAncestor 递归解决
 func NearestCommonAncestor(root, p, q *Entity.TreeNode) *Entity.TreeNode {
 	if root == nil || p == root || q == root {
 		return root
@@ -141,6 +141,7 @@ func NearestCommonAncestor(root, p, q *Entity.TreeNode) *Entity.TreeNode {
 (从父亲节点到爷爷节点一直到根节点),并用集合visited记录已经访问过的节点.然后再从q节点也利用其父节点
 的信息向上跳,如果集合visited中碰到已经访问过的节点,那么该节点就是我们要找的最近公共祖先
 */
+
 func NearestCommonAncestorUseIteration(root, p, q *Entity.TreeNode) *Entity.TreeNode {
 	if root == nil {
 		return root
@@ -188,6 +189,7 @@ func NearestCommonAncestorUseIteration(root, p, q *Entity.TreeNode) *Entity.Tree
 的maxDia即为该二叉树的最大直径。dfs深度优先遍历时返回以该节点为根的二叉树的最大高度，也就是
 1+max(lh+rh),时间复杂度度O(n),空间复杂度O(h),n为该二叉树节点个数，h为该二叉树高度
  */
+
 func DiameterOfBinaryTree(root *Entity.TreeNode) int {
 	maxDia := 0
 	var dfs func(node *Entity.TreeNode)int
@@ -247,7 +249,7 @@ func InorderSuccessor(root, p *Entity.TreeNode) *Entity.TreeNode {
 	}
 }
 
-// 迭代法解决，时间复杂度降低为O(pos),空间复杂度降低为O(1)
+// InorderSuccessorUseIteration 迭代法解决，时间复杂度降低为O(pos),空间复杂度降低为O(1)
 func InorderSuccessorUseIteration(root, p *Entity.TreeNode) *Entity.TreeNode {
 	curr := root
 	var ans *Entity.TreeNode
@@ -277,4 +279,61 @@ func InorderSuccessorUseIteration(root, p *Entity.TreeNode) *Entity.TreeNode {
 		}
 	}
 	return ans
+}
+
+/*
+1.7 验证二叉搜索树的后序遍历序列
+输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历结果。如果是则返回true，否则返回false。假设输入的数组的
+任意两个数字都互不相同。
+输入: [1,6,3,2,5]
+输出: false
+
+输入: [1,3,2,6,5]
+输出: true
+ */
+
+/*
+后序遍历定义： [ 左子树 | 右子树 | 根节点 ] ，即遍历顺序为 “左、右、根” 。
+二叉搜索树定义：左子树中所有节点的值<根节点的值；右子树中所有节点的值>根节点的值；其左、右子树也分别为二叉搜索树。
+方法一：递归分治
+根据二叉搜索树的定义，可以通过递归，判断所有子树的正确性（即其后序遍历是否满足二叉搜索树的定义） ，若所有子树都正确，则此序列为
+二叉搜索树的后序遍历。
+递归解析:i为后序遍历数组中第一个元素，j为最后一个元素
+终止条件:当 i≥j ，说明此子树节点数量≤1 ，无需判别正确性，因此直接返回true；
+递归工作:
+划分左右子树：遍历后序遍历的 [i, j]区间元素，寻找第一个大于根节点的节点，索引记为m 。此时，可划分出左子树区间[i,m-1] 、右子树区间
+[m, j-1], 根节点索引j 。
+判断是否为二叉搜索树：
+左子树区间[i,m−1]内的所有节点都应 < postorder[j] 。而划分左右子树步骤已经保证左子树区间的正确性，因此只需要判断右子树区间即可。
+右子树区间[m,j−1] 内的所有节点都应 > postorder[j] 。实现方式为遍历，当遇到 ≤ postorder[j] 的节点则跳出；则可通过p=j判断
+是否为二叉搜索树。
+
+返回值:所有子树都需正确才可判定正确，因此使用与逻辑符&&连接。
+p=j： 判断此树是否正确。
+recur(i,m−1):判断此树的左子树是否正确。
+recur(m,j−1):判断此树的右子树是否正确。
+复杂度分析：
+时间复杂度 O(N):每次调用recur(i,j) 减去一个根节点，因此递归占用O(N) ；最差情况下（即当树退化为链表），每轮递归都需遍历树所有节点，
+占用 O(N^2)。
+空间复杂度 O(N):最差情况下（即当树退化为链表），递归深度将达到N 。
+ */
+
+func VerifyPostOrder(postOrder []int)bool{
+	var recur func(array []int, start, stop int)bool
+	recur = func(array []int, start, stop int)bool{
+		if start >= stop{
+			return true
+		}
+		p := start
+		for array[p] < array[stop]{
+			p += 1
+		}
+		m := p
+		for array[p] > array[stop]{
+			p += 1
+		}
+		return p == stop && recur(array, start, m-1) && recur(array, m, stop-1)
+	}
+
+	return recur(postOrder, 0, len(postOrder)-1)
 }
