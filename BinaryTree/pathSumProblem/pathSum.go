@@ -289,6 +289,17 @@ func Max(a, b int) int {
 	}
 }
 
+func MaxValueOfArray(array []int)int{
+	max := array[0]
+	for i:=1;i<len(array);i++{
+		if array[i] > max{
+			max = array[i]
+		}
+	}
+	return max
+}
+
+
 /*
 1.5 左叶子之和
 计算给定二叉树的所有左叶子之和。

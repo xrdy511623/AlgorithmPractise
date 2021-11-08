@@ -106,3 +106,32 @@ func BinarySearchLastEqualTarget(array []int, target int)int{
 	return -1
 }
 
+/*
+1.2 在排序数组中统计一个数组中出现的次数
+示例 1:
+输入: nums = [5,7,7,8,8,10], target = 8
+输出: 2
+输入: nums = [5,7,7,8,8,10], target = 6
+输出: 0
+
+思路: 在排序数组中找出等于目标值target的起始位置index，如果index为-1,证明数组中无此元素，返回0，
+否则从数组index位置开始向后遍历数组元素，只要数组元素等于target，则使用map将其出现次数累加1,如果遇到不等于
+target的元素，说明后面的元素都大于target，此时退出循环，最后返回map中target的对应值即可
+ */
+
+func search(nums []int, target int) int {
+	index := BinarySearchFirstEqualTarget(nums, target)
+	if index == -1 {
+		return 0
+	}
+	m := make(map[int]int, 0)
+	for _, num := range nums[index:]{
+		if num == target{
+			m[target]++
+		} else {
+			break
+		}
+	}
+	return m[target]
+}
+
