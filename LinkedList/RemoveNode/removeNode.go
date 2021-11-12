@@ -70,7 +70,7 @@ func GetLengthOfLinkedList(head *Entity.ListNode) int {
 */
 
 // DeleteDuplicatesSimple  从头结点开始遍历链表，遇有与其Next指针指向结点值相等的，则将该节点
-//Next指针指向Next.Next，这样便跳过了重复结点。
+// Next指针指向Next.Next，这样便跳过了重复结点。
 func DeleteDuplicatesSimple(head *Entity.ListNode) *Entity.ListNode {
 	if head == nil || head.Next == nil {
 		return head

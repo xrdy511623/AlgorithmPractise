@@ -65,7 +65,7 @@ func CheckRingUseHashTable(head *Entity.ListNode) bool {
 说明：不允许修改给定的链表。
 */
 
-// 思路1，从头结点开始遍历链表，若哈希表中不存在此结点，则将其添加到哈希表中，否则意味着遇到了开始入环的第一个结点(重复节点)
+// DetectCycleUseHashTable 思路1，从头结点开始遍历链表，若哈希表中不存在此结点，则将其添加到哈希表中，否则意味着遇到了开始入环的第一个结点(重复节点)
 func DetectCycleUseHashTable(head *Entity.ListNode) *Entity.ListNode {
 	if head == nil || head.Next == nil {
 		return nil
@@ -82,7 +82,7 @@ func DetectCycleUseHashTable(head *Entity.ListNode) *Entity.ListNode {
 	return nil
 }
 
-// 思路2，双指针法，不易想到，但是最优解
+// DetectCycle 思路2，双指针法，不易想到，但是最优解
 func DetectCycle(head *Entity.ListNode) *Entity.ListNode {
 	if head == nil || head.Next == nil {
 		return nil
@@ -153,7 +153,7 @@ func getIntersectionNode(headA, headB *Entity.ListNode) *Entity.ListNode {
 输出：[-1,0,3,4,5]
  */
 
-// 思路，归并排序解决
+// SortLinkedList 思路，归并排序解决
 func SortLinkedList(head *Entity.ListNode) *Entity.ListNode {
 	if head == nil || head.Next == nil {
 		return head
@@ -219,8 +219,8 @@ func MergeLinkedList(l1,l2 *Entity.ListNode) *Entity.ListNode {
 
 
 func mergeTwoLists(l1 *Entity.ListNode, l2 *Entity.ListNode) *Entity.ListNode {
-	dumy := &Entity.ListNode{0, nil}
-	cur := dumy
+	dummy := &Entity.ListNode{0, nil}
+	cur := dummy
 	if l1 != nil && l2 != nil{
 		for l1 != nil && l2 != nil{
 			if l1.Val <= l2.Val{
@@ -239,7 +239,7 @@ func mergeTwoLists(l1 *Entity.ListNode, l2 *Entity.ListNode) *Entity.ListNode {
 			cur.Next = l2
 		}
 
-		return dumy.Next
+		return dummy.Next
 	}
 
 	if l1 != nil{

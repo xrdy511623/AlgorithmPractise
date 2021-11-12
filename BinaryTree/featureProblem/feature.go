@@ -1,8 +1,8 @@
 package featureProblem
 
 import (
-	"AlgorithmPractise/BinaryTree/pathSumProblem"
 	"AlgorithmPractise/LinkedList/Entity"
+	"AlgorithmPractise/Utils"
 )
 
 /*
@@ -75,7 +75,7 @@ func MaxDepthUseDfs(root *Entity.TreeNode) int {
 	if root == nil {
 		return 0
 	}
-	return 1 + pathSumProblem.Max(MaxDepthUseDfs(root.Left), MaxDepthUseDfs(root.Right))
+	return 1 + Utils.Max(MaxDepthUseDfs(root.Left), MaxDepthUseDfs(root.Right))
 }
 
 /*
@@ -199,8 +199,8 @@ func DiameterOfBinaryTree(root *Entity.TreeNode) int {
 		}
 		lh := dfs(node.Left)
 		rh := dfs(node.Right)
-		maxDia = pathSumProblem.Max(maxDia, lh+rh)
-		return 1 + pathSumProblem.Max(lh, rh)
+		maxDia = Utils.Max(maxDia, lh+rh)
+		return 1 + Utils.Max(lh, rh)
 	}
 	dfs(root)
 	return maxDia

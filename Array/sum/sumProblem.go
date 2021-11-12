@@ -1,7 +1,7 @@
 package sum
 
 import (
-	"AlgorithmPractise/BinaryTree/pathSumProblem"
+	"AlgorithmPractise/Utils"
 )
 
 /*
@@ -15,7 +15,7 @@ import (
 
 func maxSubArray(nums []int)int{
 	for i:=1;i<len(nums);i++{
-		nums[i] += pathSumProblem.Max(nums[i-1], 0)
+		nums[i] += Utils.Max(nums[i-1], 0)
 	}
-	return pathSumProblem.MaxValueOfArray(nums)
+	return Utils.MaxValueOfArray(nums)
 }

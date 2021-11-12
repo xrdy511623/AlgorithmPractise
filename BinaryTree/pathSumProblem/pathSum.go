@@ -2,6 +2,7 @@ package pathSumProblem
 
 import (
 	"AlgorithmPractise/BinaryTree/Entity"
+	"AlgorithmPractise/Utils"
 	"math"
 )
 
@@ -260,7 +261,7 @@ func FindFrequentTreeSum(root *Entity.TreeNode) []int {
 当遍历到null节点时，返回0，代表此处收益为0。
 */
 
-func maxPathSum(root *Entity.TreeNode) int {
+func MaxPathSum(root *Entity.TreeNode) int {
 	maxSum := math.MinInt32
 	var dfs func(node *Entity.TreeNode) int
 	dfs = func(node *Entity.TreeNode) int {
@@ -270,34 +271,17 @@ func maxPathSum(root *Entity.TreeNode) int {
 		leftPath := dfs(node.Left)
 		rightPath := dfs(node.Right)
 		// 更新maxSum的值，左子树最大收益+右子树最大收益+节点本身的值
-		maxSum = Max(maxSum, Max(leftPath, 0)+Max(rightPath, 0)+node.Val)
+		maxSum = Utils.Max(maxSum, Utils.Max(leftPath, 0)+Utils.Max(rightPath, 0)+node.Val)
 		if leftPath > rightPath {
-			return Max(0, leftPath) + node.Val
+			return Utils.Max(0, leftPath) + node.Val
 		} else {
-			return Max(0, rightPath) + node.Val
+			return Utils.Max(0, rightPath) + node.Val
 		}
 	}
 	dfs(root)
 	return maxSum
 }
 
-func Max(a, b int) int {
-	if a > b {
-		return a
-	} else {
-		return b
-	}
-}
-
-func MaxValueOfArray(array []int)int{
-	max := array[0]
-	for i:=1;i<len(array);i++{
-		if array[i] > max{
-			max = array[i]
-		}
-	}
-	return max
-}
 
 
 /*
