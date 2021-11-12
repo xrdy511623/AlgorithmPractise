@@ -107,7 +107,7 @@ func BinarySearchLastEqualTarget(array []int, target int)int{
 }
 
 /*
-1.2 在排序数组中统计一个数组中出现的次数
+1.2 在排序数组中统计一个数在数组中出现的次数
 示例 1:
 输入: nums = [5,7,7,8,8,10], target = 8
 输出: 2
@@ -119,7 +119,7 @@ func BinarySearchLastEqualTarget(array []int, target int)int{
 target的元素，说明后面的元素都大于target，此时退出循环，最后返回map中target的对应值即可
  */
 
-func search(nums []int, target int) int {
+func Search(nums []int, target int) int {
 	index := BinarySearchFirstEqualTarget(nums, target)
 	if index == -1 {
 		return 0
