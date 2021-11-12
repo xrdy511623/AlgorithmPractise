@@ -1,4 +1,4 @@
-package sort
+package feature
 
 import "AlgorithmPractise/Utils"
 
