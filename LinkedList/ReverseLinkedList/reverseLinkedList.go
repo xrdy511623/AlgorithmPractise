@@ -40,7 +40,7 @@ func SwapPairs(head *Entity.ListNode) *Entity.ListNode {
 应返回6-5-4-3-2-1
 */
 
-// 思路:迭代法，时间复杂度O(n),空间复杂度O(1)
+// ReverseLinkedList 思路:迭代法，时间复杂度O(n),空间复杂度O(1)
 func ReverseLinkedList(head *Entity.ListNode) *Entity.ListNode {
 	var prev *Entity.ListNode
 	cur := head

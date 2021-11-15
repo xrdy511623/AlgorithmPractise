@@ -225,3 +225,65 @@ func lcp(str1, str2 string) string {
 	}
 	return str1[:index]
 }
+
+/*
+1.4 删除有序数组中的重复项
+给你一个有序数组nums，请你原地删除重复出现的元素，使每个元素只出现一次 ，返回删除后数组的新长度。
+不要使用额外的数组空间，你必须在原地修改输入数组 并在使用O(1) 额外空间的条件下完成。
+ */
+
+func RemoveDuplicates(nums []int) int {
+	n := len(nums)
+	if n == 0{
+		return 0
+	}
+	slow := 1
+	for fast:=1;fast<n;fast++{
+		if nums[fast] != nums[fast-1]{
+			nums[slow] = nums[fast]
+			slow++
+		}
+	}
+	return slow
+}
+
+/*
+1.5 全排列
+给定一个不含重复数字的数组nums，返回其所有可能的全排列。你可以按任意顺序返回答案。
+示例 1：
+输入：nums = [1,2,3]
+输出：[[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
+
+示例 2：
+输入：nums = [0,1]
+输出：[[0,1],[1,0]]
+
+示例 3：
+输入：nums = [1]
+输出：[[1]]
+ */
+
+func Permute(nums []int)[][]int{
+	var res [][]int
+	visited := make(map[int]bool, len(nums))
+	var dfs func(path []int)
+	dfs = func(path []int){
+		if len(path) == len(nums){
+			temp := make([]int, len(path))
+			copy(temp, path)
+			res = append(res, path)
+			return
+		}
+		for _, v := range nums{
+			if visited[v]{
+				continue
+			}
+			path = append(path, v)
+			visited[v] = true
+			dfs(path[:len(path)-1])
+			visited[v] = false
+		}
+	}
+	dfs([]int{})
+	return res
+}
