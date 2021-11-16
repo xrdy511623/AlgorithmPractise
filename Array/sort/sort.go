@@ -239,7 +239,39 @@ func Search(nums []int, target int) int {
 }
 
 /*
-1.3 寻找两个有序数组的中位数
+1.3 数组中的第K个最大元素
+给定整数数组nums和整数k，请返回数组中第k个最大的元素。
+请注意，你需要找的是数组排序后的第k个最大的元素，而不是第k个不同的元素。
+
+示例 1:
+输入: [3,2,1,5,6,4] 和 k = 2
+输出: 5
+
+示例2:
+输入: [3,2,3,1,2,4,5,5,6] 和 k = 4
+输出: 4
+ */
+
+// FindKthLargest 用最大堆排序解决
+func FindKthLargest(nums []int, k int) int {
+	n := len(nums)
+	mh := Utils.NewMaxHeap(n)
+	for _, num := range nums{
+		mh.Add(num)
+	}
+	var sortedArray []int
+	for i:=0;i<n;i++{
+		value, _ := mh.Extract()
+		sortedArray = append(sortedArray, value)
+	}
+	return sortedArray[k-1]
+}
+
+
+
+
+/*
+1.4 寻找两个有序数组的中位数
 给定两个大小分别为 m 和 n 的正序（从小到大）数组nums1和nums2。请你找出并返回这两个正序数组的中位数 。
 算法的时间复杂度应该为O(log(m+n)) 。
 输入：nums1 = [1,3], nums2 = [2]
