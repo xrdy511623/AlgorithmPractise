@@ -60,12 +60,12 @@ k是一个正整数，它的值小于或等于链表的长度。
 你不能只是单纯的改变节点内部的值，而是需要实际进行节点交换。
 */
 
-func reverseKGroup(head *Entity.ListNode, k int) *Entity.ListNode {
+func ReverseKGroup(head *Entity.ListNode, k int) *Entity.ListNode {
 	dummy := &Entity.ListNode{0, head}
 	pre := dummy
 	for head != nil {
 		tail := pre
-		// 如果链表中节点个数少于k个，那么也不用反转了，返回头结点即可
+		// 如果链表中结点个数少于k个，那么也不用反转了，返回头结点即可
 		for i := 0; i < k; i++ {
 			tail = tail.Next
 			if tail == nil {
@@ -80,7 +80,7 @@ func reverseKGroup(head *Entity.ListNode, k int) *Entity.ListNode {
 		pre.Next = head
 		tail.Next = ndx
 
-		// 更新pre和head结点，此时分别指向反转后的k个结点组成的链表的尾结点和反转前k个结点组成的链表尾结点的下一个结点
+		// 更新pre和head指针，此时分别指向反转后的k个结点组成的链表的尾结点和反转前k个结点组成的链表尾结点的下一个结点
 		pre = tail
 		head = ndx
 	}
