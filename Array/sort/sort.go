@@ -482,6 +482,7 @@ func ThreeSum(nums []int)[][]int{
 	if n < 3{
 		return res
 	}
+	// 对数组进行排序
 	sort.Ints(nums)
 	for i, v := range nums{
 		// 因为nums是升序数组，所以nums[i]之后的数都会大于0，三个正数之和不可能等于0，所以此时要break
@@ -522,15 +523,17 @@ func ThreeSum(nums []int)[][]int{
 	return res
 }
 
-// ThreeSumUseHashTable 第二种思路是双层循环+哈希表, 麻烦的地方是去重，很难搞。
+// ThreeSumUseHashTable 第二种思路是双层循环+哈希表, 麻烦的地方是去重，很难搞，同时不可避免的导致效率下降
 func ThreeSumUseHashTable(nums []int) [][]int {
 	n := len(nums)
 	res := make([][]int, 0)
 	if n < 3{
 		return res
 	}
+	// 对数组进行排序
 	sort.Ints(nums)
 	for i, v := range nums[:n-2]{
+		// nums[i] == nums[i-1], 去重
 		if i >=1 && v == nums[i-1]{
 			continue
 		}
@@ -539,6 +542,7 @@ func ThreeSumUseHashTable(nums []int) [][]int {
 			if _, ok := d[x];!ok{
 				d[-v-x]++
 			} else{
+				// 此时说明找到了第三个数:-(v+x)
 				res = append(res, []int{v, x, -v-x})
 			}
 		}
