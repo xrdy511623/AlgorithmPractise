@@ -72,10 +72,10 @@ func reverseKGroup(head *Entity.ListNode, k int) *Entity.ListNode {
 				return dummy.Next
 			}
 		}
-		// 保存反转前k个结点组成链表的尾结点的下一个结点
+		// 保存反转前k个结点组成子链表尾结点的下一个结点
 		ndx := tail.Next
 		// 调用反转链表函数得到反转后的头尾结点
-		head, tail := reverse(head, tail, k)
+		head, tail = reverse(head, tail, k)
 		// 将头结点和尾结点接入到原来的链表中
 		pre.Next = head
 		tail.Next = ndx
