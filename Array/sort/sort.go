@@ -1,6 +1,9 @@
 package sort
 
-import "AlgorithmPractise/Utils"
+import (
+	"AlgorithmPractise/Utils"
+	"sort"
+)
 
 /*
 1.0 实现冒泡，快排和归并排序
@@ -50,7 +53,6 @@ func QuickSort(array []int, start, stop int) {
 	array[right] = mid
 	QuickSort(array, start, right-1)
 	QuickSort(array, right+1, stop)
-
 }
 
 /*
@@ -297,7 +299,7 @@ func Partition(array []int, start, stop int)int{
 		array[right] = array[left]
 	}
 	// 循环结束，left与right相等
-	// 确定基准数据pivot在数组中的位置
+	// 确定基准元素pivot在数组中的位置
 	array[right] = pivot
 	return right
 }
@@ -465,4 +467,106 @@ func getKthElement(nums1, nums2 []int, k int) int {
 			index2 = newIndex2 + 1
 		}
 	}
+}
+
+/*
+1.5 三数之和
+给你一个包含n个整数的数组nums，判断nums中是否存在三个元素 a，b，c ，使得a + b + c = 0 ？请你找出所有和为0且不重复的三元组。
+注意：答案中不可以包含重复的三元组。
+ */
+
+// ThreeSum 排序+双指针解决,难点是去重, 时间复杂度O(N^2),空间复杂度O(logN)
+func ThreeSum(nums []int)[][]int{
+	var res [][]int
+	n := len(nums)
+	if n < 3{
+		return res
+	}
+	sort.Ints(nums)
+	for i, v := range nums{
+		// 因为nums是升序数组，所以nums[i]之后的数都会大于0，三个正数之和不可能等于0，所以此时要break
+		if nums[i] > 0{
+			break
+		}
+		// nums[i] == nums[i-1], 去重
+		if i >= 1 && v == nums[i-1]{
+			continue
+		}
+		// 左右指针初始值分别为i+1,len(nums)-1
+		l, r := i+1, n-1
+		for l < r{
+			// 判断三数之和是否等于0
+			sum := nums[i]+nums[l]+nums[r]
+			if sum == 0{
+				res = append(res, []int{nums[i],nums[l],nums[r]})
+				// 只要nums[l] == nums[l+1]，左指针向右移动一位
+				for l < r && nums[l] == nums[l+1]{
+					l++
+				}
+				// nums[r] == nums[r-1]，右指针向左移动一位
+				for l < r && nums[r] == nums[r-1]{
+					r--
+				}
+				// 如果sum == 0, l, r分别+1，-1
+				l++
+				r--
+			} else if sum > 0{
+				// 此时说明sum过大，所以右指针应该向左移动，寻找更小的值
+				r--
+			} else{
+				// 此时说明sum过小，所以左指针应该向右移动，寻找更大的值
+				l++
+			}
+		}
+	}
+	return res
+}
+
+// ThreeSumUseHashTable 第二种思路是双层循环+哈希表, 麻烦的地方是去重，很难搞。
+func ThreeSumUseHashTable(nums []int) [][]int {
+	n := len(nums)
+	res := make([][]int, 0)
+	if n < 3{
+		return res
+	}
+	sort.Ints(nums)
+	for i, v := range nums[:n-2]{
+		if i >=1 && v == nums[i-1]{
+			continue
+		}
+		d := make(map[int]int, 0)
+		for _, x := range nums[i+1:]{
+			if _, ok := d[x];!ok{
+				d[-v-x]++
+			} else{
+				res = append(res, []int{v, x, -v-x})
+			}
+		}
+	}
+	return DropDuplicates(res)
+}
+
+type Set struct {
+	K1, K2, K3 int
+}
+
+func DropDuplicates(src [][]int)(dst [][]int){
+	m := make(map[Set]int, 0)
+	for _, array := range src{
+		sort.Ints(array)
+		key := Set{
+			array[0],
+			array[1],
+			array[2],
+		}
+		if m[key] == 0{
+			m[key]++
+		} else{
+			continue
+		}
+	}
+	for key, _ := range m{
+		dst = append(dst, []int{key.K1, key.K2, key.K3})
+	}
+	return dst
 }
