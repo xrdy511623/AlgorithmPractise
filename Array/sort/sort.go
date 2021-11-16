@@ -554,9 +554,11 @@ type Set struct {
 	K1, K2, K3 int
 }
 
+// DropDuplicates 利用结构体作为key来给二维数组去重
 func DropDuplicates(src [][]int)(dst [][]int){
 	m := make(map[Set]int, 0)
 	for _, array := range src{
+		// 排序仍然免不了
 		sort.Ints(array)
 		key := Set{
 			array[0],
