@@ -12,11 +12,12 @@ type MaxHeap struct {
 func NewMaxHeap(capacity int) *MaxHeap {
 	return &MaxHeap{
 		Capacity: capacity,
-		Elements: make([]int, 0, capacity),
+		Size: 0,
+		Elements: make([]int, capacity, capacity),
 	}
 }
 
-func (mh *MaxHeap) length() int {
+func (mh *MaxHeap) Length() int {
 	return mh.Size
 }
 
@@ -30,6 +31,10 @@ func (mh *MaxHeap) Add(value int) {
 	mh.ShiftUp(mh.Size)
 	mh.Size++
 }
+
+/*
+比较新添加的节点与其父亲节点的值,若父亲节点的值更小,则交换位置.
+ */
 
 func (mh *MaxHeap) ShiftUp(ndx int) {
 	if ndx > 0 {
@@ -80,3 +85,4 @@ func (mh *MaxHeap) ShiftDown(ndx int) {
 		mh.ShiftDown(largest)
 	}
 }
+
