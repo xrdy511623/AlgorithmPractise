@@ -267,8 +267,92 @@ func FindKthLargest(nums []int, k int) int {
 	return sortedArray[k-1]
 }
 
+/*
+思路:快排可以解决问题，但是它需要确定数组中所有元素的正确位置，对于本题而言，我们只需要确定第k大元素的位置pos,
+我们只需要确保pos左边的元素都比它小，pos右边的元素都比它大即可，不需要关心其左边和右边的集合是否有序，所以，我们
+需要对快排进行改进，将目标值的位置pos与分区函数Partition求得的位置index进行比对，如果两值相等，说明index对应的元素即为
+所求值，如果index<pos，则递归的在[index+1, right]范围求解；否则则在[left, index-1]范围求解，如此便可大幅缩小求解范围。
+ */
 
+func FindKthLargestElement(nums []int, k int) int{
+	TopkSplit(nums, len(nums)-k, 0, len(nums)-1)
+	return nums[len(nums)-k]
+}
 
+func Partition(array []int, start, stop int)int{
+	if start >= stop {
+		return -1
+	}
+	pivot := array[start]
+	left, right := start, stop
+
+	for left < right {
+		for left < right && array[right] >= pivot {
+			right -= 1
+		}
+		array[left] = array[right]
+		for left < right && array[left] < pivot {
+			left += 1
+		}
+		array[right] = array[left]
+	}
+	// 循环结束，left与right相等
+	// 确定基准数据pivot在数组中的位置
+	array[right] = pivot
+	return right
+}
+
+// TopkSplit topK切分
+func TopkSplit(nums []int, k, left, right int){
+	if left < right{
+		index := Partition(nums, left, right)
+		if index == k{
+			return
+		} else if index < k{
+			TopkSplit(nums, k, index+1, right)
+		} else{
+			TopkSplit(nums, k, left, index-1)
+		}
+	}
+}
+
+// 以下是利用快排解决topK类问题的总结
+
+/*
+1.3.1 获得前k小的数
+ */
+
+func TopkSmallest(nums []int, k int)[]int{
+	TopkSplit(nums, k, 0, len(nums)-1)
+	return nums[:k]
+}
+
+/*
+1.3.2 获得前k大的数
+*/
+
+func TopkLargest(nums []int, k int)[]int{
+	TopkSplit(nums, len(nums)-k, 0, len(nums)-1)
+	return nums[len(nums)-k:]
+}
+
+/*
+1.3.3 获取第k小的数
+ */
+
+func TopkSmallestElement(nums []int, k int)int{
+	TopkSplit(nums, k, 0, len(nums)-1)
+	return nums[k-1]
+}
+
+/*
+1.3.4 获取第k大的数
+*/
+
+func TopkLargestElement(nums []int, k int)int{
+	TopkSplit(nums, len(nums)-k, 0, len(nums)-1)
+	return nums[len(nums)-k]
+}
 
 /*
 1.4 寻找两个有序数组的中位数
