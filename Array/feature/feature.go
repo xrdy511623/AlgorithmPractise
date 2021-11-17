@@ -159,9 +159,65 @@ func FindLengthOfLCIS(nums []int) int {
 	return maxLength
 }
 
+/*
+1.6 最大子序列和
+给定一个整数数组 nums，找到一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。
+
+示例 1：
+输入：nums = [-2,1,-3,4,-1,2,1,-5,4]
+输出：6
+解释：连续子数组[4,-1,2,1] 的和最大，为6 。
+
+示例 2：
+输入：nums = [1]
+输出：1
+示例 3：
+
+输入：nums = [0]
+输出：0
+示例 4：
+
+输入：nums = [-1]
+输出：-1
+ */
+
+func MaxSubArray(nums []int)int{
+	max := nums[0]
+	for i:=1;i<len(nums);i++{
+		if nums[i] + nums[i-1] > nums[i]{
+			nums[i] += nums[i-1]
+		}
+		if nums[i] > max{
+			max = nums[i]
+		}
+	}
+	return max
+}
 
 /*
-1.6 全排列
+1.8 买卖股票的最佳时机
+给定一个数组prices，它的第i个元素prices[i]表示一支给定股票第i天的价格。
+你只能选择某一天买入这只股票，并选择在未来的某一个不同的日子卖出该股票。设计一个算法来计算你所能获取的最大利润。
+返回你可以从这笔交易中获取的最大利润。如果你不能获取任何利润，返回0 。
+1 <= prices.length <= 105
+0 <= prices[i] <= 104
+要求时间复杂度为0(n),空间复杂度为O(1)
+ */
+
+// MaxProfit 每次迭代，更新最大利润profit和最低股票价格minPrice
+func MaxProfit(prices []int) int {
+	// minPrice初始值为prices[0], 最大利润profit初始值为0
+	minPrice, profit := prices[0], 0
+	for i:=1;i<len(prices);i++{
+		profit = Utils.Max(profit, prices[i]-minPrice)
+		minPrice = Utils.Min(minPrice, prices[i])
+	}
+	return profit
+}
+
+
+/*
+1.8 全排列
 给定一个不含重复数字的数组nums，返回其所有可能的全排列。你可以按任意顺序返回答案。
 示例 1：
 输入：nums = [1,2,3]
