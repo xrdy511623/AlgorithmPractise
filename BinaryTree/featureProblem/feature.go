@@ -162,13 +162,13 @@ func NearestCommonAncestorUseIteration(root, p, q *Entity.TreeNode) *Entity.Tree
 	dfs(root)
 	for p != nil {
 		visited[p.Val]++
-		p, _ = parentDict[p.Val]
+		p = parentDict[p.Val]
 	}
 	for q != nil {
 		if _, ok := visited[q.Val]; ok {
 			return q
 		}
-		q, _ = parentDict[q.Val]
+		q = parentDict[q.Val]
 	}
 	return nil
 }

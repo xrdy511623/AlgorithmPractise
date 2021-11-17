@@ -91,7 +91,6 @@ func Merge(left, right []int) (res []int) {
 			r += 1
 		}
 	}
-
 	leftPlus := left[l:]
 	rightPlus := right[r:]
 	if len(leftPlus) >= 1 {

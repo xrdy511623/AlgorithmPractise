@@ -65,7 +65,8 @@ func CheckRingUseHashTable(head *Entity.ListNode) bool {
 说明：不允许修改给定的链表。
 */
 
-// DetectCycleUseHashTable 思路1，从头结点开始遍历链表，若哈希表中不存在此结点，则将其添加到哈希表中，否则意味着遇到了开始入环的第一个结点(重复节点)
+// DetectCycleUseHashTable 思路1，从头结点开始遍历链表，若哈希表中不存在此结点，则将其添加到哈希表中，否则意味着遇到了开始入环的
+//第一个结点 (重复节点)
 func DetectCycleUseHashTable(head *Entity.ListNode) *Entity.ListNode {
 	if head == nil || head.Next == nil {
 		return nil
@@ -82,7 +83,7 @@ func DetectCycleUseHashTable(head *Entity.ListNode) *Entity.ListNode {
 	return nil
 }
 
-// DetectCycle 思路2，双指针法，不易想到，但是最优解
+// DetectCycle 思路2，双指针法，不易想到，但是是最优解
 func DetectCycle(head *Entity.ListNode) *Entity.ListNode {
 	if head == nil || head.Next == nil {
 		return nil
@@ -109,7 +110,7 @@ func DetectCycle(head *Entity.ListNode) *Entity.ListNode {
 输入：intersectVal = 8, listA = [4,1,8,4,5], listB = [5,0,1,8,4,5], skipA = 2, skipB = 3
 输出：Reference of the node with value = 8
 输入解释：相交节点的值为8 （注意，如果两个列表相交则不能为 0）。从各自的表头开始算起，链表A为 [4,1,8,4,5]，链表B为 [5,0,1,8,4,5]。
-在A中，相交节点前有2个节点；在 B 中，相交节点前有3个节点。
+在A中，相交节点前有2个节点；在B中，相交节点前有3个节点。
 */
 
 /*
@@ -118,8 +119,8 @@ func DetectCycle(head *Entity.ListNode) *Entity.ListNode {
 设第一个公共节点为node ，链表headA的节点数量为a，链表headB的节点数量为b，两链表的公共尾部的节点数量为c
 则有：头节点headA到node前，共有a−c个节点；
 头节点headB到node前，共有b−c个节点；
-考虑构建两个节点指针 A, B 分别指向两链表头节点headA , headB ，做如下操作：
-指针A先遍历完链表 headA，再开始遍历链表headB ，当走到node时，共走步数为：
+考虑构建两个节点指针A, B 分别指向两链表头节点headA , headB ，做如下操作：
+指针A先遍历完链表headA，再开始遍历链表headB ，当走到node时，共走步数为：
 a+(b−c)
 指针B先遍历完链表headB，再开始遍历链表headA ，当走到node时，共走步数为：
 b+(a−c)
