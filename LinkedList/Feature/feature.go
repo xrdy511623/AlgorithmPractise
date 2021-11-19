@@ -146,7 +146,50 @@ func getIntersectionNode(headA, headB *Entity.ListNode) *Entity.ListNode {
 }
 
 /*
-1.4 链表排序
+1.4 链表中倒数第k个节点
+输入一个链表，输出该链表中倒数第k个节点。为了符合大多数人的习惯，本题从1开始计数，即链表的尾节点是倒数第1个节点。
+例如，一个链表有6个节点，从头节点开始，它们的值依次是 1、2、3、4、5、6。这个链表的倒数第3个节点是值为4的节点。
+示例：
+给定一个链表: 1->2->3->4->5, 和 k = 2.
+返回链表 4->5.
+ */
+
+// GetKthFromEnd 顺序查找，倒数第k个节点即为正数第n-k个节点
+func GetKthFromEnd(head *Entity.ListNode, k int)*Entity.ListNode{
+	n := 0
+	cur := head
+	for cur != nil{
+		n++
+		cur = cur.Next
+	}
+	// 如果链表长度小于k,则返回nil
+	if n < k{
+		return nil
+	}
+	// 从头节点(head)遍历链表n-k次即得到目标节点
+	for i:=0;i<n-k;i++{
+		head = head.Next
+	}
+	return head
+}
+
+// GetKthNodeFromEnd 双指针法，快慢指针初始位置都是头节点，快指针先移动至k+1个节点，此时快慢指针相隔k个节点，然后双方以相同速度同时
+// 向后移动，则当快指针移动至链表尾部空节点时，此时慢指针的位置为n-k,即为所求节点
+func GetKthNodeFromEnd(head *Entity.ListNode, k int)*Entity.ListNode{
+	fast, slow := head, head
+	for i:=0;i<k;i++{
+		fast = fast.Next
+	}
+	for fast != nil{
+		fast = fast.Next
+		slow = slow.Next
+	}
+	return slow
+}
+
+
+/*
+1.5 链表排序
 给你链表的头结点head，请将其按升序排列并返回排序后的链表 。
 进阶：
 你可以在O(nlogn) 时间复杂度和常数级空间复杂度下，对链表进行排序吗？
@@ -212,7 +255,7 @@ func MergeLinkedList(l1,l2 *Entity.ListNode) *Entity.ListNode {
 }
 
 /*
-1.5 将两个升序链表合并为一个新的 升序 链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。
+1.6 将两个升序链表合并为一个新的 升序 链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。
 输入：l1 = [1,2,4], l2 = [1,3,4]
 输出：[1,1,2,3,4,4]
 */
@@ -250,7 +293,7 @@ func mergeTwoLists(l1 *Entity.ListNode, l2 *Entity.ListNode) *Entity.ListNode {
 }
 
 /*
-1.6 分隔链表
+1.7 分隔链表
 给你一个链表的头节点 head 和一个特定值x ，请你对链表进行分隔，使得所有小于x的节点都出现在大于或等于x的节点之前。
 你应当保留两个分区中每个节点的初始相对位置。
  */
@@ -258,12 +301,12 @@ func mergeTwoLists(l1 *Entity.ListNode, l2 *Entity.ListNode) *Entity.ListNode {
 /*
 题目本质上就是将链表分为：
 1.小于x部分的链表按照原始顺序记为p
-2.大于等于x部分的链表按照原始顺序记为
+2.大于等于x部分的链表按照原始顺序记为q
 3.拼接两个链表，p --> q
  */
 
 
-func PartitionlinkedList(head *Entity.ListNode, x int) *Entity.ListNode {
+func PartitionLinkedList(head *Entity.ListNode, x int) *Entity.ListNode {
 	before_head, after_head := &Entity.ListNode{0, nil}, &Entity.ListNode{0, nil}
 	before, after := before_head, after_head
 	for head != nil {

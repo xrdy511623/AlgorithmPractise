@@ -37,8 +37,8 @@ func DeleteNode(head *Entity.ListNode, val int) *Entity.ListNode {
 进阶：你能尝试使用一趟扫描实现吗？
 */
 
-// removeNthFromEnd, 思路与1.1大体类似，那就是找到该节点的前一个节点，将其Next指针指向该节点的Next节点即可
-func removeNthFromEnd(head *Entity.ListNode, n int) *Entity.ListNode {
+// RemoveNthFromEnd 思路与1.1大体类似，那就是找到该节点的前一个节点，将其Next指针指向该节点的Next节点即可
+func RemoveNthFromEnd(head *Entity.ListNode, n int) *Entity.ListNode {
 	dummy := &Entity.ListNode{0, head}
 	pre := dummy
 	length := GetLengthOfLinkedList(head)
@@ -59,6 +59,21 @@ func GetLengthOfLinkedList(head *Entity.ListNode) int {
 		head = head.Next
 	}
 	return length
+}
+
+// RemoveNthNodeFromEnd 双指针法
+func RemoveNthNodeFromEnd(head *Entity.ListNode, n int)*Entity.ListNode{
+	dummy := &Entity.ListNode{0, head}
+	pre, fast := dummy, head
+	for i:=0;i<n;i++{
+		fast = fast.Next
+	}
+	for fast != nil{
+		fast = fast.Next
+		pre = pre.Next
+	}
+	pre.Next = pre.Next.Next
+	return dummy.Next
 }
 
 /*
