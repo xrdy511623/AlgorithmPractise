@@ -66,7 +66,7 @@ func CheckRingUseHashTable(head *Entity.ListNode) bool {
 */
 
 // DetectCycleUseHashTable 思路1，从头结点开始遍历链表，若哈希表中不存在此结点，则将其添加到哈希表中，否则意味着遇到了开始入环的
-//第一个结点 (重复节点)
+// 第一个结点 (重复节点), 时间复杂度O(N),空间复杂度O(N)
 func DetectCycleUseHashTable(head *Entity.ListNode) *Entity.ListNode {
 	if head == nil || head.Next == nil {
 		return nil
@@ -83,7 +83,7 @@ func DetectCycleUseHashTable(head *Entity.ListNode) *Entity.ListNode {
 	return nil
 }
 
-// DetectCycle 思路2，双指针法，不易想到，但是是最优解
+// DetectCycle 思路2，双指针法，不易想到，但是是最优解, 时间复杂度仍然是O(N),但空间复杂度下降为O(1)
 func DetectCycle(head *Entity.ListNode) *Entity.ListNode {
 	if head == nil || head.Next == nil {
 		return nil
@@ -154,7 +154,7 @@ func getIntersectionNode(headA, headB *Entity.ListNode) *Entity.ListNode {
 输出：[-1,0,3,4,5]
  */
 
-// SortLinkedList 思路，归并排序解决
+// SortLinkedList 思路:归并排序解决
 func SortLinkedList(head *Entity.ListNode) *Entity.ListNode {
 	if head == nil || head.Next == nil {
 		return head
@@ -187,7 +187,6 @@ func SortLinkedList(head *Entity.ListNode) *Entity.ListNode {
 	}
 
 	return res.Next
-	//return MergeLinkedList(left, right)
 }
 
 func MergeLinkedList(l1,l2 *Entity.ListNode) *Entity.ListNode {

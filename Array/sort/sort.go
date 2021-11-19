@@ -103,7 +103,6 @@ func Merge(left, right []int) (res []int) {
 	return res
 }
 
-
 /*
 1.1 二分查找实现，递归版与非递归版,返回要查找元素在数组中的索引下标，若数组中不存在该元素，返回-1
 */
@@ -116,7 +115,7 @@ func BinarySearch(array []int, target int) int {
 	}
 	start, stop := 0, n-1
 	for start <= stop {
-		mid := start + (stop - start) / 2
+		mid := start + (stop-start)/2
 		if target == array[mid] {
 			return mid
 		} else if target > array[mid] {
@@ -128,15 +127,15 @@ func BinarySearch(array []int, target int) int {
 	return -1
 }
 
-// BinarySearchUseRecursion 二分查找递归版
-func BinarySearchUseRecursion(array []int, target int) int {
+// BinarySearchUseRecursion 二分查找递归版, 判断目标值在有序数组中是否存在
+func BinarySearchUseRecursion(array []int, target int) bool {
 	n := len(array)
 	if n == 0 {
-		return -1
+		return false
 	}
 	mid := n / 2
 	if target == array[mid] {
-		return mid
+		return true
 	} else if target > array[mid] {
 		return BinarySearchUseRecursion(array[mid+1:], target)
 	} else {
@@ -157,51 +156,50 @@ func SearchRange(nums []int, target int) []int {
 	return []int{left, right}
 }
 
-
-func BinarySearchFirstEqualTarget(array []int, target int)int{
+func BinarySearchFirstEqualTarget(array []int, target int) int {
 	n := len(array)
 	if n == 0 {
 		return -1
 	}
 	low, high := 0, n-1
-	for low <= high{
-		mid := low + (high - low) / 2
-		if array[mid] > target{
+	for low <= high {
+		mid := low + (high-low)/2
+		if array[mid] > target {
 			high = mid - 1
-		} else if array[mid] < target{
+		} else if array[mid] < target {
 			low = mid + 1
-		} else{
+		} else {
 			// 此时array[mid] = target, 因为是有序数组，如果mid=0说明就是第一个元素就是数组中第一个等于target的元素
 			// 或者mid!=0但是它的前一个元素小于target,也证明它是第一个等于target的元素，因为之前的元素都小于target
-			if (mid == 0) || (mid != 0 && array[mid-1]<target){
+			if (mid == 0) || (mid != 0 && array[mid-1] < target) {
 				return mid
-			} else{
+			} else {
 				// 否则证明mid之前还有等于target的元素，所以我们应该在[low,mid-1]区间寻找第一个等于target的元素
-				high = mid -1
+				high = mid - 1
 			}
 		}
 	}
 	return -1
 }
 
-func BinarySearchLastEqualTarget(array []int, target int)int{
+func BinarySearchLastEqualTarget(array []int, target int) int {
 	n := len(array)
 	if n == 0 {
 		return -1
 	}
 	low, high := 0, n-1
-	for low <= high{
-		mid := low + (high - low) / 2
-		if array[mid] > target{
+	for low <= high {
+		mid := low + (high-low)/2
+		if array[mid] > target {
 			high = mid - 1
-		} else if array[mid] < target{
+		} else if array[mid] < target {
 			low = mid + 1
-		} else{
+		} else {
 			// 此时array[mid] = target, 因为是有序数组，如果mid=n-1说明数组末尾元素就是最后一个等于target的元素
 			// 或者mid!=n-1但是它的前一个元素大于target,也证明它是最后一个等于target的元素，因为它之后的元素都大于target
-			if (mid == n-1) ||(mid != n-1 && array[mid+1] > target){
+			if (mid == n-1) || (mid != n-1 && array[mid+1] > target) {
 				return mid
-			} else{
+			} else {
 				// 否则证明mid之后还有等于target的元素，所以我们应该在[mid+1， high]区间寻找最后一个等于target的元素
 				low = mid + 1
 			}
@@ -221,7 +219,7 @@ func BinarySearchLastEqualTarget(array []int, target int)int{
 思路: 在排序数组中找出等于目标值target的起始位置index，如果index为-1,证明数组中无此元素，返回0，
 否则从数组index位置开始向后遍历数组元素，只要数组元素等于target，则使用map将其出现次数累加1,如果遇到不等于
 target的元素，说明后面的元素都大于target，此时退出循环，最后返回map中target的对应值即可
- */
+*/
 
 func Search(nums []int, target int) int {
 	index := BinarySearchFirstEqualTarget(nums, target)
@@ -229,8 +227,8 @@ func Search(nums []int, target int) int {
 		return 0
 	}
 	m := make(map[int]int, 0)
-	for _, num := range nums[index:]{
-		if num == target{
+	for _, num := range nums[index:] {
+		if num == target {
 			m[target]++
 		} else {
 			break
@@ -240,7 +238,68 @@ func Search(nums []int, target int) int {
 }
 
 /*
-1.3 数组中的第K个最大元素
+1.3 搜索旋转排序数组
+整数数组nums按升序排列，数组中的值互不相同 。
+在传递给函数之前，nums在预先未知的某个下标k（0 <= k < nums.length）上进行了旋转，使数组变为[nums[k], nums[k+1], ...,
+nums[n-1], nums[0], nums[1], ..., nums[k-1]]（下标从0开始计数）。例如，[0,1,2,4,5,6,7]在下标3处经旋转后可能变为
+[4,5,6,7,0,1,2] 。
+
+给你旋转后的数组nums和一个整数target ，如果nums中存在这个目标值target ，则返回它的下标，否则返回-1。
+
+示例 1：
+输入：nums = [4,5,6,7,0,1,2], target = 0
+输出：4
+
+示例2：
+输入：nums = [4,5,6,7,0,1,2], target = 3
+输出：-1
+
+示例3：
+输入：nums = [1], target = 0
+输出：-1
+*/
+
+/*
+解决思路:虽然进行旋转后的数组整体上不再是有序的了，但是从中间某个位置将数组分成左右两部分时，一定有一部分是有序的，所以我们仍然可以
+通过二分查找来解决此问题，只不过需要根据有序的部分确定应该如何改变二分查找的上下限，因为我们可以根据有序的部分判断出target是否在
+这个部分。
+如果 [l, mid - 1] 是有序数组，且target的大小满足 [nums[l],nums[mid]]，则我们应该将搜索范围缩小至 [l, mid - 1]，否则在
+[mid + 1, r]中寻找。
+如果[mid, r] 是有序数组，且target的大小满足[nums[mid+1],nums[r]]，则我们应该将搜索范围缩小至[mid + 1, r]，否则在
+[l, mid - 1]中寻找。
+时间复杂度O(logN),空间复杂度O(1)
+*/
+
+func RevolveArraySearch(nums []int, target int) int {
+	n := len(nums)
+	if n == 0 {
+		return -1
+	}
+	l, r := 0, n-1
+	for l <= r {
+		mid := (l + r) / 2
+		if target == nums[mid] {
+			return mid
+		}
+		if nums[0] <= nums[mid] {
+			if nums[0] <= target && target < nums[mid] {
+				r = mid - 1
+			} else {
+				l = mid + 1
+			}
+		} else {
+			if nums[mid] < target && target <= nums[n-1] {
+				l = mid + 1
+			} else {
+				r = mid - 1
+			}
+		}
+	}
+	return -1
+}
+
+/*
+1.4 数组中的第K个最大元素
 给定整数数组nums和整数k，请返回数组中第k个最大的元素。
 请注意，你需要找的是数组排序后的第k个最大的元素，而不是第k个不同的元素。
 
@@ -251,17 +310,17 @@ func Search(nums []int, target int) int {
 示例2:
 输入: [3,2,3,1,2,4,5,5,6] 和 k = 4
 输出: 4
- */
+*/
 
 // FindKthLargest 用最大堆排序解决
 func FindKthLargest(nums []int, k int) int {
 	n := len(nums)
 	mh := Utils.NewMaxHeap(n)
-	for _, num := range nums{
+	for _, num := range nums {
 		mh.Add(num)
 	}
 	var sortedArray []int
-	for i:=0;i<n;i++{
+	for i := 0; i < n; i++ {
 		value, _ := mh.Extract()
 		sortedArray = append(sortedArray, value)
 	}
@@ -273,14 +332,14 @@ func FindKthLargest(nums []int, k int) int {
 我们只需要确保pos左边的元素都比它小，pos右边的元素都比它大即可，不需要关心其左边和右边的集合是否有序，所以，我们
 需要对快排进行改进，将目标值的位置pos与分区函数Partition求得的位置index进行比对，如果两值相等，说明index对应的元素即为
 所求值，如果index<pos，则递归的在[index+1, right]范围求解；否则则在[left, index-1]范围求解，如此便可大幅缩小求解范围。
- */
+*/
 
-func FindKthLargestElement(nums []int, k int) int{
+func FindKthLargestElement(nums []int, k int) int {
 	TopkSplit(nums, len(nums)-k, 0, len(nums)-1)
 	return nums[len(nums)-k]
 }
 
-func Partition(array []int, start, stop int)int{
+func Partition(array []int, start, stop int) int {
 	if start >= stop {
 		return -1
 	}
@@ -304,14 +363,14 @@ func Partition(array []int, start, stop int)int{
 }
 
 // TopkSplit topK切分
-func TopkSplit(nums []int, k, left, right int){
-	if left < right{
+func TopkSplit(nums []int, k, left, right int) {
+	if left < right {
 		index := Partition(nums, left, right)
-		if index == k{
+		if index == k {
 			return
-		} else if index < k{
+		} else if index < k {
 			TopkSplit(nums, k, index+1, right)
-		} else{
+		} else {
 			TopkSplit(nums, k, left, index-1)
 		}
 	}
@@ -321,9 +380,9 @@ func TopkSplit(nums []int, k, left, right int){
 
 /*
 1.3.1 获得前k小的数
- */
+*/
 
-func TopkSmallest(nums []int, k int)[]int{
+func TopkSmallest(nums []int, k int) []int {
 	TopkSplit(nums, k, 0, len(nums)-1)
 	return nums[:k]
 }
@@ -332,16 +391,16 @@ func TopkSmallest(nums []int, k int)[]int{
 1.3.2 获得前k大的数
 */
 
-func TopkLargest(nums []int, k int)[]int{
+func TopkLargest(nums []int, k int) []int {
 	TopkSplit(nums, len(nums)-k, 0, len(nums)-1)
 	return nums[len(nums)-k:]
 }
 
 /*
 1.3.3 获取第k小的数
- */
+*/
 
-func TopkSmallestElement(nums []int, k int)int{
+func TopkSmallestElement(nums []int, k int) int {
 	TopkSplit(nums, k, 0, len(nums)-1)
 	return nums[k-1]
 }
@@ -350,7 +409,7 @@ func TopkSmallestElement(nums []int, k int)int{
 1.3.4 获取第k大的数
 */
 
-func TopkLargestElement(nums []int, k int)int{
+func TopkLargestElement(nums []int, k int) int {
 	TopkSplit(nums, len(nums)-k, 0, len(nums)-1)
 	return nums[len(nums)-k]
 }
@@ -472,48 +531,48 @@ func getKthElement(nums1, nums2 []int, k int) int {
 1.5 三数之和
 给你一个包含n个整数的数组nums，判断nums中是否存在三个元素 a，b，c ，使得a + b + c = 0 ？请你找出所有和为0且不重复的三元组。
 注意：答案中不可以包含重复的三元组。
- */
+*/
 
 // ThreeSum 排序+双指针解决,难点是去重, 时间复杂度O(N^2),空间复杂度O(logN)
-func ThreeSum(nums []int)[][]int{
+func ThreeSum(nums []int) [][]int {
 	var res [][]int
 	n := len(nums)
-	if n < 3{
+	if n < 3 {
 		return res
 	}
 	// 对数组进行排序
 	sort.Ints(nums)
-	for i, v := range nums{
+	for i, v := range nums {
 		// 因为nums是升序数组，所以nums[i]之后的数都会大于0，三个正数之和不可能等于0，所以此时要break
-		if nums[i] > 0{
+		if nums[i] > 0 {
 			break
 		}
 		// nums[i] == nums[i-1], 去重
-		if i >= 1 && v == nums[i-1]{
+		if i >= 1 && v == nums[i-1] {
 			continue
 		}
 		// 左右指针初始值分别为i+1,len(nums)-1
 		l, r := i+1, n-1
-		for l < r{
+		for l < r {
 			// 判断三数之和是否等于0
-			sum := nums[i]+nums[l]+nums[r]
-			if sum == 0{
-				res = append(res, []int{nums[i],nums[l],nums[r]})
+			sum := nums[i] + nums[l] + nums[r]
+			if sum == 0 {
+				res = append(res, []int{nums[i], nums[l], nums[r]})
 				// 只要nums[l] == nums[l+1]，左指针向右移动一位
-				for l < r && nums[l] == nums[l+1]{
+				for l < r && nums[l] == nums[l+1] {
 					l++
 				}
 				// nums[r] == nums[r-1]，右指针向左移动一位
-				for l < r && nums[r] == nums[r-1]{
+				for l < r && nums[r] == nums[r-1] {
 					r--
 				}
 				// 如果sum == 0, l, r分别+1，-1
 				l++
 				r--
-			} else if sum > 0{
+			} else if sum > 0 {
 				// 此时说明sum过大，所以右指针应该向左移动，寻找更小的值
 				r--
-			} else{
+			} else {
 				// 此时说明sum过小，所以左指针应该向右移动，寻找更大的值
 				l++
 			}
@@ -526,23 +585,23 @@ func ThreeSum(nums []int)[][]int{
 func ThreeSumUseHashTable(nums []int) [][]int {
 	n := len(nums)
 	res := make([][]int, 0)
-	if n < 3{
+	if n < 3 {
 		return res
 	}
 	// 对数组进行排序
 	sort.Ints(nums)
-	for i, v := range nums[:n-2]{
+	for i, v := range nums[:n-2] {
 		// nums[i] == nums[i-1], 去重
-		if i >=1 && v == nums[i-1]{
+		if i >= 1 && v == nums[i-1] {
 			continue
 		}
 		d := make(map[int]int, 0)
-		for _, x := range nums[i+1:]{
-			if _, ok := d[x];!ok{
+		for _, x := range nums[i+1:] {
+			if _, ok := d[x]; !ok {
 				d[-v-x]++
-			} else{
+			} else {
 				// 此时说明找到了第三个数:-(v+x)
-				res = append(res, []int{v, x, -v-x})
+				res = append(res, []int{v, x, -v - x})
 			}
 		}
 	}
@@ -554,9 +613,9 @@ type Set struct {
 }
 
 // DropDuplicates 利用结构体作为key来给二维数组去重
-func DropDuplicates(src [][]int)(dst [][]int){
+func DropDuplicates(src [][]int) (dst [][]int) {
 	m := make(map[Set]int, 0)
-	for _, array := range src{
+	for _, array := range src {
 		// 排序仍然免不了
 		sort.Ints(array)
 		key := Set{
@@ -564,13 +623,13 @@ func DropDuplicates(src [][]int)(dst [][]int){
 			array[1],
 			array[2],
 		}
-		if m[key] == 0{
+		if m[key] == 0 {
 			m[key]++
-		} else{
+		} else {
 			continue
 		}
 	}
-	for key, _ := range m{
+	for key, _ := range m {
 		dst = append(dst, []int{key.K1, key.K2, key.K3})
 	}
 	return dst
