@@ -1,5 +1,9 @@
 package Stack
 
+import (
+	"AlgorithmPractise/Utils"
+	"math"
+)
 
 /*
 1.1  有效的括号
@@ -123,4 +127,50 @@ func (q *MyQueue) Empty() bool {
 		return true
 	}
 	return false
+}
+
+/*
+1.3 最小栈
+设计一个支持 push，pop，top操作，并能在常数时间内检索到最小元素的栈。
+
+push(x) —— 将元素 x 推入栈中。
+pop()—— 删除栈顶的元素。
+top()—— 获取栈顶元素。
+getMin() —— 检索栈中的最小元素。
+
+pop、top和getMin操作总是在非空栈上调用。
+ */
+
+type MinStack struct {
+	stack []int
+	minStack []int
+}
+
+func Construct() MinStack{
+	return MinStack{
+		stack: []int{},
+		minStack: []int{math.MaxInt64},
+	}
+}
+
+func (ms *MinStack) Push(val int) {
+	ms.stack = append(ms.stack, val)
+	top := ms.minStack[len(ms.minStack)-1]
+	ms.minStack = append(ms.minStack, Utils.Min(top, val))
+}
+
+
+func (ms *MinStack) Pop() {
+	ms.stack = ms.stack[:len(ms.stack)-1]
+	ms.minStack = ms.minStack[:len(ms.minStack)-1]
+}
+
+
+func (ms *MinStack) Top() int {
+	return ms.stack[len(ms.stack)-1]
+}
+
+
+func (ms *MinStack) GetMin() int {
+	return ms.minStack[len(ms.minStack)-1]
 }
