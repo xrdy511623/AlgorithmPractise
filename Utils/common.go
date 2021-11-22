@@ -25,3 +25,10 @@ func MaxValueOfArray(array []int)int{
 	}
 	return max
 }
+
+func Abs(x int)int{
+	if x < 0{
+		return -1 * x
+	}
+	return x
+}

@@ -365,3 +365,24 @@ func RightSideView(root *Entity.TreeNode) []int {
 	}
 	return res
 }
+
+/*
+1.9 平衡二叉树
+给定一个二叉树，判断它是否是高度平衡的二叉树。
+本题中，一棵高度平衡二叉树定义为：
+一个二叉树每个节点的左右两个子树的高度差的绝对值不超过1 。
+ */
+
+func IsBalanced(root *Entity.TreeNode)bool{
+	if root == nil{
+		return true
+	}
+	return Utils.Abs(GetHeightOfBinaryTree(root.Left)-GetHeightOfBinaryTree(root.Right))<=1 && IsBalanced(root.Left) && IsBalanced(root.Right)
+}
+
+func GetHeightOfBinaryTree(root *Entity.TreeNode)int{
+	if root == nil{
+		return 0
+	}
+	return 1 + Utils.Max(GetHeightOfBinaryTree(root.Left), GetHeightOfBinaryTree(root.Right))
+}

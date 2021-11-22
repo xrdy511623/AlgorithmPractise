@@ -23,26 +23,26 @@ func PathSum(root *Entity.TreeNode, target int) [][]int {
 	if root == nil {
 		return res
 	}
-	var queue []*group
-	queue = append(queue, &group{root, []int{root.Val}})
+	var queue []Group
+	queue = append(queue, Group{root, []int{root.Val}})
 	for len(queue) != 0 {
 		node := queue[0].Node
-		temp := queue[0].Val
+		tempPath := queue[0].Path
 		queue = queue[1:]
-		if node.Left == nil && node.Right == nil && sumOfArray(temp) == target {
-			res = append(res, temp)
+		if node.Left == nil && node.Right == nil && sumOfArray(tempPath) == target {
+			res = append(res, tempPath)
 		}
-		copyTemp := copySlice(temp)
+		copyTemp := copySlice(tempPath)
 		if node.Left != nil {
 			temp1 := copyTemp
 			temp1 = append(temp1, node.Left.Val)
-			queue = append(queue, &group{node.Left, temp1})
+			queue = append(queue, Group{node.Left, temp1})
 		}
 
 		if node.Right != nil {
 			temp2 := copyTemp
 			temp2 = append(temp2, node.Right.Val)
-			queue = append(queue, &group{node.Right, temp2})
+			queue = append(queue, Group{node.Right, temp2})
 		}
 
 	}
@@ -75,9 +75,9 @@ func PathSumUseDfs(root *Entity.TreeNode, target int) [][]int {
 	return res
 }
 
-type group struct {
+type Group struct {
 	Node *Entity.TreeNode
-	Val  []int
+	Path  []int
 }
 
 func sumOfArray(array []int) int {
@@ -128,11 +128,11 @@ func NumberOfPathSum(root *Entity.TreeNode, target int) int {
 		return 0
 	}
 	res := 0
-	queue := []group{group{root, []int{root.Val}}}
+	queue := []Group{Group{root, []int{root.Val}}}
 	for len(queue) != 0 {
 		node := queue[0].Node
-		temp := queue[0].Val
-		res += countTarget(temp, target)
+		temp := queue[0].Path
+		res += CountTarget(temp, target)
 		queue = queue[1:]
 		// 增加0是因为当前节点本身的值也有可能等于目标值target,此时路径就是节点本身
 		temp = append(temp, 0)
@@ -141,20 +141,20 @@ func NumberOfPathSum(root *Entity.TreeNode, target int) int {
 			for _, v := range temp {
 				temp1 = append(temp1, node.Left.Val+v)
 			}
-			queue = append(queue, group{node.Left, temp1})
+			queue = append(queue, Group{node.Left, temp1})
 		}
 		if node.Right != nil {
 			var temp2 []int
 			for _, v := range temp {
 				temp2 = append(temp2, node.Right.Val+v)
 			}
-			queue = append(queue, group{node.Right, temp2})
+			queue = append(queue, Group{node.Right, temp2})
 		}
 	}
 	return res
 }
 
-func countTarget(s []int, target int) int {
+func CountTarget(s []int, target int) int {
 	count := 0
 	for _, v := range s {
 		if v == target {
