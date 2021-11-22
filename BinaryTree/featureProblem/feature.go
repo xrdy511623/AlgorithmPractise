@@ -178,7 +178,7 @@ func NearestCommonAncestorUseIteration(root, p, q *Entity.TreeNode) *Entity.Tree
 给定一棵二叉树，你需要计算它的直径长度。一棵二叉树的直径长度是任意两个结点路径长度中的
 最大值。这条路径可能穿过也可能不穿过根结点。
 注意：两结点之间的路径长度是以它们之间边的数目表示。
- */
+*/
 
 /*
 思路:dfs深度优先遍历+迭代法解决
@@ -188,13 +188,13 @@ func NearestCommonAncestorUseIteration(root, p, q *Entity.TreeNode) *Entity.Tree
 迭代maxDia的值(将maxDia与以该节点为根的二叉树的最大直径即lh+rh之和比较，取较大值)，遍历结束后
 的maxDia即为该二叉树的最大直径。dfs深度优先遍历时返回以该节点为根的二叉树的最大高度，也就是
 1+max(lh+rh),时间复杂度度O(n),空间复杂度O(h),n为该二叉树节点个数，h为该二叉树高度
- */
+*/
 
 func DiameterOfBinaryTree(root *Entity.TreeNode) int {
 	maxDia := 0
-	var dfs func(node *Entity.TreeNode)int
-	dfs = func(node *Entity.TreeNode)int{
-		if node == nil{
+	var dfs func(node *Entity.TreeNode) int
+	dfs = func(node *Entity.TreeNode) int {
+		if node == nil {
 			return 0
 		}
 		lh := dfs(node.Left)
@@ -210,20 +210,20 @@ func DiameterOfBinaryTree(root *Entity.TreeNode) int {
 1.6 中序后继结点
 设计一个算法，找出二叉搜索树中指定节点的“下一个”节点（也即中序后继）。
 如果指定节点没有对应的“下一个”节点，则返回null。
- */
+*/
 
 /*
 第一种方案，对二叉搜索树(BST)进行中序遍历，即可得到升序排列的集合list，在集合中找到指定节点p的位置pos,
 返回list[index+1]对应的节点即可，若列表长度-1<=pos，则证明指定节点p为最大节点，也就没有了下一个节点，返回空
 此方案简单易懂，但是效率太差，需要先遍历一遍整个BST，然后for循环list找到p节点的位置，整体时间复杂度为O(n+pos),
 空间复杂度为O(n),因此不是最佳解决方案。
- */
+*/
 
 func InorderSuccessor(root, p *Entity.TreeNode) *Entity.TreeNode {
-	var travel func(node *Entity.TreeNode)[]*Entity.TreeNode
-	travel = func(node *Entity.TreeNode)[]*Entity.TreeNode{
+	var travel func(node *Entity.TreeNode) []*Entity.TreeNode
+	travel = func(node *Entity.TreeNode) []*Entity.TreeNode {
 		var res []*Entity.TreeNode
-		if node == nil{
+		if node == nil {
 			return res
 		}
 		res = append(res, travel(node.Left)...)
@@ -236,13 +236,13 @@ func InorderSuccessor(root, p *Entity.TreeNode) *Entity.TreeNode {
 		return nil
 	}
 	pos := 0
-	for index, node := range nodesList{
+	for index, node := range nodesList {
 		if node == p {
 			pos = index
 			break
 		}
 	}
-	if len(nodesList) - 1 > pos {
+	if len(nodesList)-1 > pos {
 		return nodesList[pos+1]
 	} else {
 		return nil
@@ -290,7 +290,7 @@ func InorderSuccessorUseIteration(root, p *Entity.TreeNode) *Entity.TreeNode {
 
 输入: [1,3,2,6,5]
 输出: true
- */
+*/
 
 /*
 后序遍历定义： [ 左子树 | 右子树 | 根节点 ] ，即遍历顺序为 “左、右、根” 。
@@ -316,24 +316,52 @@ recur(m,j−1):判断此树的右子树是否正确。
 时间复杂度 O(N):每次调用recur(i,j) 减去一个根节点，因此递归占用O(N) ；最差情况下（即当树退化为链表），每轮递归都需遍历树所有节点，
 占用 O(N^2)。
 空间复杂度 O(N):最差情况下（即当树退化为链表），递归深度将达到N 。
- */
+*/
 
-func VerifyPostOrder(postOrder []int)bool{
-	var recur func(array []int, start, stop int)bool
-	recur = func(array []int, start, stop int)bool{
-		if start >= stop{
+func VerifyPostOrder(postOrder []int) bool {
+	var recur func(array []int, start, stop int) bool
+	recur = func(array []int, start, stop int) bool {
+		if start >= stop {
 			return true
 		}
 		p := start
-		for array[p] < array[stop]{
+		for array[p] < array[stop] {
 			p += 1
 		}
 		m := p
-		for array[p] > array[stop]{
+		for array[p] > array[stop] {
 			p += 1
 		}
 		return p == stop && recur(array, start, m-1) && recur(array, m, stop-1)
 	}
 
 	return recur(postOrder, 0, len(postOrder)-1)
+}
+
+/*
+1.8 二叉树的右视图
+给定一个二叉树的根节点root，想象自己站在它的右侧，按照从顶部到底部的顺序，返回从右侧所能看到的节点值。
+*/
+
+// RightSideView BFS(广度优先遍历解决)，时间复杂度O(N),空间复杂度O(N)
+func RightSideView(root *Entity.TreeNode) []int {
+	var res []int
+	if root == nil {
+		return res
+	}
+	queue := []*Entity.TreeNode{root}
+	for len(queue) != 0 {
+		var temp []*Entity.TreeNode
+		for _, node := range queue {
+			if node.Left != nil {
+				temp = append(temp, node.Left)
+			}
+			if node.Right != nil {
+				temp = append(temp, node.Right)
+			}
+		}
+		res = append(res, queue[len(queue)-1].Val)
+		queue = temp
+	}
+	return res
 }
