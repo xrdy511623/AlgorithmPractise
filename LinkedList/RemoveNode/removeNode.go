@@ -159,4 +159,3 @@ func RemoveDuplicateNodes(head *Entity.ListNode) *Entity.ListNode {
 	}
 	return head
 }
-
