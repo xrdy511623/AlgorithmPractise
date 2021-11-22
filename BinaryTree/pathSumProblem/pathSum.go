@@ -4,6 +4,7 @@ import (
 	"AlgorithmPractise/BinaryTree/Entity"
 	"AlgorithmPractise/Utils"
 	"math"
+	"strconv"
 )
 
 /*
@@ -315,6 +316,62 @@ func sumOfLeftLeaves(root *Entity.TreeNode) int {
 		}
 		if node.Right != nil {
 			queue = append(queue, node.Right)
+		}
+	}
+	return res
+}
+
+/*
+1.6 求根节点到叶节点数字之和
+给你一个二叉树的根节点root ，树中每个节点都存放有一个0到9之间的数字。
+每条从根节点到叶节点的路径都代表一个数字：
+
+例如，从根节点到叶节点的路径 1 -> 2 -> 3 表示数字 123 。
+计算从根节点到叶节点生成的所有数字之和 。
+
+叶节点是指没有子节点的节点。
+
+输入：root = [1,2,3]
+输出：25
+解释：
+从根到叶子节点路径 1->2 代表数字 12
+从根到叶子节点路径 1->3 代表数字 13
+因此，数字总和 = 12 + 13 = 25
+
+输入：root = [4,9,0,5,1]
+输出：1026
+解释：
+从根到叶子节点路径 4->9->5 代表数字495
+从根到叶子节点路径 4->9->1 代表数字491
+从根到叶子节点路径 4->0 代表数字40
+因此，数字总和 = 495 + 491 + 40 = 1026
+ */
+
+type LogicNode struct {
+	Node *Entity.TreeNode
+	Val string
+}
+
+// SumNumbers BFS解决, 时间复杂度O(N),空间复杂度O(H),H为二叉树的高度
+func SumNumbers(root *Entity.TreeNode) int{
+	res := 0
+	if root == nil{
+		return res
+	}
+	stack := []LogicNode{{root, strconv.Itoa(root.Val)}}
+	for len(stack)!=0{
+		logicNode := stack[0]
+		stack = stack[1:]
+		sum := logicNode.Val
+		if logicNode.Node.Left != nil{
+			stack = append(stack, LogicNode{logicNode.Node.Left,sum+strconv.Itoa(logicNode.Node.Left.Val)})
+		}
+		if logicNode.Node.Right != nil{
+			stack = append(stack, LogicNode{logicNode.Node.Right,sum+strconv.Itoa(logicNode.Node.Right.Val)})
+		}
+		if logicNode.Node.Left == nil && logicNode.Node.Right == nil{
+			pathSum, _ := strconv.Atoi(sum)
+			res += pathSum
 		}
 	}
 	return res
