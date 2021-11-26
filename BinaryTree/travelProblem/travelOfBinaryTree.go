@@ -56,9 +56,9 @@ func InOrderTravel(root *Entity.TreeNode) []int {
 	if root == nil {
 		return res
 	}
-	res = append(res, PreOrderTravel(root.Left)...)
+	res = append(res, InOrderTravel(root.Left)...)
 	res = append(res, root.Val)
-	res = append(res, PreOrderTravel(root.Right)...)
+	res = append(res, InOrderTravel(root.Right)...)
 	return res
 }
 
@@ -88,8 +88,8 @@ func PostOrderTravel(root *Entity.TreeNode) []int {
 	if root == nil {
 		return res
 	}
-	res = append(res, PreOrderTravel(root.Left)...)
-	res = append(res, PreOrderTravel(root.Right)...)
+	res = append(res, PostOrderTravel(root.Left)...)
+	res = append(res, PostOrderTravel(root.Right)...)
 	res = append(res, root.Val)
 	return res
 }
@@ -428,7 +428,7 @@ preorder和inorder均无重复元素
 buildTreeFromPreAndIn
 从preorder找到根节点的值，即preorder[0],然后利用哈希表到inorder中找到其对应的位置index
 而且不管是preorder还是inorder，其左右子树的长度都是相等的，所以根节点的左子树范围为
-preorder[1:index+1], inorder[:index]; 而根节点的右子树范围为preorder[:index+1:], inorder[index+1:]
+preorder[1:index+1], inorder[:index]; 而根节点的右子树范围为preorder[index+1:], inorder[index+1:]
 */
 
 func buildTreeFromPreAndIn(preorder []int, inorder []int) *Entity.TreeNode {
@@ -449,7 +449,7 @@ func buildTreeFromPreAndIn(preorder []int, inorder []int) *Entity.TreeNode {
 /*
 方案2
 buildTreeFromPreAndInSimple
-方案1时间和空间复杂度都太高，不推荐，这里推荐方案2，与方案1不同，从根节点开始递归的确定节点的左右子节点的过程
+方案1时间和空间复杂度都太高，不推荐，这里推荐方案2，与方案1不同，从根节点开始递归确定节点的左右子节点的过程
 只依赖于中序遍历结果集的左右子树范围。
 */
 
