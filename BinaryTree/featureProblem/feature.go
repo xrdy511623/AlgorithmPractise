@@ -251,31 +251,45 @@ func InorderSuccessor(root, p *Entity.TreeNode) *Entity.TreeNode {
 
 // InorderSuccessorUseIteration 迭代法解决，时间复杂度降低为O(pos),空间复杂度降低为O(1)
 func InorderSuccessorUseIteration(root, p *Entity.TreeNode) *Entity.TreeNode {
-	curr := root
+	cur := root
 	var ans *Entity.TreeNode
-	for curr != nil {
+	for cur != nil {
 		// 当后继存在于经过的节点中时（找到一个>val的最小点）
-		if curr.Val > p.Val {
+		if cur.Val > p.Val {
 			if ans == nil || ans.Val > p.Val {
-				ans = curr
+				ans = cur
 			}
 		}
 		// 找到p节点
-		if curr.Val == p.Val {
+		if cur.Val == p.Val {
 			// 如果有右子树,说明后继节点一定在右子树的最左边
-			if curr.Right != nil {
-				curr = curr.Right
-				for curr.Left != nil {
-					curr = curr.Left
+			if cur.Right != nil {
+				cur = cur.Right
+				for cur.Left != nil {
+					cur = cur.Left
 				}
-				return curr
+				return cur
 			}
 			break
 		}
-		if curr.Val > p.Val {
-			curr = curr.Left
+		if cur.Val > p.Val {
+			cur = cur.Left
 		} else {
-			curr = curr.Right
+			cur = cur.Right
+		}
+	}
+	return ans
+}
+
+func FindInorderSuccessor(root, p *Entity.TreeNode)*Entity.TreeNode{
+	var ans *Entity.TreeNode
+	ans = nil
+	for root != nil{
+		if root.Val > p.Val{
+			ans = root
+			root = root.Left
+		} else{
+			root = root.Right
 		}
 	}
 	return ans
