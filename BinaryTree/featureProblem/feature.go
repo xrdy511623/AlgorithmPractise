@@ -456,3 +456,50 @@ func GetHeightOfBinaryTree(root *Entity.TreeNode)int{
 	}
 	return 1 + Utils.Max(GetHeightOfBinaryTree(root.Left), GetHeightOfBinaryTree(root.Right))
 }
+
+/*
+1.11 展平二叉搜索树
+给你一棵二叉搜索树，请按中序遍历 将其重新排列为一棵递增顺序搜索树，使树中最左边的节点成为树的根节点，并且每个节点没有左子节点，
+只有一个右子节点。
+ */
+
+// IncreasingBST 时间复杂度O(2*N)，空间复杂度O(N)
+func IncreasingBST(root *Entity.TreeNode)*Entity.TreeNode{
+	var res []int
+	var dfs func(*Entity.TreeNode)
+	dfs = func(root *Entity.TreeNode){
+		if root != nil{
+			dfs(root.Left)
+			res = append(res, root.Val)
+			dfs(root.Right)
+		}
+	}
+	dfs(root)
+	dummyNode := &Entity.TreeNode{}
+	cur := dummyNode
+	for _, val := range res{
+		cur.Right = &Entity.TreeNode{Val: val}
+		cur = cur.Right
+	}
+	return dummyNode.Right
+}
+
+// IncreasingSimpleBST 更好的做法是在中序遍历的过程中改变节点指向，时间复杂度下降为O(N)
+func IncreasingSimpleBST(root *Entity.TreeNode)*Entity.TreeNode{
+	dummyNode := &Entity.TreeNode{}
+	cur := dummyNode
+	var helper func(*Entity.TreeNode)
+	helper = func(node *Entity.TreeNode){
+		if node == nil{
+			return
+		}
+		// 在中序遍历的过程中修改节点指向
+		helper(node.Left)
+		cur.Right = node
+		node.Left = nil
+		cur = node
+		helper(node.Right)
+	}
+	helper(root)
+	return dummyNode.Right
+}
