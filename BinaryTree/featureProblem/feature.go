@@ -3,6 +3,7 @@ package featureProblem
 import (
 	"AlgorithmPractise/LinkedList/Entity"
 	"AlgorithmPractise/Utils"
+	"math"
 )
 
 /*
@@ -296,7 +297,62 @@ func FindInorderSuccessor(root, p *Entity.TreeNode)*Entity.TreeNode{
 }
 
 /*
-1.7 验证二叉搜索树的后序遍历序列
+1.7 验证二叉搜索树
+给你一个二叉树的根节点root，判断其是否是一个有效的二叉搜索树。
+
+有效二叉搜索树定义如下：
+节点的左子树只包含小于当前节点的数。
+节点的右子树只包含大于当前节点的数。
+所有左子树和右子树自身必须也是二叉搜索树。
+ */
+
+// CheckIsValidBST 一个很容易想到的思路是中序遍历二叉树，如果它是BST，就会得到一个升序序列，否则就不是BST
+func CheckIsValidBST(root *Entity.TreeNode)bool{
+	if root == nil{
+		return false
+	}
+	var dfs func(root *Entity.TreeNode)[]int
+	dfs = func(root *Entity.TreeNode)(res []int){
+		if root == nil{
+			return res
+		}
+		res = append(res, dfs(root.Left)...)
+		res = append(res, root.Val)
+		res = append(res, dfs(root.Right)...)
+		return res
+	}
+	sortedArray := dfs(root)
+	for i:=1;i<len(sortedArray);i++{
+		if sortedArray[i]<=sortedArray[i-1]{
+			return false
+		}
+	}
+	return true
+}
+
+
+// IsValidBST 利用二叉搜索树的特征递归解决,时间复杂度和空间复杂度都是O(N)
+func IsValidBST(root *Entity.TreeNode)bool{
+	min := math.MinInt64
+	max := math.MaxInt64
+	return helper(root, min, max)
+}
+
+func helper(root *Entity.TreeNode, min, max int)bool{
+	if root == nil{
+		return true
+	}
+	// 二叉搜索树的核心特征就是根节点的值分布在其左右子节点值区间内[root.Left.Val, root.Right.Val]，否则就不是BST
+	if root.Val <= min || root.Val >= max{
+		return false
+	}
+	return helper(root.Left, min, root.Val) && helper(root.Right, root.Val, max)
+}
+
+
+
+/*
+1.8 验证二叉搜索树的后序遍历序列
 输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历结果。如果是则返回true，否则返回false。假设输入的数组的
 任意两个数字都互不相同。
 输入: [1,6,3,2,5]
@@ -353,7 +409,7 @@ func VerifyPostOrder(postOrder []int) bool {
 }
 
 /*
-1.8 二叉树的右视图
+1.9 二叉树的右视图
 给定一个二叉树的根节点root，想象自己站在它的右侧，按照从顶部到底部的顺序，返回从右侧所能看到的节点值。
 */
 
@@ -381,7 +437,7 @@ func RightSideView(root *Entity.TreeNode) []int {
 }
 
 /*
-1.9 平衡二叉树
+1.10 平衡二叉树
 给定一个二叉树，判断它是否是高度平衡的二叉树。
 本题中，一棵高度平衡二叉树定义为：
 一个二叉树每个节点的左右两个子树的高度差的绝对值不超过1 。
