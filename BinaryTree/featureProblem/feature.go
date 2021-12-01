@@ -548,3 +548,42 @@ func Inorder(node *Entity.TreeNode, nums *[]int){
 	*nums = append(*nums, node.Val)
 	Inorder(node.Right, nums)
 }
+
+/*
+1.13 给你一个整数n，请你生成并返回所有由n个节点组成且节点值从1到n互不相同的不同二叉搜索树 。
+可以按任意顺序返回答案。
+输入：n = 3
+输出：[[1,null,2,null,3],[1,null,3,2],[2,1,3],[3,1,null,null,2],[3,2,null,1]]
+ */
+
+func GenerateTrees(n int) []*Entity.TreeNode{
+	if n == 0{
+		return []*Entity.TreeNode{nil}
+	}
+	return Helper(1, n)
+}
+
+func Helper(start, end int) []*Entity.TreeNode {
+	if start > end {
+		return []*Entity.TreeNode{nil}
+	}
+	var allTrees []*Entity.TreeNode
+	// 枚举可行根节点
+	for i := start; i <= end; i++ {
+		// 获得所有可行的左子树集合
+		leftTrees := Helper(start, i - 1)
+		// 获得所有可行的右子树集合
+		rightTrees := Helper(i + 1, end)
+		// 从左子树集合中选出一棵左子树，从右子树集合中选出一棵右子树，拼接到根节点上
+		for _, left := range leftTrees {
+			for _, right := range rightTrees {
+				curTree := &Entity.TreeNode{Val:i, Left: nil, Right: nil}
+				curTree.Left = left
+				curTree.Right = right
+				allTrees = append(allTrees, curTree)
+			}
+		}
+	}
+	return allTrees
+}
+
