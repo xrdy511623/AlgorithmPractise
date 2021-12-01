@@ -634,3 +634,42 @@ func DropDuplicates(src [][]int) (dst [][]int) {
 	}
 	return dst
 }
+
+/*
+1.6 求x的n次方
+用O(N)的时间复杂度解决是很容易，你能在O(logN)时间复杂度内解决吗？
+ */
+
+// MyPow 简单递归解决, 递归调用n次，所以时间复杂度为O(N)，空间复杂度O(1)
+func MyPow(x float64, n int)float64{
+	var helper func(float64, int)float64
+	helper = func(x float64, n int)float64{
+		if x == 0{
+			return 1
+		}
+		return helper(x, n-1) * x
+	}
+	if n >= 0{
+		return helper(x, n)
+	}
+	return 1.0 / helper(x, -n)
+}
+
+// MyPowSimple 要想将时间复杂度降低为O(logN),就要使用二分法.
+func MyPowSimple(x float64, n int)float64{
+	var helper func(float64, int)float64
+	helper = func(x float64, n int)float64{
+		if n == 0{
+			return 1
+		}
+		t := helper(x, n/2)
+		if n % 2 == 1{
+			return t * t * x
+		}
+		return t * t
+	}
+	if n >= 0{
+		return helper(x, n)
+	}
+	return 1.0 / helper(x, -n)
+}

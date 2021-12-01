@@ -94,7 +94,7 @@ func PostOrderTravel(root *Entity.TreeNode) []int {
 	return res
 }
 
-// PostOrderTravelUseIteration 入栈根左右，出栈根右左，逆序后即为满足要求的左右根
+// PostOrderTravelUseIteration 入栈左右根，出栈根右左，逆序后即为满足要求的左右根
 func PostOrderTravelUseIteration(root *Entity.TreeNode) []int {
 	var res []int
 	if root == nil {
