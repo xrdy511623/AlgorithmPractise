@@ -351,7 +351,7 @@ func UniquePathsWithObstacles(obstacleGrid [][]int)int{
 
 /*
 解题思路:
-1 确定dp数组（dp table）以及下标的含义
+1 确定dp数组以及下标的含义
 dp[i]：分拆数字i，可以得到的最大乘积为dp[i]。
 
 2 确定递推公式
