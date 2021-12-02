@@ -1,6 +1,8 @@
 package Medium
 
-import "AlgorithmPractise/Utils"
+import (
+	"AlgorithmPractise/Utils"
+)
 
 /*
 1.1  不同的二叉搜索树
@@ -54,6 +56,7 @@ func NumOfBST(n int) int {
 	if n <= 1 {
 		return dp[n]
 	}
+	// dp[0]和dp[1]都已经初始化好了，所以外层循环遍历从2开始
 	for i := 2; i < n+1; i++ {
 		for j := 0; j < i; j++ {
 			// 两个下标和为i-1
@@ -139,7 +142,7 @@ func BagProblemSimple(weight, value []int, capacity int) int {
 	n := len(weight)
 	dp := make([]int, capacity+1)
 	for i:=0;i<n;i++{
-		// 遍历背包必须是倒序
+		// 必须逆序遍历背包, 确保元素不会被重复放入
 		for j:=capacity;j>=weight[i];j--{
 			// dp一维数组递推公式
 			dp[j] = Utils.Max(dp[j], dp[j-weight[i]]+value[i])
@@ -176,7 +179,8 @@ func BagProblemSimple(weight, value []int, capacity int) int {
 1 确定dp数组以及定义
 dp[j]表示背包总容量为j,其所容纳的所有物品(集合元素)的最大价值(子集元素和)，
 由于数组元素容量不超过200，而元素最大值不超过100，所以数组元素和最大不会超过20000，所以背包的最大
-体积也就是sum/2不会超过10000，故dp数组的容量可定为10001。
+体积也就是sum/2不会超过10000，故dp数组的长度可定为10001; 当然，最精确的做法是遍历nums数组，累加数组元素得到数组元素和sum,
+长度就等于sum/2+1(整除是向下取整，所以要+1)
 
 2 确定递推公式
 dp[j] = max(dp[j], dp[j-nums[i]]+nums[i])
@@ -199,17 +203,81 @@ dp[target] = target, 返回true
 // CanPartition 时间复杂度O(n^2)，空间复杂度O(n)
 func CanPartition(nums []int)bool{
 	sum := Utils.SumOfArray(nums)
+	// 如果数组nums元素之和sum为奇数则不可能平分为两个子集
 	if sum % 2 == 1{
 		return false
 	}
 	target := sum / 2
-	dp := make([]int, 10001)
+	dp := make([]int, target+1)
 	for i:=0;i<len(nums);i++{
-		// 逆序遍历背包
+		// 必须逆序遍历背包, 确保元素不会被重复放入
 		for j:=target;j>=nums[i];j--{
-			// 递推公式
-			dp[j] = Utils.Max(dp[j], dp[j-nums[i]]+nums[i])
+			// 递推公式 dp[j] = max(dp[j], dp[j-nums[i]]+nums[i])
+			// 写成下面这种方式效率更高，因为只有满足条件时才会给dp[j]赋值,完全按递推公式写每次都会比较和重新赋值
+			if dp[j] < dp[j-nums[i]] + nums[i]{
+				dp[j] = dp[j-nums[i]] + nums[i]
+			}
 		}
 	}
 	return dp[target] == target
+}
+
+
+/*
+1.4 最后一块石头的重量
+有一堆石头，每块石头的重量都是正整数。
+每一回合，从中选出任意两块石头，然后将它们一起粉碎。假设石头的重量分别为x和 y，且x <= y。那么粉碎的可能结果如下：
+如果x == y，那么两块石头都会被完全粉碎；如果 x != y，那么重量为 x 的石头将会完全粉碎，而重量为 y 的石头新重量为 y-x。 最后，
+最多只会剩下一块石头。返回此石头最小的可能重量。如果没有石头剩下，就返回 0。
+
+示例：输入：[2,7,4,1,8,1] 输出：1 解释： 组合 2 和 4，得到 2，所以数组转化为 [2,7,1,8,1]， 组合 7 和 8，得到 1，
+所以数组转化为 [2,1,1,1]， 组合 2 和 1，得到 1，所以数组转化为 [1,1,1]， 组合 1 和 1，得到 0，所以数组转化为 [1]，
+这就是最优值。
+
+提示：
+1 <= stones.length <= 30
+1 <= stones[i] <= 1000
+ */
+
+/*
+思路:
+本题其实就是尽量让石头分成重量相等的两堆，相撞之后剩下的石头最小，这样就化解成01背包问题了。
+其实和1.3 分割等和子集非常像了。
+
+本题物品的重量为store[i]，物品的价值也为store[i]。
+对应着01背包里的物品重量weight[i]和物品价值value[i]。
+
+1 确定dp数组以及下标含义
+dp[j]表示重量为j的背包，最多可以容纳重量为dp[j]的石头
+
+2 确定递推公式
+dp[j] = max(dp[j], dp[j-stones[i]] + stones[i])
+
+3 初始化dp数组
+dp数组的长度，最精确的做法是遍历stones数组，累加数组元素得到数组元素和sum, 长度就等于sum/2+1(整除是向下取整，所以要+1)
+由于重量都不会是负数，所以统一初始化为0即可。
+
+4 确定遍历顺序
+一维数组遍历顺序，是先遍历物品，再遍历背包，且遍历背包时必须是倒序
+
+5 举例推导dp数组
+略
+ */
+
+// LastStoneWeight 时间复杂度O(sum/2 * n), 空间复杂度为O(n), n为stones数组长度，sum/2为stones数组之和的一半
+func LastStoneWeight(stones []int)int{
+	sum := Utils.SumOfArray(stones)
+	target := sum / 2
+	dp := make([]int, target+1)
+	for i:=0;i<len(stones);i++{
+		for j:=target;j>=stones[i];j--{
+			if dp[j] < dp[j-stones[i]] + stones[i]{
+				dp[j] = dp[j-stones[i]] + stones[i]
+			}
+		}
+	}
+	// 最后stones石块被分成了dp[target]和sum-dp[target]两堆
+	// 由于sum/2是向下取整，所以sum-dp[target]一定比dp[target]大(因为dp[target]<=sum/2)，故相撞粉碎的结果就是
+	// dp[target]这一堆没了，sum-dp[target]还剩下sum-dp[target]-dp[target]
+	return sum - dp[target] - dp[target]
 }
