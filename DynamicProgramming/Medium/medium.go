@@ -112,7 +112,8 @@ dp[0][j]和dp[i][0] 都已经初始化了，那么其他下标应该初始化多
 参见01背包.png
 */
 
-func BagProblemSimple(weight, value []int, capacity int) int {
+// BagProblem 时间复杂度O(m*n)，空间复杂度O(m*n),m为weight数组长度，n为capacity
+func BagProblem(weight, value []int, capacity int) int {
 	n := len(weight)
 	dp := make([][]int, n)
 	for i := 0; i < n; i++ {
@@ -131,4 +132,16 @@ func BagProblemSimple(weight, value []int, capacity int) int {
 		}
 	}
 	return dp[n-1][capacity]
+}
+
+// BagProblemSimple 用一维数组空间复杂度还有优化空间，时间复杂度O(m*n)，空间复杂度O(n),m为weight数组长度，n为capacity
+func BagProblemSimple(weight, value []int, capacity int) int {
+	n := len(weight)
+	dp := make([]int, capacity+1)
+	for i:=0;i<n;i++{
+		for j:=capacity;j>=weight[i];j--{
+			dp[j] = Utils.Max(dp[j], dp[j-weight[i]]+value[i])
+		}
+	}
+	return dp[capacity]
 }
