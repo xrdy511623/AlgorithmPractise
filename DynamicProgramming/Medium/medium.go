@@ -141,9 +141,9 @@ func BagProblem(weight, value []int, capacity int) int {
 func BagProblemSimple(weight, value []int, capacity int) int {
 	n := len(weight)
 	dp := make([]int, capacity+1)
-	for i:=0;i<n;i++{
+	for i := 0; i < n; i++ {
 		// 必须逆序遍历背包, 确保元素不会被重复放入
-		for j:=capacity;j>=weight[i];j--{
+		for j := capacity; j >= weight[i]; j-- {
 			// dp一维数组递推公式
 			dp[j] = Utils.Max(dp[j], dp[j-weight[i]]+value[i])
 		}
@@ -165,7 +165,7 @@ func BagProblemSimple(weight, value []int, capacity int) int {
 提示：
 1 <= nums.length <= 200
 1 <= nums[i] <= 100
- */
+*/
 
 /*
 思路:本题是要找是否可以将数组分割成两个子集，使得两个子集的元素和相等。
@@ -198,30 +198,29 @@ dp[0] = 0 这一点是可以确定的。至于其他下标根据题目条件都�
 dp[j] 0  1  1  1  1  5  6  6  6  6  10  11
 target := sum(array) / 2 = 11
 dp[target] = target, 返回true
- */
+*/
 
 // CanPartition 时间复杂度O(n^2)，空间复杂度O(n)
-func CanPartition(nums []int)bool{
+func CanPartition(nums []int) bool {
 	sum := Utils.SumOfArray(nums)
 	// 如果数组nums元素之和sum为奇数则不可能平分为两个子集
-	if sum % 2 == 1{
+	if sum%2 == 1 {
 		return false
 	}
 	target := sum / 2
 	dp := make([]int, target+1)
-	for i:=0;i<len(nums);i++{
+	for i := 0; i < len(nums); i++ {
 		// 必须逆序遍历背包, 确保元素不会被重复放入
-		for j:=target;j>=nums[i];j--{
+		for j := target; j >= nums[i]; j-- {
 			// 递推公式 dp[j] = max(dp[j], dp[j-nums[i]]+nums[i])
 			// 写成下面这种方式效率更高，因为只有满足条件时才会给dp[j]赋值,完全按递推公式写每次都会比较和重新赋值
-			if dp[j] < dp[j-nums[i]] + nums[i]{
+			if dp[j] < dp[j-nums[i]]+nums[i] {
 				dp[j] = dp[j-nums[i]] + nums[i]
 			}
 		}
 	}
 	return dp[target] == target
 }
-
 
 /*
 1.4 最后一块石头的重量
@@ -237,7 +236,7 @@ func CanPartition(nums []int)bool{
 提示：
 1 <= stones.length <= 30
 1 <= stones[i] <= 1000
- */
+*/
 
 /*
 思路:
@@ -261,17 +260,18 @@ dp数组的长度，最精确的做法是遍历stones数组，累加数组元素
 一维数组遍历顺序，是先遍历物品，再遍历背包，且遍历背包时必须是倒序
 
 5 举例推导dp数组
-略
- */
+输入[2,4,1,1] target=4
+参见最后一块石头.png
+*/
 
 // LastStoneWeight 时间复杂度O(sum/2 * n), 空间复杂度为O(n), n为stones数组长度，sum/2为stones数组之和的一半
-func LastStoneWeight(stones []int)int{
+func LastStoneWeight(stones []int) int {
 	sum := Utils.SumOfArray(stones)
 	target := sum / 2
 	dp := make([]int, target+1)
-	for i:=0;i<len(stones);i++{
-		for j:=target;j>=stones[i];j--{
-			if dp[j] < dp[j-stones[i]] + stones[i]{
+	for i := 0; i < len(stones); i++ {
+		for j := target; j >= stones[i]; j-- {
+			if dp[j] < dp[j-stones[i]]+stones[i] {
 				dp[j] = dp[j-stones[i]] + stones[i]
 			}
 		}
@@ -280,4 +280,80 @@ func LastStoneWeight(stones []int)int{
 	// 由于sum/2是向下取整，所以sum-dp[target]一定比dp[target]大(因为dp[target]<=sum/2)，故相撞粉碎的结果就是
 	// dp[target]这一堆没了，sum-dp[target]还剩下sum-dp[target]-dp[target]
 	return sum - dp[target] - dp[target]
+}
+
+/*
+1.5 目标和
+给你一个整数数组 nums 和一个整数target 。
+
+向数组中的每个整数前添加'+' 或 '-' ，然后串联起所有整数，可以构造一个表达式 ：
+例如，nums = [2, 1] ，可以在2之前添加'+' ，在1之前添加'-' ，然后串联起来得到表达式"+2-1" 。
+返回可以通过上述方法构造的、运算结果等于target的不同表达式的数目。
+
+示例 1：
+输入：nums = [1,1,1,1,1], target = 3
+输出：5
+解释：一共有 5 种方法让最终目标和为 3 。
+-1 + 1 + 1 + 1 + 1 = 3
++1 - 1 + 1 + 1 + 1 = 3
++1 + 1 - 1 + 1 + 1 = 3
++1 + 1 + 1 - 1 + 1 = 3
++1 + 1 + 1 + 1 - 1 = 3
+
+示例 2：
+输入：nums = [1], target = 1
+输出：1
+
+提示：
+1 <= nums.length <= 20
+0 <= nums[i] <= 1000
+0 <= sum(nums[i]) <= 1000
+-1000 <= target <= 1000
+*/
+
+/*
+思路:题目的目标是如何使得数组所有元素组成的表达式运算结果为target,假如我们将数组元素和记为sum,
+将全部带有+表达式和记为left,全都带有-表达式和记为right,则有left-right=target, left+right=sum.
+则可推导出left = (sum+target)/2。而sum和target是固定的，left自然不难求出，此时问题转化为在nums中找出
+和为left的组合数
+
+动态规划五部曲
+
+1 确定dp数组以及下标含义
+dp[j]表示要装满容量为j的背包，一共有dp[j]种方法
+
+2 确定递推公式
+那么如何推导出dp[j]呢？我们知道，要装满容量为j-nums[i]的背包，一共有dp[j-nums[i]]种方法,那么只要找到nums[i]，自然就能填满
+容量为j的背包，也就是说此时有dp[j-nums[i]]种方法可以填满容量为j的背包；以此类推，将多个dp[j-nums[i]]累加起来就得到dp[j]
+所以递推公式就是dp[j] += dp[j-nums[i]]
+
+3 初始化dp数组
+首先，dp[0] = 0，这个很好理解，装满容量为0的背包，有1种方法，就是装0件物品。dp数组长度即为left+1
+
+4 确定遍历顺序
+一维数组遍历顺序，是先遍历物品，再遍历背包，且遍历背包时必须是倒序
+
+5 举例推导dp数组
+nums: [1, 1, 1, 1, 1], target:3
+参见目标和.pn
+*/
+
+// FindTargetSumWays 时间复杂度O(n * capacity)，空间复杂度：O(capacity)， n为nums数组长度，capacity为背包容量，
+func FindTargetSumWays(nums []int, target int) int {
+	sum := Utils.SumOfArray(nums)
+	if Utils.Abs(target) > sum {
+		return 0
+	}
+	if (sum+target)%2 == 1 {
+		return 0
+	}
+	capacity := (sum + target) / 2
+	dp := make([]int, capacity+1)
+	dp[0] = 1
+	for i := 0; i < len(nums); i++ {
+		for j := capacity; j >= nums[i]; j-- {
+			dp[j] += dp[j-nums[i]]
+		}
+	}
+	return dp[capacity]
 }
