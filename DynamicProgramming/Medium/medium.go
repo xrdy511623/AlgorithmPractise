@@ -1,10 +1,11 @@
 package Medium
 
+import "AlgorithmPractise/Utils"
 
 /*
 1.1  不同的二叉搜索树
 给你一个整数n，求由n个节点组成且节点值从1到n互不相同的二叉搜索树有多少种？返回满足题意的二叉搜索树的种数。
- */
+*/
 
 /*
 解题思路:由于1,2...n这个数列是递增的，所以我们从任意一个位置“提起”这棵树，都满足二叉搜索
@@ -43,23 +44,91 @@ dp[0], dp[1] = 1, 1
 4 确定遍历顺序
 i从2开始遍历，下面嵌套一层j的遍历，从0开始
 5 举例推导dp数组
-下标i    0  1  2  3  4   5   6    7     8
-dp[i]   1  1  2  5  14  42  132  429  1430
- */
+下标i    0  1  2  3  4   5   6    7
+dp[i]   1  1  2  5  14  42  132  429
+*/
 
-func NumOfBST(n int)int{
+func NumOfBST(n int) int {
 	dp := make([]int, n+1)
 	dp[0], dp[1] = 1, 1
-	if n <= 1{
+	if n <= 1 {
 		return dp[n]
 	}
-	for i:=2;i<n+1;i++{
-		count := 0
-		for j:=0;j<i;j++{
-			// 两个下标和为
-			count += dp[j] * dp[i-j-1]
+	for i := 2; i < n+1; i++ {
+		for j := 0; j < i; j++ {
+			// 两个下标和为i-1
+			dp[i] += dp[j] * dp[i-j-1]
 		}
-		dp[i] = count
 	}
 	return dp[n]
+}
+
+/*
+1.2 01背包理论
+有N件物品和一个最多能背重量为W的背包。第i件物品的重量是weight[i]，得到的价值是value[i] 。每件物品只能用一次，求解将哪些物品装入背包里
+物品价值总和最大。
+
+示例:weight:[1,3,4];value:[15,20,30],w=4
+输出35
+
+1 确定dp数组及其下标含义
+dp[i][j]表示从下标为[0, i]的物品里任意取，放进容量为j的背包，所得到的最大价值总和。
+
+2 确定递推公式
+根据dp数组定义，我们可以从两个方向推导出dp[i][j]
+不放物品i:由dp[i-1][j]推出，即背包容量为j，里面不放物品i的最大价值，此时dp[i][j]就是dp[i-1][j]。(此时物品i无法放进背包中，因为背包容量
+已经是j,再放物品背包就装不下了，weight[i]+j>j, 所以背包内的价值依然和前面相同。)
+放物品i,由dp[i-1][j-weight[i]]推出, dp[i-1][j-weight[i]]为背包容量为j-weight[i]时不放物品i的最大价值,那么
+dp[i-1][j-weight[i]]+value[i](物品i的价值),就是容量为j(此时容量为j-weight[i]+weight[i]=j)的背包放入物品i后的最大价值
+
+所以递推公式为: dp[i][j] = max(dp[i-1][j],dp[i-1][j-weight[i]]+value[i])
+
+3 dp数组初始化
+从dp数组定义出发，如果背包容量j为0的话，即dp[i][0]，无论选取哪些物品，背包价值总和一定为0，因为背包无法容纳任何物品。
+再看其他情况
+从状态转移方程 dp[i][j] = max(dp[i-1][j],dp[i-1][j-weight[i]]+value[i]) 可以看出i是由i-1推导出来，那么i为0时一定要初始化。
+dp[0][j]即只选取下标为0的物品时，容量为j的背包所能得到的最大物品价值。
+那么很明显，当j<weight[0]时,dp[0][j]=0，因为此时下标为0的物品重量超过了背包容量j，无法放入物品0,价值自然为0
+当j>=weight[0]时,dp[0][j]应该是value[0],因为背包容量足以容纳下标为0的物品。
+所以dp数组初始化为:
+n := len(weight)
+dp := make([][]int, n)
+for i:=0;i<n;i++{
+	dp[i] = make([]int, bagWeight+1)
+}
+
+for j:=weight[0];j<=bagWeight;j++{
+	dp[0][j] = value[0]
+}
+
+dp[0][j]和dp[i][0] 都已经初始化了，那么其他下标应该初始化多少呢？
+其实从递归公式:dp[i][j] = max(dp[i-1][j], dp[i-1][j-weight[i]]+value[i]); 可以看出dp[i][j]是由左上方数值推导出来了，
+那么其他下标初始为什么数值都可以，因为都会被覆盖。这里为了方便统一初始化为0
+
+4 确定遍历顺序
+由递推公式可知，dp[i][j]是由左上方数值推导出来，所以先遍历物品，还是先遍历背包都可以，先遍历物品更容易理解一些。
+
+5 举例推导dp数组
+参见01背包.png
+*/
+
+func BagProblemSimple(weight, value []int, capacity int) int {
+	n := len(weight)
+	dp := make([][]int, n)
+	for i := 0; i < n; i++ {
+		dp[i] = make([]int, capacity+1)
+	}
+	for j := weight[0]; j <= capacity; j++ {
+		dp[0][j] = value[0]
+	}
+	for i := 1; i < n; i++ {
+		for j := 0; j <= capacity; j++ {
+			if j < weight[i] {
+				dp[i][j] = dp[i-1][j]
+			} else {
+				dp[i][j] = Utils.Max(dp[i-1][j], dp[i-1][j-weight[i]]+value[i])
+			}
+		}
+	}
+	return dp[n-1][capacity]
 }

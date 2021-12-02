@@ -558,7 +558,7 @@ func Inorder(node *Entity.TreeNode, nums *[]int){
 
 func GenerateTrees(n int) []*Entity.TreeNode{
 	if n == 0{
-		return []*Entity.TreeNode{nil}
+		return []*Entity.TreeNode{}
 	}
 	return Helper(1, n)
 }

@@ -235,7 +235,7 @@ func MaxProfit(prices []int) int {
 func Permute(nums []int)[][]int{
 	var res [][]int
 	visited := make(map[int]bool, len(nums))
-	var dfs func(path []int)
+	var dfs func([]int)
 	dfs = func(path []int){
 		if len(path) == len(nums){
 			temp := make([]int, len(path))
