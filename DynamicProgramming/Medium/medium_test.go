@@ -26,3 +26,12 @@ func TestBagProblemSimple(t *testing.T) {
 	}
 	fmt.Println(getMaxValue)
 }
+
+func TestCanPartition(t *testing.T) {
+	nums := []int{1, 5, 11, 5}
+	get := CanPartition(nums)
+	want := true
+	if get != want{
+		t.Errorf("excepted:%v, got:%v", want, get)
+	}
+}
