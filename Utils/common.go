@@ -26,6 +26,16 @@ func MaxValueOfArray(array []int)int{
 	return max
 }
 
+func MinValueOfArray(array []int)int{
+	min := array[0]
+	for i:=1;i<len(array);i++{
+		if array[i] < min{
+			min = array[i]
+		}
+	}
+	return min
+}
+
 func SumOfArray(array []int)int{
 	sum := 0
 	n := len(array)
