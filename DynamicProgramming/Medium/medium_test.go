@@ -35,3 +35,16 @@ func TestCanPartition(t *testing.T) {
 		t.Errorf("excepted:%v, got:%v", want, get)
 	}
 }
+
+
+func TestMultiBagProblem(t *testing.T) {
+	weight := []int{1,3,4}
+	value := []int{15,20,30}
+	nums := []int{2,3,3}
+	get := MultiBagProblem(weight, value, nums, 10)
+	want := 90
+	if get != want{
+		t.Errorf("excepted:%v, got:%v", want, get)
+	}
+	fmt.Println("pass")
+}

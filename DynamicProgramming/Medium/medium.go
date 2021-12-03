@@ -2,6 +2,7 @@ package Medium
 
 import (
 	"AlgorithmPractise/Utils"
+	"math"
 	"strings"
 )
 
@@ -430,4 +431,334 @@ func FindMaxForm(strs []string, m, n int)int{
 		}
 	}
 	return dp[m][n]
+}
+
+/*
+1.7 完全背包问题
+有N件物品和一个最多能背重量为W的背包。第i件物品的重量是weight[i]，得到的价值是value[i] 。每件物品都有无限个（也就是可以放入背包多次），
+求解将哪些物品装入背包里物品价值总和最大。
+完全背包和01背包问题唯一不同的地方就是，每种物品可以重复放入，次数不限。
+
+完全背包与01背包主要不同在于遍历顺序，注意完全背包的物品是可以添加多次的，所以内层遍历背包要从小到大去遍历(正序遍历)
+*/
+
+func CompleteBagProblem(weight, value []int, capacity int) int {
+	dp := make([]int, capacity+1)
+	for i := 0; i < len(weight); i++ {
+		for j := weight[i]; j <= capacity; j++ {
+			dp[j] = Utils.Max(dp[j], dp[j-weight[i]]+value[i])
+		}
+	}
+	return dp[capacity]
+}
+
+/*
+1.8 零钱兑换
+给定不同面额的硬币和一个总金额。写出函数来计算可以凑成总金额的硬币组合数。假设每一种面额的硬币有无限个。
+
+示例1:
+输入: amount = 5, coins = [1, 2, 5] 输出:4 解释: 有四种方式可以凑成总金额: 5=5 5=2+2+1 5=2+1+1+1 5=1+1+1+1+1
+
+示例2:
+输入: amount = 3, coins = [2] 输出: 0 解释: 只用面额2的硬币不能凑成总金额3。
+
+示例3:
+输入: amount = 10, coins = [10] 输出: 1
+
+注意，你可以假设：
+0 <= amount (总金额) <= 5000
+1 <= coin (硬币面额) <= 5000
+硬币种类不超过500种
+结果符合32位符号整数
+*/
+
+/*
+思路:
+1 确定dp数组以及下标含义
+dp[j]表示凑足钱币总额为j的组合个数为dp[j]
+
+2 确定递推公式
+dp[j]可以由dp[j-coins[i]]推出，凑足钱币总额为j-coins[i]的组合个数为dp[j-coins[i]]，此时再找到coins[i]的钱币，便能
+得出凑足钱币总额为j的组合，也就是有dp[j-coins[i]]个组合可以凑出钱币总额为j，明显这里就是所有的dp[j-coins[i]]累加
+所以，递推公式为dp[j] += dp[j - coins[i]]
+
+3 dp数组初始化
+dp[0] = 1
+从dp[i]的含义上来讲就是，凑成总金额0的货币组合数为1。
+
+4 确定遍历顺序
+本题只能是先遍历物品，后遍历背包，因为题目求的是组合数，不讲究元素的顺序，如果先遍历背包，后遍历物品计算的是排列数，会有重复
+特别注意:
+如果求组合数就是外层for循环遍历物品，内层for遍历背包。
+如果求排列数就是外层for遍历背包，内层for循环遍历物品。
+
+5 举例推导dp数组
+输入: amount = 5, coins = [1, 2, 5] ，dp状态图如下：
+零钱兑换.png
+*/
+
+// Change 时间复杂度O(amount*len(coins))，空间复杂度O(amount)
+func Change(amount int, coins []int) int {
+	dp := make([]int, amount+1)
+	dp[0] = 1
+	for i := 0; i < len(coins); i++ {
+		for j := coins[i]; j <= amount; j++ {
+			dp[j] += dp[j-coins[i]]
+		}
+	}
+	return dp[amount]
+}
+
+/*
+1.9 组合总和
+给定一个由正整数组成且不存在重复数字的数组，找出和为给定目标正整数的组合的个数。
+
+示例:
+nums = [1, 2, 3] target = 4
+所有可能的组合为： (1, 1, 1, 1) (1, 1, 2) (1, 2, 1) (1, 3) (2, 1, 1) (2, 2) (3, 1)
+请注意，顺序不同的序列被视作不同的组合。
+因此输出为7。
+*/
+
+/*
+本题与1.8 零钱兑换类似，唯一不同的是本题顺序不同的序列被视作不同的组合，所以求的是排列数，而后者求的是组合数，因此
+在遍历顺序上必须先遍历背包，再遍历物品
+*/
+
+func CombinationSum(nums []int, target int) int {
+	dp := make([]int, target+1)
+	dp[0] = 1
+	// 在遍历顺序上必须先遍历背包，再遍历物品
+	for j := 0; j <= target; j++ {
+		for i := 0; i < len(nums); i++ {
+			if j >= nums[i] {
+				dp[j] += dp[j-nums[i]]
+			}
+		}
+	}
+	return dp[target]
+}
+
+/*
+1.10 爬楼梯进阶版
+假设你正在爬楼梯。需要n阶你才能到达楼顶。
+每次你可以爬一个台阶，两个台阶，三个台阶，.......，直到m个台阶。你有多少种不同的方法可以爬到楼顶呢？
+*/
+
+// ClimbStairsComplex m表示一次最多可以爬m个台阶
+func ClimbStairsComplex(m, n int) int {
+	dp := make([]int, n+1)
+	dp[0] = 1
+	for j := 1; j <= n; j++ {
+		for i := 1; i <= m; i++ {
+			if j >= i {
+				dp[j] += dp[j-i]
+			}
+		}
+	}
+	return dp[n]
+}
+
+/*
+1.11 零钱兑换
+给定不同面额的硬币 coins 和一个总金额amount。编写一个函数来计算可以凑成总金额所需的最少的硬币个数。如果没有任何一种硬币组合能组成
+总金额，返回 -1。
+
+你可以认为每种硬币的数量是无限的。
+
+示例1：
+输入：coins = [1, 2, 5], amount = 11 输出：3 解释：11 = 5 + 5 + 1
+
+示例2：
+输入：coins = [2], amount = 3 输出：-1
+
+示例3：
+输入：coins = [1], amount = 0 输出：0
+
+示例4：
+输入：coins = [1], amount = 1 输出：1
+
+示例5：
+输入：coins = [1], amount = 2 输出：2
+
+提示：
+1 <= coins.length <= 12
+1 <= coins[i] <= 2^31 - 1
+0 <= amount <= 10^4
+*/
+
+/*
+思路: 由于每种硬币的数量是无限的，所以这是一个完全背包问题
+1 确定dp数组以及下标含义
+dp[j]表示凑足总金额为所需的最少硬币数为dp[j]
+
+2 确定递推公式
+dp[j]明显可以由dp[j-coins[i]]推出，凑足金额为j-coins[i]的最少硬币数为[j-coins[i]]，那么只需要加上一个硬币coins[i]就可以
+凑足j，也就是dp[j] = dp[j-coins[i]] + 1
+所以dp[j]要取所有dp[j-coins[i]] + 1中最小的。
+故递推公式为dp[j] = min(dp[j], dp[j-coins[i]] + 1) 不断迭代dp[j]，得到最小值
+
+3 dp数组初始化
+首先dp[0] = 0 这个很好理解，凑足金额为0的最少硬币数为0，由于是求最小值，所以其他下标对应元素一律初始化为最大整数，
+这样可以确保遍历中对dp[j]赋值时不会被初始值覆盖掉。
+
+4 确定遍历顺序
+由于题目求最少硬币个数，并非求组合数或排列数，所以遍历顺序无所谓，可以先遍历物品，再遍历背包，也可以先遍历背包，再遍历物品。
+但由于是完全背包，所以遍历背包时，必须是正序
+
+5
+以输入：coins = [1, 2, 5], amount = 5为例
+下标   0  1  2  3  4   5
+dp[j] 0  1  1  2   2  1
+*/
+
+func LeastCoinChange(coins []int, amount int) int {
+	dp := make([]int, amount+1)
+	dp[0] = 0
+	for i := 1; i <= amount; i++ {
+		dp[i] = math.MaxInt32
+	}
+	for i := 0; i < len(coins); i++ {
+		for j := coins[i]; j <= amount; j++ {
+			if dp[j-coins[i]] != math.MaxInt32 {
+				dp[j] = Utils.Min(dp[j], dp[j-coins[i]]+1)
+			}
+		}
+	}
+	// dp[amount] == math.MaxInt32，说明dp[amount]的值还是初始值，并未被更新，此时返回-1
+	if dp[amount] == math.MaxInt32 {
+		return -1
+	}
+	return dp[amount]
+}
+
+/*
+1.12 完全平方数
+给定正整数n，找到若干个完全平方数（比如 1, 4, 9, 16, ...）使得它们的和等于n。你需要让组成和的完全平方数的个数最少。
+
+给你一个整数n ，返回和为n的完全平方数的 最少数量 。
+
+完全平方数是一个整数，其值等于另一个整数的平方；换句话说，其值等于一个整数自乘的积。例如，1、4、9 和 16 都是完全平方数，而3和11不是。
+
+示例1：
+输入：n = 12 输出：3 解释：12 = 4 + 4 + 4
+
+示例2：
+输入：n = 13 输出：2 解释：13 = 4 + 9
+
+提示：
+1 <= n <= 10^4
+*/
+
+func NumSquares(n int)int{
+	dp := make([]int, n+1)
+	dp[0] = 0
+	for i:=1;i<=n;i++{
+		dp[i] = math.MaxInt32
+	}
+	for i:=1;i*i<=n;i++{
+		for j:=1;j<=n;j++{
+			if j >= i*i{
+				dp[j] = Utils.Min(dp[j], dp[j-i*i]+1)
+			}
+		}
+	}
+	return dp[n]
+}
+
+
+/*
+1.13 最小路径和
+给定一个包含非负整数的m x n网格grid ，请找出一条从左上角到右下角的路径，使得路径上的数字总和为最小。
+说明：每次只能向下或者向右移动一步。
+
+示例一
+参见:网格.png
+输入：grid = [[1,3,1],[1,5,1],[4,2,1]]
+输出：7
+解释：因为路径 1→3→1→1→1 的总和最小。
+
+示例 2：
+输入：grid = [[1,2,3],[4,5,6]]
+输出：12
+*/
+
+/*
+1 确定dp数组以及下标含义
+dp[i][j]表示从grid[0,0]到grid[i,j]的最小路径和为dp[i][j]
+
+2 确定递推公式
+问题的关键在于推导出递推公式
+由于题目规定只能向右或者向下移动，那么要走到grid[i][j]，只能从grid[i-1][j]和grid[i][j-1]而来，前者是向下走一步，后者是向右走一步。
+而走到grid[i-1][j]和grid[i][j-1]的最小路径和分别为dp[i-1][j]和dp[i][j-1]，所以到grid[i,j]的最小路径和dp[i][j]其实就是
+min(dp[i-1][j], dp[i][j-1]) + grid[i][j]就好了。
+所以递推公式如下:
+dp[i][j] = min(dp[i-1][j], dp[i][j-1]) + grid[i][j]
+
+3 初始化dp数组
+dp[0][0] = grid[0][0]
+m, n := len(grid), len(grid[0])
+当1<=i<m时，dp[i][0] = dp[i-1][0] + grid[i][0](此时只能从上边走下来，因为它是最左边)
+当1<=j<n时，dp[0][j] = dp[0][j-1] + grid[0][j](此时只能从左边走过来，因为它是最上边的那一行)
+
+4 确定遍历顺序
+按照二维数组正序遍历即可
+*/
+
+func MinPathSum(grid [][]int)int{
+	m, n := len(grid), len(grid[0])
+	dp := make([][]int, m)
+	for i:=0;i<m;i++{
+		dp[i] = make([]int, n)
+	}
+	dp[0][0] = grid[0][0]
+	for i:=1;i<m;i++{
+		dp[i][0]= dp[i-1][0] + grid[i][0]
+	}
+	for j:=1;j<n;j++{
+		dp[0][j] = dp[0][j-1] + grid[0][j]
+	}
+	for i:=1;i<m;i++{
+		for j:=1;j<n;j++{
+			dp[i][j] = Utils.Min(dp[i-1][j], dp[i][j-1]) + grid[i][j]
+		}
+	}
+	return dp[m-1][n-1]
+}
+
+
+/*
+1.14 多重背包问题
+有N种物品和一个容量为V的背包。第i种物品最多有Mi件可用，每件耗费的空间是Ci，价值是Wi。求解将哪些物品装入背包可使这些物品的耗费的空间
+总和不超过背包容量，且价值总和最大。
+
+多重背包和01背包是非常像的，为什么和01背包像呢？
+每件物品最多有Mi件可用，把Mi件摊开，其实就是一个01背包问题了。
+时间复杂度：O(m * n * k) m：物品种类个数，n背包容量，k单类物品数量
+例如：
+背包最大重量为10。
+
+物品为：
+       重量  价值  数量
+物品0    1  15  2
+物品1    3  20  3
+物品2    4  30  2
+问背包能背的物品最大价值是多少？
+*/
+
+func MultiBagProblem(weight, value, nums []int, capacity int)int{
+	dp := make([]int, capacity+1)
+	for i:=0;i<len(nums);i++{
+		for nums[i] > 1{
+			weight = append(weight, weight[i])
+			value = append(value, value[i])
+			nums[i]--
+		}
+	}
+	for i:=0;i<len(weight);i++{
+		for j := capacity;j>=weight[i];j--{
+			dp[j] = Utils.Max(dp[j], dp[j-weight[i]]+value[i])
+		}
+	}
+	return dp[capacity]
 }
