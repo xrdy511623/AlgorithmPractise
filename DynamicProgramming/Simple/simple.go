@@ -9,18 +9,18 @@ import "AlgorithmPractise/Utils"
 F(0)= 0，F(1)= 1
 F(n) = F(n-1) + F(n-2)，其中 n > 1
 给你n ，请计算 F(n) 。
- */
+*/
 
 // Fib 递推公式题目已经给出:F(n) = F(n-1) + F(n-2). 时间复杂度O(N), 空间复杂度O(N)
-func Fib(n int)int{
-	if n <= 1{
+func Fib(n int) int {
+	if n <= 1 {
 		return n
 	}
 	dp := make([]int, n+1, n+1)
 	dp[0] = 0
 	dp[1] = 1
-	for i:=2;i<=n;i++{
-		dp[i] = dp[i-1]+dp[i-2]
+	for i := 2; i <= n; i++ {
+		dp[i] = dp[i-1] + dp[i-2]
 	}
 	return dp[n]
 }
@@ -28,15 +28,15 @@ func Fib(n int)int{
 // 当然，上面的方法还有优化的空间，其实我们只需要维护两个数值就可以了，不需要记录整个序列
 // 时间复杂度O(N), 空间复杂度O(1)
 
-func FibSimple(n int)int{
-	if n <= 1{
+func FibSimple(n int) int {
+	if n <= 1 {
 		return n
 	}
 	dp := make([]int, 2, 2)
 	dp[0] = 0
 	dp[1] = 1
-	for i:=2;i<=n;i++{
-		sum := dp[0]+dp[1]
+	for i := 2; i <= n; i++ {
+		sum := dp[0] + dp[1]
 		dp[0] = dp[1]
 		dp[1] = sum
 	}
@@ -44,31 +44,30 @@ func FibSimple(n int)int{
 }
 
 // FibUseRecursion 当然，本题还可以用递归解决，但是会有大量重复计算，时间复杂度O(2^N), 空间复杂度O(N)
-func FibUseRecursion(n int)int{
-	if n < 2{
+func FibUseRecursion(n int) int {
+	if n < 2 {
 		return n
 	}
-	return FibUseRecursion(n-1)+FibUseRecursion(n-2)
+	return FibUseRecursion(n-1) + FibUseRecursion(n-2)
 }
 
 // FibUseRecursionAndCache 要降低时间复杂度，需要使用缓存, 时间复杂度O(N), 空间复杂度O(N)
-func FibUseRecursionAndCache(n int)int{
+func FibUseRecursionAndCache(n int) int {
 	cache := make(map[int]int, n+1)
-	var helper func(int)int
-	helper = func(n int)int{
-		if v, ok := cache[n];ok{
+	var helper func(int) int
+	helper = func(n int) int {
+		if v, ok := cache[n]; ok {
 			return v
 		}
 		if n < 2 {
 			cache[n] = n
 			return n
 		}
-		cache[n] = helper(n-1)+helper(n-2)
+		cache[n] = helper(n-1) + helper(n-2)
 		return cache[n]
 	}
 	return helper(n)
 }
-
 
 /*
 1.1 爬楼梯
@@ -90,8 +89,7 @@ func FibUseRecursionAndCache(n int)int{
 1.  1 阶 + 1 阶 + 1 阶
 2.  1 阶 + 2 阶
 3.  2 阶 + 1 阶
- */
-
+*/
 
 /*
 本题与求斐波拉契数原理相同，只是这里递推公式需要自己推导。dp[i]代表爬到第i层楼梯，有dp[i]种方法，那么问题的关键在于如何推导出
@@ -102,30 +100,30 @@ dp[i]呢？从dp[i]的定义可以看出，dp[i]可以由两个方向推出来�
 所以递推公式就是dp[i]=dp[i-1]+dp[i-2]。
 dp数组如何初始化？
 dp[1]=1,dp[2]=2
- */
+*/
 
 // ClimbStairs 时间复杂度O(N), 空间复杂度O(N)
-func ClimbStairs(n int)int{
-	if n <= 1{
+func ClimbStairs(n int) int {
+	if n <= 1 {
 		return n
 	}
 	dp := make([]int, n+1, n+1)
 	dp[1], dp[2] = 1, 2
-	for i:=3;i<=n;i++{
-		dp[i] = dp[i-1]+dp[i-2]
+	for i := 3; i <= n; i++ {
+		dp[i] = dp[i-1] + dp[i-2]
 	}
 	return dp[n]
 }
 
 // ClimbStairsSimple 同样的，可以优化一下空间复杂度.时间复杂度O(N), 空间复杂度O(1)
-func ClimbStairsSimple(n int)int{
-	if n <= 1{
+func ClimbStairsSimple(n int) int {
+	if n <= 1 {
 		return n
 	}
 	dp := make([]int, 2, 2)
 	dp[0], dp[1] = 1, 2
-	for i:=3;i<=n;i++{
-		sum := dp[0]+dp[1]
+	for i := 3; i <= n; i++ {
+		sum := dp[0] + dp[1]
 		dp[0] = dp[1]
 		dp[1] = sum
 	}
@@ -147,7 +145,7 @@ func ClimbStairsSimple(n int)int{
 输入：cost = [1, 100, 1, 1, 1, 100, 1, 1, 100, 1]
 输出：6
 解释：最低花费方式是从cost[0]开始，逐个经过那些1 ，跳过cost[3]，一共花费6 。
- */
+*/
 
 /*
 1 确定dp数组以及下标含义
@@ -164,15 +162,15 @@ dp[i]的定义:到达第i个台阶所花费的最小体力为dp[i](注意这里�
 5 举例推导dp数组。以示例二为例，根据cost数组，举例推导一下dp数组。
 dp[0] = 1;dp[1] = 100;dp[2] = 2;dp[3] = 1;dp[4] = 3;dp[5] = 103;dp[6] = 4;dp[7] = 5;dp[8] = 104;dp[9] = 6;
 注意最后一步可以理解为不用花费，所以取倒数第一步，第二步的最小值,所以示例2的minCost := min(dp[8],dp[9])=min(104,6)=6
- */
+*/
 
 // MinCostClimbingStairs 时间复杂度O(N), 空间复杂度O(N)
-func MinCostClimbingStairs(cost []int)int{
+func MinCostClimbingStairs(cost []int) int {
 	n := len(cost)
 	dp := make([]int, n, n)
 	dp[0] = cost[0]
 	dp[1] = cost[1]
-	for i:=2;i<n;i++{
+	for i := 2; i < n; i++ {
 		dp[i] = Utils.Min(dp[i-1], dp[i-2]) + cost[i]
 	}
 	// 注意最后一步可以理解为不用花费，所以取倒数第一步，第二步的最小值
@@ -180,13 +178,13 @@ func MinCostClimbingStairs(cost []int)int{
 }
 
 // MinCostClimbingStairsSimple 同样的，可以优化一下空间复杂度.时间复杂度O(N), 空间复杂度O(1)
-func MinCostClimbingStairsSimple(cost []int)int{
+func MinCostClimbingStairsSimple(cost []int) int {
 	n := len(cost)
 	dp := make([]int, 2, 2)
 	dp[0] = cost[0]
 	dp[1] = cost[1]
-	for i:=2;i<n;i++{
-		minCost := Utils.Min(dp[0], dp[1])+cost[i]
+	for i := 2; i < n; i++ {
+		minCost := Utils.Min(dp[0], dp[1]) + cost[i]
 		dp[0] = dp[1]
 		dp[1] = minCost
 	}
@@ -212,7 +210,7 @@ func MinCostClimbingStairsSimple(cost []int)int{
 1. 向右 -> 向下 -> 向下
 2. 向下 -> 向下 -> 向右
 3. 向下 -> 向右 -> 向下
- */
+*/
 
 /*
 机器人从(0, 0) 位置出发，到(m - 1, n - 1)终点。
@@ -234,37 +232,37 @@ dp[i][j]:表示从（0,0）出发，到(i, j) 有dp[i][j]条不同的路径。
 
 5 举例推导dp数组
 见图不同路径.png
- */
+*/
 
 // UniquePath 时间复杂度O(m*n),空间复杂度O(m*n)
-func UniquePath(m, n int)int{
+func UniquePath(m, n int) int {
 	// dp数组初始化
 	dp := make([][]int, m)
-	for i:=0;i<m;i++{
+	for i := 0; i < m; i++ {
 		dp[i] = make([]int, n)
-		dp[i][0]=1
+		dp[i][0] = 1
 	}
-	for j:=0;j<n;j++{
-		dp[0][j]=1
+	for j := 0; j < n; j++ {
+		dp[0][j] = 1
 	}
 	// 遍历顺序
-	for i:=1;i<m;i++{
-		for j:=1;j<n;j++{
+	for i := 1; i < m; i++ {
+		for j := 1; j < n; j++ {
 			// 递推公式
-			dp[i][j] = dp[i-1][j]+dp[i][j-1]
+			dp[i][j] = dp[i-1][j] + dp[i][j-1]
 		}
 	}
 	return dp[m-1][n-1]
 }
 
 // UniquePathSimple 其实用一个一维数组就可以了，但是不太好理解，可以优化空间复杂度。时间复杂度O(m*n),空间复杂度O(n)
-func UniquePathSimple(m, n int)int{
+func UniquePathSimple(m, n int) int {
 	dp := make([]int, n)
-	for j:=0;j<n;j++{
-		dp[j]=1
+	for j := 0; j < n; j++ {
+		dp[j] = 1
 	}
-	for i:=1;i<m;i++{
-		for j:=1;j<n;j++{
+	for i := 1; i < m; i++ {
+		for j := 1; j < n; j++ {
 			dp[j] += dp[j-1]
 		}
 	}
@@ -285,7 +283,7 @@ func UniquePathSimple(m, n int)int{
 从左上角到右下角一共有 2 条不同的路径：
 1. 向右 -> 向右 -> 向下 -> 向下
 2. 向下 -> 向下 -> 向右 -> 向右
- */
+*/
 
 /*
 本题与1.3基本相同，只是因为有了障碍，(i, j)如果就是障碍的话应该就保持初始状态（初始状态为0），即dp[i][j]=0
@@ -294,35 +292,35 @@ func UniquePathSimple(m, n int)int{
 1,1,1,障碍(0),0,0,0
 下标(0, j)的初始化情况同理。
 最后就是dp数组遍历时，如果obstacleGrid[i][j]这个点是障碍物, 那么我们的dp[i][j]保持为0
- */
+*/
 
 // UniquePathsWithObstacles 时间复杂度O(m*n),空间复杂度O(m*n)
-func UniquePathsWithObstacles(obstacleGrid [][]int)int{
+func UniquePathsWithObstacles(obstacleGrid [][]int) int {
 	m := len(obstacleGrid)
 	n := len(obstacleGrid[0])
 	dp := make([][]int, m)
-	for i:=0;i<m;i++{
+	for i := 0; i < m; i++ {
 		dp[i] = make([]int, n)
 	}
-	for i:=0;i<m;i++{
+	for i := 0; i < m; i++ {
 		// 如果是障碍物, 后面的就都是0, 不用循环了
-		if obstacleGrid[i][0] == 1{
+		if obstacleGrid[i][0] == 1 {
 			break
 		}
 		dp[i][0] = 1
 	}
-	for j:=0;j<n;j++{
+	for j := 0; j < n; j++ {
 		// 如果是障碍物, 后面的就都是0, 不用循环了
-		if obstacleGrid[0][j] == 1{
+		if obstacleGrid[0][j] == 1 {
 			break
 		}
 		dp[0][j] = 1
 	}
 	// dp数组推导过程
-	for i:=1;i<m;i++{
-		for j:=1;j<n;j++{
+	for i := 1; i < m; i++ {
+		for j := 1; j < n; j++ {
 			// 如果obstacleGrid[i][j]这个点是障碍物, 那么我们的dp[i][j]保持为0
-			if obstacleGrid[i][j] != 1{
+			if obstacleGrid[i][j] != 1 {
 				// 否则我们需要计算当前点可以到达的路径数
 				dp[i][j] = dp[i-1][j] + dp[i][j-1]
 			}
@@ -345,7 +343,7 @@ func UniquePathsWithObstacles(obstacleGrid [][]int)int{
 输出: 36
 解释: 10 = 3 + 3 + 4, 3 ×3 ×4 = 36。
 说明: 你可以假设n不小于2且不大于58。
- */
+*/
 
 /*
 解题思路:
@@ -387,13 +385,13 @@ for (int i = 3; i <= n ; i++) {
 举例当n为10的时候，dp数组里的数值，如下：
 下标i    2  3  4  5  6  7  8  9  10
 dp[i]   1  2  4  6  9  12 18 27 36
- */
+*/
 
-func IntegerBreak(n int)int{
+func IntegerBreak(n int) int {
 	dp := make([]int, n+1)
 	dp[2] = 1
-	for i:=3;i<=n;i++{
-		for j:=1;j<i-1;j++{
+	for i := 3; i <= n; i++ {
+		for j := 1; j < i-1; j++ {
 			dp[i] = Utils.Max(dp[i], Utils.Max((i-j)*j, dp[i-j]*j))
 		}
 	}

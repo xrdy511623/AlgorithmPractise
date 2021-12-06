@@ -11,7 +11,6 @@ type Node struct {
 	Children []*Node
 }
 
-
 var node10 = &TreeNode{1, nil, nil}
 var node9 = &TreeNode{5, nil, nil}
 var node8 = &TreeNode{2, nil, nil}

@@ -7,8 +7,6 @@ import (
 	"testing"
 )
 
-
-
 func TestPreOrderTravel(t *testing.T) {
 	got := PreOrderTravel(Entity.Node1)
 	want := []int{5, 4, 11, 7, 2, 8, 13, 4, 5, 1}

@@ -20,23 +20,23 @@ import "AlgorithmPractise/Utils"
 
 输入: s = ""
 输出: 0
- */
+*/
 
-func LengthOfLongestSubString(s string)int{
+func LengthOfLongestSubString(s string) int {
 	// 哈希表，记录字符串中的字符是否出现过
 	occurred := make(map[byte]int, 0)
 	// 最长子串长度初始值为0，最长子串最右边界(右指针)初始值为-1，表示此时右指针尚未移动
 	maxLength, rp := 0, -1
 	n := len(s)
 	// i从0开始递增，它就是子串的左边界，左指针
-	for i:=0;i<n;i++{
+	for i := 0; i < n; i++ {
 		// 左指针每向右移动一位，则在哈希表中将其前面的字符删除
-		if i != 0{
+		if i != 0 {
 			delete(occurred, s[i-1])
 		}
 		// 只要右指针不越界(超出字符串的长度-1)且右指针对应的字符没有在哈希表中出现过，则哈希表中
 		// 记录该字符，同时右指针持续向右移动一位
-		for rp + 1 < n && occurred[s[rp+1]] == 0{
+		for rp+1 < n && occurred[s[rp+1]] == 0 {
 			occurred[s[rp+1]]++
 			rp++
 		}

@@ -1,6 +1,5 @@
 package Utils
 
-
 import (
 	"errors"
 )
@@ -13,7 +12,7 @@ type MinHeap struct {
 func NewMinHeap(capacity int) *MinHeap {
 	return &MinHeap{
 		Capacity: capacity,
-		Size: 0,
+		Size:     0,
 		Elements: make([]int, capacity, capacity),
 	}
 }
@@ -82,5 +81,3 @@ func (mh *MinHeap) ShiftDown(ndx int) {
 		mh.ShiftDown(smallest)
 	}
 }
-
-

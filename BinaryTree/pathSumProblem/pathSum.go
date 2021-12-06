@@ -77,7 +77,7 @@ func PathSumUseDfs(root *Entity.TreeNode, target int) [][]int {
 
 type Group struct {
 	Node *Entity.TreeNode
-	Path  []int
+	Path []int
 }
 
 func sumOfArray(array []int) int {
@@ -128,7 +128,7 @@ func NumberOfPathSum(root *Entity.TreeNode, target int) int {
 		return 0
 	}
 	res := 0
-	queue := []Group{Group{root, []int{root.Val}}}
+	queue := []Group{{root, []int{root.Val}}}
 	for len(queue) != 0 {
 		node := queue[0].Node
 		temp := queue[0].Path
@@ -283,8 +283,6 @@ func MaxPathSum(root *Entity.TreeNode) int {
 	return maxSum
 }
 
-
-
 /*
 1.5 左叶子之和
 计算给定二叉树的所有左叶子之和。
@@ -345,31 +343,31 @@ func sumOfLeftLeaves(root *Entity.TreeNode) int {
 从根到叶子节点路径 4->9->1 代表数字491
 从根到叶子节点路径 4->0 代表数字40
 因此，数字总和 = 495 + 491 + 40 = 1026
- */
+*/
 
 type LogicNode struct {
 	Node *Entity.TreeNode
-	Val string
+	Val  string
 }
 
 // SumNumbers BFS解决, 时间复杂度O(N),空间复杂度O(H),H为二叉树的高度
-func SumNumbers(root *Entity.TreeNode) int{
+func SumNumbers(root *Entity.TreeNode) int {
 	res := 0
-	if root == nil{
+	if root == nil {
 		return res
 	}
 	stack := []LogicNode{{root, strconv.Itoa(root.Val)}}
-	for len(stack)!=0{
+	for len(stack) != 0 {
 		logicNode := stack[0]
 		stack = stack[1:]
 		sum := logicNode.Val
-		if logicNode.Node.Left != nil{
-			stack = append(stack, LogicNode{logicNode.Node.Left,sum+strconv.Itoa(logicNode.Node.Left.Val)})
+		if logicNode.Node.Left != nil {
+			stack = append(stack, LogicNode{logicNode.Node.Left, sum + strconv.Itoa(logicNode.Node.Left.Val)})
 		}
-		if logicNode.Node.Right != nil{
-			stack = append(stack, LogicNode{logicNode.Node.Right,sum+strconv.Itoa(logicNode.Node.Right.Val)})
+		if logicNode.Node.Right != nil {
+			stack = append(stack, LogicNode{logicNode.Node.Right, sum + strconv.Itoa(logicNode.Node.Right.Val)})
 		}
-		if logicNode.Node.Left == nil && logicNode.Node.Right == nil{
+		if logicNode.Node.Left == nil && logicNode.Node.Right == nil {
 			pathSum, _ := strconv.Atoi(sum)
 			res += pathSum
 		}

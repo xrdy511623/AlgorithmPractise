@@ -142,24 +142,24 @@ L0 → Ln → L1 → Ln - 1 → L2 → Ln - 2 → …
 
 输入：head = [1,2,3,4,5]
 输出：[1,5,2,4,3]
- */
+*/
 
 // ReOrderLinkedList 用线性表存储该链表，利用线性表可以按下标访问的特性，按顺序访问指定元素，重建链表即可
 // 重排后链表的特点是前后两个节点的下标和为n-1,时间复杂度O(N),空间复杂度O(N)。
-func ReOrderLinkedList(head *Entity.ListNode){
-	if head == nil{
+func ReOrderLinkedList(head *Entity.ListNode) {
+	if head == nil {
 		return
 	}
 	var nodes []*Entity.ListNode
-	for head != nil{
+	for head != nil {
 		nodes = append(nodes, head)
 		head = head.Next
 	}
 	i, j := 0, len(nodes)-1
-	for i < j{
+	for i < j {
 		nodes[i].Next = nodes[j]
 		i++
-		if i == j{
+		if i == j {
 			break
 		}
 		nodes[j].Next = nodes[i]
@@ -180,10 +180,10 @@ func ReOrderLinkedList(head *Entity.ListNode){
 将原链表的两端合并。
 因为两链表长度相差不超过1，因此直接合并即可。
 时间复杂度O(N),空间复杂度O(1)
- */
+*/
 
-func ReOrderLinkedListSimple(head *Entity.ListNode){
-	if head == nil{
+func ReOrderLinkedListSimple(head *Entity.ListNode) {
+	if head == nil {
 		return
 	}
 	// 找到链表中间节点，确定链表右半部分
@@ -198,9 +198,9 @@ func ReOrderLinkedListSimple(head *Entity.ListNode){
 }
 
 // GetMiddleNode 寻找链表中间节点
-func GetMiddleNode(head *Entity.ListNode)*Entity.ListNode{
+func GetMiddleNode(head *Entity.ListNode) *Entity.ListNode {
 	fast, slow := head, head
-	for fast.Next != nil && fast.Next.Next != nil{
+	for fast.Next != nil && fast.Next.Next != nil {
 		fast = fast.Next.Next
 		slow = slow.Next
 	}
@@ -208,9 +208,9 @@ func GetMiddleNode(head *Entity.ListNode)*Entity.ListNode{
 }
 
 // MergeLists 合并链表
-func MergeLists(l1, l2 *Entity.ListNode){
+func MergeLists(l1, l2 *Entity.ListNode) {
 	var l1Tmp, l2Tmp *Entity.ListNode
-	for l1 != nil && l2 != nil{
+	for l1 != nil && l2 != nil {
 		l1.Next = l2
 		l1 = l1Tmp
 		l2.Next = l1

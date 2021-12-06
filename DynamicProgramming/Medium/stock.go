@@ -20,7 +20,6 @@ import "AlgorithmPractise/Utils"
 解释：在这种情况下, 没有交易完成, 所以最大利润为 0。
 */
 
-
 /*
 本题之前用贪心算法做过，这次用动态规划的思路来解决。
 
@@ -64,28 +63,27 @@ dp[5][1]就是最终结果
 因为本题中不持有股票状态所得金钱一定比持有股票状态得到的多！
 */
 
-func MaxProfit(prices []int)int{
+func MaxProfit(prices []int) int {
 	n := len(prices)
-	if n == 0{
+	if n == 0 {
 		return 0
 	}
 	dp := make([][]int, len(prices))
-	for i:=0;i<n;i++{
+	for i := 0; i < n; i++ {
 		dp[i] = make([]int, 2)
 	}
 	dp[0][0] = -prices[0]
 	dp[0][1] = 0
-	for i:=1;i<n;i++{
+	for i := 1; i < n; i++ {
 		dp[i][0] = Utils.Max(dp[i-1][0], -prices[i])
 		dp[i][1] = Utils.Max(dp[i-1][1], dp[i-1][0]+prices[i])
 	}
 	return dp[n-1][1]
 }
 
-
 /*
 1.2 leetcode 122 买卖股票的最佳时机
-给定一个数组，它的第 i 个元素是一支给定股票第 i 天的价格。
+给定一个数组，它的第i个元素是一支给定股票第i天的价格。
 设计一个算法来计算你所能获取的最大利润。你可以尽可能地完成更多的交易（多次买卖一支股票）。
 注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。
 
@@ -154,29 +152,28 @@ dp[0][1]表示第0天不持有股票，不持有股票那么现金就是0，所�
 */
 
 // MaxProfitOne 时间复杂度O(N),空间复杂度O(2*N)
-func MaxProfitOne(prices []int)int{
+func MaxProfitOne(prices []int) int {
 	n := len(prices)
-	if n == 0{
+	if n == 0 {
 		return 0
 	}
 	dp := make([][]int, len(prices))
-	for i:=0;i<n;i++{
+	for i := 0; i < n; i++ {
 		dp[i] = make([]int, 2)
 	}
 	dp[0][0] = -prices[0]
 	dp[0][1] = 0
-	for i:=1;i<n;i++{
-		dp[i][0] = Utils.Max(dp[i-1][0],dp[i-1][1]-prices[i])
-		dp[i][1] = Utils.Max(dp[i-1][1], dp[i-1][0] + prices[i])
+	for i := 1; i < n; i++ {
+		dp[i][0] = Utils.Max(dp[i-1][0], dp[i-1][1]-prices[i])
+		dp[i][1] = Utils.Max(dp[i-1][1], dp[i-1][0]+prices[i])
 	}
 	return dp[n-1][1]
 }
 
-
 // MaxProfitOneSimple 更简单的写法 时间复杂度O(N), 空间复杂度O(1)
-func MaxProfitOneSimple(prices []int)int{
+func MaxProfitOneSimple(prices []int) int {
 	n := len(prices)
-	if n == 0{
+	if n == 0 {
 		return 0
 	}
 	sell, buy := 0, -prices[0]
@@ -195,14 +192,14 @@ func MaxProfitOneSimple(prices []int)int{
 注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。
 
 示例1:
-输入：prices = [3,3,5,0,0,3,1,4] 输出：6 解释：在第4天（股票价格 = 0）的时候买入，在第6天（股票价格 = 3）
-的时候卖出，这笔交易所能获得利润 = 3-0 = 3 。随后，在第7天（股票价格 = 1）的时候买入，在第8天 （股票价格 = 4）的时候卖出,
-这笔交易所能获得利润 = 4-1 = 3。
+输入：prices = [3,3,5,0,0,3,1,4] 输出：6 解释：在第4天（股票价格 = 0）的时候买入，在第6天
+（股票价格 = 3）的时候卖出，这笔交易所能获得利润 = 3-0 = 3 。随后，在第7天（股票价格 = 1）的时候买入，
+在第8天 （股票价格 = 4）的时候卖出,这笔交易所能获得利润 = 4-1 = 3。
 
 示例 2：
-输入：prices = [1,2,3,4,5] 输出：4 解释：在第1天（股票价格 = 1）的时候买入，在第5天 （股票价格 = 5）的时候卖出,
-这笔交易所能获得利润 = 5-1 = 4。注意你不能在第1天和第2天接连购买股票，之后再将它们卖出。因为这样属于同时参与了多笔交易，
-你必须在再次购买前出售掉之前的股票。
+输入：prices = [1,2,3,4,5] 输出：4 解释：在第1天（股票价格 = 1）的时候买入，在第5天（股票价格 = 5）的
+时候卖出,这笔交易所能获得利润 = 5-1 = 4。注意你不能在第1天和第2天接连购买股票，之后再将它们卖出。因为这样属
+于同时参与了多笔交易，你必须在再次购买前出售掉之前的股票。
 
 示例 3：
 输入：prices = [7,6,4,3,1] 输出：0 解释：在这个情况下, 没有交易完成, 所以最大利润为0。
@@ -257,13 +254,13 @@ dp[0][4] = 0
 */
 
 // MaxProfitTwo 时间复杂度O(N),空间复杂度O(5*N)
-func MaxProfitTwo(prices []int)int{
+func MaxProfitTwo(prices []int) int {
 	n := len(prices)
-	if n == 0{
+	if n == 0 {
 		return 0
 	}
 	dp := make([][]int, len(prices))
-	for i:=0;i<n;i++{
+	for i := 0; i < n; i++ {
 		dp[i] = make([]int, 5)
 	}
 	dp[0][0] = 0
@@ -271,7 +268,7 @@ func MaxProfitTwo(prices []int)int{
 	dp[0][2] = 0
 	dp[0][3] = -prices[0]
 	dp[0][4] = 0
-	for i:=1;i<n;i++{
+	for i := 1; i < n; i++ {
 		// dp[i][0] = dp[i-1][0] why?
 		dp[i][0] = dp[i-1][0]
 		dp[i][1] = Utils.Max(dp[i-1][1], dp[i-1][0]-prices[i])
@@ -283,14 +280,14 @@ func MaxProfitTwo(prices []int)int{
 }
 
 // MaxProfitTwoSimple 更简单的写法 时间复杂度O(N),空间复杂度O(1)
-func MaxProfitTwoSimple(prices []int)int{
+func MaxProfitTwoSimple(prices []int) int {
 	n := len(prices)
-	if n == 0{
+	if n == 0 {
 		return 0
 	}
 	buy1, sell1 := -prices[0], 0
 	buy2, sell2 := -prices[0], 0
-	for i:=1;i<n;i++{
+	for i := 1; i < n; i++ {
 		buy1 = Utils.Max(buy1, -prices[i])
 		sell1 = Utils.Max(sell1, buy1+prices[i])
 		buy2 = Utils.Max(buy2, sell1-prices[i])
@@ -298,8 +295,6 @@ func MaxProfitTwoSimple(prices []int)int{
 	}
 	return sell2
 }
-
-
 
 /*
 1.4 leetcode 188 买卖股票的最佳时机IV
@@ -368,26 +363,26 @@ dp[i][j] = max(dp[i-1][j], dp[i-1][j-1]+prices[i])
 */
 
 // MaxProfitK 时间复杂度O((2*K+1)*N+K+N)，空间复杂度O((2*K+1)*N)
-func MaxProfitK(prices []int, k int)int{
+func MaxProfitK(prices []int, k int) int {
 	n := len(prices)
-	if n == 0{
+	if n == 0 {
 		return 0
 	}
 	dp := make([][]int, n)
 	// 可以买卖k次，则一共有2*k+1种情况
-	for i:=0;i<n;i++{
+	for i := 0; i < n; i++ {
 		dp[i] = make([]int, 2*k+1)
 	}
 	// 奇数代表买入，第一天无论是第几次买入，所获得的最大价值都是-prices[0]
-	for i:=1;i<2*k+1;i+=2{
+	for i := 1; i < 2*k+1; i += 2 {
 		dp[0][i] = -prices[0]
 	}
-	for i:=1;i<n;i++{
-		for j:=1;j<2*k+1;j++{
+	for i := 1; i < n; i++ {
+		for j := 1; j < 2*k+1; j++ {
 			// j为奇数，代表买入
-			if j % 2 == 1{
+			if j%2 == 1 {
 				dp[i][j] = Utils.Max(dp[i-1][j], dp[i-1][j-1]-prices[i])
-			}else{
+			} else {
 				// j为偶数，代表卖出
 				dp[i][j] = Utils.Max(dp[i-1][j], dp[i-1][j-1]+prices[i])
 			}
@@ -395,7 +390,6 @@ func MaxProfitK(prices []int, k int)int{
 	}
 	return dp[n-1][2*k]
 }
-
 
 /*
 1.5 leetcode 309 买卖股票的最佳时机含冷冻期
@@ -448,25 +442,23 @@ dp[0][0] = 0
 略
 */
 
-func MaxProfitIncludeFreeze(prices []int)int{
+func MaxProfitIncludeFreeze(prices []int) int {
 	n := len(prices)
-	if n == 0{
+	if n == 0 {
 		return 0
 	}
 	dp := make([][]int, n)
-	for i:=0;i<n;i++{
+	for i := 0; i < n; i++ {
 		dp[i] = make([]int, 3)
 	}
 	dp[0][0] = -prices[0]
-	for i:=1;i<n;i++{
-		dp[i][0] = Utils.Max(dp[i-1][0],dp[i-1][2]-prices[i])
-		dp[i][1] = dp[i-1][0]+prices[i]
-		dp[i][2] = Utils.Max(dp[i-1][1],dp[i-1][2])
+	for i := 1; i < n; i++ {
+		dp[i][0] = Utils.Max(dp[i-1][0], dp[i-1][2]-prices[i])
+		dp[i][1] = dp[i-1][0] + prices[i]
+		dp[i][2] = Utils.Max(dp[i-1][1], dp[i-1][2])
 	}
 	return Utils.Max(dp[n-1][1], dp[n-1][2])
 }
-
-
 
 /*
 1.6 leetcode714 买卖股票的最佳时机含手续费
@@ -493,28 +485,27 @@ func MaxProfitIncludeFreeze(prices []int)int{
 本题跟1.2相比，没有任何变化，只是多了一个手续费，所以解决起来异常容易
 */
 
-func MaxProfitIncludeFee(prices []int, fee int)int{
+func MaxProfitIncludeFee(prices []int, fee int) int {
 	n := len(prices)
-	if n == 0{
+	if n == 0 {
 		return 0
 	}
 	dp := make([][]int, len(prices))
-	for i:=0;i<n;i++{
+	for i := 0; i < n; i++ {
 		dp[i] = make([]int, 2)
 	}
 	dp[0][0] = -prices[0]
 	dp[0][1] = 0
-	for i:=1;i<n;i++{
+	for i := 1; i < n; i++ {
 		dp[i][0] = Utils.Max(dp[i-1][0], dp[i-1][1]-prices[i])
-		dp[i][1] = Utils.Max(dp[i-1][1], dp[i-1][0] + prices[i] - fee)
+		dp[i][1] = Utils.Max(dp[i-1][1], dp[i-1][0]+prices[i]-fee)
 	}
 	return dp[n-1][1]
 }
 
-
-func MaxProfitIncludeFeeSimple(prices []int, fee int)int{
+func MaxProfitIncludeFeeSimple(prices []int, fee int) int {
 	n := len(prices)
-	if n == 0{
+	if n == 0 {
 		return 0
 	}
 	sell, buy := 0, -prices[0]

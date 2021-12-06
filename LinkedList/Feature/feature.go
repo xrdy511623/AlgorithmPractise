@@ -152,22 +152,22 @@ func getIntersectionNode(headA, headB *Entity.ListNode) *Entity.ListNode {
 示例：
 给定一个链表: 1->2->3->4->5, 和 k = 2.
 返回链表 4->5.
- */
+*/
 
 // GetKthFromEnd 顺序查找，倒数第k个节点即为正数第n-k个节点
-func GetKthFromEnd(head *Entity.ListNode, k int)*Entity.ListNode{
+func GetKthFromEnd(head *Entity.ListNode, k int) *Entity.ListNode {
 	n := 0
 	cur := head
-	for cur != nil{
+	for cur != nil {
 		n++
 		cur = cur.Next
 	}
 	// 如果链表长度小于k,则返回nil
-	if n < k{
+	if n < k {
 		return nil
 	}
 	// 从头节点(head)遍历链表n-k次即得到目标节点
-	for i:=0;i<n-k;i++{
+	for i := 0; i < n-k; i++ {
 		head = head.Next
 	}
 	return head
@@ -175,18 +175,17 @@ func GetKthFromEnd(head *Entity.ListNode, k int)*Entity.ListNode{
 
 // GetKthNodeFromEnd 双指针法，快慢指针初始位置都是头节点，快指针先移动至k+1个节点，此时快慢指针相隔k个节点，然后双方以相同速度同时
 // 向后移动，则当快指针移动至链表尾部空节点时，此时慢指针的位置为n-k,即为所求节点
-func GetKthNodeFromEnd(head *Entity.ListNode, k int)*Entity.ListNode{
+func GetKthNodeFromEnd(head *Entity.ListNode, k int) *Entity.ListNode {
 	fast, slow := head, head
-	for i:=0;i<k;i++{
+	for i := 0; i < k; i++ {
 		fast = fast.Next
 	}
-	for fast != nil{
+	for fast != nil {
 		fast = fast.Next
 		slow = slow.Next
 	}
 	return slow
 }
-
 
 /*
 1.5 链表排序
@@ -195,7 +194,7 @@ func GetKthNodeFromEnd(head *Entity.ListNode, k int)*Entity.ListNode{
 你可以在O(nlogn) 时间复杂度和常数级空间复杂度下，对链表进行排序吗？
 输入：head = [-1,5,3,4,0]
 输出：[-1,0,3,4,5]
- */
+*/
 
 // SortLinkedList 思路:归并排序解决
 func SortLinkedList(head *Entity.ListNode) *Entity.ListNode {
@@ -214,7 +213,7 @@ func SortLinkedList(head *Entity.ListNode) *Entity.ListNode {
 	res := &Entity.ListNode{0, nil}
 	h := res
 	for left != nil && right != nil {
-		if left.Val < right.Val{
+		if left.Val < right.Val {
 			h.Next = left
 			left = left.Next
 		} else {
@@ -232,11 +231,11 @@ func SortLinkedList(head *Entity.ListNode) *Entity.ListNode {
 	return res.Next
 }
 
-func MergeLinkedList(l1,l2 *Entity.ListNode) *Entity.ListNode {
+func MergeLinkedList(l1, l2 *Entity.ListNode) *Entity.ListNode {
 	dummy := &Entity.ListNode{0, nil}
 	cur := dummy
 	for l1 != nil && l2 != nil {
-		if l1.Val < l2.Val{
+		if l1.Val < l2.Val {
 			cur.Next = l1
 			l1 = l1.Next
 		} else {
@@ -260,34 +259,33 @@ func MergeLinkedList(l1,l2 *Entity.ListNode) *Entity.ListNode {
 输出：[1,1,2,3,4,4]
 */
 
-
 func mergeTwoLists(l1 *Entity.ListNode, l2 *Entity.ListNode) *Entity.ListNode {
 	dummy := &Entity.ListNode{0, nil}
 	cur := dummy
-	if l1 != nil && l2 != nil{
-		for l1 != nil && l2 != nil{
-			if l1.Val <= l2.Val{
+	if l1 != nil && l2 != nil {
+		for l1 != nil && l2 != nil {
+			if l1.Val <= l2.Val {
 				cur.Next = l1
 				l1 = l1.Next
-			} else{
+			} else {
 				cur.Next = l2
 				l2 = l2.Next
 			}
 			cur = cur.Next
 		}
 
-		if l1 != nil{
+		if l1 != nil {
 			cur.Next = l1
-		} else{
+		} else {
 			cur.Next = l2
 		}
 
 		return dummy.Next
 	}
 
-	if l1 != nil{
+	if l1 != nil {
 		return l1
-	} else{
+	} else {
 		return l2
 	}
 }
@@ -296,15 +294,14 @@ func mergeTwoLists(l1 *Entity.ListNode, l2 *Entity.ListNode) *Entity.ListNode {
 1.7 分隔链表
 给你一个链表的头节点 head 和一个特定值x ，请你对链表进行分隔，使得所有小于x的节点都出现在大于或等于x的节点之前。
 你应当保留两个分区中每个节点的初始相对位置。
- */
+*/
 
 /*
 题目本质上就是将链表分为：
 1.小于x部分的链表按照原始顺序记为p
 2.大于等于x部分的链表按照原始顺序记为q
 3.拼接两个链表，p --> q
- */
-
+*/
 
 func PartitionLinkedList(head *Entity.ListNode, x int) *Entity.ListNode {
 	before_head, after_head := &Entity.ListNode{0, nil}, &Entity.ListNode{0, nil}

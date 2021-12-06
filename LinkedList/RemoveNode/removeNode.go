@@ -62,13 +62,13 @@ func GetLengthOfLinkedList(head *Entity.ListNode) int {
 }
 
 // RemoveNthNodeFromEnd 双指针法
-func RemoveNthNodeFromEnd(head *Entity.ListNode, n int)*Entity.ListNode{
+func RemoveNthNodeFromEnd(head *Entity.ListNode, n int) *Entity.ListNode {
 	dummy := &Entity.ListNode{0, head}
 	pre, fast := dummy, head
-	for i:=0;i<n;i++{
+	for i := 0; i < n; i++ {
 		fast = fast.Next
 	}
-	for fast != nil{
+	for fast != nil {
 		fast = fast.Next
 		pre = pre.Next
 	}

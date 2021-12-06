@@ -282,14 +282,14 @@ func InorderSuccessorUseIteration(root, p *Entity.TreeNode) *Entity.TreeNode {
 	return ans
 }
 
-func FindInorderSuccessor(root, p *Entity.TreeNode)*Entity.TreeNode{
+func FindInorderSuccessor(root, p *Entity.TreeNode) *Entity.TreeNode {
 	var ans *Entity.TreeNode
 	ans = nil
-	for root != nil{
-		if root.Val > p.Val{
+	for root != nil {
+		if root.Val > p.Val {
 			ans = root
 			root = root.Left
-		} else{
+		} else {
 			root = root.Right
 		}
 	}
@@ -304,16 +304,16 @@ func FindInorderSuccessor(root, p *Entity.TreeNode)*Entity.TreeNode{
 节点的左子树只包含小于当前节点的数。
 节点的右子树只包含大于当前节点的数。
 所有左子树和右子树自身必须也是二叉搜索树。
- */
+*/
 
 // CheckIsValidBST 一个很容易想到的思路是中序遍历二叉树，如果它是BST，就会得到一个升序序列，否则就不是BST
-func CheckIsValidBST(root *Entity.TreeNode)bool{
-	if root == nil{
+func CheckIsValidBST(root *Entity.TreeNode) bool {
+	if root == nil {
 		return false
 	}
-	var dfs func(root *Entity.TreeNode)[]int
-	dfs = func(root *Entity.TreeNode)(res []int){
-		if root == nil{
+	var dfs func(root *Entity.TreeNode) []int
+	dfs = func(root *Entity.TreeNode) (res []int) {
+		if root == nil {
 			return res
 		}
 		res = append(res, dfs(root.Left)...)
@@ -322,34 +322,31 @@ func CheckIsValidBST(root *Entity.TreeNode)bool{
 		return res
 	}
 	sortedArray := dfs(root)
-	for i:=1;i<len(sortedArray);i++{
-		if sortedArray[i]<=sortedArray[i-1]{
+	for i := 1; i < len(sortedArray); i++ {
+		if sortedArray[i] <= sortedArray[i-1] {
 			return false
 		}
 	}
 	return true
 }
 
-
 // IsValidBST 利用二叉搜索树的特征递归解决,时间复杂度和空间复杂度都是O(N)
-func IsValidBST(root *Entity.TreeNode)bool{
+func IsValidBST(root *Entity.TreeNode) bool {
 	min := math.MinInt64
 	max := math.MaxInt64
 	return helper(root, min, max)
 }
 
-func helper(root *Entity.TreeNode, min, max int)bool{
-	if root == nil{
+func helper(root *Entity.TreeNode, min, max int) bool {
+	if root == nil {
 		return true
 	}
 	// 二叉搜索树的核心特征就是根节点的值分布在其左右子节点值区间内[root.Left.Val, root.Right.Val]，否则就不是BST
-	if root.Val <= min || root.Val >= max{
+	if root.Val <= min || root.Val >= max {
 		return false
 	}
 	return helper(root.Left, min, root.Val) && helper(root.Right, root.Val, max)
 }
-
-
 
 /*
 1.8 验证二叉搜索树的后序遍历序列
@@ -441,17 +438,17 @@ func RightSideView(root *Entity.TreeNode) []int {
 给定一个二叉树，判断它是否是高度平衡的二叉树。
 本题中，一棵高度平衡二叉树定义为：
 一个二叉树每个节点的左右两个子树的高度差的绝对值不超过1 。
- */
+*/
 
-func IsBalanced(root *Entity.TreeNode)bool{
-	if root == nil{
+func IsBalanced(root *Entity.TreeNode) bool {
+	if root == nil {
 		return true
 	}
-	return Utils.Abs(GetHeightOfBinaryTree(root.Left)-GetHeightOfBinaryTree(root.Right))<=1 && IsBalanced(root.Left) && IsBalanced(root.Right)
+	return Utils.Abs(GetHeightOfBinaryTree(root.Left)-GetHeightOfBinaryTree(root.Right)) <= 1 && IsBalanced(root.Left) && IsBalanced(root.Right)
 }
 
-func GetHeightOfBinaryTree(root *Entity.TreeNode)int{
-	if root == nil{
+func GetHeightOfBinaryTree(root *Entity.TreeNode) int {
+	if root == nil {
 		return 0
 	}
 	return 1 + Utils.Max(GetHeightOfBinaryTree(root.Left), GetHeightOfBinaryTree(root.Right))
@@ -461,14 +458,14 @@ func GetHeightOfBinaryTree(root *Entity.TreeNode)int{
 1.11 展平二叉搜索树
 给你一棵二叉搜索树，请按中序遍历 将其重新排列为一棵递增顺序搜索树，使树中最左边的节点成为树的根节点，并且每个节点没有左子节点，
 只有一个右子节点。
- */
+*/
 
 // IncreasingBST 时间复杂度O(2*N)，空间复杂度O(N)
-func IncreasingBST(root *Entity.TreeNode)*Entity.TreeNode{
+func IncreasingBST(root *Entity.TreeNode) *Entity.TreeNode {
 	var res []int
 	var dfs func(*Entity.TreeNode)
-	dfs = func(root *Entity.TreeNode){
-		if root != nil{
+	dfs = func(root *Entity.TreeNode) {
+		if root != nil {
 			dfs(root.Left)
 			res = append(res, root.Val)
 			dfs(root.Right)
@@ -477,7 +474,7 @@ func IncreasingBST(root *Entity.TreeNode)*Entity.TreeNode{
 	dfs(root)
 	dummyNode := &Entity.TreeNode{}
 	cur := dummyNode
-	for _, val := range res{
+	for _, val := range res {
 		cur.Right = &Entity.TreeNode{Val: val}
 		cur = cur.Right
 	}
@@ -485,12 +482,12 @@ func IncreasingBST(root *Entity.TreeNode)*Entity.TreeNode{
 }
 
 // IncreasingSimpleBST 更好的做法是在中序遍历的过程中改变节点指向，时间复杂度下降为O(N)
-func IncreasingSimpleBST(root *Entity.TreeNode)*Entity.TreeNode{
+func IncreasingSimpleBST(root *Entity.TreeNode) *Entity.TreeNode {
 	dummyNode := &Entity.TreeNode{}
 	cur := dummyNode
 	var helper func(*Entity.TreeNode)
-	helper = func(node *Entity.TreeNode){
-		if node == nil{
+	helper = func(node *Entity.TreeNode) {
+		if node == nil {
 			return
 		}
 		// 在中序遍历的过程中修改节点指向
@@ -504,7 +501,6 @@ func IncreasingSimpleBST(root *Entity.TreeNode)*Entity.TreeNode{
 	return dummyNode.Right
 }
 
-
 /*
 1.12 二叉搜索树迭代器
 实现一个二叉搜索树迭代器类BSTIterator，表示一个按中序遍历二叉搜索树（BST）的迭代器：
@@ -514,14 +510,14 @@ boolean hasNext() 如果向指针右侧遍历存在数字，则返回true ；否
 int next()将指针向右移动，然后返回指针处的数字。
 注意，指针初始化为一个不存在于BST中的数字，所以对next()的首次调用将返回 BST 中的最小元素。
 你可以假设next()调用总是有效的，也就是说，当调用 next()时，BST的中序遍历中至少存在一个下一个数字。
- */
+*/
 
 type BSTIterator struct {
 	Nums []int
 	Root *Entity.TreeNode
 }
 
-func Constructor(root *Entity.TreeNode)*BSTIterator{
+func Constructor(root *Entity.TreeNode) *BSTIterator {
 	nums := make([]int, 0)
 	Inorder(root, &nums)
 	return &BSTIterator{
@@ -530,18 +526,18 @@ func Constructor(root *Entity.TreeNode)*BSTIterator{
 	}
 }
 
-func(this *BSTIterator)Next()int{
+func (this *BSTIterator) Next() int {
 	val := this.Nums[0]
 	this.Nums = this.Nums[1:]
 	return val
 }
 
-func(this *BSTIterator) HasNext()bool{
+func (this *BSTIterator) HasNext() bool {
 	return len(this.Nums) > 0
 }
 
-func Inorder(node *Entity.TreeNode, nums *[]int){
-	if node == nil{
+func Inorder(node *Entity.TreeNode, nums *[]int) {
+	if node == nil {
 		return
 	}
 	Inorder(node.Left, nums)
@@ -554,10 +550,10 @@ func Inorder(node *Entity.TreeNode, nums *[]int){
 可以按任意顺序返回答案。
 输入：n = 3
 输出：[[1,null,2,null,3],[1,null,3,2],[2,1,3],[3,1,null,null,2],[3,2,null,1]]
- */
+*/
 
-func GenerateTrees(n int) []*Entity.TreeNode{
-	if n == 0{
+func GenerateTrees(n int) []*Entity.TreeNode {
+	if n == 0 {
 		return []*Entity.TreeNode{}
 	}
 	return Helper(1, n)
@@ -571,13 +567,13 @@ func Helper(start, end int) []*Entity.TreeNode {
 	// 枚举可行根节点
 	for i := start; i <= end; i++ {
 		// 获得所有可行的左子树集合
-		leftTrees := Helper(start, i - 1)
+		leftTrees := Helper(start, i-1)
 		// 获得所有可行的右子树集合
-		rightTrees := Helper(i + 1, end)
+		rightTrees := Helper(i+1, end)
 		// 从左子树集合中选出一棵左子树，从右子树集合中选出一棵右子树，拼接到根节点上
 		for _, left := range leftTrees {
 			for _, right := range rightTrees {
-				curTree := &Entity.TreeNode{Val:i, Left: nil, Right: nil}
+				curTree := &Entity.TreeNode{Val: i, Left: nil, Right: nil}
 				curTree.Left = left
 				curTree.Right = right
 				allTrees = append(allTrees, curTree)
@@ -586,4 +582,3 @@ func Helper(start, end int) []*Entity.TreeNode {
 	}
 	return allTrees
 }
-

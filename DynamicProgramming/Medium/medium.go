@@ -359,7 +359,6 @@ func FindTargetSumWays(nums []int, target int) int {
 	return dp[capacity]
 }
 
-
 /*
 1.6 一和零
 给你一个二进制字符串数组strs和两个整数m和n 。
@@ -375,7 +374,7 @@ func FindTargetSumWays(nums []int, target int) int {
 输入：strs = ["10", "0", "1"], m = 1, n = 1
 输出：2
 解释：最大的子集是 {"0", "1"} ，所以答案是2 。
- */
+*/
 
 /*
 思路:
@@ -415,17 +414,17 @@ dp[i][j]就可以是dp[i-zeroNum][j-oneNum]+1(加1就是子集长度要加上当
 */
 
 // FindMaxForm 本题较难，注意理解m和n都是背包容量，导致题目有多个背包维度
-func FindMaxForm(strs []string, m, n int)int{
+func FindMaxForm(strs []string, m, n int) int {
 	dp := make([][]int, m+1)
-	for i:=0;i<=m;i++{
+	for i := 0; i <= m; i++ {
 		dp[i] = make([]int, n+1)
 	}
-	for _, str := range strs{
+	for _, str := range strs {
 		zeroNum, oneNum := 0, 0
 		zeroNum += strings.Count(str, "0")
 		oneNum += strings.Count(str, "1")
-		for j:=m;j>=zeroNum;j--{
-			for k:=n;k>=oneNum;k--{
+		for j := m; j >= zeroNum; j-- {
+			for k := n; k >= oneNum; k-- {
 				dp[j][k] = Utils.Max(dp[j][k], dp[j-zeroNum][k-oneNum]+1)
 			}
 		}
@@ -650,22 +649,21 @@ func LeastCoinChange(coins []int, amount int) int {
 1 <= n <= 10^4
 */
 
-func NumSquares(n int)int{
+func NumSquares(n int) int {
 	dp := make([]int, n+1)
 	dp[0] = 0
-	for i:=1;i<=n;i++{
+	for i := 1; i <= n; i++ {
 		dp[i] = math.MaxInt32
 	}
-	for i:=1;i*i<=n;i++{
-		for j:=1;j<=n;j++{
-			if j >= i*i{
+	for i := 1; i*i <= n; i++ {
+		for j := 1; j <= n; j++ {
+			if j >= i*i {
 				dp[j] = Utils.Min(dp[j], dp[j-i*i]+1)
 			}
 		}
 	}
 	return dp[n]
 }
-
 
 /*
 1.13 最小路径和
@@ -705,27 +703,26 @@ m, n := len(grid), len(grid[0])
 按照二维数组正序遍历即可
 */
 
-func MinPathSum(grid [][]int)int{
+func MinPathSum(grid [][]int) int {
 	m, n := len(grid), len(grid[0])
 	dp := make([][]int, m)
-	for i:=0;i<m;i++{
+	for i := 0; i < m; i++ {
 		dp[i] = make([]int, n)
 	}
 	dp[0][0] = grid[0][0]
-	for i:=1;i<m;i++{
-		dp[i][0]= dp[i-1][0] + grid[i][0]
+	for i := 1; i < m; i++ {
+		dp[i][0] = dp[i-1][0] + grid[i][0]
 	}
-	for j:=1;j<n;j++{
+	for j := 1; j < n; j++ {
 		dp[0][j] = dp[0][j-1] + grid[0][j]
 	}
-	for i:=1;i<m;i++{
-		for j:=1;j<n;j++{
+	for i := 1; i < m; i++ {
+		for j := 1; j < n; j++ {
 			dp[i][j] = Utils.Min(dp[i-1][j], dp[i][j-1]) + grid[i][j]
 		}
 	}
 	return dp[m-1][n-1]
 }
-
 
 /*
 1.14 多重背包问题
@@ -746,17 +743,17 @@ func MinPathSum(grid [][]int)int{
 问背包能背的物品最大价值是多少？
 */
 
-func MultiBagProblem(weight, value, nums []int, capacity int)int{
+func MultiBagProblem(weight, value, nums []int, capacity int) int {
 	dp := make([]int, capacity+1)
-	for i:=0;i<len(nums);i++{
-		for nums[i] > 1{
+	for i := 0; i < len(nums); i++ {
+		for nums[i] > 1 {
 			weight = append(weight, weight[i])
 			value = append(value, value[i])
 			nums[i]--
 		}
 	}
-	for i:=0;i<len(weight);i++{
-		for j := capacity;j>=weight[i];j--{
+	for i := 0; i < len(weight); i++ {
+		for j := capacity; j >= weight[i]; j-- {
 			dp[j] = Utils.Max(dp[j], dp[j-weight[i]]+value[i])
 		}
 	}

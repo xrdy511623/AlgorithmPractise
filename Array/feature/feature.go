@@ -4,22 +4,22 @@ import "AlgorithmPractise/Utils"
 
 /*
 1.1 反转数组
- */
+*/
 
 // ReverseArraySimple 可以创建新数组
-func ReverseArraySimple(nums []int)[]int{
+func ReverseArraySimple(nums []int) []int {
 	n := len(nums)
 	var res []int
-	for i:=n-1;i>=0;i--{
+	for i := n - 1; i >= 0; i-- {
 		res = append(res, nums[i])
 	}
 	return res
 }
 
 // ReverseArray 原地反转
-func ReverseArray(nums []int)[]int{
+func ReverseArray(nums []int) []int {
 	n := len(nums)
-	for i:=0;i<n/2;i++{
+	for i := 0; i < n/2; i++ {
 		temp := nums[n-1-i]
 		nums[n-1-i] = nums[i]
 		nums[i] = temp
@@ -71,12 +71,12 @@ func MajorityElement(nums []int) int {
 
 func RemoveDuplicates(nums []int) int {
 	n := len(nums)
-	if n == 0{
+	if n == 0 {
 		return 0
 	}
 	slow := 1
-	for fast:=1;fast<n;fast++{
-		if nums[fast] != nums[fast-1]{
+	for fast := 1; fast < n; fast++ {
+		if nums[fast] != nums[fast-1] {
 			nums[slow] = nums[fast]
 			slow++
 		}
@@ -179,15 +179,15 @@ func FindLengthOfLCIS(nums []int) int {
 
 输入：nums = [-1]
 输出：-1
- */
+*/
 
-func MaxSubArray(nums []int)int{
+func MaxSubArray(nums []int) int {
 	max := nums[0]
-	for i:=1;i<len(nums);i++{
-		if nums[i] + nums[i-1] > nums[i]{
+	for i := 1; i < len(nums); i++ {
+		if nums[i]+nums[i-1] > nums[i] {
 			nums[i] += nums[i-1]
 		}
-		if nums[i] > max{
+		if nums[i] > max {
 			max = nums[i]
 		}
 	}
@@ -202,19 +202,18 @@ func MaxSubArray(nums []int)int{
 1 <= prices.length <= 105
 0 <= prices[i] <= 104
 要求时间复杂度为0(n),空间复杂度为O(1)
- */
+*/
 
 // MaxProfit 每次迭代，更新最大利润profit和最低股票价格minPrice
 func MaxProfit(prices []int) int {
 	// minPrice初始值为prices[0], 最大利润profit初始值为0
 	minPrice, profit := prices[0], 0
-	for i:=1;i<len(prices);i++{
+	for i := 1; i < len(prices); i++ {
 		profit = Utils.Max(profit, prices[i]-minPrice)
 		minPrice = Utils.Min(minPrice, prices[i])
 	}
 	return profit
 }
-
 
 /*
 1.8 全排列
@@ -230,21 +229,21 @@ func MaxProfit(prices []int) int {
 示例 3：
 输入：nums = [1]
 输出：[[1]]
- */
+*/
 
-func Permute(nums []int)[][]int{
+func Permute(nums []int) [][]int {
 	var res [][]int
 	visited := make(map[int]bool, len(nums))
 	var dfs func([]int)
-	dfs = func(path []int){
-		if len(path) == len(nums){
+	dfs = func(path []int) {
+		if len(path) == len(nums) {
 			temp := make([]int, len(path))
 			copy(temp, path)
 			res = append(res, path)
 			return
 		}
-		for _, v := range nums{
-			if visited[v]{
+		for _, v := range nums {
+			if visited[v] {
 				continue
 			}
 			path = append(path, v)

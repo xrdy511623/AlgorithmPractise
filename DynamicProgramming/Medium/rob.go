@@ -46,10 +46,10 @@ dp下标  0   1   2   3   4
 */
 
 // Rob 时间复杂度O(N),空间复杂度O(N)
-func Rob(nums []int)int{
+func Rob(nums []int) int {
 	maxValue := 0
 	n := len(nums)
-	switch n{
+	switch n {
 	case 0:
 		maxValue = 0
 	case 1:
@@ -59,14 +59,13 @@ func Rob(nums []int)int{
 	default:
 		dp := make([]int, n)
 		dp[0], dp[1] = nums[0], Utils.Max(nums[0], nums[1])
-		for i:=2;i<n;i++{
+		for i := 2; i < n; i++ {
 			dp[i] = Utils.Max(dp[i-2]+nums[i], dp[i-1])
 		}
 		maxValue = dp[n-1]
 	}
 	return maxValue
 }
-
 
 /*
 1.2 打家劫舍II
@@ -99,10 +98,10 @@ c 不考虑首元素
 而b,c其实都包含了a这种情况，所以只需要考虑b,c这两种情况，最后比较两种情况下的最大值，取较大值即可
 */
 
-func RobRing(nums []int)int{
+func RobRing(nums []int) int {
 	maxValue := 0
 	n := len(nums)
-	switch n{
+	switch n {
 	case 0:
 		maxValue = 0
 	case 1:
@@ -118,19 +117,18 @@ func RobRing(nums []int)int{
 	return maxValue
 }
 
-func RobRange(nums []int, start, end int)int{
-	if start == end{
+func RobRange(nums []int, start, end int) int {
+	if start == end {
 		return nums[start]
 	}
 	dp := make([]int, len(nums))
 	dp[start] = nums[start]
 	dp[start+1] = Utils.Max(nums[start], nums[start+1])
-	for i:=start+2;i<=end;i++{
+	for i := start + 2; i <= end; i++ {
 		dp[i] = Utils.Max(dp[i-2]+nums[i], dp[i-1])
 	}
 	return dp[end]
 }
-
 
 /*
 1.3 打家劫舍III
@@ -191,13 +189,13 @@ val2 = max(left[0], left[1]) + max(right[0], right[1]);
 */
 
 // RobBinaryTree 时间复杂度：O(n) 每个节点只遍历了一次; 空间复杂度：O(logn) 算上递推系统栈的空间
-func RobBinaryTree(root *Entity.TreeNode)int{
+func RobBinaryTree(root *Entity.TreeNode) int {
 	dp := RobTree(root)
 	return Utils.Max(dp[0], dp[1])
 }
 
 func RobTree(node *Entity.TreeNode) []int {
-	if node == nil{
+	if node == nil {
 		return []int{0, 0}
 	}
 	left := RobTree(node.Left)
@@ -206,4 +204,3 @@ func RobTree(node *Entity.TreeNode) []int {
 	robCur := node.Val + left[0] + right[0]
 	return []int{notRobCur, robCur}
 }
-

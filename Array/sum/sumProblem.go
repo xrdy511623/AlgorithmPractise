@@ -99,31 +99,31 @@ func AddStrings(num1, num2 string) string {
 
 输入：s = "   -42"
 输出：-42
- */
+*/
 
-func MyAtoi(s string)int{
+func MyAtoi(s string) int {
 	sum, sign, i, n := 0, 1, 0, len(s)
 	// 丢弃无用的前导空格
-	for i < n && s[i] == ' '{
+	for i < n && s[i] == ' ' {
 		i++
 	}
 	// 判定正负
-	if i < n{
-		if s[i]=='-'{
+	if i < n {
+		if s[i] == '-' {
 			sign = -1
 			i++
-		} else if s[i] == '+'{
+		} else if s[i] == '+' {
 			sign = 1
 			i++
 		}
 	}
 	// 从左到右依次累加
-	for i < n && s[i] >='0' && s[i]<='9'{
-		sum = 10 * sum + int(s[i]-'0')
+	for i < n && s[i] >= '0' && s[i] <= '9' {
+		sum = 10*sum + int(s[i]-'0')
 		// 整数超过32位有符号整数范围,特殊处理
-		if sign * sum < math.MinInt32{
+		if sign*sum < math.MinInt32 {
 			return math.MinInt32
-		} else if sign * sum > math.MaxInt32{
+		} else if sign*sum > math.MaxInt32 {
 			return math.MaxInt32
 		}
 		i++

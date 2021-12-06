@@ -31,7 +31,7 @@ import (
 
 输入：s = "{[]}"
 输出：true
- */
+*/
 
 /*
 栈+哈希表解决
@@ -41,21 +41,21 @@ import (
 每一种括号。哈希表的键为右括号，值为相同类型的左括号。
 在遍历结束后，如果栈中没有左括号，说明我们将字符串s中的所有左括号闭合，返回True，否则返回False。
 注意到有效字符串的长度一定为偶数，因此如果字符串的长度为奇数，我们可以直接返回False，省去后续的遍历判断过程。
- */
+*/
 
-func IsValid(s string)bool{
+func IsValid(s string) bool {
 	length := len(s)
-	if length % 2 == 1{
+	if length%2 == 1 {
 		return false
 	}
-	pairs := map[byte]byte{')':'(',']':'[','}':'{'}
+	pairs := map[byte]byte{')': '(', ']': '[', '}': '{'}
 	var stack []byte
-	for i:=0;i<length;i++{
-		if s[i] == '('|| s[i] == '[' || s[i] == '{'{
+	for i := 0; i < length; i++ {
+		if s[i] == '(' || s[i] == '[' || s[i] == '{' {
 			stack = append(stack, s[i])
-		} else if len(stack) > 0 && stack[len(stack)-1] == pairs[s[i]]{
+		} else if len(stack) > 0 && stack[len(stack)-1] == pairs[s[i]] {
 			stack = stack[:len(stack)-1]
-		} else{
+		} else {
 			return false
 		}
 	}
@@ -77,30 +77,29 @@ boolean empty() 如果队列为空，返回true；否则返回false
 
 进阶：
 你能否实现每个操作均摊时间复杂度为O(1)的队列？换句话说，执行n个操作的总时间复杂度为 O(n) ，即使其中一个操作可能花费较长时间。
- */
+*/
 
 type MyQueue struct {
-	InputStack []int
+	InputStack  []int
 	OutputStack []int
 }
 
-
 func Constructor() *MyQueue {
 	return &MyQueue{
-		InputStack: make([]int,0),
-		OutputStack: make([]int,0),
+		InputStack:  make([]int, 0),
+		OutputStack: make([]int, 0),
 	}
 }
 
 // Push element x to the back of queue.
-func (q *MyQueue) Push(x int)  {
+func (q *MyQueue) Push(x int) {
 	q.InputStack = append(q.InputStack, x)
 }
 
 // Pop Removes the element from in front of queue and returns that element.
 func (q *MyQueue) Pop() int {
-	if len(q.OutputStack) == 0{
-		for len(q.InputStack) != 0{
+	if len(q.OutputStack) == 0 {
+		for len(q.InputStack) != 0 {
 			q.OutputStack = append(q.OutputStack, q.InputStack[0])
 			q.InputStack = q.InputStack[1:]
 		}
@@ -112,8 +111,8 @@ func (q *MyQueue) Pop() int {
 
 // Peek Get the front element.
 func (q *MyQueue) Peek() int {
-	if len(q.OutputStack) == 0{
-		for len(q.InputStack) != 0{
+	if len(q.OutputStack) == 0 {
+		for len(q.InputStack) != 0 {
 			q.OutputStack = append(q.OutputStack, q.InputStack[0])
 			q.InputStack = q.InputStack[1:]
 		}
@@ -123,7 +122,7 @@ func (q *MyQueue) Peek() int {
 
 // Empty Returns whether the queue is empty.
 func (q *MyQueue) Empty() bool {
-	if len(q.InputStack) == 0 && len(q.OutputStack)==0{
+	if len(q.InputStack) == 0 && len(q.OutputStack) == 0 {
 		return true
 	}
 	return false
@@ -139,16 +138,16 @@ top()—— 获取栈顶元素。
 getMin() —— 检索栈中的最小元素。
 
 pop、top和getMin操作总是在非空栈上调用。
- */
+*/
 
 type MinStack struct {
-	stack []int
+	stack    []int
 	minStack []int
 }
 
-func Construct() MinStack{
+func Construct() MinStack {
 	return MinStack{
-		stack: []int{},
+		stack:    []int{},
 		minStack: []int{math.MaxInt64},
 	}
 }
@@ -159,17 +158,14 @@ func (ms *MinStack) Push(val int) {
 	ms.minStack = append(ms.minStack, Utils.Min(top, val))
 }
 
-
 func (ms *MinStack) Pop() {
 	ms.stack = ms.stack[:len(ms.stack)-1]
 	ms.minStack = ms.minStack[:len(ms.minStack)-1]
 }
 
-
 func (ms *MinStack) Top() int {
 	return ms.stack[len(ms.stack)-1]
 }
-
 
 func (ms *MinStack) GetMin() int {
 	return ms.minStack[len(ms.minStack)-1]
