@@ -36,6 +36,17 @@ func TestCanPartition(t *testing.T) {
 	}
 }
 
+func TestCompleteBagProblem(t *testing.T) {
+	weight := []int{1, 3, 4}
+	value := []int{15, 20, 30}
+	getMaxValue := CompleteBagProblem(weight, value, 4)
+	expectedMaxValue := 60
+	if getMaxValue != expectedMaxValue {
+		t.Errorf("excepted:%v, got:%v", expectedMaxValue, getMaxValue)
+	}
+	fmt.Println(getMaxValue)
+}
+
 func TestMultiBagProblem(t *testing.T) {
 	weight := []int{1, 3, 4}
 	value := []int{15, 20, 30}

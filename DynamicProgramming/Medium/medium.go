@@ -329,7 +329,7 @@ dp[j]表示要装满容量为j的背包，一共有dp[j]种方法
 所以递推公式就是dp[j] += dp[j-nums[i]]
 
 3 初始化dp数组
-首先，dp[0] = 0，这个很好理解，装满容量为0的背包，有1种方法，就是装0件物品。dp数组长度即为left+1
+首先，dp[0] = 1，这个很好理解，装满容量为0的背包，有1种方法，就是装0件物品。dp数组长度即为left+1
 
 4 确定遍历顺序
 一维数组遍历顺序，是先遍历物品，再遍历背包，且遍历背包时必须是倒序
@@ -420,9 +420,8 @@ func FindMaxForm(strs []string, m, n int) int {
 		dp[i] = make([]int, n+1)
 	}
 	for _, str := range strs {
-		zeroNum, oneNum := 0, 0
-		zeroNum += strings.Count(str, "0")
-		oneNum += strings.Count(str, "1")
+		zeroNum := strings.Count(str, "0")
+		oneNum := strings.Count(str, "1")
 		for j := m; j >= zeroNum; j-- {
 			for k := n; k >= oneNum; k-- {
 				dp[j][k] = Utils.Max(dp[j][k], dp[j-zeroNum][k-oneNum]+1)
@@ -542,6 +541,9 @@ func CombinationSum(nums []int, target int) int {
 1.10 爬楼梯进阶版
 假设你正在爬楼梯。需要n阶你才能到达楼顶。
 每次你可以爬一个台阶，两个台阶，三个台阶，.......，直到m个台阶。你有多少种不同的方法可以爬到楼顶呢？
+本题其实是一个背包问题，楼顶n阶是背包，每次爬的一个台阶，两个台阶，三个台阶就是物品，问爬到楼顶有几种方法其实就是问装满背包有几种方法。
+由于爬的台阶数可以重复，所以具体而言这是一个完全背包问题，并且先爬一个台阶，再爬两个台阶到三层；与先爬两个个台阶，再爬一个台阶到三层是不同
+的两种爬楼梯方法，所以本题是完全背包的求排列问题，因此遍历顺序就必须是先遍历背包，再遍历物品，且遍历背包时必须是正序遍历
 */
 
 // ClimbStairsComplex m表示一次最多可以爬m个台阶
