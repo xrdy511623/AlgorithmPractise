@@ -54,3 +54,10 @@ func Abs(x int) int {
 	}
 	return x
 }
+
+func MinAbs(a, b int)int{
+	if Abs(a) < Abs(b){
+		return a
+	}
+	return b
+}
