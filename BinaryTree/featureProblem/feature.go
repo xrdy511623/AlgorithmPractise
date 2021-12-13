@@ -1,7 +1,7 @@
 package featureProblem
 
 import (
-	"AlgorithmPractise/LinkedList/Entity"
+	"AlgorithmPractise/BinaryTree/Entity"
 	"AlgorithmPractise/Utils"
 	"math"
 )
@@ -581,4 +581,40 @@ func Helper(start, end int) []*Entity.TreeNode {
 		}
 	}
 	return allTrees
+}
+
+/*
+1.14 二叉树的完全性检验
+给定一个二叉树，确定它是否是一个完全二叉树。
+百度百科中对完全二叉树的定义如下：
+若设二叉树的深度为 h，除第 h 层外，其它各层 (1～h-1) 的结点数都达到最大个数，第 h 层所有的结点都连续集中在
+最左边，这就是完全二叉树。（注：第h层可能包含 1~2h个节点。）
+*/
+
+type Part struct {
+	Node   *Entity.TreeNode
+	Number int
+}
+
+// IsCompleteTree 时间复杂度O(N),空间复杂度O(N)
+func IsCompleteTree(root *Entity.TreeNode) bool {
+	if root == nil {
+		return true
+	}
+	stack := []Part{{root, 1}}
+	var res []int
+	p := 1
+	for len(stack) != 0 {
+		node := stack[0].Node
+		p = stack[0].Number
+		res = append(res, node.Val)
+		stack = stack[1:]
+		if node.Left != nil {
+			stack = append(stack, Part{node.Left, 2 * p})
+		}
+		if node.Right != nil {
+			stack = append(stack, Part{node.Right, 2*p + 1})
+		}
+	}
+	return p == len(res)
 }

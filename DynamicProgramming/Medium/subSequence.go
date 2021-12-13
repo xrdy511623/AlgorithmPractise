@@ -474,7 +474,65 @@ func MaxSubArraySimple(nums []int) int {
 }
 
 /*
-1.7 判断子序列
+1.7  乘积最大子数组
+给你一个整数数组 nums，请你找出数组中乘积最大的连续子数组（该子数组中至少包含一个数字），并返回该子数组所对应
+的乘积。
+
+
+示例1:
+
+输入: [2,3,-2,4]
+输出: 6
+解释:子数组 [2,3] 有最大乘积 6。
+
+示例 2:
+输入: [-2,0,-1]
+输出: 0
+解释:结果不能为 2, 因为 [-2,-1] 不是子数组。
+ */
+
+func MaxProduct(nums []int) int {
+	n := len(nums)
+	if n == 0{
+		return 0
+	}
+	if n == 1{
+		return nums[0]
+	}
+	dpMax := make([]int, n)
+	dpMin := make([]int, n)
+	dpMax[0], dpMin[0] = nums[0], nums[0]
+	max := nums[0]
+	for i:=1;i<n;i++{
+		dpMax[i] = Utils.Max(dpMax[i-1]*nums[i], Utils.Max(nums[i], dpMin[i-1]*nums[i]))
+		dpMin[i] = Utils.Min(dpMin[i-1]*nums[i], Utils.Min(nums[i], dpMax[i-1]*nums[i]))
+		max = Utils.Max(max, dpMax[i])
+	}
+	return max
+}
+
+
+func MaxProductSimple(nums []int) int {
+	n := len(nums)
+	if n == 0{
+		return 0
+	}
+	if n == 1{
+		return nums[0]
+	}
+	maxP, minP, max := nums[0], nums[0], nums[0]
+	for i:=1;i<len(nums);i++{
+		mx, mn := maxP, minP
+		maxP = Utils.Max(mx*nums[i], Utils.Max(mn*nums[i], nums[i]))
+		minP = Utils.Min(mn*nums[i], Utils.Min(mx*nums[i], nums[i]))
+		max = Utils.Max(max, maxP)
+	}
+	return max
+}
+
+
+/*
+1.8 判断子序列
 给定字符串s和t ，判断s是否为t的子序列。
 字符串的一个子序列是原始字符串删除一些（也可以不删除）字符而不改变剩余字符相对位置形成的新字符串(例如,"ace"是"abcde"的一个子序列，而"aec"不是）
 
@@ -564,7 +622,7 @@ func IsSubSequenceSimple(s, t string) bool {
 }
 
 /*
-1.8 不同的子序列
+1.9 不同的子序列
 给定一个字符串s和一个字符串t ，计算在s的子序列中t出现的个数。
 字符串的一个子序列是指，通过删除一些（也可以不删除）字符且不干扰剩余字符相对位置所组成的新字符串。（例如,"ACE"是"ABCDE"的一个子序列,而"AEC" 不是）
 
@@ -638,7 +696,7 @@ func NumDistinct(s, t string) int {
 }
 
 /*
-1.9 两个字符串的删除操作
+1.10 两个字符串的删除操作
 给定两个单词word1和word2，找到使得word1和word2相同所需的最小步数，每步可以删除任意一个字符串中的一个字符。
 
 示例：
@@ -699,7 +757,7 @@ func MinDistance(word1, word2 string) int {
 }
 
 /*
-1.10 给你两个单词word1和word2，请你计算出将word1转换成word2所使用的最少操作数。
+1.11 给你两个单词word1和word2，请你计算出将word1转换成word2所使用的最少操作数。
 
 你可以对一个单词进行如下三种操作：
 插入一个字符
@@ -771,7 +829,7 @@ func MinDistanceComplex(word1, word2 string) int {
 }
 
 /*
-1.11 回文子串
+1.12 回文子串
 给定一个字符串，你的任务是计算这个字符串中有多少个回文子串。
 具有不同开始位置或结束位置的子串，即使是由相同的字符组成，也会被视作不同的子串。
 
@@ -879,7 +937,7 @@ func Extend(s string, i, j, n int) int {
 }
 
 /*
-1.12 最长回文子序列
+1.13 最长回文子序列
 给定一个字符串s ，找到其中最长的回文子序列，并返回该序列的长度。可以假设s的最大长度为 1000 。
 示例 1: 输入: "bbbab" 输出: 4 一个可能的最长回文子序列为 "bbbb"。
 示例 2: 输入:"cbbd" 输出: 2 一个可能的最长回文子序列为 "bb"。
