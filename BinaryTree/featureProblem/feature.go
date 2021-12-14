@@ -591,7 +591,7 @@ func Helper(start, end int) []*Entity.TreeNode {
 最左边，这就是完全二叉树。（注：第h层可能包含 1~2h个节点。）
 */
 
-type Part struct {
+type Element struct {
 	Node   *Entity.TreeNode
 	Number int
 }
@@ -601,7 +601,7 @@ func IsCompleteTree(root *Entity.TreeNode) bool {
 	if root == nil {
 		return true
 	}
-	stack := []Part{{root, 1}}
+	stack := []Element{{root, 1}}
 	var res []int
 	p := 1
 	for len(stack) != 0 {
@@ -610,11 +610,28 @@ func IsCompleteTree(root *Entity.TreeNode) bool {
 		res = append(res, node.Val)
 		stack = stack[1:]
 		if node.Left != nil {
-			stack = append(stack, Part{node.Left, 2 * p})
+			stack = append(stack, Element{node.Left, 2 * p})
 		}
 		if node.Right != nil {
-			stack = append(stack, Part{node.Right, 2*p + 1})
+			stack = append(stack, Element{node.Right, 2*p + 1})
 		}
 	}
 	return p == len(res)
+}
+
+/*
+1.15 相同的二叉树
+给你两棵二叉树的根节点p和q ，编写一个函数来检验这两棵树是否相同。
+如果两个树在结构上相同，并且节点具有相同的值，则认为它们是相同的。
+*/
+
+// IsSameTree DFS递归解决 时间复杂度O(min(M, N)),空间复杂度O(min(M, N))
+func IsSameTree(p, q *Entity.TreeNode) bool {
+	if p == nil && q == nil {
+		return true
+	}
+	if p == nil || q == nil {
+		return false
+	}
+	return p.Val == q.Val && IsSameTree(p.Left, q.Left) && IsSameTree(p.Right, q.Right)
 }
