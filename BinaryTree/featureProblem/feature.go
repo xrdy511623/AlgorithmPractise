@@ -635,3 +635,73 @@ func IsSameTree(p, q *Entity.TreeNode) bool {
 	}
 	return p.Val == q.Val && IsSameTree(p.Left, q.Left) && IsSameTree(p.Right, q.Right)
 }
+
+/*
+1.16 删除二叉搜索树中的节点
+给定一个二叉搜索树的根节点root和一个值 key，删除二叉搜索树中的key对应的节点，并保证二叉搜索树的性质不变。
+返回二叉搜索树（有可能被更新）的根节点的引用。
+
+一般来说，删除节点可分为两个步骤：
+
+首先找到需要删除的节点；
+如果找到了，删除它。
+
+输入：root = [5,3,6,2,4,null,7], key = 3
+输出：[5,4,6,2,null,null,7]
+解释：给定需要删除的节点值是 3，所以我们首先找到 3 这个节点，然后删除它。
+一个正确的答案是 [5,4,6,2,null,null,7], 如下图所示。
+另一个正确答案是 [5,2,6,null,4,null,7]。
+*/
+
+/*
+思路:分类讨论，递归解决
+删除BST中的节点，无外乎以下三种情况:
+1 如果key < root.Val，说明要删除的节点在BST的左子树，那么递归的去左子树删除即可
+2 如果key > root.Val，说明要删除的节点在BST的右子树，那么递归的去右子树删除即可
+3 如果key = root.Val，说明要删除的节点就是本节点，这一类又分以下三种情况
+a 要删除的节点是叶子节点，那很简单，直接将当前节点删除，置为nil即可
+b 要删除的节点有右子节点，那么为了维持BST的特性，我们需要找到该节点的后继节点post(BST中大于它的最小节点)，
+将该节点的值更新为后继节点post的值，然后递归的在当前节点的右子树中删除该后继节点post
+c 要删除的节点有左子节点，那么为了维持BST的特性，我们需要找到该节点的前驱节点pre(BST中小于于它的最大节点)，
+将该节点的值更新为前驱节点pre的值，然后递归的在当前节点的左子树中删除该前驱节点pre
+最后返回当前节点的引用即可
+*/
+
+func DeleteNodeInBST(root *Entity.TreeNode, key int) *Entity.TreeNode {
+	if root == nil {
+		return nil
+	} else if key < root.Val {
+		root.Left = DeleteNodeInBST(root.Left, key)
+	} else if key > root.Val {
+		root.Right = DeleteNodeInBST(root.Right, key)
+	} else {
+		if root.Left == nil && root.Right == nil {
+			root = nil
+		} else if root.Right != nil {
+			root.Val = Successor(root).Val
+			root.Right = DeleteNodeInBST(root.Right, root.Val)
+		} else {
+			root.Val = Predecessor(root).Val
+			root.Left = DeleteNodeInBST(root.Left, root.Val)
+		}
+	}
+	return root
+}
+
+// Predecessor 在二叉搜索树(BST)中寻找当前节点的前驱节点
+func Predecessor(node *Entity.TreeNode) *Entity.TreeNode {
+	pre := node.Left
+	for pre.Right != nil {
+		pre = pre.Right
+	}
+	return pre
+}
+
+// Successor 在二叉搜索树(BST)中寻找当前节点的后继节点
+func Successor(node *Entity.TreeNode) *Entity.TreeNode {
+	post := node.Right
+	for post.Left != nil {
+		post = post.Left
+	}
+	return post
+}
