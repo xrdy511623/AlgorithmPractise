@@ -169,3 +169,74 @@ func MinWindow(s, t string) string {
 	}
 	return s[wL:wR]
 }
+
+/*
+1.4 和为k的连续子数组
+给你一个整数数组nums和一个整数k ，请你统计并返回该数组中和为k的连续子数组的个数。
+
+示例1：
+输入：nums = [1,1,1], k = 2
+输出：2
+
+示例2：
+输入：nums = [1,2,3], k = 3
+输出：2
+*/
+
+/*
+思路一:枚举法
+考虑以i结尾和为k的连续子数组个数，我们需要统计符合条件的下标j的个数，其中0≤j≤i 且[j..i]这个子数组的和恰好为k 。
+我们可以枚举 [0..i]里所有的下标j来判断是否符合条件。
+*/
+
+// SubarraySumSimple 时间复杂度O(N^2)，空间复杂度O(1)
+func SubarraySumSimple(nums []int, k int) int {
+	count := 0
+	for i := 0; i < len(nums); i++ {
+		sum := 0
+		for end := i; end >= 0; end-- {
+			sum += nums[end]
+			if sum == k {
+				count++
+			}
+		}
+	}
+	return count
+}
+
+/*
+思路二:前缀和+哈希表优化
+我们可以基于方法一利用数据结构进行进一步的优化，我们知道方法一的瓶颈在于对每个i，我们需要枚举所有的 j来判断是否符合
+条件，这一步是否可以优化呢？答案是可以的。
+
+我们定义pre[i]为[0..i]里所有数的和，则pre[i]可以由pre[i−1]递推而来，即：
+pre[i]=pre[i−1]+nums[i]
+
+那么[j..i]这个子数组和为k这个条件我们可以转化为
+pre[i]−pre[j−1]=k
+
+简单移项可得符合条件的下标j需要满足
+pre[j−1]==pre[i]−k
+
+所以我们考虑以i结尾的和为k的连续子数组个数时只要统计有多少个前缀和为pre[i]−k的pre[j]即可。我们建立哈希表
+mp，以和为键，出现次数为对应的值，记录pre[i]出现的次数，从左往右边更新mp边计算答案，那么以i结尾的答案
+mp[pre[i]−k]即可在O(1) 时间内得到。最后的答案即为所有下标结尾的和为k的子数组个数之和。
+
+需要注意的是，从左往右边更新边计算的时候已经保证了mp[pre[i]−k]里记录的pre[j] 的下标范围是0≤j≤i 。同时，
+由于pre[i]的计算只与前一项的答案有关，因此我们可以不用建立pre数组，直接用pre变量来记录pre[i-1]的答案即可。
+*/
+
+// SubarraySum 时间复杂度O(N)，空间复杂度O(N)
+func SubarraySum(nums []int, k int) int {
+	pre, count := 0, 0
+	hashTable := make(map[int]int)
+	hashTable[0] = 1
+	for i := 0; i < len(nums); i++ {
+		pre += nums[i]
+		if v, ok := hashTable[pre-k]; ok {
+			count += v
+		}
+		hashTable[pre]++
+	}
+	return count
+}
