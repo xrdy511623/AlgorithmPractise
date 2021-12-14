@@ -673,3 +673,77 @@ func MyPowSimple(x float64, n int) float64 {
 	}
 	return 1.0 / helper(x, -n)
 }
+
+/*
+1.7 二维数组中的查找
+在一个 n * m 的二维数组中，每一行都按照从左到右递增的顺序排序，每一列都按照从上到下递增的顺序排序。请完成一个
+高效的函数，输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。
+
+示例:
+
+现有矩阵 matrix 如下：
+
+[
+  [1,   4,  7, 11, 15],
+  [2,   5,  8, 12, 19],
+  [3,   6,  9, 16, 22],
+  [10, 13, 14, 17, 24],
+  [18, 21, 23, 26, 30]
+]
+给定target=5，返回true。
+
+给定target=20，返回false。
+*/
+
+// FindNumberIn2DArrayBinary 每一行进行二分查找，时间复杂度为O(N*logM)，空间复杂度O(1)
+func FindNumberIn2DArrayBinary(matrix [][]int, target int) bool {
+	if matrix == nil || len(matrix) == 0 || len(matrix[0]) == 0 {
+		return false
+	}
+	for _, nums := range matrix {
+		if existed := BinarySearchUseRecursion(nums, target); existed {
+			return existed
+		} else {
+			continue
+		}
+	}
+	return false
+}
+
+/*
+由于给定的二维数组具备每行从左到右递增以及每列从上到下递增的特点，当访问到一个元素时，可以排除数组中的部分元素。
+从二维数组的右上角开始查找。如果当前元素等于目标值，则返回true。如果当前元素大于目标值，则移到左边一列。如果当前
+元素小于目标值，则移到下边一行。
+
+可以证明这种方法不会错过目标值。如果当前元素大于目标值，说明当前元素的下边的所有元素都一定大于目标值，因此往下查找
+不可能找到目标值，往左查找可能找到目标值。如果当前元素小于目标值，说明当前元素的左边的所有元素都一定小于目标值，
+因此往左查找不可能找到目标值，往下查找可能找到目标值。
+
+若数组为空，返回false
+初始化行下标为0，列下标为二维数组的列数减1
+重复下列步骤，直到行下标或列下标超出边界
+获得当前下标位置的元素 num
+如果 num 和 target 相等，返回 true
+如果 num 大于 target，列下标减 1
+如果 num 小于 target，行下标加 1
+循环体执行完毕仍未找到元素等于 target ，说明不存在这样的元素，返回 false
+*/
+
+// FindNumberIn2DArray 时间复杂度为O(N+M)，空间复杂度O(1)
+func FindNumberIn2DArray(matrix [][]int, target int) bool {
+	if matrix == nil || len(matrix) == 0 || len(matrix[0]) == 0 {
+		return false
+	}
+	rows, columns := len(matrix), len(matrix[0])
+	row, column := 0, columns-1
+	for row < rows && column >= 0 {
+		if matrix[row][column] == target {
+			return true
+		} else if matrix[row][column] > target {
+			column--
+		} else {
+			row++
+		}
+	}
+	return false
+}

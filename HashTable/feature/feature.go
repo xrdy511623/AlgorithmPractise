@@ -6,7 +6,37 @@ import (
 )
 
 /*
-1.1 无重复字符的最长子串
+1.1 两个数组的交集
+给定两个数组，编写一个函数来计算它们的交集。
+
+示例1：
+输入：nums1 = [1,2,2,1], nums2 = [2,2]
+输出：[2]
+
+示例2：
+输入：nums1 = [4,9,5], nums2 = [9,4,9,8,4]
+输出：[9,4]
+*/
+
+// FindIntersection 时间复杂度O(M+N)，空间复杂度O(M)
+func FindIntersection(nums1 []int, nums2 []int) []int {
+	var res []int
+	hashTable := make(map[int]bool)
+	for i := 0; i < len(nums1); i++ {
+		hashTable[nums1[i]] = true
+	}
+	for i := 0; i < len(nums2); i++ {
+		if _, ok := hashTable[nums2[i]]; ok {
+			res = append(res, nums2[i])
+		}
+		// 因为交集中相同的元素只保留一个，所以需要这么操作
+		delete(hashTable, nums2[i])
+	}
+	return res
+}
+
+/*
+1.2 无重复字符的最长子串
 给定一个字符串s ，请你找出其中不含有重复字符的最长子串的长度。
 输入: s = "abcabcbb"
 输出: 3
@@ -50,7 +80,7 @@ func LengthOfLongestSubString(s string) int {
 }
 
 /*
-1.2 最长连续序列
+1.3 最长连续序列
 给定一个未排序的整数数组nums，找出数字连续的最长序列（不要求序列元素在原数组中连续）的长度。
 请你设计并实现时间复杂度为O(n)的算法解决此问题。
 
@@ -109,7 +139,7 @@ func LongestConsecutive(nums []int) int {
 }
 
 /*
-1.3 最小覆盖子串
+1.4 最小覆盖子串
 给你一个字符串s、一个字符串t。返回s中涵盖t所有字符的最小子串。如果s中不存在涵盖t所有字符的子串，则返回空字符串""。
 
 注意：
@@ -171,7 +201,7 @@ func MinWindow(s, t string) string {
 }
 
 /*
-1.4 和为k的连续子数组
+1.5 和为k的连续子数组
 给你一个整数数组nums和一个整数k ，请你统计并返回该数组中和为k的连续子数组的个数。
 
 示例1：
