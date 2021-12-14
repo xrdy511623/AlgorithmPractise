@@ -58,3 +58,15 @@ func TestMultiBagProblem(t *testing.T) {
 	}
 	fmt.Println("pass")
 }
+
+
+func TestMassageArrangement(t *testing.T) {
+	//nums := []int{2,1,4,5,3,1,1,3}
+	nums := []int{2,7,9,3,1}
+	get := MassageArrangement(nums)
+	want := 12
+	if get != want {
+		t.Errorf("excepted:%v, got:%v", want, get)
+	}
+	fmt.Println("pass")
+}

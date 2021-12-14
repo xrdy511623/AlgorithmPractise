@@ -475,53 +475,84 @@ func MaxSubArraySimple(nums []int) int {
 
 /*
 1.7  乘积最大子数组
-给你一个整数数组 nums，请你找出数组中乘积最大的连续子数组（该子数组中至少包含一个数字），并返回该子数组所对应
-的乘积。
+给你一个整数数组 nums，请你找出数组中乘积最大的连续子数组（该子数组中至少包含一个数字），并返回该子数组所
+对应的乘积。
 
 
 示例1:
-
 输入: [2,3,-2,4]
 输出: 6
 解释:子数组 [2,3] 有最大乘积 6。
 
-示例 2:
+示例2:
 输入: [-2,0,-1]
 输出: 0
 解释:结果不能为 2, 因为 [-2,-1] 不是子数组。
- */
+*/
 
+/*
+思路:动态规划
+1 确定dp数组及其下标含义
+dp[i]表示nums数组在[0, i](注意是左闭右闭区间)范围内(连续子数组)的最大乘积
+
+2 确定递推公式
+根据上题1.6 最大子序和我们似乎很容易联想到它的递推公式是:
+dp[i] = max(dp[i-1]*nums[i], nums[i])
+但是这个递推公式是错的，如果a={5,6,−3,4,−3}，那么据此递推公式，对应的dp数组应该是
+5,30,-3,4,-3,似乎最大乘积就是30，但实际上最大乘积是数组所有元素的乘积1080，原因在于这里的定义并不满足
+最优子结构，乘积不同于求和，最大乘积不一定就是前面的最大乘积*nums[i]，还有可能是前面的最小乘积*nums[i]，
+因为最小乘积可能是一个绝对值很大的负数，如果nums[i]也是负数，那么负负得正，有可能就成了最大乘积了。
+所以我们需要分开讨论，如果nums[i]为正数，我们希望以i-1结尾的子数组的乘积是一个尽可能大的正数；反之如果
+nums[i]为负数，我们希望以i-1结尾的子数组的乘积是一个尽可能小(绝对值尽可能大)的负数，这样就得到了本题的
+递推公式:
+maxDp[i] = max(maxDp[i-1]*nums[i],max(minDp[i-1)*nums[i], nums[i])
+minDp[i] = min(minDp[i-1]*nums[i],min(maxDp[i-1)*nums[i], nums[i])
+
+3 初始化dp数组
+由递推公式可知，dp[i]依赖于dp[i-1]，所以dp[0]一定要初始化，显然maxDp[0]和minDp[0]都是nums[0]
+
+4 确定遍历顺序
+由递推公式可知，应该是从前往后正序遍历
+
+5 举例推导dp数组
+如果a={5, 6, −3, 4, −3}，据递推公式，对应的两个dp数组应该是
+maxDp 5  30 -3  4  1080
+minDp 5  6 -90 -360 -12
+最后返回1080
+*/
+
+// MaxProduct 时间复杂度O(3N)，空间复杂度O(2N)
 func MaxProduct(nums []int) int {
 	n := len(nums)
-	if n == 0{
+	if n == 0 {
 		return 0
 	}
-	if n == 1{
+	if n == 1 {
 		return nums[0]
 	}
-	dpMax := make([]int, n)
-	dpMin := make([]int, n)
-	dpMax[0], dpMin[0] = nums[0], nums[0]
+	maxDp := make([]int, n)
+	minDp := make([]int, n)
+	maxDp[0], minDp[0] = nums[0], nums[0]
 	max := nums[0]
-	for i:=1;i<n;i++{
-		dpMax[i] = Utils.Max(dpMax[i-1]*nums[i], Utils.Max(nums[i], dpMin[i-1]*nums[i]))
-		dpMin[i] = Utils.Min(dpMin[i-1]*nums[i], Utils.Min(nums[i], dpMax[i-1]*nums[i]))
-		max = Utils.Max(max, dpMax[i])
+	for i := 1; i < n; i++ {
+		maxDp[i] = Utils.Max(maxDp[i-1]*nums[i], Utils.Max(minDp[i-1]*nums[i], nums[i]))
+		minDp[i] = Utils.Min(minDp[i-1]*nums[i], Utils.Min(maxDp[i-1]*nums[i], nums[i]))
+		max = Utils.Max(max, maxDp[i])
 	}
 	return max
 }
 
-
+// MaxProductSimple 更简单的写法 时间复杂度O(3N)，空间复杂度O(1)
 func MaxProductSimple(nums []int) int {
 	n := len(nums)
-	if n == 0{
+	if n == 0 {
 		return 0
 	}
-	if n == 1{
+	if n == 1 {
 		return nums[0]
 	}
 	maxP, minP, max := nums[0], nums[0], nums[0]
-	for i:=1;i<len(nums);i++{
+	for i := 1; i < len(nums); i++ {
 		mx, mn := maxP, minP
 		maxP = Utils.Max(mx*nums[i], Utils.Max(mn*nums[i], nums[i]))
 		minP = Utils.Min(mn*nums[i], Utils.Min(mx*nums[i], nums[i]))
@@ -529,7 +560,6 @@ func MaxProductSimple(nums []int) int {
 	}
 	return max
 }
-
 
 /*
 1.8 判断子序列

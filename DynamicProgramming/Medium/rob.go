@@ -6,7 +6,7 @@ import (
 )
 
 /*
-1.1 打家劫舍
+1.1 打家劫舍I
 你是一个专业的小偷，计划偷窃沿街的房屋。每间房内都藏有一定的现金，影响你偷窃的唯一制约因素就是相邻的房屋装有相互连通的防盗系统，如果两间相邻的
 房屋在同一晚上被小偷闯入，系统会自动报警。
 给定一个代表每个房屋存放金额的非负整数数组，计算你不触动警报装置的情况下 ，一夜之内能够偷窃到的最高金额。
@@ -60,7 +60,7 @@ func Rob(nums []int) int {
 		dp := make([]int, n)
 		dp[0], dp[1] = nums[0], Utils.Max(nums[0], nums[1])
 		for i := 2; i < n; i++ {
-			dp[i] = Utils.Max(dp[i-2]+nums[i], dp[i-1])
+			dp[i] = Utils.Max(dp[i-1], dp[i-2]+nums[i])
 		}
 		maxValue = dp[n-1]
 	}
@@ -203,4 +203,85 @@ func RobTree(node *Entity.TreeNode) []int {
 	notRobCur := Utils.Max(left[0], left[1]) + Utils.Max(right[0], right[1])
 	robCur := node.Val + left[0] + right[0]
 	return []int{notRobCur, robCur}
+}
+
+/*
+1.4 按摩师预约
+一个有名的按摩师会收到源源不断的预约请求，每个预约都可以选择接或不接。在每次预约服务之间要有休息时间，因此她
+不能接受相邻的预约。给定一个预约请求序列，替按摩师找到最优的预约集合（总预约时间最长），返回总的分钟数。
+
+注意：本题相对原题稍作改动
+
+示例1：
+输入： [1,2,3,1]
+输出： 4
+解释： 选择1号预约和3号预约，总时长 = 1 + 3 = 4。
+
+示例2：
+输入： [2,7,9,3,1]
+输出： 12
+解释： 选择1号预约、 3号预约和5号预约，总时长 = 2 + 9 + 1 = 12。
+
+示例3：
+输入： [2,1,4,5,3,1,1,3]
+输出： 12
+解释： 选择1号预约、 3号预约、 5号预约和8号预约，总时长 = 2 + 4 + 3 + 3 = 12。
+*/
+
+/*
+稍加分析便可发现本题跟1.1 打家劫舍I几乎是雷同，所以代码不用改就可以AC了，爽歪歪。
+*/
+func MassageArrange(nums []int) int {
+	maxValue := 0
+	n := len(nums)
+	switch n {
+	case 0:
+		maxValue = 0
+	case 1:
+		maxValue = nums[0]
+	case 2:
+		maxValue = Utils.Max(nums[0], nums[1])
+	default:
+		dp := make([]int, n)
+		dp[0], dp[1] = nums[0], Utils.Max(nums[0], nums[1])
+		for i := 2; i < n; i++ {
+			dp[i] = Utils.Max(dp[i-1], dp[i-2]+nums[i])
+		}
+		maxValue = dp[n-1]
+	}
+	return maxValue
+}
+
+/*
+或者也可以区分两种状态下的递推公式
+dp[i][0]表示第i个预约不接的最长预约时间，dp[i][1]表示第i个预约接的最长预约时间，那么递推公式很明显应该是
+dp[i][0] = max(dp[i-1][0], dp[i-1][1])
+dp[i][1] = dp[i-1][0]+nums[i]
+最后返回max(dp[n-1][0], dp[n-1][1])即可
+*/
+
+func MassageArrangement(nums []int) int {
+	maxValue := 0
+	n := len(nums)
+	switch n {
+	case 0:
+		maxValue = 0
+	case 1:
+		maxValue = nums[0]
+	case 2:
+		maxValue = Utils.Max(nums[0], nums[1])
+	default:
+		dp := make([][]int, n)
+		for i := 0; i < n; i++ {
+			dp[i] = make([]int, 2)
+		}
+		dp[0][0] = 0
+		dp[0][1] = nums[0]
+		for i := 1; i < n; i++ {
+			dp[i][0] = Utils.Max(dp[i-1][0], dp[i-1][1])
+			dp[i][1] = dp[i-1][0] + nums[i]
+		}
+		maxValue = Utils.Max(dp[n-1][0], dp[n-1][1])
+	}
+	return maxValue
 }
