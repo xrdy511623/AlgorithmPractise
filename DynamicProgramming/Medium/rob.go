@@ -231,6 +231,8 @@ func RobTree(node *Entity.TreeNode) []int {
 /*
 稍加分析便可发现本题跟1.1 打家劫舍I几乎是雷同，所以代码不用改就可以AC了，爽歪歪。
 */
+
+// MassageArrange 时间复杂度O(N),空间复杂度O(N)
 func MassageArrange(nums []int) int {
 	maxValue := 0
 	n := len(nums)
@@ -260,6 +262,7 @@ dp[i][1] = dp[i-1][0]+nums[i]
 最后返回max(dp[n-1][0], dp[n-1][1])即可
 */
 
+// MassageArrangement 时间复杂度O(2N),空间复杂度O(2N)
 func MassageArrangement(nums []int) int {
 	maxValue := 0
 	n := len(nums)
