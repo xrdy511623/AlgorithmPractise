@@ -236,7 +236,7 @@ func SubarraySumSimple(nums []int, k int) int {
 
 /*
 思路二:前缀和+哈希表优化
-我们可以基于方法一利用数据结构进行进一步的优化，我们知道方法一的瓶颈在于对每个i，我们需要枚举所有的 j来判断是否符合
+我们可以基于方法一利用数据结构进行进一步的优化，我们知道方法一的瓶颈在于对每个i，我们需要枚举所有的j来判断是否符合
 条件，这一步是否可以优化呢？答案是可以的。
 
 我们定义pre[i]为[0..i]里所有数的和，则pre[i]可以由pre[i−1]递推而来，即：
@@ -271,3 +271,49 @@ func SubarraySum(nums []int, k int) int {
 	return count
 }
 
+/*
+1.6 前k个高频元素
+给你一个整数数组nums和一个整数k ，请你返回其中出现频率前k高的元素。你可以按任意顺序返回答案。
+
+示例1:
+输入: nums = [1,1,1,2,2,3], k = 2
+输出: [1,2]
+
+示例2:
+输入: nums = [1], k = 1
+输出: [1]
+
+提示：
+1 <= nums.length <= 105
+k 的取值范围是 [1, 数组中不相同的元素的个数]
+题目数据保证答案唯一，换句话说，数组中前k个高频元素的集合是唯一的
+进阶：你所设计算法的时间复杂度必须优于O(NlogN) ，其中n是数组大小。
+*/
+
+func TopKFrequent(nums []int, k int) []int {
+	freqMap := make(map[int]int)
+	maxFreq := math.MinInt32
+	for _, v := range nums {
+		if _, ok := freqMap[v]; ok {
+			freqMap[v]++
+		} else {
+			freqMap[v] = 1
+		}
+		if freqMap[v] > maxFreq {
+			maxFreq = freqMap[v]
+		}
+	}
+	hashTop := make([][]int, maxFreq+1)
+	for key, val := range freqMap {
+		hashTop[val] = append(hashTop[val], key)
+	}
+	res := make([]int, 0)
+	for i := maxFreq; i >= 0; i-- {
+		res = append(res, hashTop[i]...)
+		k -= len(hashTop[i])
+		if k == 0 {
+			break
+		}
+	}
+	return res
+}
