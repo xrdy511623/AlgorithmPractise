@@ -1,6 +1,7 @@
 package Greedy
 
 import (
+	"AlgorithmPractise/BinaryTree/Entity"
 	"AlgorithmPractise/Utils"
 	"sort"
 	"strconv"
@@ -1034,4 +1035,66 @@ func MaxProfitIncludeFee(prices []int, fee int) int {
 		}
 	}
 	return maxProfit
+}
+
+/*
+1.18 监控二叉树
+给定一个二叉树，我们在树的节点上安装摄像头。
+节点上的每个摄影头都可以监视其父对象、自身及其直接子对象。
+计算监控树的所有节点所需的最小摄像头数量。
+
+示例1：
+输入：[0,0,null,0,0] 输出:1 解释：如图所示，一台摄像头足以监控所有节点。
+
+示例2：
+输入：[0,0,null,0,null,0,null,null,0] 输出:2 解释：需要至少两个摄像头来监视树的所有节点。
+
+提示：
+给定树的节点数的范围是 [1, 1000]。
+每个节点的值都是0。
+*/
+
+/*
+思路:贪心算法解决
+如果一个节点有孩子节点且没有被摄像机覆盖,则我们需要放置一个摄像机在该节点.此外,
+如果一个节点没有父节点且没有被覆盖，则必须放置一个摄像机在该节点.
+还有一点很关键，就是遍历树的过程中，会遇到空节点，那么问题来了，空节点究竟是哪一种状态呢？空节点表示无覆盖？
+表示有摄像头？还是有覆盖呢？
+回归本质，为了让摄像头数量最少，我们要尽量让叶子节点的父节点安装摄像头，这样才能摄像头的数量最少。
+那么空节点不能是无覆盖的状态，这样叶子节点就要放摄像头了，空节点也不能是有摄像头的状态，这样叶子节点的父节点
+就没有必要放摄像头了，而是可以把摄像头放在叶子节点的爷爷节点上。
+所以空节点的状态只能是有覆盖，这样就可以在叶子节点的父节点放摄像头了
+*/
+
+// MinCameraCover 时间复杂度O(N), 空间复杂度O(2N)
+func MinCameraCover(root *Entity.TreeNode) int {
+	// 定义哈希表covered记录节点是否被监视
+	covered := make(map[*Entity.TreeNode]bool)
+	// 空节点一律记录为已被监控
+	covered[nil] = true
+	// 定义哈希表parentMap记录节点的父亲节点
+	parentMap := make(map[*Entity.TreeNode]*Entity.TreeNode)
+	// 需要的摄像头数量，初始值为0
+	camera := 0
+	var dfs func(*Entity.TreeNode, *Entity.TreeNode)
+	dfs = func(node, parent *Entity.TreeNode) {
+		if node != nil {
+			// 记录当前节点的父节点
+			parentMap[node] = parent
+			// 递归遍历当前节点的左子树
+			dfs(node.Left, node)
+			// 递归遍历当前节点的右子树
+			dfs(node.Right, node)
+			// 如果是必须要放置摄像头的情况，那么所有相关节点都要记录为已被监控
+			if (parentMap[node] == nil && !covered[node]) || !covered[node.Left] || !covered[node.Right] {
+				camera++
+				covered[node] = true
+				covered[parentMap[node]] = true
+				covered[node.Left] = true
+				covered[node.Right] = true
+			}
+		}
+	}
+	dfs(root, nil)
+	return camera
 }
