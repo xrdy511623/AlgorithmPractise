@@ -664,8 +664,8 @@ func ReconstructQueue(people [][]int) [][]int {
 在二维空间中有许多球形的气球。对于每个气球，提供的输入是水平方向上，气球直径的开始和结束坐标。由于它是水平的，
 所以纵坐标并不重要，因此只要知道开始和结束的横坐标就足够了。开始坐标总是小于结束坐标。
 
-一支弓箭可以沿着 x 轴从不同点完全垂直地射出。在坐标 x 处射出一支箭，若有一个气球的直径的开始和结束坐标为
-xstart，xend， 且满足  xstart ≤ x ≤ xend，则该气球会被引爆。可以射出的弓箭的数量没有限制。弓箭一旦被射出
+一支弓箭可以沿着x轴从不同点完全垂直地射出。在坐标x处射出一支箭，若有一个气球的直径的开始和结束坐标为
+xstart，xend， 且满足xstart ≤ x ≤ xend，则该气球会被引爆。可以射出的弓箭的数量没有限制。弓箭一旦被射出
 之后，可以无限地前进。我们想找到使得所有气球全部被引爆，所需的弓箭的最小数量。
 
 给你一个数组points ，其中points [i] = [xstart,xend] ，返回引爆所有气球所必须射出的最小弓箭数。
@@ -717,4 +717,110 @@ func FindMinArrowShots(points [][]int) int {
 		}
 	}
 	return num
+}
+
+/*
+1.13 给定一个区间的集合，找到需要移除区间的最小数量，使剩余区间互不重叠。
+注意: 可以认为区间的终点总是大于它的起点。 区间[1,2]和[2,3] 的边界相互“接触”，但没有相互重叠。
+
+示例1:
+输入: [ [1,2], [2,3], [3,4], [1,3] ] 输出: 1 解释: 移除 [1,3] 后，剩下的区间没有重叠。
+
+示例2:
+输入: [ [1,2], [1,2], [1,2] ] 输出: 2 解释: 你需要移除两个 [1,2] 来使剩下的区间没有重叠。
+
+示例3:
+输入: [ [1,2], [2,3] ] 输出: 0 解释: 你不需要移除任何区间，因为它们已经是无重叠的了。
+*/
+
+/*
+思路一:动态规划
+题目的要求等价于选出最多数量的区间，使得它们互不重叠。最后intervals的长度减去最大的不重叠区间数，即为
+重叠的区间数，也就是需要移除的最小区间数，注意题目只要求出这个需要移除的最小区间数就可以了，没说一定要
+去实际的移除这些重叠区间，千万不要陷在这个思维误区里出不来哈。
+
+首先我们需要对数组intervals按照左端进行升序排序，然后对有序的intervals进行动态规划。
+
+1 确定dp数组及其下标含义
+dp[i]表示intervals[0:i](注意是左闭右闭区间)区间范围内的最大的不重叠区间数。
+
+2 确定递推公式
+对于j:=0;j<i;j++, 由于我们已经按照左端点进行升序排序了，所以只要满足intervals[j][1] <= intervals[i][0]，
+那就意味着第j个区间一定不与第i个区间重叠，我们又找到了一个不重叠区间，所以在所有满足要求的dp[j]中，选择最大的
+那一个进行状态转移，递推公式就是dp[i] = Max(dp[i], dp[j]+1)
+
+3 初始化dp数组
+显然，在intervals[0:i]区间范围内的不重叠区间数至少都是1，极限情况下所有的区间都是一样的，重叠区间为n-1,
+那不重叠区间至少也有1个
+
+4 确定遍历顺序
+从递推公式可知，dp[i]依赖于位置比它靠前的dp[j]，所以肯定是从前往后遍历
+
+5 举例推导dp数组
+以排序后的intervals数组为例:
+     [ [1,2], [1,3], [2,3], [3,4] ]
+下标   0       1      2      3
+值     1       1     2       3
+所以最后返回len(intervals)-maxValueOfArray(dp) = 4 - 3 = 1
+*/
+
+// EraseOverlapIntervalsComplex 时间复杂度O(N^2+NlogN), 空间复杂度O(N)
+func EraseOverlapIntervalsComplex(intervals [][]int) int {
+	n := len(intervals)
+	if n <= 1 {
+		return 0
+	}
+	dp := make([]int, n)
+	for i := 0; i < n; i++ {
+		dp[i] = 1
+	}
+	// 升序排序，时间复杂度O(NlogN)
+	sort.Slice(intervals, func(i, j int) bool {
+		return intervals[i][0] < intervals[j][0]
+	})
+	maxNonOverlap := 1
+	// 动态规划，为动归数组dp进行状态转移，时间复杂度O(N^2)
+	for i := 1; i < n; i++ {
+		for j := 0; j < i; j++ {
+			if intervals[j][1] <= intervals[i][0] {
+				dp[i] = Utils.Max(dp[i], dp[j]+1)
+			}
+		}
+		// 迭代最大的不重叠区间数
+		if maxNonOverlap < dp[i] {
+			maxNonOverlap = dp[i]
+		}
+	}
+	// len(intervals)-maxNonOverlap即为所求要移除的最小重叠区间数
+	return n - maxNonOverlap
+}
+
+/*
+思路二:贪心
+仔细分析，本题其实与1.12 用最少数量的箭引爆气球非常类似，唯一的差别只是判定重叠的边界条件略有不同。
+所以只需将该题的代码拿过来略加修改便可AC了,是不是很爽啊？
+*/
+
+// EraseOverlapIntervals 时间复杂度O(NlogN+N), 空间复杂度O(1)
+func EraseOverlapIntervals(intervals [][]int) int {
+	n := len(intervals)
+	if n <= 1 {
+		return 0
+	}
+	// 升序排序，时间复杂度O(NlogN)
+	sort.Slice(intervals, func(i, j int) bool {
+		return intervals[i][0] < intervals[j][0]
+	})
+	minOverlap := 0
+	// 本段代码时间复杂度O(N)
+	for i := 1; i < n; i++ {
+		// 因为已经按照左端点进行升序排序，所以只要左边的右端点越过了右边的左端点，便出现了重叠区间
+		if intervals[i-1][1] > intervals[i][0] {
+			// 此时需要移除的最小重叠区间数累加1
+			minOverlap++
+			// 要移除的重叠区间数最小，自然是要右边的右端点尽可能小，才能尽可能的不与后继区间(i+1区间)重叠
+			intervals[i][1] = Utils.Min(intervals[i-1][1], intervals[i][1])
+		}
+	}
+	return minOverlap
 }
