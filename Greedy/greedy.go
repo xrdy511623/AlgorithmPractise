@@ -605,3 +605,116 @@ func LemonadeChange(bills []int) bool {
 	}
 	return true
 }
+
+/*
+1.11 根据身高重建队列
+假设有打乱顺序的一群人站成一个队列，数组people表示队列中一些人的属性（不一定按顺序）。每个people[i]=[hi, ki]
+表示第i个人的身高为hi ，前面正好有ki个身高大于或等于hi的人。
+
+请你重新构造并返回输入数组people所表示的队列。返回的队列应该格式化为数组queue ，其中queue[j] = [hj, kj]
+是队列中第j个人的属性（queue[0] 是排在队列前面的人）。
+
+示例1：
+输入：people = [[7,0],[4,4],[7,1],[5,0],[6,1],[5,2]]
+输出：[[5,0],[7,0],[5,2],[6,1],[4,4],[7,1]]
+解释：
+编号为 0 的人身高为 5 ，没有身高更高或者相同的人排在他前面。
+编号为 1 的人身高为 7 ，没有身高更高或者相同的人排在他前面。
+编号为 2 的人身高为 5 ，有 2 个身高更高或者相同的人排在他前面，即编号为 0 和 1 的人。
+编号为 3 的人身高为 6 ，有 1 个身高更高或者相同的人排在他前面，即编号为 1 的人。
+编号为 4 的人身高为 4 ，有 4 个身高更高或者相同的人排在他前面，即编号为 0、1、2、3 的人。
+编号为 5 的人身高为 7 ，有 1 个身高更高或者相同的人排在他前面，即编号为 1 的人。
+因此 [[5,0],[7,0],[5,2],[6,1],[4,4],[7,1]] 是重新构造后的队列。
+
+示例 2：
+输入：people = [[6,0],[5,0],[4,0],[3,2],[2,2],[1,4]]
+输出：[[4,0],[5,0],[2,2],[3,2],[1,4],[6,0]]
+
+提示：
+1 <= people.length <= 2000
+0 <= hi <= 10^6
+0 <= ki < people.length
+题目数据确保队列可以被重建
+*/
+
+// ReconstructQueue 时间复杂度O(N^2),空间复杂度O(logN)
+func ReconstructQueue(people [][]int) [][]int {
+	sort.Slice(people, func(i, j int) bool {
+		a, b := people[i], people[j]
+		return a[0] < b[0] || a[0] == b[0] && a[1] > b[1]
+	})
+	queue := make([][]int, len(people))
+	for _, person := range people {
+		position := person[1] + 1
+		for i := range queue {
+			if queue[i] == nil {
+				position--
+				if position == 0 {
+					queue[i] = person
+					break
+				}
+			}
+		}
+	}
+	return queue
+}
+
+/*
+1.12 用最少数量的箭引爆气球
+在二维空间中有许多球形的气球。对于每个气球，提供的输入是水平方向上，气球直径的开始和结束坐标。由于它是水平的，
+所以纵坐标并不重要，因此只要知道开始和结束的横坐标就足够了。开始坐标总是小于结束坐标。
+
+一支弓箭可以沿着 x 轴从不同点完全垂直地射出。在坐标 x 处射出一支箭，若有一个气球的直径的开始和结束坐标为
+xstart，xend， 且满足  xstart ≤ x ≤ xend，则该气球会被引爆。可以射出的弓箭的数量没有限制。弓箭一旦被射出
+之后，可以无限地前进。我们想找到使得所有气球全部被引爆，所需的弓箭的最小数量。
+
+给你一个数组points ，其中points [i] = [xstart,xend] ，返回引爆所有气球所必须射出的最小弓箭数。
+
+示例1：
+输入：points = [[10,16],[2,8],[1,6],[7,12]]
+输出：2
+解释：对于该样例，x = 6 可以射爆 [2,8],[1,6] 两个气球，以及 x = 11 射爆另外两个气球
+
+示例2：
+输入：points = [[1,2],[3,4],[5,6],[7,8]]
+输出：4
+
+示例3：
+输入：points = [[1,2],[2,3],[3,4],[4,5]]
+输出：2
+
+示例4：
+输入：points = [[1,2]]
+输出：1
+
+示例5：
+输入：points = [[2,3],[2,3]]
+输出：1
+
+提示：
+0 <= points.length <= 10^4
+points[i].length == 2
+-2^31 <= xstart < xend <= 2^31 - 1
+*/
+
+// FindMinArrowShots 时间复杂度O(NlogN),空间复杂度O(1)
+func FindMinArrowShots(points [][]int) int {
+	n := len(points)
+	if n <= 1 {
+		return n
+	}
+	sort.Slice(points, func(i, j int) bool {
+		return points[i][0] < points[j][0]
+	})
+	num := 1
+	for i := 1; i < n; i++ {
+		// 两个气球不重叠，则需要的弓箭数+1
+		if points[i][0] > points[i-1][1] {
+			num++
+		} else {
+			// 两个气球重叠，则更新右边气球的最小右边界
+			points[i][1] = Utils.Min(points[i-1][1], points[i][1])
+		}
+	}
+	return num
+}
