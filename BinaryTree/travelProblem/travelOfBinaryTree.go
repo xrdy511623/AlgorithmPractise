@@ -169,8 +169,8 @@ func reverseNodes(nodes []*Entity.Node) []*Entity.Node {
 }
 
 /*
-1.3进阶，N叉树的后序遍历
-定一个N叉树，返回其节点值的前序遍历 。
+1.3 进阶，N叉树的后序遍历
+定一个N叉树，返回其节点值的后序遍历 。
 N叉树在输入中按层序遍历进行序列化表示，每组子节点由空值null分隔（请参见示例）。
    			1
 		/   \  \
@@ -214,17 +214,17 @@ func LevelOrder(root *Entity.TreeNode) []int {
 		return res
 	}
 	queue := []*Entity.TreeNode{root}
-	for i := 0; i < len(queue); i++ {
-		node := queue[i]
+	for len(queue) != 0{
+		node := queue[0]
+		queue = queue[1:]
 		res = append(res, node.Val)
-		if node.Left != nil {
+		if node.Left != nil{
 			queue = append(queue, node.Left)
 		}
-		if node.Right != nil {
+		if node.Right != nil{
 			queue = append(queue, node.Right)
 		}
 	}
-
 	return res
 }
 
@@ -235,20 +235,20 @@ func LevelOrder(root *Entity.TreeNode) []int {
 
 func LevelOrderComplex(root *Entity.TreeNode) [][]int {
 	var res [][]int
-	if root == nil {
+	if root == nil{
 		return res
 	}
 	queue := []*Entity.TreeNode{root}
 	level := 0
-	for len(queue) != 0 {
-		temp := []*Entity.TreeNode{}
+	for len(queue) != 0{
+		var temp []*Entity.TreeNode
 		res = append(res, []int{})
-		for _, node := range queue {
+		for _, node := range queue{
 			res[level] = append(res[level], node.Val)
-			if node.Left != nil {
+			if node.Left != nil{
 				temp = append(temp, node.Left)
 			}
-			if node.Right != nil {
+			if node.Right != nil{
 				temp = append(temp, node.Right)
 			}
 		}
@@ -313,27 +313,26 @@ func zigzagLevelOrder(root *Entity.TreeNode) [][]int {
 		return res
 	}
 	queue := []*Entity.TreeNode{root}
-	level := 0
+	level := 1
 	for len(queue) != 0 {
-		levelSize := len(queue)
+		var temp []*Entity.TreeNode
 		var curLevel []int
-		for i := 0; i < levelSize; i++ {
-			node := queue[0]
-			queue = queue[1:]
+		for _, node := range queue{
 			curLevel = append(curLevel, node.Val)
 			if node.Left != nil {
-				queue = append(queue, node.Left)
+				temp = append(temp, node.Left)
 			}
 			if node.Right != nil {
-				queue = append(queue, node.Right)
+				temp = append(temp, node.Right)
 			}
 		}
-		level++
-		if level%2 == 0 {
+		if level % 2 == 0 {
 			res = append(res, ReverseArray(curLevel))
 		} else {
 			res = append(res, curLevel)
 		}
+		level++
+		queue = temp
 	}
 	return res
 }

@@ -20,4 +20,4 @@ var node5 = &TreeNode{13, nil, nil}
 var node4 = &TreeNode{11, node7, node8}
 var node3 = &TreeNode{8, node5, node6}
 var node2 = &TreeNode{4, node4, nil}
-var Node1 = &TreeNode{5, node2, node3}
+var Root = &TreeNode{5, node2, node3}
