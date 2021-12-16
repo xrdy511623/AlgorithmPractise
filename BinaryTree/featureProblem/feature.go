@@ -119,7 +119,7 @@ p != q
 p和q均存在于给定的二叉树中。
 */
 
-// NearestCommonAncestor 递归解决
+// NearestCommonAncestor 递归解决, 参看二叉树的最近公共祖先.png
 func NearestCommonAncestor(root, p, q *Entity.TreeNode) *Entity.TreeNode {
 	if root == nil || p == root || q == root {
 		return root
@@ -412,7 +412,7 @@ func VerifyPostOrder(postOrder []int) bool {
 
 /*
 本题其实与leetcode 102 二叉树的层序遍历本质上是一样的，所谓右视图不过就是遍历的每一层最右侧节点集合而已
- */
+*/
 
 // RightSideView BFS(广度优先遍历解决)，时间复杂度O(N),空间复杂度O(N)
 func RightSideView(root *Entity.TreeNode) []int {
@@ -710,7 +710,6 @@ func Successor(node *Entity.TreeNode) *Entity.TreeNode {
 	return post
 }
 
-
 /*
 1.17 二叉搜索树的最大宽度
 给定一个二叉树，编写一个函数来获取这个树的最大宽度。树的宽度是所有层中的最大宽度。这个二叉树与满二叉树
@@ -730,33 +729,33 @@ func Successor(node *Entity.TreeNode) *Entity.TreeNode {
 
 输出: 4
 解释: 最大值出现在树的第 3 层，宽度为 4 (5,3,null,9)。
- */
+*/
 
 /*
 思路:题目中的二叉树在同一层的最左边和最右边节点之间允许有空节点，但是计算宽度时空节点也包括在内，那我们可以
 模拟把这些空节点填充上，具体来说就是在每一层从左到右给每个节点编号(单调递增1)，这样一来，每层的宽度就等于
 最右边节点的编号-最右边节点的编号+1.
- */
+*/
 
 // WidthOfBinaryTree 时间复杂度O(N),空间复杂度O(N)
 func WidthOfBinaryTree(root *Entity.TreeNode) int {
 	maxWidth := 0
-	if root == nil{
+	if root == nil {
 		return maxWidth
 	}
 	// 根节点编号设置为1
 	queue := []Element{Element{root, 1}}
-	for len(queue) != 0{
+	for len(queue) != 0 {
 		var temp []Element
-		for _, element := range queue{
-			if element.Node.Left != nil{
-				temp = append(temp, Element{element.Node.Left, element.Number*2})
+		for _, element := range queue {
+			if element.Node.Left != nil {
+				temp = append(temp, Element{element.Node.Left, element.Number * 2})
 			}
-			if element.Node.Right != nil{
-				temp = append(temp, Element{element.Node.Right, element.Number*2+1})
+			if element.Node.Right != nil {
+				temp = append(temp, Element{element.Node.Right, element.Number*2 + 1})
 			}
 		}
-		maxWidth = Utils.Max(maxWidth, queue[len(queue)-1].Number - queue[0].Number + 1)
+		maxWidth = Utils.Max(maxWidth, queue[len(queue)-1].Number-queue[0].Number+1)
 		queue = temp
 	}
 	return maxWidth
