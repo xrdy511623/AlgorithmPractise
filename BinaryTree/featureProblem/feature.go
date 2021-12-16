@@ -709,3 +709,55 @@ func Successor(node *Entity.TreeNode) *Entity.TreeNode {
 	}
 	return post
 }
+
+
+/*
+1.17 二叉搜索树的最大宽度
+给定一个二叉树，编写一个函数来获取这个树的最大宽度。树的宽度是所有层中的最大宽度。这个二叉树与满二叉树
+（full binary tree）结构相同，但一些节点为空。
+
+每一层的宽度被定义为两个端点（该层最左和最右的非空节点，两端点间的null节点也计入长度）之间的长度。
+
+示例1:
+
+输入:
+
+           1
+         /   \
+        3     2
+       / \     \
+      5   3     9
+
+输出: 4
+解释: 最大值出现在树的第 3 层，宽度为 4 (5,3,null,9)。
+ */
+
+/*
+思路:题目中的二叉树在同一层的最左边和最右边节点之间允许有空节点，但是计算宽度时空节点也包括在内，那我们可以
+模拟把这些空节点填充上，具体来说就是在每一层从左到右给每个节点编号(单调递增1)，这样一来，每层的宽度就等于
+最右边节点的编号-最右边节点的编号+1.
+ */
+
+// WidthOfBinaryTree 时间复杂度O(N),空间复杂度O(N)
+func WidthOfBinaryTree(root *Entity.TreeNode) int {
+	maxWidth := 0
+	if root == nil{
+		return maxWidth
+	}
+	// 根节点编号设置为1
+	queue := []Element{Element{root, 1}}
+	for len(queue) != 0{
+		var temp []Element
+		for _, element := range queue{
+			if element.Node.Left != nil{
+				temp = append(temp, Element{element.Node.Left, element.Number*2})
+			}
+			if element.Node.Right != nil{
+				temp = append(temp, Element{element.Node.Right, element.Number*2+1})
+			}
+		}
+		maxWidth = Utils.Max(maxWidth, queue[len(queue)-1].Number - queue[0].Number + 1)
+		queue = temp
+	}
+	return maxWidth
+}
