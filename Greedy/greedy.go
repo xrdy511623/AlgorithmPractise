@@ -916,7 +916,81 @@ func Merge(intervals [][]int) [][]int {
 }
 
 /*
-1.16 单调递增的数字
+1.16 删除被覆盖区间
+给你一个区间列表，请你删除列表中被其他区间所覆盖的区间。
+只有c <= a且b <= d时，我们才认为区间[a,b)被区间[c,d) 覆盖。
+
+在完成所有删除操作后，请你返回列表中剩余区间的数目。
+
+
+示例：
+输入：intervals = [[1,4],[3,6],[2,8]]
+输出：2
+解释：区间 [3,6] 被区间 [2,8] 覆盖，所以它被删除了。
+
+
+提示：
+1 <= intervals.length <= 1000
+0 <= intervals[i][0] < intervals[i][1] <= 10^5
+对于所有的i != j：intervals[i] != intervals[j]
+*/
+
+/*
+思路:贪心
+首先对intervals数组进行排序，排序规则是按照左端点升序排序，左端点相同的情况下，按照右端点降序排序，
+右边界rMax为排序后数组第一个元素的右端点，那么从前往后顺序遍历排序数组，一旦intervals[i]的右端点小于等于
+右边界rMax，则证明该元素(区间)被前一个元素(区间)覆盖，因为按照排序规则，此时有:
+intervals[i-1][0]<=intervals[i][0]<=intervals[i][1]<=intervals[i-1][1]。
+注意题目只要求解删除被覆盖区间后的区间(元素)数，所以并不需要实际的去删除被覆盖区间，只需要总区间数(元素数)减去
+1就可以了。如果intervals[i]的右端点大于右边界rMax，则证明该元素(区间)没有被前一个元素(区间)覆盖，此时将
+右边界rMax向右推进，更新为max(rMax, intervals[i][1])，以备下一次判断，如此循环遍历结束后返回的区间数
+即为所求答案。
+*/
+
+// RemoveCoveredIntervals 时间复杂度O(NlogN), 空间复杂度O(logN)
+func RemoveCoveredIntervals(intervals [][]int) int {
+	// 按照左端点升序排序，左端点相同的情况下，按照右端点降序排序
+	sort.Slice(intervals, func(i, j int) bool {
+		a, b := intervals[i], intervals[j]
+		return a[0] < b[0] || a[0] == b[0] && a[1] > b[1]
+	})
+	n := len(intervals)
+	// 总区间数，初始值为len(intervals)
+	count := n
+	// 右边界rMax初始值为排序数组第一个元素的右端点
+	rMax := intervals[0][1]
+	for i := 1; i < n; i++ {
+		// 此时区间intervals[i]被覆盖，总区间数count--
+		if intervals[i][1] <= rMax {
+			count--
+		} else {
+			// 此时更新右边界rMax的值
+			rMax = Utils.Max(rMax, intervals[i][1])
+		}
+	}
+	// 最后返回的count即为所求答案
+	return count
+}
+
+// 或者也可以这么写
+func removeCoveredIntervals(intervals [][]int) int {
+	sort.Slice(intervals, func(i, j int) bool {
+		a, b := intervals[i], intervals[j]
+		return a[0] < b[0] || a[0] == b[0] && a[1] > b[1]
+	})
+	n := len(intervals)
+	count := n
+	for i := 1; i < n; i++ {
+		if intervals[i][1] <= intervals[i-1][1] {
+			count--
+			intervals[i][1] = intervals[i-1][1]
+		}
+	}
+	return count
+}
+
+/*
+1.17 单调递增的数字
 给定一个非负整数N，找出小于或等于N的最大的整数，同时这个整数需要满足其各个位数上的数字是单调递增。
 （当且仅当每个相邻位数上的数字 x 和 y 满足 x <= y 时，我们称这个整数是单调递增的。）
 
@@ -980,7 +1054,7 @@ func MonotoneIncreasingDigits(n int) int {
 }
 
 /*
-1.17 买卖股票的最佳时机含手续费
+1.18 买卖股票的最佳时机含手续费
 给定一个整数数组prices，其中第i个元素代表了第i天的股票价格 ；非负整数fee代表了交易股票的手续费用。
 你可以无限次地完成交易，但是你每笔交易都需要付手续费。如果你已经购买了一个股票，在卖出它之前你就不能再继续
 购买股票了。
@@ -1038,7 +1112,7 @@ func MaxProfitIncludeFee(prices []int, fee int) int {
 }
 
 /*
-1.18 监控二叉树
+1.19 监控二叉树
 给定一个二叉树，我们在树的节点上安装摄像头。
 节点上的每个摄影头都可以监视其父对象、自身及其直接子对象。
 计算监控树的所有节点所需的最小摄像头数量。
