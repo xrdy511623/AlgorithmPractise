@@ -410,6 +410,10 @@ func VerifyPostOrder(postOrder []int) bool {
 给定一个二叉树的根节点root，想象自己站在它的右侧，按照从顶部到底部的顺序，返回从右侧所能看到的节点值。
 */
 
+/*
+本题其实与leetcode 102 二叉树的层序遍历本质上是一样的，所谓右视图不过就是遍历的每一层最右侧节点集合而已
+ */
+
 // RightSideView BFS(广度优先遍历解决)，时间复杂度O(N),空间复杂度O(N)
 func RightSideView(root *Entity.TreeNode) []int {
 	var res []int

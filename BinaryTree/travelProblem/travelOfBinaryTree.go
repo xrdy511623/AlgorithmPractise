@@ -306,8 +306,8 @@ func ReverseComplexArray(src [][]int) [][]int {
 层与层之间交替进行）。以上面的示例二叉树为例，最后应返回[[5],[8,4],[11,13,4],[1,5,2,7]]
 */
 
-// zigzagLevelOrder, 与2.2类似，所不同的是要加入层数(level)的判断，根据层数来确定是否要对该层的节点值进行逆序
-func zigzagLevelOrder(root *Entity.TreeNode) [][]int {
+// ZigzagLevelOrder, 与2.2类似，所不同的是要加入层数(level)的判断，根据层数来确定是否要对该层的节点值进行逆序
+func ZigzagLevelOrder(root *Entity.TreeNode) [][]int {
 	var res [][]int
 	if root == nil {
 		return res

@@ -47,3 +47,13 @@ func TestLevelOrderComplex(t *testing.T) {
 		fmt.Println("test pass")
 	}
 }
+
+func TestZigzagLevelOrder(t *testing.T) {
+	got := ZigzagLevelOrder(Entity.Root)
+	want := [][]int{{5}, {8, 4}, {11, 13, 4}, {1, 5, 2, 7}}
+	if !reflect.DeepEqual(want, got) {
+		t.Errorf("excepted:%v, got:%v", want, got)
+	} else {
+		fmt.Println("test pass")
+	}
+}
