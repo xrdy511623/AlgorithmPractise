@@ -10,9 +10,29 @@ import (
 func TestRightSideView(t *testing.T) {
 	got := RightSideView(Entity.Root)
 	want := []int{5, 8, 4, 1}
-	if !reflect.DeepEqual(want, got) { // 因为slice不能比较直接，借助反射包中的方法比较
-		t.Errorf("excepted:%v, got:%v", want, got) // 测试失败输出错误提示
+	if !reflect.DeepEqual(want, got) {
+		t.Errorf("excepted:%v, got:%v", want, got)
 	} else {
+		fmt.Println("test pass")
+	}
+}
+
+func TestIsSymmetric(t *testing.T) {
+	got := IsSymmetric(Entity.Root1)
+	want := false
+	if got{
+		t.Errorf("excepted:%v, got:%v", want, got)
+	} else{
+		fmt.Println("test pass")
+	}
+}
+
+func TestIsSymmetricUseBFS(t *testing.T) {
+	got := IsSymmetricUseBFS(Entity.Root1)
+	want := false
+	if got{
+		t.Errorf("excepted:%v, got:%v", want, got)
+	} else{
 		fmt.Println("test pass")
 	}
 }

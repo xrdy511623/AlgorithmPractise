@@ -4,6 +4,7 @@ import (
 	"AlgorithmPractise/BinaryTree/Entity"
 	"AlgorithmPractise/Utils"
 	"math"
+	"reflect"
 )
 
 /*
@@ -826,4 +827,105 @@ func WidthOfBinaryTree(root *Entity.TreeNode) int {
 		queue = temp
 	}
 	return maxWidth
+}
+
+/*
+1.18 对称二叉树
+给定一个二叉树，检查它是否是镜像对称的。
+
+
+例如，二叉树[1,2,2,3,4,4,3] 是对称的。
+
+    1
+   / \
+  2   2
+ / \ / \
+3  4 4  3
+
+
+但是下面这个[1,2,2,null,3,null,3] 则不是镜像对称的:
+
+    1
+   / \
+  2   2
+   \   \
+   3    3
+
+*/
+
+/*
+思路一: DFS,深度优先遍历
+观察[1,2,2,3,4,4,3]这棵对称的二叉树不难发现，它的左子树的先序遍历序列[2,3,4]正好是右子树后序遍历序列
+[4,3,2]反转之后的结果，找到这个规律问题就好解决了。不过，还需要注意的是，按照题意如果子树中有空节点，也需要
+填充到遍历后的序列中，否则会出错。以[1,2,2,null,3,null,3]这棵二叉树为例，如果忽略掉空节点，其左子树的先序
+遍历序列[2,3]正好也是其右子树后序遍历序列[3, 2]反转后的结果，得出结论这棵二叉树也是对称的，显然是不对的，所以
+这里我们对空节点一律以0填充。这样，其左子树的先序遍历序列preOrder就变成了[2, 0, 3, 0, 0],右子树后序遍历序列
+postOrder为[0, 0, 0, 3, 2], postOrder反转后是[2, 3, 0, 0, 0]，显然与preOrder不同，问题得以解决。
+*/
+
+func IsSymmetric(root *Entity.TreeNode) bool {
+	if root == nil {
+		return true
+	}
+	leftPreOrder := PreOrder(root.Left)
+	rightPostOrder := PostOrder(root.Right)
+	// 因为slice不能直接比较，所以借助反射包中的方法比较
+	return reflect.DeepEqual(leftPreOrder, Utils.ReverseArray(rightPostOrder))
+}
+
+func PreOrder(node *Entity.TreeNode) []int {
+	var res []int
+	if node == nil {
+		res = append(res, 0)
+		return res
+	}
+	res = append(res, node.Val)
+	res = append(res, PreOrder(node.Left)...)
+	res = append(res, PreOrder(node.Right)...)
+	return res
+}
+
+func PostOrder(node *Entity.TreeNode) []int {
+	var res []int
+	if node == nil {
+		res = append(res, 0)
+		return res
+	}
+	res = append(res, PostOrder(node.Left)...)
+	res = append(res, PostOrder(node.Right)...)
+	res = append(res, node.Val)
+	return res
+}
+
+/*
+思路二:BFS(广度优先遍历)
+首先判断根节点是否为空,如果是返回真;然后判断根节点的左右子节点是否都为空,如果是
+返回真,如果根节点的左右子节点有一个为空,返回假;如果节点的左右子节点都不为空,判断
+左右子节点的值是否相等,如果不相等则返回假,如果相等则继续递归判断;由于左右子节点的子节点一共有4个
+(包括空节点),所以将node1.left与node2.right进行比较判断, 将node1.right与node2.right
+进行比较判断
+*/
+
+func IsSymmetricUseBFS(root *Entity.TreeNode) bool {
+	if root == nil {
+		return true
+	}
+	return BFS(root.Left, root.Right)
+}
+
+func BFS(node1, node2 *Entity.TreeNode) bool {
+	// 两个节点均为空节点，返回true
+	if node1 == nil && node2 == nil {
+		return true
+		// 有一个节点为空，而另一个节点不为空，返回false
+	} else if node1 == nil || node2 == nil {
+		return false
+	} else {
+		// 两个节点均不为空，但节点的值不等，也返回false
+		if node1.Val != node2.Val {
+			return false
+		}
+		// 继续递归比较判断
+		return BFS(node1.Left, node2.Right) && BFS(node1.Right, node2.Left)
+	}
 }

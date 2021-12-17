@@ -1,6 +1,8 @@
 package travelProblem
 
-import "AlgorithmPractise/BinaryTree/Entity"
+import (
+	"AlgorithmPractise/BinaryTree/Entity"
+)
 
 /*
 二叉树的遍历问题,一般都可以通过DFS(递归)和BFS(迭代)解决
