@@ -1022,3 +1022,39 @@ func MinDepthUseBFS(root *Entity.TreeNode) int {
 	}
 	return depth
 }
+
+/*
+1.20 完全二叉树的节点个数
+给你一棵完全二叉树的根节点root，求出该树的节点个数。
+完全二叉树的定义如下：在完全二叉树中，除了最底层节点可能没填满外，其余每层节点数都达到最大值，并且最下面一层
+的节点都集中在该层最左边的若干位置。若最底层为第h层，则该层包含 1~2^h个节点。
+*/
+
+/*
+时间复杂度O(N)的解法就不说了，DFS和BFS都可以。这里为了提高算法效率，需要好好利用完全二叉树的特性
+完全二叉树只有两种情况，情况一：就是满二叉树，情况二：最后一层叶子节点没有满。
+对于情况一，可以直接用 2^树深度 - 1 来计算，注意这里根节点深度为1。
+对于情况二，分别递归左孩子，和右孩子，递归到某一深度一定会有左孩子或者右孩子为满二叉树，然后依然可以
+按照情况1来计算。
+*/
+
+// CountNodes 时间复杂度O(logN*logN),空间复杂度O(logN)
+func CountNodes(root *Entity.TreeNode) int {
+	if root == nil {
+		return 0
+	}
+	left, right := root.Left, root.Right
+	lh, rh := 0, 0
+	for left != nil {
+		lh++
+		left = left.Left
+	}
+	for right != nil {
+		rh++
+		right = right.Right
+	}
+	if lh == rh {
+		return (2 << lh) - 1
+	}
+	return CountNodes(root.Left) + CountNodes(root.Right) + 1
+}
