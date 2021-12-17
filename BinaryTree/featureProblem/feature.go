@@ -522,6 +522,19 @@ func RightSideView(root *Entity.TreeNode) []int {
 一个二叉树每个节点的左右两个子树的高度差的绝对值不超过1 。
 */
 
+/*
+思路:自顶向下的递归
+利用二叉树的前序遍历，即对于当前遍历到的节点，首先计算左右子树的高度，如果左右子树的高度差是否不超过1，再分别
+递归地遍历左右子节点，并判断左子树和右子树是否平衡。这是一个自顶向下的递归的过程。
+时间复杂度：O(n^2)，其中n是二叉树中的节点个数。
+最坏情况下，二叉树是满二叉树，需要遍历二叉树中的所有节点，时间复杂度是 O(n)。
+对于节点p，如果它的高度是d，则height(p)最多会被调用d次（即遍历到它的每一个祖先节点时）。对于平均的情况，
+一棵树的高度h满足O(h)=O(logn)，因为d≤h，所以总时间复杂度为O(nlogn)。对于最坏的情况，二叉树形成
+链式结构，高度为O(n)，此时总时间复杂度为O(n^2)
+空间复杂度：O(n)，其中n是二叉树中的节点个数。空间复杂度主要取决于递归调用的层数，递归调用的层数不会超过n。
+*/
+
+// IsBalanced 时间复杂度O(N*N),空间复杂度O(N)
 func IsBalanced(root *Entity.TreeNode) bool {
 	if root == nil {
 		return true
@@ -529,11 +542,37 @@ func IsBalanced(root *Entity.TreeNode) bool {
 	return Utils.Abs(GetHeightOfBinaryTree(root.Left)-GetHeightOfBinaryTree(root.Right)) <= 1 && IsBalanced(root.Left) && IsBalanced(root.Right)
 }
 
+// 计算以root为根节点的二叉树的高度
 func GetHeightOfBinaryTree(root *Entity.TreeNode) int {
 	if root == nil {
 		return 0
 	}
 	return 1 + Utils.Max(GetHeightOfBinaryTree(root.Left), GetHeightOfBinaryTree(root.Right))
+}
+
+/*
+思路二: 自底向上的递归
+方法一由于是自顶向下递归，因此对于同一个节点，求二叉树高度的函数height会被重复调用，导致时间复杂度较高。如果
+使用自底向上的做法，则对于每个节点，函数height只会被调用一次。自底向上递归的做法类似于后序遍历，对于当前遍历
+到的节点，先递归地判断其左右子树是否平衡，再判断以当前节点为根的子树是否平衡。如果一棵子树是平衡的，则返回其
+高度（高度一定是非负整数），否则返回−1。如果存在一棵子树不平衡，则整个二叉树一定不平衡。
+*/
+
+// IsBalancedSimple 时间复杂度O(N), 空间复杂度O(N)
+func IsBalancedSimple(root *Entity.TreeNode) bool {
+	return Height(root) >= 0
+}
+
+func Height(root *Entity.TreeNode) int {
+	if root == nil {
+		return 0
+	}
+	lh := Height(root.Left)
+	rh := Height(root.Right)
+	if lh == -1 || rh == -1 || Utils.Abs(lh-rh) > 1 {
+		return -1
+	}
+	return 1 + Utils.Max(lh, rh)
 }
 
 /*
