@@ -137,7 +137,17 @@ func MaxDepth(root *Entity.TreeNode) int {
 /*
 DFS递归法求解
 时间复杂度：O(n)，其中n为二叉树节点的个数。每个节点在递归中只被遍历一次。
-空间复杂度：O(height)，其中height表示二叉树的高度。递归函数需要栈空间，而栈空间取决于递归的深度，因此空间复杂度等价于二叉树的高度。
+空间复杂度：O(height)，其中height表示二叉树的高度。递归函数需要栈空间，而栈空间取决于递归的深度，因此空间
+复杂度等价于二叉树的高度。
+递归三部曲:
+1 确定递归函数的参数和返回值
+参数为当前二叉树根节点的指针，返回值为当前二叉树的最大深度
+2 明确递归终止条件
+遇到空节点，返回0，表明上一层已经是叶子结点，深度不会再增加了
+3 确定单层递归逻辑
+当前二叉树的最大深度,如果当前二叉树根节点为空，则返回0，否则返回其左子树的最大深度ld和右子树的最大深度rd的
+较大值+1(1代表根节点这一层的深度)
+
 */
 
 func MaxDepthUseDfs(root *Entity.TreeNode) int {
@@ -928,4 +938,87 @@ func BFS(node1, node2 *Entity.TreeNode) bool {
 		// 继续递归比较判断
 		return BFS(node1.Left, node2.Right) && BFS(node1.Right, node2.Left)
 	}
+}
+
+/*
+1.19 二叉树的最小深度
+给定一个二叉树，找出其最小深度。
+最小深度是从根节点到最近叶子节点的最短路径上的节点数量。
+说明: 叶子节点是指没有子节点的节点。
+
+示例:
+给定二叉树 [3,9,20,null,null,15,7],
+返回它的最小深度 2
+*/
+
+/*
+思路一:DFS递归
+注意本题有一个误区，最小深度指的是从根节点到最近叶子节点的最短路径上的节点数量，所谓叶子节点指的是没有左右
+子节点的节点，所以如果一棵二叉树没有左子树但有右子树时，其最小深度应该是1+右子树的最小深度，而不是1，如下图
+这棵二叉树所示，根节点没有左子节点，但有右子节点，所以根节点并非叶子结点，最小深度不是1，应该是3。同理，如果
+一棵二叉树没有右子树但有左子树时，其最小深度应该是1+左子树的最小深度，而不是1。
+
+		   5
+         /  \
+            8
+           / \
+		  13  4
+         	 / \
+         	5   1
+
+明白了这一点，问题就很好解决了。
+递归三部曲
+1 确定递归函数的参数和返回值
+参数为当前二叉树根节点的指针，返回值为当前二叉树的最小深度
+2 明确递归终止条件
+遍历到空节点时，返回深度0
+3 明确单层递归逻辑
+分以下三种情况:
+a 当前二叉树没有左子树但有右子树时，其最小深度应该是1+右子树的最小深度
+b 当前二叉树没有右子树但有左子树时，其最小深度应该是1+左子树的最小深度
+c 返回1+min(左子树的最小深度,右子树的最小深度)
+c其实包含了两种情况，一是当前二叉树左右子树均为空时，返回1+min(ld,rd)=1+min(0,0)=1，正确
+二是二叉树左右子树均不为空，返回1+min(ld,rd)，也是正确的，所以这两种情况最小深度的计算可以合并。
+*/
+
+func MinDepth(root *Entity.TreeNode) int {
+	if root == nil {
+		return 0
+	}
+	if root.Left != nil && root.Right == nil {
+		return 1 + MinDepth(root.Left)
+	}
+	if root.Right != nil && root.Left == nil {
+		return 1 + MinDepth(root.Right)
+	}
+	return 1 + Utils.Min(MinDepth(root.Left), MinDepth(root.Right))
+}
+
+func MinDepthUseBFS(root *Entity.TreeNode) int {
+	if root == nil {
+		return 0
+	}
+	// 此时根节点不为空，则最小深度至少为1
+	depth := 1
+	queue := []*Entity.TreeNode{root}
+	for len(queue) != 0 {
+		size := len(queue)
+		for i := 0; i < size; i++ {
+			node := queue[0]
+			queue = queue[1:]
+			// 因为是按照队列先进先出顺序遍历，所以此时遍历到的叶子结点，一定是深度最小的
+			if node.Left == nil && node.Right == nil {
+				return depth
+			}
+			if node.Left != nil {
+				queue = append(queue, node.Left)
+			}
+			if node.Right != nil {
+				queue = append(queue, node.Right)
+			}
+		}
+		// 每遍历一层，深度累加1
+		depth++
+	}
+	return depth
 }
