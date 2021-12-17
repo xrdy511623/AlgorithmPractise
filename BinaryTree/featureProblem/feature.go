@@ -7,17 +7,84 @@ import (
 )
 
 /*
-1.1 反转二叉树
+1.1 翻转二叉树
 */
 
-// ReverseBinaryTree 利用递归解决
-func ReverseBinaryTree(root *Entity.TreeNode) *Entity.TreeNode {
+/*
+递归解决
+1 确定递归函数的参数和返回值
+参数和返回值都是二叉树的节点的指针。其实递归函数做的就是反转以当前节点node为根节点的二叉树，
+然后返回当前节点node。
+2 明确递归终止条件
+当前节点为空时，返回nil
+3 确定单层递归逻辑
+如果是先序遍历，就是先交换左右子节点，再反转左子树和右子树
+如果是后序遍历，那就是先反转左子树和右子树，再交换左右子节点
+*/
+
+// InvertBinaryTree 后序遍历递归版
+func InvertBinaryTree(root *Entity.TreeNode) *Entity.TreeNode {
 	if root == nil {
-		return root
+		return nil
 	}
-	root.Left, root.Right = root.Right, root.Left
-	ReverseBinaryTree(root.Left)
-	ReverseBinaryTree(root.Right)
+	left := InvertBinaryTree(root.Left)
+	right := InvertBinaryTree(root.Right)
+	root.Left = right
+	root.Right = left
+	return root
+}
+
+// InvertBinaryTreeTwo 或者也可以写成这样 先序遍历递归版
+func InvertBinaryTreeTwo(root *Entity.TreeNode) *Entity.TreeNode {
+	if root == nil {
+		return nil
+	}
+	temp := root.Left
+	root.Left = root.Right
+	root.Right = temp
+	InvertBinaryTreeTwo(root.Left)
+	InvertBinaryTreeTwo(root.Right)
+	return root
+}
+
+// InvertTreeUseIteration 迭代法(先序遍历)
+func InvertTreeUseIteration(root *Entity.TreeNode) *Entity.TreeNode {
+	if root == nil {
+		return nil
+	}
+	stack := []*Entity.TreeNode{root}
+	for len(stack) != 0 {
+		node := stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
+		node.Left, node.Right = node.Right, node.Left
+		if node.Right != nil {
+			stack = append(stack, node.Right)
+		}
+		if node.Left != nil {
+			stack = append(stack, node.Left)
+		}
+	}
+	return root
+}
+
+// InvertTreeUseBFS BFS(层序遍历)
+func InvertTreeUseBFS(root *Entity.TreeNode) *Entity.TreeNode {
+	if root == nil {
+		return nil
+	}
+	queue := []*Entity.TreeNode{root}
+	for len(queue) != 0 {
+		node := queue[0]
+		node.Left, node.Right = node.Right, node.Left
+		queue = queue[1:]
+		if node.Left != nil {
+			queue = append(queue, node.Left)
+		}
+		if node.Right != nil {
+			queue = append(queue, node.Right)
+		}
+
+	}
 	return root
 }
 
