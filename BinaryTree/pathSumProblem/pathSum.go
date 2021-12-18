@@ -358,19 +358,83 @@ func SumNumbers(root *Entity.TreeNode) int {
 	}
 	stack := []LogicNode{{root, strconv.Itoa(root.Val)}}
 	for len(stack) != 0 {
-		logicNode := stack[0]
-		stack = stack[1:]
+		logicNode := stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
 		sum := logicNode.Val
-		if logicNode.Node.Left != nil {
-			stack = append(stack, LogicNode{logicNode.Node.Left, sum + strconv.Itoa(logicNode.Node.Left.Val)})
-		}
-		if logicNode.Node.Right != nil {
-			stack = append(stack, LogicNode{logicNode.Node.Right, sum + strconv.Itoa(logicNode.Node.Right.Val)})
-		}
 		if logicNode.Node.Left == nil && logicNode.Node.Right == nil {
 			pathSum, _ := strconv.Atoi(sum)
 			res += pathSum
 		}
+		if logicNode.Node.Right != nil {
+			stack = append(stack, LogicNode{logicNode.Node.Right, sum + strconv.Itoa(logicNode.Node.Right.Val)})
+		}
+		if logicNode.Node.Left != nil {
+			stack = append(stack, LogicNode{logicNode.Node.Left, sum + strconv.Itoa(logicNode.Node.Left.Val)})
+		}
 	}
 	return res
+}
+
+/*
+1.7 二叉树的所有路径
+给你一个二叉树的根节点root，按任意顺序 ，返回所有从根节点到叶子节点的路径。
+叶子节点是指没有子节点的节点。
+示例1：
+输入：root = [1,2,3,null,5]
+输出：["1->2->5","1->3"]
+*/
+
+
+type NodePath struct{
+	Node  *Entity.TreeNode
+	Path  string
+}
+
+// BinaryTreePaths BFS解决
+func BinaryTreePaths(root *Entity.TreeNode) []string {
+	var res []string
+	if root == nil{
+		return res
+	}
+	stack := []NodePath{NodePath{root, strconv.Itoa(root.Val)}}
+	for len(stack) != 0{
+		np := stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
+		if np.Node.Left == nil && np.Node.Right == nil{
+			res = append(res, np.Path)
+		}
+		if np.Node.Right != nil{
+			path := np.Path + "->" + strconv.Itoa(np.Node.Right.Val)
+			stack = append(stack, NodePath{np.Node.Right, path})
+		}
+		if np.Node.Left != nil{
+			path := np.Path + "->" + strconv.Itoa(np.Node.Left.Val)
+			stack = append(stack, NodePath{np.Node.Left, path})
+		}
+
+	}
+	return res
+}
+
+
+// DFS解决
+
+func BinaryTreePathsUseDFS(root *Entity.TreeNode) []string {
+	var paths []string
+	var dfs func(*Entity.TreeNode, string)
+	dfs = func(root *Entity.TreeNode, path string){
+		if root != nil{
+			curPath := path
+			curPath += strconv.Itoa(root.Val)
+			if root.Left == nil && root.Right == nil{
+				paths = append(paths, curPath)
+			} else{
+				curPath += "->"
+				dfs(root.Left, curPath)
+				dfs(root.Right, curPath)
+			}
+		}
+	}
+	dfs(root, "")
+	return paths
 }

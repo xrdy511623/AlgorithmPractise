@@ -980,7 +980,100 @@ func BFS(node1, node2 *Entity.TreeNode) bool {
 }
 
 /*
-1.19 二叉树的最小深度
+1.19 另一棵树的子树
+给你两棵二叉树root和subRoot 。检验root中是否包含和subRoot具有相同结构和节点值的子树。如果存在，返回
+true；否则，返回false 。
+
+二叉树tree的一棵子树包括tree的某个节点和这个节点的所有后代节点。tree也可以看做它自身的一棵子树。
+*/
+
+/*
+思路一:本题与1.18 对称二叉树其实很类似，我们只需要广度优先遍历的比较两棵树就好了
+*/
+
+// IsSubTree BFS解决
+func IsSubTree(s, t *Entity.TreeNode) bool {
+	if s == nil {
+		return false
+	}
+	return Check(s, t) || IsSubTree(s.Left, t) || IsSubTree(s.Right, t)
+}
+
+func Check(node1, node2 *Entity.TreeNode) bool {
+	if node1 == nil && node2 == nil {
+		return true
+	}
+	if node1 == nil || node2 == nil {
+		return false
+	}
+	if node1.Val != node2.Val {
+		return false
+	}
+	return Check(node1.Left, node2.Left) && Check(node1.Right, node2.Right)
+}
+
+/*
+思路二:这个方法需要我们先了解一个「小套路」：一棵子树上的点在深度优先搜索序列（即先序遍历）中是连续的。了解了
+这个「小套路」之后，我们可以确定解决这个问题的方向就是：把s和t先转换成深度优先搜索序列，然后看t的深度
+优先搜索序列是否是s的深度优先搜索序列的「子串」。
+
+这样做正确吗？假设s由两个节点组成，1是根，2是1的左孩子；t也由两个节点组成，1是根，2是1的右孩子。
+这样一来s和t的深度优先搜索序列相同，可是t并不是s的某一棵子树。由此可见s的深度优先搜索序列包含t的深度优先搜索
+序列」是t是s子树的必要不充分条件，所以单纯这样做是不正确的。
+
+为了解决这个问题，我们可以引入两个空值lNull和rNull，当一个节点的左孩子或者右孩子为空的时候，就插入这两个空值，
+这样深度优先搜索序列就唯一对应一棵树。处理完之后，就可以通过判断s的深度优先搜索序列包含t的深度优先搜索序列
+来判断答案。
+*/
+
+func IsSubTreeSimple(s, t *Entity.TreeNode) bool {
+	max := math.MinInt32
+	GetMaxElement(s, &max)
+	GetMaxElement(t, &max)
+	lN, rN := max+1, max+2
+	sList := GetPreOrder(s, []int{}, lN, rN)
+	tList := GetPreOrder(t, []int{}, lN, rN)
+	sLen, tLen := len(sList), len(tList)
+	// 这个匹配算法效率比较低，以后再优化
+	for i := 0; i <= sLen-tLen; i++ {
+		if reflect.DeepEqual(sList[i:i+tLen], tList) {
+			return true
+		}
+	}
+	return false
+}
+
+func GetPreOrder(node *Entity.TreeNode, list []int, lN, rN int) []int {
+	if node == nil {
+		return list
+	}
+	list = append(list, node.Val)
+	if node.Left != nil {
+		list = GetPreOrder(node.Left, list, lN, rN)
+	} else {
+		list = append(list, lN)
+	}
+	if node.Right != nil {
+		list = GetPreOrder(node.Right, list, lN, rN)
+	} else {
+		list = append(list, rN)
+	}
+	return list
+}
+
+func GetMaxElement(root *Entity.TreeNode, max *int) {
+	if root == nil {
+		return
+	}
+	if root.Val > *max {
+		*max = root.Val
+	}
+	GetMaxElement(root.Left, max)
+	GetMaxElement(root.Right, max)
+}
+
+/*
+1.20 二叉树的最小深度
 给定一个二叉树，找出其最小深度。
 最小深度是从根节点到最近叶子节点的最短路径上的节点数量。
 说明: 叶子节点是指没有子节点的节点。
@@ -1063,7 +1156,7 @@ func MinDepthUseBFS(root *Entity.TreeNode) int {
 }
 
 /*
-1.20 完全二叉树的节点个数
+1.21 完全二叉树的节点个数
 给你一棵完全二叉树的根节点root，求出该树的节点个数。
 完全二叉树的定义如下：在完全二叉树中，除了最底层节点可能没填满外，其余每层节点数都达到最大值，并且最下面一层
 的节点都集中在该层最左边的若干位置。若最底层为第h层，则该层包含 1~2^h个节点。
