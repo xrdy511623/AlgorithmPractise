@@ -296,8 +296,8 @@ func MaxPathSum(root *Entity.TreeNode) int {
 在这个二叉树中，有两个左叶子，分别是9和15，所以返回24
 */
 
-// sumOfLeftLeaves easy
-func sumOfLeftLeaves(root *Entity.TreeNode) int {
+// SumOfLeftLeaves BFS
+func SumOfLeftLeaves(root *Entity.TreeNode) int {
 	var res int
 	if root == nil {
 		return res
@@ -317,6 +317,25 @@ func sumOfLeftLeaves(root *Entity.TreeNode) int {
 		}
 	}
 	return res
+}
+
+// SumOfLeftLeavesSimple DFS
+func SumOfLeftLeavesSimple(root *Entity.TreeNode) int {
+	sum := 0
+	var findLeftLeaves func(*Entity.TreeNode)
+	findLeftLeaves = func(node *Entity.TreeNode){
+		if node.Left != nil && node.Left.Left == nil && node.Left.Right == nil{
+			sum += node.Left.Val
+		}
+		if node.Left != nil{
+			findLeftLeaves(node.Left)
+		}
+		if node.Right != nil{
+			findLeftLeaves(node.Right)
+		}
+	}
+	findLeftLeaves(root)
+	return sum
 }
 
 /*

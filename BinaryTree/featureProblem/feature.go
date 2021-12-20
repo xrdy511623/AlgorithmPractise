@@ -1190,3 +1190,71 @@ func CountNodes(root *Entity.TreeNode) int {
 	}
 	return CountNodes(root.Left) + CountNodes(root.Right) + 1
 }
+
+/*
+1.22 找树左下角的值
+给定一个二叉树的根节点root，请找出该二叉树的最底层最左边节点的值。
+假设二叉树中至少有一个节点。
+*/
+
+/*
+思路一:广度优先遍历(BFS),用一个二维数组保存二叉树每一层节点的值，最后返回最后一层最左边的元素即可
+*/
+
+func FindBottomLeftValue(root *Entity.TreeNode) int {
+	if root.Left == nil && root.Right == nil {
+		return root.Val
+	}
+	var res [][]int
+	queue := []*Entity.TreeNode{root}
+	for len(queue) != 0 {
+		var curLevel []int
+		size := len(queue)
+		for _, node := range queue {
+			curLevel = append(curLevel, node.Val)
+			if node.Left != nil {
+				queue = append(queue, node.Left)
+			}
+			if node.Right != nil {
+				queue = append(queue, node.Right)
+			}
+		}
+		queue = queue[size:]
+		res = append(res, curLevel)
+	}
+	return res[len(res)-1][0]
+}
+
+/*
+思路二: 深度优先遍历(DFS),当达到最大深度时，找到最左边的叶子节点的值(先序遍历)
+*/
+
+func FindBottomLeftValueSimple(root *Entity.TreeNode) int {
+	if root.Left == nil && root.Right == nil {
+		return root.Val
+	}
+	maxDepth, res := 0, 0
+	var helper func(*Entity.TreeNode, int)
+	helper = func(root *Entity.TreeNode, depth int) {
+		if root.Left == nil && root.Right == nil {
+			if depth > maxDepth {
+				maxDepth = depth
+				res = root.Val
+			}
+			if root.Left != nil {
+				depth++
+				helper(root.Left, depth)
+				// 回溯,如果root有右子树，depth需要与遍历root左子树之前保持一致
+				depth--
+			}
+			if root.Right != nil {
+				depth++
+				helper(root.Right, depth)
+				// 回溯
+				depth--
+			}
+		}
+	}
+	helper(root, 0)
+	return res
+}
