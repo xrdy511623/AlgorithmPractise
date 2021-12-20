@@ -12,6 +12,65 @@ import (
 */
 
 /*
+1.0 路径总和
+给你二叉树的根节点root和一个表示目标和的整数targetSum 。判断该树中是否存在 根节点到叶子节点的路径，这条路径
+上所有节点值相加等于目标和targetSum 。如果存在，返回true ；否则，返回false 。
+叶子节点是指没有子节点的节点。
+
+示例:
+输入：root = [5,4,8,11,null,13,4,7,2,null,null,null,1], targetSum = 22
+输出：true
+*/
+
+/*
+思路一:BFS
+*/
+
+func HasPathSum(root *Entity.TreeNode, targetSum int) bool {
+	if root == nil {
+		return false
+	}
+	if root.Left == nil && root.Right == nil {
+		return targetSum == root.Val
+	}
+	queue := []*Entity.TreeNode{root}
+	for len(queue) != 0 {
+		size := len(queue)
+		for _, node := range queue {
+			if node.Left == nil && node.Right == nil {
+				if node.Val == targetSum {
+					return true
+				}
+			}
+			if node.Left != nil {
+				node.Left.Val += node.Val
+				queue = append(queue, node.Left)
+			}
+			if node.Right != nil {
+				node.Right.Val += node.Val
+				queue = append(queue, node.Right)
+			}
+		}
+		queue = queue[size:]
+	}
+	return false
+}
+
+/*
+思路二:DFS
+*/
+
+func HasPathSumSimple(root *Entity.TreeNode, targetSum int) bool {
+	if root == nil {
+		return false
+	}
+	if root.Left == nil && root.Right == nil && root.Val == targetSum {
+		return true
+	}
+	return HasPathSumSimple(root.Left, targetSum-root.Val) || HasPathSumSimple(root.Right, targetSum-root.Val)
+}
+
+/*
 1.1 路径和:给定一个二叉树和一个目标和，找到所有从根节点到叶子节点路径总和等于给定目标和
 的路径。(返回列表)
 说明: 叶子节点是指没有子节点的节点。
@@ -36,7 +95,7 @@ func PathSum(root *Entity.TreeNode, target int) [][]int {
 		if node.Left != nil {
 			temp1 := copyTemp
 			temp1 = append(temp1, node.Left.Val)
-			queue = append(queue, Group{node.Left, temp1})
+			queue = append(queue, Group{node.Right, temp1})
 		}
 
 		if node.Right != nil {
@@ -323,14 +382,14 @@ func SumOfLeftLeaves(root *Entity.TreeNode) int {
 func SumOfLeftLeavesSimple(root *Entity.TreeNode) int {
 	sum := 0
 	var findLeftLeaves func(*Entity.TreeNode)
-	findLeftLeaves = func(node *Entity.TreeNode){
-		if node.Left != nil && node.Left.Left == nil && node.Left.Right == nil{
+	findLeftLeaves = func(node *Entity.TreeNode) {
+		if node.Left != nil && node.Left.Left == nil && node.Left.Right == nil {
 			sum += node.Left.Val
 		}
-		if node.Left != nil{
+		if node.Left != nil {
 			findLeftLeaves(node.Left)
 		}
-		if node.Right != nil{
+		if node.Right != nil {
 			findLeftLeaves(node.Right)
 		}
 	}
@@ -403,30 +462,29 @@ func SumNumbers(root *Entity.TreeNode) int {
 输出：["1->2->5","1->3"]
 */
 
-
-type NodePath struct{
-	Node  *Entity.TreeNode
-	Path  string
+type NodePath struct {
+	Node *Entity.TreeNode
+	Path string
 }
 
 // BinaryTreePaths BFS解决
 func BinaryTreePaths(root *Entity.TreeNode) []string {
 	var res []string
-	if root == nil{
+	if root == nil {
 		return res
 	}
 	stack := []NodePath{NodePath{root, strconv.Itoa(root.Val)}}
-	for len(stack) != 0{
+	for len(stack) != 0 {
 		np := stack[len(stack)-1]
 		stack = stack[:len(stack)-1]
-		if np.Node.Left == nil && np.Node.Right == nil{
+		if np.Node.Left == nil && np.Node.Right == nil {
 			res = append(res, np.Path)
 		}
-		if np.Node.Right != nil{
+		if np.Node.Right != nil {
 			path := np.Path + "->" + strconv.Itoa(np.Node.Right.Val)
 			stack = append(stack, NodePath{np.Node.Right, path})
 		}
-		if np.Node.Left != nil{
+		if np.Node.Left != nil {
 			path := np.Path + "->" + strconv.Itoa(np.Node.Left.Val)
 			stack = append(stack, NodePath{np.Node.Left, path})
 		}
@@ -435,19 +493,18 @@ func BinaryTreePaths(root *Entity.TreeNode) []string {
 	return res
 }
 
-
 // DFS解决
 
 func BinaryTreePathsUseDFS(root *Entity.TreeNode) []string {
 	var paths []string
 	var dfs func(*Entity.TreeNode, string)
-	dfs = func(root *Entity.TreeNode, path string){
-		if root != nil{
+	dfs = func(root *Entity.TreeNode, path string) {
+		if root != nil {
 			curPath := path
 			curPath += strconv.Itoa(root.Val)
-			if root.Left == nil && root.Right == nil{
+			if root.Left == nil && root.Right == nil {
 				paths = append(paths, curPath)
-			} else{
+			} else {
 				curPath += "->"
 				dfs(root.Left, curPath)
 				dfs(root.Right, curPath)
