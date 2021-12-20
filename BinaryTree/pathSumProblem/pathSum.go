@@ -114,23 +114,22 @@ func PathSumUseDfs(root *Entity.TreeNode, target int) [][]int {
 	if root == nil {
 		return res
 	}
-	var dfs func(root *Entity.TreeNode, path []int, target int)
-	dfs = func(node *Entity.TreeNode, path []int, target int) {
+	var dfs func(*Entity.TreeNode, []int)
+	dfs = func(node *Entity.TreeNode, path []int) {
 		if node.Left == nil && node.Right == nil && sumOfArray(path) == target {
 			res = append(res, path)
 		}
 		temp := copySlice(path)
 		if node.Left != nil {
 			temp1 := append(temp, node.Left.Val)
-			dfs(node.Left, temp1, target)
+			dfs(node.Left, temp1)
 		}
 		if node.Right != nil {
 			temp2 := append(temp, node.Right.Val)
-			dfs(node.Right, temp2, target)
+			dfs(node.Right, temp2)
 		}
 	}
-	path := []int{root.Val}
-	dfs(root, path, target)
+	dfs(root, []int{root.Val})
 	return res
 }
 
