@@ -217,14 +217,14 @@ func LevelOrder(root *Entity.TreeNode) []int {
 		return res
 	}
 	queue := []*Entity.TreeNode{root}
-	for len(queue) != 0{
+	for len(queue) != 0 {
 		node := queue[0]
 		queue = queue[1:]
 		res = append(res, node.Val)
-		if node.Left != nil{
+		if node.Left != nil {
 			queue = append(queue, node.Left)
 		}
-		if node.Right != nil{
+		if node.Right != nil {
 			queue = append(queue, node.Right)
 		}
 	}
@@ -238,20 +238,20 @@ func LevelOrder(root *Entity.TreeNode) []int {
 
 func LevelOrderComplex(root *Entity.TreeNode) [][]int {
 	var res [][]int
-	if root == nil{
+	if root == nil {
 		return res
 	}
 	queue := []*Entity.TreeNode{root}
 	level := 0
-	for len(queue) != 0{
+	for len(queue) != 0 {
 		var temp []*Entity.TreeNode
 		res = append(res, []int{})
-		for _, node := range queue{
+		for _, node := range queue {
 			res[level] = append(res[level], node.Val)
-			if node.Left != nil{
+			if node.Left != nil {
 				temp = append(temp, node.Left)
 			}
-			if node.Right != nil{
+			if node.Right != nil {
 				temp = append(temp, node.Right)
 			}
 		}
@@ -320,7 +320,7 @@ func ZigzagLevelOrder(root *Entity.TreeNode) [][]int {
 	for len(queue) != 0 {
 		var temp []*Entity.TreeNode
 		var curLevel []int
-		for _, node := range queue{
+		for _, node := range queue {
 			curLevel = append(curLevel, node.Val)
 			if node.Left != nil {
 				temp = append(temp, node.Left)
@@ -329,7 +329,7 @@ func ZigzagLevelOrder(root *Entity.TreeNode) [][]int {
 				temp = append(temp, node.Right)
 			}
 		}
-		if level % 2 == 0 {
+		if level%2 == 0 {
 			res = append(res, ReverseArray(curLevel))
 		} else {
 			res = append(res, curLevel)
@@ -549,7 +549,6 @@ func FindPosInArray(s []int, target int) int {
 	return -1
 }
 
-
 /*
 3.4 最大二叉树
 给定一个不含重复元素的整数数组nums 。一个以此数组直接递归构建的最大二叉树定义如下：
@@ -572,11 +571,11 @@ func FindPosInArray(s []int, target int) int {
     - [0,5] 中的最大值是 5 ，左边部分是 [0] ，右边部分是 [] 。
         - 只有一个元素，所以子节点是一个值为 0 的节点。
         - 空数组，无子节点。
- */
+*/
 
 // ConstructMaximumBinaryTree DFS解决
-func ConstructMaximumBinaryTree(nums []int) *Entity.TreeNode{
-	if len(nums) == 0{
+func ConstructMaximumBinaryTree(nums []int) *Entity.TreeNode {
+	if len(nums) == 0 {
 		return nil
 	}
 	pos := Utils.FindLargestElement(nums)
