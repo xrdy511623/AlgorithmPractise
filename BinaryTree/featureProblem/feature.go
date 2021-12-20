@@ -1307,3 +1307,37 @@ func MergeTrees(root1 *Entity.TreeNode, root2 *Entity.TreeNode) *Entity.TreeNode
 	root.Right = MergeTrees(root1.Right, root2.Right)
 	return root
 }
+
+/*
+1.24 二叉搜索树中的搜索
+给定二叉搜索树（BST）的根节点和一个值。你需要在BST中找到节点值等于给定值的节点。返回以该节点为根的子树。
+如果节点不存在，则返回NULL。
+*/
+
+// DFS递归
+func SearchBST(root *Entity.TreeNode, val int) *Entity.TreeNode {
+	if root == nil || root.Val == val {
+		return root
+	}
+	if root.Val < val {
+		return SearchBST(root.Right, val)
+	}
+	if root.Val > val {
+		return SearchBST(root.Left, val)
+	}
+	return nil
+}
+
+// 迭代法
+func SearchBSTSimple(root *Entity.TreeNode, val int) *Entity.TreeNode {
+	for root != nil {
+		if root.Val < val {
+			root = root.Right
+		} else if root.Val > val {
+			root = root.Left
+		} else {
+			break
+		}
+	}
+	return root
+}
