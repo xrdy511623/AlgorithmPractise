@@ -1341,3 +1341,59 @@ func SearchBSTSimple(root *Entity.TreeNode, val int) *Entity.TreeNode {
 	}
 	return root
 }
+
+/*
+1.25 二叉搜索树的最小绝对差
+给你一个二叉搜索树的根节点root ，返回树中任意两不同节点值之间的最小差值 。
+差值是一个正数，其数值等于两值之差的绝对值。
+
+示例:
+输入：root = [4,2,6,1,3]
+输出：1
+
+提示：
+树中节点的数目范围是 [2, 104]
+0 <= Node.val <= 105
+*/
+
+// 中序遍历得到升序数组，然后迭代取相邻元素差值的最小值即可
+func GetMinimumDifference(root *Entity.TreeNode) int {
+	var dfs func(*Entity.TreeNode) []int
+	dfs = func(node *Entity.TreeNode) (res []int) {
+		if node == nil {
+			return res
+		}
+		res = append(res, dfs(node.Left)...)
+		res = append(res, node.Val)
+		res = append(res, dfs(node.Right)...)
+		return res
+	}
+	sortedArray := dfs(root)
+	min := math.MaxInt32
+	for i := 1; i < len(sortedArray); i++ {
+		if value := sortedArray[i] - sortedArray[i-1]; value < min {
+			min = value
+		}
+	}
+	return min
+}
+
+// 也可以直接在dfs中序遍历中迭代这个最小差值
+func GetMinimumDifferenceSimple(root *Entity.TreeNode) int {
+	var prev *Entity.TreeNode
+	min := math.MaxInt32
+	var dfs func(*Entity.TreeNode)
+	dfs = func(node *Entity.TreeNode) {
+		if node == nil {
+			return
+		}
+		dfs(node.Left)
+		if prev != nil && node.Val-prev.Val < min {
+			min = node.Val - prev.Val
+		}
+		prev = node
+		dfs(node.Right)
+	}
+	dfs(root)
+	return min
+}
