@@ -330,48 +330,24 @@ func InorderSuccessor(root, p *Entity.TreeNode) *Entity.TreeNode {
 
 // InorderSuccessorUseIteration 迭代法解决，时间复杂度降低为O(pos),空间复杂度降低为O(1)
 func InorderSuccessorUseIteration(root, p *Entity.TreeNode) *Entity.TreeNode {
-	cur := root
-	var ans *Entity.TreeNode
-	for cur != nil {
-		// 当后继存在于经过的节点中时（找到一个>val的最小点）
-		if cur.Val > p.Val {
-			if ans == nil || ans.Val > p.Val {
-				ans = cur
-			}
-		}
-		// 找到p节点
-		if cur.Val == p.Val {
-			// 如果有右子树,说明后继节点一定在右子树的最左边
-			if cur.Right != nil {
-				cur = cur.Right
-				for cur.Left != nil {
-					cur = cur.Left
-				}
-				return cur
-			}
-			break
-		}
-		if cur.Val > p.Val {
-			cur = cur.Left
-		} else {
-			cur = cur.Right
-		}
-	}
-	return ans
-}
-
-func FindInorderSuccessor(root, p *Entity.TreeNode) *Entity.TreeNode {
-	var ans *Entity.TreeNode
-	ans = nil
-	for root != nil {
-		if root.Val > p.Val {
-			ans = root
-			root = root.Left
-		} else {
+	var prev *Entity.TreeNode
+	for root.Val != p.Val {
+		if root.Val < p.Val {
 			root = root.Right
+		} else {
+			prev = root
+			root = root.Left
 		}
 	}
-	return ans
+	if p.Right == nil {
+		return prev
+	} else {
+		post := p.Right
+		for post.Left != nil {
+			post = post.Left
+		}
+		return post
+	}
 }
 
 /*
@@ -810,8 +786,11 @@ func DeleteNodeInBST(root *Entity.TreeNode, key int) *Entity.TreeNode {
 }
 
 // Predecessor 在二叉搜索树(BST)中寻找当前节点的前驱节点
-func Predecessor(node *Entity.TreeNode) *Entity.TreeNode {
-	pre := node.Left
+func Predecessor(cur *Entity.TreeNode) *Entity.TreeNode {
+	pre := cur.Left
+	if pre == nil {
+		return pre
+	}
 	for pre.Right != nil {
 		pre = pre.Right
 	}
@@ -819,8 +798,11 @@ func Predecessor(node *Entity.TreeNode) *Entity.TreeNode {
 }
 
 // Successor 在二叉搜索树(BST)中寻找当前节点的后继节点
-func Successor(node *Entity.TreeNode) *Entity.TreeNode {
-	post := node.Right
+func Successor(cur *Entity.TreeNode) *Entity.TreeNode {
+	post := cur.Right
+	if post == nil {
+		return post
+	}
 	for post.Left != nil {
 		post = post.Left
 	}
