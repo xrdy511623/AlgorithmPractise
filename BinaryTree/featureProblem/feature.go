@@ -1454,3 +1454,49 @@ func FindMode(root *Entity.TreeNode) []int {
 	dfs(root)
 	return res
 }
+
+/*
+1.27 二叉搜索树中的插入操作
+给定二叉搜索树（BST）的根节点和要插入树中的值，将值插入二叉搜索树。 返回插入后二叉搜索树的根节点。 输入数据
+保证，新值和原始二叉搜索树中的任意节点值都不同。
+注意，可能存在多种有效的插入方式，只要树在插入后仍保持为二叉搜索树即可。你可以返回任意有效的结果。
+*/
+
+// InsertIntoBST 迭代法 时间复杂度O(N)，空间复杂度O(1)
+func InsertIntoBST(root *Entity.TreeNode, val int) *Entity.TreeNode {
+	if root == nil {
+		return &Entity.TreeNode{Val: val}
+	}
+	cur := root
+	newNode := &Entity.TreeNode{Val: val}
+	for cur != nil {
+		if val < cur.Val {
+			if cur.Left == nil {
+				cur.Left = newNode
+				break
+			}
+			cur = cur.Left
+		} else {
+			if cur.Right == nil {
+				cur.Right = newNode
+				break
+			}
+			cur = cur.Right
+		}
+	}
+	return root
+}
+
+// InsertIntoBSTSimple 递归法 时间复杂度O(N)，空间复杂度O(1)
+func InsertIntoBSTSimple(root *Entity.TreeNode, val int) *Entity.TreeNode {
+	if root == nil {
+		root = &Entity.TreeNode{Val: val}
+		return root
+	}
+	if val < root.Val {
+		root.Left = InsertIntoBSTSimple(root.Left, val)
+	} else {
+		root.Right = InsertIntoBSTSimple(root.Right, val)
+	}
+	return root
+}
