@@ -1397,3 +1397,60 @@ func GetMinimumDifferenceSimple(root *Entity.TreeNode) int {
 	dfs(root)
 	return min
 }
+
+/*
+1.26 二叉搜索树中的众数
+给定一个有相同值的二叉搜索树（BST），找出BST中的所有众数（出现频率最高的元素）。
+
+假定BST有如下定义：
+结点左子树中所含结点的值小于等于当前结点的值
+结点右子树中所含结点的值大于等于当前结点的值
+左子树和右子树都是二叉搜索树
+
+例如：
+给定BST [1,null,2,2]
+返回[2].
+
+提示：如果众数超过1个，不需考虑输出顺序
+进阶：你可以不使用额外的空间吗？（假设由递归产生的隐式调用栈的开销不被计算在内）
+*/
+
+/*
+BST(二叉搜索树)统计节点值出现频率，那就通过中序遍历形成有序数组，然后相邻两个元素作比较，
+就把出现频率最高的元素输出就可以了。
+*/
+
+// FindMode  时间复杂度O(N)，空间复杂度O(N)
+func FindMode(root *Entity.TreeNode) []int {
+	var res []int
+	var prev *Entity.TreeNode
+	count, maxCount := 1, 1
+	var dfs func(*Entity.TreeNode)
+	dfs = func(node *Entity.TreeNode) {
+		if node == nil {
+			return
+		}
+		dfs(node.Left)
+		// 与前一个节点值相等，出现频次累加1
+		if prev != nil && prev.Val == node.Val {
+			count++
+		} else {
+			// 否则，出现频次重置为1
+			count = 1
+		}
+		// 如果出现频次与最大出现频次相等，说明当前节点值为众数
+		if count == maxCount {
+			res = append(res, node.Val)
+		}
+		// 如果当前节点值出现频次大于最大出现频次，那就需要更新最大出现频次maxCount
+		// 清空原来存储众数的数组(之前存储的都不对，因为出现频次不够大)，将当前节点值存到数组中
+		if count > maxCount {
+			maxCount = count
+			res = []int{}
+			res = append(res, node.Val)
+		}
+		dfs(node.Right)
+	}
+	dfs(root)
+	return res
+}
