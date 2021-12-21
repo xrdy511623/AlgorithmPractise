@@ -286,7 +286,7 @@ func DiameterOfBinaryTree(root *Entity.TreeNode) int {
 }
 
 /*
-1.6 中序后继结点
+1.6 中序后继节点
 设计一个算法，找出二叉搜索树中指定节点的“下一个”节点（也即中序后继）。
 如果指定节点没有对应的“下一个”节点，则返回null。
 */
@@ -1532,4 +1532,35 @@ func TrimBST(root *Entity.TreeNode, low, high int) *Entity.TreeNode {
 		root.Right = TrimBST(root.Right, low, high)
 		return root
 	}
+}
+
+/*
+1.29 将有序数组转换为二叉搜索树
+给你一个整数数组nums ，其中元素已经按升序排列，请你将其转换为一棵高度平衡二叉搜索树。
+高度平衡二叉树是一棵满足「每个节点的左右两个子树的高度差的绝对值不超过1的二叉树。
+
+输入：nums = [-10,-3,0,5,9]
+输出：[0,-3,9,-10,null,5]
+解释：[0,-10,5,null,-3,null,9] 也将被视为正确答案
+*/
+
+/*
+思路:按照BST中序遍历会得到一个升序序列的特点，递归的构建BST即可，具体来说，有序数组中间位置mid元素
+为根节点，nums[:mid]为左子树范围，nums[mid+1:]为右子树范围，这样左右子树范围大体相当，节点数相差
+不会超过1，肯定是平衡二叉树，根节点的左子节点显然也是nums[:mid]中间位置的元素，根节点的右子节点显然
+是nums[mid+1:]中间位置的元素,如此根节点左子树和右子树也是平衡二叉搜索树了.总之，以有序数组中间位置
+为切割点，一定能保证左右子树范围大体相当，是平衡树。
+*/
+
+func SortedArrayToBST(nums []int) *Entity.TreeNode {
+	// 递归终止条件，当有序数组为空时，返回nil
+	if len(nums) == 0 {
+		return nil
+	}
+	// 当前根节点永远是有序数组中间位置元素
+	mid := len(nums) / 2
+	root := &Entity.TreeNode{Val: nums[mid]}
+	root.Left = SortedArrayToBST(nums[:mid])
+	root.Left = SortedArrayToBST(nums[mid+1:])
+	return root
 }
