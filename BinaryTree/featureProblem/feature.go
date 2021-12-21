@@ -1546,3 +1546,57 @@ func SortedArrayToBST(nums []int) *Entity.TreeNode {
 	root.Left = SortedArrayToBST(nums[mid+1:])
 	return root
 }
+
+/*
+1.30 把二叉搜索树转换为累加树
+给出二叉搜索树的根节点，该树的节点值各不相同，请你将其转换为累加树（Greater Sum Tree），使每个节点
+node的新值等于原树中大于或等于node.val的值之和。
+
+提醒一下，二叉搜索树满足下列约束条件：
+节点的左子树仅包含键小于节点键的节点。 节点的右子树仅包含键大于节点键的节点。 左右子树也必须是二叉
+搜索树。
+
+示例1:
+输入：[4,1,6,0,2,5,7,null,null,null,3,null,null,null,8]
+输出：[30,36,21,36,35,26,15,null,null,null,33,null,null,null,8]
+
+示例2：
+输入：root = [0,null,1]
+输出：[1,null,1]
+
+示例3：
+输入：root = [1,0,2]
+输出：[3,3,2]
+
+示例4：
+输入：root = [3,2,4,1]
+输出：[7,9,4,10]
+
+提示：
+树中的节点数介于0和104之间。
+每个节点的值介于-104和104之间。
+树中的所有值互不相同 。
+给定的树为二叉搜索树。
+*/
+
+/*
+思路:反序中序遍历
+本题中要求我们将每个节点的值修改为原来的节点值加上所有大于它的节点值之和。这样我们只需要反序中序遍历
+该二叉搜索树，记录过程中的节点值之和，并不断更新当前遍历到的节点的节点值，即可得到题目要求的累加树。
+*/
+
+// ConvertBST 时间复杂度O(N)，空间复杂度O(N)
+func ConvertBST(root *Entity.TreeNode) *Entity.TreeNode {
+	sum := 0
+	var dfs func(*Entity.TreeNode)
+	dfs = func(node *Entity.TreeNode) {
+		if node != nil {
+			dfs(node.Right)
+			sum += node.Val
+			node.Val = sum
+			dfs(node.Left)
+		}
+	}
+	dfs(root)
+	return root
+}
