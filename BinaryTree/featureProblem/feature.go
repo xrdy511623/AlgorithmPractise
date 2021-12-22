@@ -1029,3 +1029,36 @@ func IsSubPath(head *Entity2.ListNode, root *Entity.TreeNode) bool {
 	}
 	return dfs(head, root) || IsSubPath(head, root.Left) || IsSubPath(head, root.Right)
 }
+
+/*
+1.19 二叉树展开为链表
+给你二叉树的根结点root ，请你将它展开为一个单链表：
+
+展开后的单链表应该同样使用TreeNode ，其中right子指针指向链表中下一个结点，而左子指针始终为null 。
+展开后的单链表应该与二叉树先序遍历 顺序相同。
+
+示例:
+输入：root = [1,2,5,3,4,null,6]
+输出：[1,null,2,null,3,null,4,null,5,null,6]
+*/
+
+// Flatten dfs先序遍历解决
+func Flatten(root *Entity.TreeNode) {
+	var dfs func(*Entity.TreeNode) []*Entity.TreeNode
+	dfs = func(node *Entity.TreeNode) []*Entity.TreeNode {
+		var res []*Entity.TreeNode
+		if node == nil {
+			return res
+		}
+		res = append(res, node)
+		res = append(res, dfs(node.Left)...)
+		res = append(res, dfs(node.Right)...)
+		return res
+	}
+	nodesList := dfs(root)
+	for i := 1; i < len(nodesList); i++ {
+		prev, cur := nodesList[i-1], nodesList[i]
+		prev.Left = nil
+		prev.Right = cur
+	}
+}
