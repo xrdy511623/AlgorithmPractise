@@ -705,7 +705,7 @@ func MaxAncestorDiffSimple(root *Entity.TreeNode) int {
 节点K距离的节点。
 
 特别需要注意去重:假设节点p与target距离为n,那么其父节点par与target距离为n+1,那么par的父节点和
-左右子节点时与target距离应为n+2,但是此时p就是par的子节点，它的距离不应该被更新为n+2,应该还是n
+左右子节点此时与target距离应为n+2,但是此时p就是par的子节点，它的距离不应该被更新为n+2,应该还是n
 它也不应被添加到队列中。
  */
 

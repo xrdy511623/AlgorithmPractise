@@ -2,6 +2,7 @@ package featureProblem
 
 import (
 	"AlgorithmPractise/BinaryTree/Entity"
+	Entity2 "AlgorithmPractise/LinkedList/Entity"
 	"AlgorithmPractise/Utils"
 	"fmt"
 	"math"
@@ -944,7 +945,6 @@ func LongestSameValuePath(root *Entity.TreeNode) int {
 	return longestLength
 }
 
-
 /*
 1.17 寻找重复的子树
 给定一棵二叉树，返回所有重复的子树。对于同一类的重复子树，你只需要返回其中任意一棵的根结点即可。
@@ -968,33 +968,64 @@ func LongestSameValuePath(root *Entity.TreeNode) int {
 
   4
 
- */
-
+*/
 
 /*
 思路:遍历每一个节点,构造该节点可能的子树序列,并存储到哈希表中
 如果有重复,则将该节点添加到结果列表中.
- */
-
+*/
 
 func FindDuplicateSubtrees(root *Entity.TreeNode) []*Entity.TreeNode {
 	var res []*Entity.TreeNode
-	if root == nil{
+	if root == nil {
 		return res
 	}
 	subTreeMap := make(map[string]int)
-	var dfs func(*Entity.TreeNode)string
-	dfs = func(node *Entity.TreeNode)string{
-		if node == nil{
+	var dfs func(*Entity.TreeNode) string
+	dfs = func(node *Entity.TreeNode) string {
+		if node == nil {
 			return "#"
 		}
 		subTree := fmt.Sprintf("%v:%v:%v", node.Val, dfs(node.Left), dfs(node.Right))
 		subTreeMap[subTree]++
-		if subTreeMap[subTree] == 2{
+		if subTreeMap[subTree] == 2 {
 			res = append(res, node)
 		}
 		return subTree
 	}
 	dfs(root)
 	return res
+}
+
+/*
+1.18 二叉树中的列表
+给你一棵以root为根的二叉树和一个head为第一个节点的链表。
+如果在二叉树中，存在一条一直向下的路径，且每个点的数值恰好一一对应以head为首的链表中每个节点的值，那么
+请你返回True ，否则返回 False 。
+一直向下的路径的意思是：从树中某个节点开始，一直连续向下的路径。
+
+示例:
+输入：head = [4,2,8], root = [1,4,4,null,2,2,null,1,null,6,8,null,null,null,null,1,3]
+输出：true
+*/
+
+// IsSubPath 递归解决
+func IsSubPath(head *Entity2.ListNode, root *Entity.TreeNode) bool {
+	if root == nil {
+		return false
+	}
+	var dfs func(*Entity2.ListNode, *Entity.TreeNode) bool
+	dfs = func(head *Entity2.ListNode, root *Entity.TreeNode) bool {
+		if head == nil {
+			return true
+		}
+		if root == nil {
+			return false
+		}
+		if head.Val != root.Val {
+			return false
+		}
+		return dfs(head.Next, root.Left) || dfs(head.Next, root.Right)
+	}
+	return dfs(head, root) || IsSubPath(head, root.Left) || IsSubPath(head, root.Right)
 }
