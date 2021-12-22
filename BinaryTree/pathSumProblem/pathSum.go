@@ -670,3 +670,101 @@ func MaxAncestorDiffSimple(root *Entity.TreeNode) int {
 	}
 	return maxVal
 }
+
+/*
+1.10 二叉树中所有距离为K的节点
+给定一个二叉树（具有根节点root），一个目标节点target，和一个整数值K 。
+返回到目标结点target距离为K的所有结点的值的列表。 答案可以以任何顺序返回。
+
+示例1：
+输入：root = [3,5,1,6,2,0,8,null,null,7,4], target = 5, K = 2
+输出：[7,4,1]
+解释：
+所求结点为与目标结点（值为5）距离为2的节点，
+值分别为7，4，以及1
+
+		   3
+         /  \
+        5    1
+       / \  / \
+      6  2  0  8
+        / \
+       7  4
+
+提示：
+给定的树是非空的。
+树上的每个结点都具有唯一的值0 <= node.val <= 500。
+目标结点target是树上的结点。
+0 <= K <= 1000.
+ */
+
+/*
+思路:如果能知道节点的父节点,那么就可以知道所有与该节点距离为1的节点
+(也就是该节点的左右子节点以及父节点三个节点).之后就可以从target开始做广度优先搜索
+算法:先遍历一遍二叉树，记录除根节点外每个节点的父节点，之后做广度优先搜索,找到所有距离target
+节点K距离的节点。
+
+特别需要注意去重:假设节点p与target距离为n,那么其父节点par与target距离为n+1,那么par的父节点和
+左右子节点时与target距离应为n+2,但是此时p就是par的子节点，它的距离不应该被更新为n+2,应该还是n
+它也不应被添加到队列中。
+ */
+
+// 结构体Element由两部分组成，Node记录二叉树当前节点指针，Distance表示当前节点与target的距离
+type Element struct{
+	Node *Entity.TreeNode
+	Distance int
+}
+
+func DistanceK(root, target *Entity.TreeNode, k int)[]int{
+	var res []int
+	// parentMap记录二叉树根节点外所有节点的父节点
+	parentMap := make(map[*Entity.TreeNode]*Entity.TreeNode)
+	// seen记录已经出现过的节点，用于去重。
+	seen := make(map[*Entity.TreeNode]bool)
+	// 因为是从target节点开始做广度优先搜索，所以target就是第一个出现的节点
+	seen[target] = true
+	var dfs func(*Entity.TreeNode)
+	// dfs函数遍历整个二叉树，记录根节点外所有节点的父节点
+	dfs = func(node *Entity.TreeNode){
+		if node == nil{
+			return
+		}
+		if node.Left != nil{
+			parentMap[node.Left] = node
+			dfs(node.Left)
+		}
+		if node.Right != nil{
+			parentMap[node.Right] = node
+			dfs(node.Right)
+		}
+	}
+	dfs(root)
+	// 从target节点开始bfs搜索,那么此时与target的距离就是0
+	queue := []Element{{target, 0}}
+	for len(queue) != 0{
+		if queue[0].Distance == k{
+			// 因为是queue是先进先出的队列，所以如果第一个元素与target的距离为k
+			// 代表队列中所有元素距离都是k
+			for _, element := range queue{
+				res = append(res, element.Node.Val)
+			}
+			// 此时已经找到了所有满足条件的节点，退出循环
+			// 如果继续遍历队列添加元素，添加的元素与target的距离肯定是大于k的
+			break
+		}
+		// 先进先出
+		node, d := queue[0].Node, queue[0].Distance
+		queue = queue[1:]
+		// 将与target距离相等的节点(当前节点的父节点，左子节点和右子节点)放到同一个数组中
+		array := []*Entity.TreeNode{parentMap[node], node.Left, node.Right}
+		for _, td := range array{
+			// 如果这个节点非空，且没有出现在哈希表seen中
+			// 就可以将该节点添加到队列中，同时该节点与target距离即为当前节点与target距离+1
+			if td != nil && !seen[td]{
+				seen[td] = true
+				queue = append(queue, Element{td, d+1})
+			}
+		}
+	}
+	return res
+}
