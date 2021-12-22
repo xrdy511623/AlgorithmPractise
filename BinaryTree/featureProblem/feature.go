@@ -2,6 +2,7 @@ package featureProblem
 
 import (
 	"AlgorithmPractise/BinaryTree/Entity"
+	Entity2 "AlgorithmPractise/LinkedList/Entity"
 	"AlgorithmPractise/Utils"
 	"math"
 	"reflect"
@@ -1506,10 +1507,13 @@ func TrimBST(root *Entity.TreeNode, low, high int) *Entity.TreeNode {
 		return root
 	}
 	if root.Val < low {
+		// 去右子树修剪
 		return TrimBST(root.Right, low, high)
 	} else if root.Val > high {
+		// 去左子树修剪
 		return TrimBST(root.Left, low, high)
 	} else {
+		// 左右子树都需要修剪
 		root.Left = TrimBST(root.Left, low, high)
 		root.Right = TrimBST(root.Right, low, high)
 		return root
@@ -1548,7 +1552,52 @@ func SortedArrayToBST(nums []int) *Entity.TreeNode {
 }
 
 /*
-1.30 把二叉搜索树转换为累加树
+1.30 有序链表转换二叉搜索树
+给定一个单链表，其中的元素按升序排序，将其转换为高度平衡的二叉搜索树。
+
+本题中，一个高度平衡二叉树是指一个二叉树每个节点的左右两个子树的高度差的绝对值不超过1。
+
+示例:
+给定的有序链表： [-10, -3, 0, 5, 9],
+一个可能的答案是：[0, -3, 9, -10, null, 5], 它可以表示下面这个高度平衡二叉搜索树：
+
+      0
+     / \
+   -3   9
+   /   /
+ -10  5
+*/
+
+/*
+思路:本题与1.29 将有序数组转换为二叉搜索树本质上是一样的，不同的是多了一个顺序遍历有序链表得到升序
+数组的过程。
+*/
+
+func sortedListToBST(head *Entity2.ListNode) *Entity.TreeNode {
+	if head == nil {
+		return nil
+	}
+	var sortedArray []int
+	for head != nil {
+		sortedArray = append(sortedArray, head.Val)
+		head = head.Next
+	}
+	var dfs func([]int) *Entity.TreeNode
+	dfs = func(nums []int) *Entity.TreeNode {
+		if len(nums) == 0 {
+			return nil
+		}
+		mid := len(nums) / 2
+		root := &Entity.TreeNode{nums[mid], nil, nil}
+		root.Left = dfs(nums[:mid])
+		root.Right = dfs(nums[mid+1:])
+		return root
+	}
+	return dfs(sortedArray)
+}
+
+/*
+1.31 把二叉搜索树转换为累加树
 给出二叉搜索树的根节点，该树的节点值各不相同，请你将其转换为累加树（Greater Sum Tree），使每个节点
 node的新值等于原树中大于或等于node.val的值之和。
 
@@ -1599,4 +1648,52 @@ func ConvertBST(root *Entity.TreeNode) *Entity.TreeNode {
 	}
 	dfs(root)
 	return root
+}
+
+/*
+1.32 二叉搜索树的范围和
+给定二叉搜索树的根结点root，返回值位于范围[low, high] 之间的所有结点的值的和。
+
+示例:
+输入：root = [10,5,15,3,7,null,18], low = 7, high = 15
+输出：32
+*/
+
+// RangeSumBST 递归 时间复杂度O(N)，空间复杂度O(N)
+func RangeSumBST(root *Entity.TreeNode, low int, high int) int {
+	if root == nil {
+		return 0
+	}
+	if root.Val < low {
+		return RangeSumBST(root.Right, low, high)
+	} else if root.Val > high {
+		return RangeSumBST(root.Left, low, high)
+	} else {
+		return root.Val + RangeSumBST(root.Right, low, high) + RangeSumBST(root.Left, low, high)
+	}
+}
+
+// RangeSumBSTSimple 迭代 时间复杂度O(N)，空间复杂度O(N)
+func RangeSumBSTSimple(root *Entity.TreeNode, low int, high int) int {
+	sum := 0
+	if root == nil {
+		return sum
+	}
+	queue := []*Entity.TreeNode{root}
+	for len(queue) != 0 {
+		node := queue[0]
+		queue = queue[1:]
+		if node == nil {
+			continue
+		}
+		if node.Val < low {
+			queue = append(queue, node.Right)
+		} else if node.Val > high {
+			queue = append(queue, node.Left)
+		} else {
+			sum += node.Val
+			queue = append(queue, node.Left, node.Right)
+		}
+	}
+	return sum
 }

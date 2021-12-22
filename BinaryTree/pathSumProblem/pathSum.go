@@ -82,8 +82,7 @@ func PathSum(root *Entity.TreeNode, target int) [][]int {
 	if root == nil {
 		return res
 	}
-	var queue []Group
-	queue = append(queue, Group{root, []int{root.Val}})
+	queue := []Group{{root, []int{root.Val}}}
 	for len(queue) != 0 {
 		node := queue[0].Node
 		tempPath := queue[0].Path
@@ -244,6 +243,19 @@ func CountTarget(s []int, target int) int {
 返回[2]，只有2出现两次，-5只出现1次。
 */
 
+/*
+DFS递归解决
+1 明确递归函数的参数和返回值
+参数为二叉树根节点指针，返回值为以该节点为根节点的二叉树所有节点值之和
+2 确定递归终止条件
+当遇到空节点时，返回0
+3 确定单层递归逻辑
+以当前节点为根节点的二叉树所有节点值之和即为其左子树所有节点之和+其右子树所有节点之和+当前节点值
+
+在递归函数中统计子树元素和sum的出现频次，在递归结束后即得到所有子树元素和的出现频次。
+最后将出现频次最多的子树元素和添加到结果集合中即可。
+*/
+
 func FindFrequentTreeSum(root *Entity.TreeNode) []int {
 	var res []int
 	if root == nil {
@@ -263,7 +275,7 @@ func FindFrequentTreeSum(root *Entity.TreeNode) []int {
 		return sum
 	}
 	subTreeSum(root)
-	mostFrequent := 0
+	mostFrequent := 1
 	for _, v := range treeSum {
 		if v > mostFrequent {
 			mostFrequent = v
@@ -512,4 +524,80 @@ func BinaryTreePathsUseDFS(root *Entity.TreeNode) []string {
 	}
 	dfs(root, "")
 	return paths
+}
+
+/*
+1.8 祖父节点值为偶数的节点之和
+给你一棵二叉树，请你返回满足以下条件的所有节点的值之和：
+该节点的祖父节点的值为偶数。（一个节点的祖父节点是指该节点的父节点的父节点。）
+如果不存在祖父节点值为偶数的节点，那么返回0 。
+*/
+
+/*
+思路:先判断当前节点的值是否为偶数，然后依次对孙子节点的值进行累加
+*/
+
+// SumEvenGrandparent DFS
+func SumEvenGrandparent(root *Entity.TreeNode) int {
+	if root == nil {
+		return 0
+	}
+	sum := 0
+	if root.Val%2 == 0 {
+		if root.Left != nil {
+			if root.Left.Left != nil {
+				sum += root.Left.Left.Val
+			}
+			if root.Left.Right != nil {
+				sum += root.Left.Right.Val
+			}
+		}
+		if root.Right != nil {
+			if root.Right.Left != nil {
+				sum += root.Right.Left.Val
+			}
+			if root.Right.Right != nil {
+				sum += root.Right.Right.Val
+			}
+		}
+	}
+	return sum + SumEvenGrandparent(root.Left) + SumEvenGrandparent(root.Right)
+}
+
+// SumEvenGrandparentSimple BFS
+func SumEvenGrandparentSimple(root *Entity.TreeNode) int {
+	if root == nil {
+		return 0
+	}
+	sum := 0
+	queue := []*Entity.TreeNode{root}
+	for len(queue) != 0 {
+		node := queue[0]
+		queue = queue[1:]
+		if node.Val%2 == 0 {
+			if node.Left != nil {
+				if node.Left.Left != nil {
+					sum += node.Left.Left.Val
+				}
+				if node.Left.Right != nil {
+					sum += node.Left.Right.Val
+				}
+			}
+			if node.Right != nil {
+				if node.Right.Left != nil {
+					sum += node.Right.Left.Val
+				}
+				if node.Right.Right != nil {
+					sum += node.Right.Right.Val
+				}
+			}
+		}
+		if node.Left != nil {
+			queue = append(queue, node.Left)
+		}
+		if node.Right != nil {
+			queue = append(queue, node.Right)
+		}
+	}
+	return sum
 }
