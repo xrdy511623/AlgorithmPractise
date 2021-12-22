@@ -3,6 +3,7 @@ package featureProblem
 import (
 	"AlgorithmPractise/BinaryTree/Entity"
 	"AlgorithmPractise/Utils"
+	"fmt"
 	"math"
 	"reflect"
 )
@@ -941,4 +942,59 @@ func LongestSameValuePath(root *Entity.TreeNode) int {
 	}
 	dfs(root)
 	return longestLength
+}
+
+
+/*
+1.17 寻找重复的子树
+给定一棵二叉树，返回所有重复的子树。对于同一类的重复子树，你只需要返回其中任意一棵的根结点即可。
+两棵树重复是指它们具有相同的结构以及相同的结点值。
+
+示例 1：
+        1
+       / \
+      2   3
+     /   / \
+    4   2   4
+       /
+      4
+下面是两个重复的子树：
+
+      2
+     /
+    4
+
+和
+
+  4
+
+ */
+
+
+/*
+思路:遍历每一个节点,构造该节点可能的子树序列,并存储到哈希表中
+如果有重复,则将该节点添加到结果列表中.
+ */
+
+
+func FindDuplicateSubtrees(root *Entity.TreeNode) []*Entity.TreeNode {
+	var res []*Entity.TreeNode
+	if root == nil{
+		return res
+	}
+	subTreeMap := make(map[string]int)
+	var dfs func(*Entity.TreeNode)string
+	dfs = func(node *Entity.TreeNode)string{
+		if node == nil{
+			return "#"
+		}
+		subTree := fmt.Sprintf("%v:%v:%v", node.Val, dfs(node.Left), dfs(node.Right))
+		subTreeMap[subTree]++
+		if subTreeMap[subTree] == 2{
+			res = append(res, node)
+		}
+		return subTree
+	}
+	dfs(root)
+	return res
 }
