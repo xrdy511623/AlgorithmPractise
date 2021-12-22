@@ -1697,3 +1697,64 @@ func RangeSumBSTSimple(root *Entity.TreeNode, low int, high int) int {
 	}
 	return sum
 }
+
+/*
+1.33 最长同值路径
+给定一个二叉树，找到最长的路径，这个路径中的每个节点具有相同值。 这条路径可以经过也可以不经过根节点。
+
+注意：两个节点之间的路径长度由它们之间的边数表示。
+
+示例 1:
+
+输入:
+
+              5
+             / \
+            4   5
+           / \   \
+          1   1   5
+输出:
+2
+ */
+
+/*
+思路:dfs递归解决
+1 明确递归函数参数和返回值
+参数为当前二叉树根节点指针，返回值为左最长同值路径长度和右最长同值路径长度的最大值
+2 确定递归终止条件
+当遇到空节点时，返回0
+3 确定单层递归逻辑
+若当前根节点存在左子节点和根节点同值，更新左最长同值路径长度+1;否则左最长同值路径长度重置为0
+若当前根节点存在右子节点和根节点同值，更新右最长同值路径长度+1;否则右最长同值路径长度重置为0
+同时迭代更新最长同值路径最大长度(左最长同值路径长度+右最长同值路径长度)
+ */
+
+// LongestSameValuePath 时间复杂度O(N),空间复杂度O(H)
+func LongestSameValuePath(root *Entity.TreeNode) int {
+	longestLength := 0
+	var dfs func(*Entity.TreeNode)int
+	dfs = func(node *Entity.TreeNode)int{
+		if node == nil{
+			return 0
+		}
+		leftLength := dfs(node.Left)
+		rightLength := dfs(node.Right)
+		// 如果存在左子节点和根节点同值，更新左最长路径;否则左最长路径为0
+		if node.Left != nil && node.Left.Val == node.Val{
+			leftLength++
+		}else{
+			leftLength = 0
+		}
+		// 如果存在右子节点和根节点同值，更新右最长路径;否则右最长路径为0
+		if node.Right != nil && node.Right.Val == node.Val{
+			rightLength++
+		}else{
+			rightLength = 0
+		}
+		// 迭代最长同值路径的值，左最长路径+右最长路径
+		longestLength = Utils.Max(longestLength, leftLength+rightLength)
+		return Utils.Max(leftLength, rightLength)
+	}
+	dfs(root)
+	return longestLength
+}
