@@ -1161,7 +1161,7 @@ struct Node {
 初始状态下，所有next指针都被设置为NULL。
 */
 
-// ConnectNextComplex 单链表法 时间复杂度O(N), 空间复杂度O(1)
+// ConnectNextComplex 每层单链表法 时间复杂度O(N), 空间复杂度O(1)
 func ConnectNextComplex(root *Node) *Node {
 	if root == nil {
 		return nil
@@ -1184,6 +1184,72 @@ func ConnectNextComplex(root *Node) *Node {
 		}
 		// 更新每层的头结点
 		head = dummy.Next
+	}
+	return root
+}
+
+/*
+1.22 特定深度节点链表
+给定一棵二叉树，设计一个算法，创建含有某一深度上所有节点的链表（比如，若一棵树的深度为D，则会创建出D个链表）。
+返回一个包含所有深度的链表的数组。
+
+ 		   5
+         /  \
+        4    8
+       / \  / \
+      11   13  4
+     / \   	  /  \
+    7  2   	 5    1
+
+输入[5,4,8,11,null,13,4,7,2,null,null,5,1]
+输出[[5],[4,8],[11,13,4],[7,2,5,1]]
+*/
+
+// ListOfDepth BFS解决
+func ListOfDepth(root *Entity.TreeNode) []*Entity2.ListNode {
+	var res []*Entity2.ListNode
+	if root == nil {
+		return res
+	}
+	queue := []*Entity.TreeNode{root}
+	for len(queue) != 0 {
+		size := len(queue)
+		dummy := &Entity2.ListNode{0, nil}
+		p := dummy
+		for i := 0; i < size; i++ {
+			node := queue[i]
+			listNode := &Entity2.ListNode{node.Val, nil}
+			p.Next = listNode
+			p = p.Next
+			if node.Left != nil {
+				queue = append(queue, node.Left)
+			}
+			if node.Right != nil {
+				queue = append(queue, node.Right)
+			}
+		}
+		res = append(res, dummy.Next)
+		queue = queue[size:]
+	}
+	return res
+}
+
+/*
+1.23 删除给定值的叶子节点
+给你一棵以root为根的二叉树和一个整数target,请你删除所有值为target的叶子节点.
+注意,一旦删除值为target的叶子节点，它的父节点就可能变成叶子节点；如果新叶子节点的值
+恰好也是target,那么这个节点也应该被删除.也就是说，你需要重复此过程直到不能继续删除.
+*/
+
+// RemoveLeafNodes 后序遍历，递归解决
+func RemoveLeafNodes(root *Entity.TreeNode, target int) *Entity.TreeNode {
+	if root == nil {
+		return nil
+	}
+	root.Left = RemoveLeafNodes(root.Left, target)
+	root.Right = RemoveLeafNodes(root.Right, target)
+	if root.Left == nil && root.Right == nil && root.Val == target {
+		return nil
 	}
 	return root
 }
