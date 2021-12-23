@@ -1062,3 +1062,87 @@ func Flatten(root *Entity.TreeNode) {
 		prev.Right = cur
 	}
 }
+
+/*
+1.20 填充每个节点的下一个右侧节点指针
+给定一个完美二叉树，其所有叶子节点都在同一层，每个父节点都有两个子节点。二叉树定义如下：
+
+struct Node {
+  int val;
+  Node *left;
+  Node *right;
+  Node *next;
+}
+填充它的每个next指针，让这个指针指向其下一个右侧节点。如果找不到下一个右侧节点，则将next指针设置为NULL。
+初始状态下，所有next指针都被设置为NULL。
+*/
+
+type Node struct {
+	Val   int
+	Left  *Node
+	Right *Node
+	Next  *Node
+}
+
+// Connect 第一种方案, 递归 时间复杂度O(2N), 空间复杂度O(H)
+func Connect(root *Node) *Node {
+	if root == nil {
+		return nil
+	}
+	var dfs func(*Node, *Node)
+	dfs = func(l, r *Node) {
+		if l == nil && r == nil {
+			return
+		}
+		l.Next = r
+		dfs(l.Left, l.Right)
+		dfs(l.Right, r.Left)
+		dfs(r.Left, r.Right)
+	}
+	dfs(root.Left, root.Right)
+	return root
+}
+
+// ConnectNext 第二种方案, BFS 时间复杂度O(N), 空间复杂度O(N)
+func ConnectNext(root *Node) *Node {
+	if root == nil {
+		return nil
+	}
+	queue := []*Node{root}
+	for len(queue) != 0 {
+		size := len(queue)
+		for i := 0; i < size; i++ {
+			node := queue[i]
+			// 确保queue[i+1]不是空节点
+			if i+1 < size {
+				node.Next = queue[i+1]
+			}
+			if node.Left != nil {
+				queue = append(queue, node.Left)
+			}
+			if node.Right != nil {
+				queue = append(queue, node.Right)
+			}
+		}
+		queue = queue[size:]
+	}
+	return root
+}
+
+// ConnectNextSimple 第三种方案, 利用已建立的Next指针 时间复杂度O(N), 空间复杂度O(1)
+func ConnectNextSimple(root *Node) *Node {
+	if root == nil {
+		return nil
+	}
+	// 每次循环从该层的最左侧节点开始
+	for leftMost := root; leftMost.Left != nil; leftMost = leftMost.Left {
+		// 通过Next指针遍历同一层节点，为下一层的节点更新Next指针
+		for cur := leftMost; cur != nil; cur = cur.Next {
+			cur.Left.Next = cur.Right
+			if cur.Next != nil {
+				cur.Right.Next = cur.Next.Left
+			}
+		}
+	}
+	return root
+}
