@@ -1146,3 +1146,44 @@ func ConnectNextSimple(root *Node) *Node {
 	}
 	return root
 }
+
+/*
+1.21 填充每个节点的下一个右侧节点指针II
+给定一个二叉树
+
+struct Node {
+  int val;
+  Node *left;
+  Node *right;
+  Node *next;
+}
+填充它的每个next 指针，让这个指针指向其下一个右侧节点。如果找不到下一个右侧节点，则将next指针设置为NULL。
+初始状态下，所有next指针都被设置为NULL。
+*/
+
+// ConnectNextComplex 单链表法 时间复杂度O(N), 空间复杂度O(1)
+func ConnectNextComplex(root *Node) *Node {
+	if root == nil {
+		return nil
+	}
+	head := root
+	for head != nil {
+		// 创建每一层链表的伪头结点
+		dummy := new(Node)
+		q := dummy
+		// 每一层都从左向右遍历
+		for p := head; p != nil; p = p.Next {
+			if p.Left != nil {
+				q.Next = p.Left
+				q = q.Next
+			}
+			if p.Right != nil {
+				q.Next = p.Right
+				q = q.Next
+			}
+		}
+		// 更新每层的头结点
+		head = dummy.Next
+	}
+	return root
+}
