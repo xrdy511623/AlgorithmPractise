@@ -1446,3 +1446,42 @@ func LcaDeepestLeaves(root *Entity.TreeNode) *Entity.TreeNode {
 	node, _ := dfs(root)
 	return node
 }
+
+/*
+1.27 叶子相似的树
+请考虑一颗二叉树上所有的叶子,这些叶子的值按从左到右的顺序排列形成一个叶值序列.
+如果有两颗二叉树的叶值序列是相同,那么我们就认为它们是叶相似的.
+
+示例:
+输入：root1 = [3,5,1,6,2,9,8,null,null,7,4],
+root2 = [3,5,1,6,7,4,2,null,null,null,null,null,null,9,8]
+输出：true
+*/
+
+/*
+思路：深度优先搜索
+我们可以使用深度优先搜索的方法得到一棵树的「叶值序列」。
+具体地，在深度优先搜索的过程中，我们总是先搜索当前节点的左子节点，再搜索当前节点的右子节点。如果我们搜索
+到一个叶节点，就将它的值放入序列中。
+在得到了两棵树分别的「叶值序列」后，我们比较它们是否相等即可。
+*/
+
+func LeafSimilar(root1, root2 *Entity.TreeNode) bool {
+	var res []int
+	var dfs func(*Entity.TreeNode)
+	dfs = func(node *Entity.TreeNode) {
+		if node == nil {
+			return
+		}
+		if node.Left == nil && node.Right == nil {
+			res = append(res, node.Val)
+		}
+		dfs(node.Left)
+		dfs(node.Right)
+	}
+	dfs(root1)
+	l1 := res
+	res = []int{}
+	dfs(root2)
+	return reflect.DeepEqual(l1, res)
+}
