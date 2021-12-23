@@ -333,6 +333,9 @@ func FindFrequentTreeSum(root *Entity.TreeNode) []int {
 */
 
 func MaxPathSum(root *Entity.TreeNode) int {
+	if root == nil{
+		return 0
+	}
 	maxSum := math.MinInt32
 	var dfs func(node *Entity.TreeNode) int
 	dfs = func(node *Entity.TreeNode) int {

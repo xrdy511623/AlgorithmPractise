@@ -1253,3 +1253,129 @@ func RemoveLeafNodes(root *Entity.TreeNode, target int) *Entity.TreeNode {
 	}
 	return root
 }
+
+/*
+1.24 层数最深叶子节点的和
+给你一棵二叉树的根节点root ，请你返回 层数最深的叶子节点的和。
+
+示例:
+输入：root = [1,2,3,4,5,null,6,7,null,null,null,null,8]
+输出：15
+
+提示：
+树中节点数目在范围 [1, 104] 之间。
+1 <= Node.val <= 100
+*/
+
+type Nd struct {
+	Node  *Entity.TreeNode
+	Depth int
+}
+
+// DeepestLeavesSum BFS解决
+func DeepestLeavesSum(root *Entity.TreeNode) int {
+	sum := 0
+	if root == nil {
+		return sum
+	}
+	maxDepth := 0
+	queue := []Nd{Nd{root, 1}}
+	for len(queue) != 0 {
+		size := len(queue)
+		// 既然是层序遍历，那么最后一层的叶子节点肯定是最后被添加到队列中的
+		// 所以叶子节点一定是优先从队列末尾处得到。
+		nd := queue[size-1]
+		queue = queue[:size-1]
+		node, depth := nd.Node, nd.Depth
+		// 如果此时最大深度小于当前层的深度，那么需要更新最大深度和sum的值
+		// 也就是说只要没遍历到深度最大的层，就会一直更新maxDepth和sum
+		if maxDepth < depth {
+			maxDepth, sum = depth, node.Val
+			// 若此时最大深度等于当前层深度，证明已经到了最深层，sum累加当前节点值
+		} else if maxDepth == depth {
+			sum += node.Val
+		}
+		// 当前节点若有子节点，则其子节点的深度为父节点深度+1
+		if node.Left != nil {
+			queue = append(queue, Nd{node.Left, depth + 1})
+		}
+		if node.Right != nil {
+			queue = append(queue, Nd{node.Right, depth + 1})
+		}
+	}
+	return sum
+}
+
+// DeepestLeavesSumSimple DFS解决
+func DeepestLeavesSumSimple(root *Entity.TreeNode) int {
+	sum := 0
+	if root == nil {
+		return sum
+	}
+	maxDepth := 0
+	var dfs func(*Entity.TreeNode, int)
+	dfs = func(node *Entity.TreeNode, depth int) {
+		if node == nil {
+			return
+		}
+		if maxDepth < depth {
+			maxDepth, sum = depth, node.Val
+		} else if maxDepth == depth {
+			sum += node.Val
+		}
+		dfs(node.Left, depth+1)
+		dfs(node.Right, depth+1)
+	}
+	dfs(root, 1)
+	return sum
+}
+
+/*
+1.25 二叉树的坡度
+给你一个二叉树的根节点root，计算并返回整个树的坡度 。
+一个树的节点的坡度定义即为，该节点左子树的节点之和和右子树节点之和的差的绝对值 。如果没有左子树的话，
+左子树的节点之和为0 ；没有右子树的话也是一样。空结点的坡度是0 。
+整个树的坡度就是其所有节点的坡度之和。
+
+示例:
+输入：root = [1,2,3]
+输出：1
+解释：
+节点 2 的坡度：|0-0| = 0（没有子节点）
+节点 3 的坡度：|0-0| = 0（没有子节点）
+节点 1 的坡度：|2-3| = 1（左子树就是左子节点，所以和是 2 ；右子树就是右子节点，所以和是 3 ）
+坡度总和：0 + 0 + 1 = 1
+*/
+
+/*
+思路:DFS后序遍历递归解决
+递归三部曲
+1 明确递归函数的参数和返回值
+参数为当前节点的指针，返回值为以当前节点为根的二叉树所有节点值之和
+2 确定递归终止条件
+当遍历到空节点时，返回0
+3 明确单层递归逻辑
+为了避免重复运算，需要从底层向上到根节点遍历，也就是后序遍历，当前节点左子树元素和+右子树元素和+
+当前节点值即为返回值。
+在遍历过程中累加当前节点的坡度即可
+*/
+
+func FindTilt(root *Entity.TreeNode) int {
+	res := 0
+	if root == nil {
+		return res
+	}
+	var dfs func(*Entity.TreeNode) int
+	dfs = func(node *Entity.TreeNode) int {
+		if node == nil {
+			return 0
+		}
+		l := dfs(node.Left)
+		r := dfs(node.Right)
+		// 当前节点坡度即为其左子树元素和与右子树元素和之差的绝对值
+		res += Utils.Abs(l - r)
+		return l + r + node.Val
+	}
+	dfs(root)
+	return res
+}

@@ -828,3 +828,44 @@ func TrimBST(root *Entity.TreeNode, low, high int) *Entity.TreeNode {
 		return root
 	}
 }
+
+/*
+1.18 两棵二叉搜索树中的所有元素
+给你root1和root2这两棵二叉搜索树。
+请你返回一个列表，其中包含两棵树中的所有整数并按升序排序。
+
+示例1:
+输入：root1 = [2,1,4], root2 = [1,0,3]
+输出：[0,1,1,2,3,4]
+*/
+
+// GetAllElements 中序遍历+归并排序
+func GetAllElements(root1, root2 *Entity.TreeNode) []int {
+	var dfs func(*Entity.TreeNode) []int
+	dfs = func(node *Entity.TreeNode) []int {
+		var list []int
+		if node == nil {
+			return list
+		}
+		list = append(list, dfs(node.Left)...)
+		list = append(list, node.Val)
+		list = append(list, dfs(node.Right)...)
+		return list
+	}
+	var res []int
+	l1, l2 := dfs(root1), dfs(root2)
+	length1, length2 := len(l1), len(l2)
+	s1, s2 := 0, 0
+	for s1 < length1 && s2 < length2 {
+		if l1[s1] <= l2[s2] {
+			res = append(res, l1[s1])
+			s1++
+		} else {
+			res = append(res, l2[s2])
+			s2++
+		}
+	}
+	res = append(res, l1[s1:]...)
+	res = append(res, l2[s2:]...)
+	return res
+}
