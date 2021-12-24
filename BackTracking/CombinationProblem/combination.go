@@ -45,7 +45,7 @@ path.size() == 3 时，接下来要选择1个数，搜索起点最大是15，最
 而接下来要选择的元素个数 = k - len(path).
 所以有: 搜索起点的上限 = n - (k - len(path)) + 1
 所以，我们的剪枝过程就是：把 i <= n 改成 i <= n - (k - len(path)) + 1
- */
+*/
 
 // Combine 回溯
 func Combine(n, k int) [][]int {
@@ -82,7 +82,6 @@ func Combine(n, k int) [][]int {
 	return res
 }
 
-
 /*
 1.2 组合总和III
 找出所有相加之和为n的k个数的组合。组合中只允许含有1-9的正整数，并且每种组合中不存在重复的数字。
@@ -96,33 +95,33 @@ func Combine(n, k int) [][]int {
 
 示例2:
 输入: k = 3, n = 9 输出: [[1,2,6], [1,3,5], [2,3,4]]
- */
+*/
 
 /*
 本题与1.1 组合本质上并无不同，仍然是找k个数的组合，只是多了一个(组合)和为n的限制，而且组合中的元素题目已经
 限定是[1,9]范围内的正整数，所以解决起来是很容易的。搜索起点start的上限与上题也是一样的。
- */
+*/
 
 // CombinationSumThird 回溯法解决
 func CombinationSumThird(k int, n int) [][]int {
 	var res [][]int
 	var path []int
 	var backTrack func(int, int)
-	backTrack = func(sum, start int){
+	backTrack = func(sum, start int) {
 		// 剪枝，如果当前路径和已经大于n,后续遍历就没有意义了
-		if sum > n{
+		if sum > n {
 			return
 		}
 		// 递归终止条件
 		// 如果当前路径长度为k,且路径和等于n，便找到了一条满足要求的路径
-		if len(path) == k && sum == n{
+		if len(path) == k && sum == n {
 			temp := make([]int, k)
 			copy(temp, path)
 			res = append(res, temp)
 			return
 		}
 		// for循环遍历(剪枝)
-		for i:=start;i<=9-(k-len(path))+1;i++{
+		for i := start; i <= 9-(k-len(path))+1; i++ {
 			// 处理每一个节点
 			sum += i
 			path = append(path, i)
@@ -134,5 +133,69 @@ func CombinationSumThird(k int, n int) [][]int {
 		}
 	}
 	backTrack(0, 1)
+	return res
+}
+
+/*
+1.3 电话号码的字母组合
+给定一个仅包含数字2-9的字符串，返回所有它能表示的字母组合。答案可以按任意顺序返回。
+给出数字到字母的映射如下（与电话按键相同）。注意1不对应任何字母。
+
+示例1：
+输入：digits = "23"
+输出：["ad","ae","af","bd","be","bf","cd","ce","cf"]
+
+示例2：
+输入：digits = ""
+输出：[]
+
+示例3：
+输入：digits = "2"
+输出：["a","b","c"]
+
+提示：
+0 <= digits.length <= 4
+digits[i] 是范围 ['2', '9'] 的一个数字。
+*/
+
+// LetterCombinations 回溯算法解决
+func LetterCombinations(digits string) []string {
+	length := len(digits)
+	if length == 0 {
+		return nil
+	}
+	// 建立电话号码与字符串的映射关系
+	m := make(map[byte]string)
+	m['2'] = "abc"
+	m['3'] = "def"
+	m['4'] = "ghi"
+	m['5'] = "jkl"
+	m['6'] = "mno"
+	m['7'] = "pqrs"
+	m['8'] = "tuv"
+	m['9'] = "wxyz"
+	var res []string
+	temp := ""
+	var backTrack func(int)
+	backTrack = func(index int) {
+		// 递归终止条件
+		// 当拼接的临时字符串temp长度等于digits长度时，表明已经找到了一个符合条件的字符串
+		if len(temp) == length {
+			res = append(res, temp)
+			return
+		}
+		// 找到digits[index]对应数字所代表的字符串
+		letters := m[digits[index]]
+		for i := 0; i < len(letters); i++ {
+			// for循环遍历letters，拼接temp字符串
+			temp = temp + string(letters[i])
+			// 递归，从index+1下标继续拼接
+			backTrack(index + 1)
+			// 回溯
+			temp = temp[:len(temp)-1]
+		}
+	}
+	// 从digits的0下标开始
+	backTrack(0)
 	return res
 }
