@@ -1,6 +1,9 @@
 package CombinationProblem
 
-import "strconv"
+import (
+	"sort"
+	"strconv"
+)
 
 /*
 回溯算法题目的解题套路就是:
@@ -305,12 +308,15 @@ candidates中的每个数字在每个组合中只能使用一次。
 那么问题来了，我们是要同一树层上使用过，还是同一树枝上使用过呢？
 回看一下题目，元素在同一个组合内是可以重复的，怎么重复都没事，但两个组合不能相同。
 所以我们要去重的是同一树层上的“使用过”，同一树枝上的都是一个组合里的元素，不用去重。
+
+在求和问题中，排序之后加剪枝是常见的套路！
 */
 
 func CombinationSumTwo(candidates []int, target int) [][]int {
 	var res [][]int
 	var path []int
 	sum := 0
+	sort.Ints(candidates)
 	var backTrack func(int)
 	backTrack = func(start int) {
 		// 递归终止条件
