@@ -1,6 +1,11 @@
 package CombinationProblem
 
 /*
+回溯算法题目的解题套路就是:
+for循环横向遍历，递归纵向遍历，回溯不断调整结果集。
+*/
+
+/*
 1.1 组合
 给定两个整数n和k，返回范围 [1, n]中所有可能的k个数的组合。
 你可以按任何顺序返回答案。
@@ -158,6 +163,11 @@ func CombinationSumThird(k int, n int) [][]int {
 digits[i] 是范围 ['2', '9'] 的一个数字。
 */
 
+/*
+因为题目中每一个数字(电话号码)代表的是不同集合，所以本题其实是求不同集合之间的组合，不像前面两题是求同一个
+集合中的组合，但大体思路是没差的。
+*/
+
 // LetterCombinations 回溯算法解决
 func LetterCombinations(digits string) []string {
 	length := len(digits)
@@ -195,7 +205,126 @@ func LetterCombinations(digits string) []string {
 			temp = temp[:len(temp)-1]
 		}
 	}
-	// 从digits的0下标开始
+	// 从digits的0下标开始处理
+	backTrack(0)
+	return res
+}
+
+/*
+1.4 组合总和
+给定一个无重复元素的数组candidates和一个目标数target ，找出candidates中所有可以使数字和为target的组合。
+candidates中的数字可以无限制重复被选取。
+
+说明：
+所有数字（包括target）都是正整数。
+解集不能包含重复的组合。
+
+示例1：
+输入：candidates = [2,3,6,7], target = 7, 所求解集为：[[7], [2,2,3] ]
+
+示例2：
+输入：candidates = [2,3,5], target = 8, 所求解集为：[[2,2,2,2],[2,3,3],[3,5] ]
+*/
+
+/*
+本题与前面题目唯一的区别在于集合中的元素可以无限制重复使用，解题思路大差不差，值得注意的是，如果题目改为
+求组合数，那么这就是一个完全背包问题，求得的组合数肯定与本题求得的组合集合的长度相等。
+*/
+
+func CombinationSum(candidates []int, target int) [][]int {
+	var res [][]int
+	var path []int
+	sum := 0
+	var backTrack func(int)
+	backTrack = func(start int) {
+		// 递归终止条件
+		// 若当前路径和等于目标和target，将此路径添加到结果集中
+		if sum == target {
+			temp := make([]int, len(path))
+			copy(temp, path)
+			res = append(res, temp)
+			return
+		}
+		// 剪枝优化，如果sum已经大于目标和target，就可以返回了，继续遍历没有意义
+		if sum > target {
+			return
+		}
+		for i := start; i < len(candidates); i++ {
+			sum += candidates[i]
+			path = append(path, candidates[i])
+			// 因为candidates中的元素可以无限制重复选取，所以这里不再是i+1了
+			backTrack(i)
+			sum -= candidates[i]
+			path = path[:len(path)-1]
+		}
+	}
+	backTrack(0)
+	return res
+}
+
+// CompletePack 若是求组合数，可用此函数求解，结果可与上面的求得的组合集合的长度相互验证
+func CompletePack(candidates []int, target int) int {
+	dp := make([]int, target+1)
+	dp[0] = 1
+	for i := 0; i < len(candidates); i++ {
+		for j := candidates[i]; j <= target; j++ {
+			dp[j] += dp[j-candidates[i]]
+		}
+	}
+	return dp[target]
+}
+
+/*
+1.5 组合总和II
+给定一个数组candidates和一个目标数target，找出candidates中所有可以使数字和为target的组合。
+candidates中的每个数字在每个组合中只能使用一次。
+
+注意：解集不能包含重复的组合。
+
+示例1:
+输入: candidates = [10,1,2,7,6,1,5], target = 8,
+输出:
+[[1,1,6],[1,2,5],[1,7],[2,6]]
+
+示例2:
+输入: candidates =[2,5,2,1,2], target =5,
+输出:
+[[1,2,2],[5]]
+
+提示:
+1 <=candidates.length <= 100
+1 <=candidates[i] <= 50
+1 <= target <= 30
+*/
+
+func CombinationSumTwo(candidates []int, target int) [][]int {
+	var res [][]int
+	var path []int
+	sum := 0
+	var backTrack func(int)
+	backTrack = func(start int) {
+		// 递归终止条件
+		if sum == target {
+			temp := make([]int, len(path))
+			copy(temp, path)
+			res = append(res, temp)
+		}
+		// 剪枝:sum+candidates[i]<=target
+		for i := start; i < len(candidates) && sum+candidates[i] <= target; i++ {
+			// 同一树层去重
+			if i > start && candidates[i] == candidates[i-1] {
+				continue
+			}
+			// 处理每一个元素
+			sum += candidates[i]
+			path = append(path, candidates[i])
+			// 递归
+			backTrack(i + 1)
+			// 回溯
+			sum -= candidates[i]
+			path = path[:len(path)-1]
+		}
+	}
 	backTrack(0)
 	return res
 }
