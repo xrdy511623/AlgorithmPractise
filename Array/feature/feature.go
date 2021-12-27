@@ -36,7 +36,7 @@ func ReverseArray(nums []int) []int {
 /*
 第一种思路，最简单的办法就是遍历数组，用哈希表记录数组中每个元素出现的次数，如果哪个元素的出现次数大于数组长度的一半，
 那么这个元素就是众数，这样做时间复杂度O(n)，空间复杂度O(n/2),显然空间复杂度较高，不是最优解。
-第一种思路:如果我们把众数的值记为+1，把其他数记为−1，将它们全部加起来，显然和大于0，从结果本身我们可以看出众数比其他数多。
+第二种思路:如果我们把众数的值记为+1，把其他数记为−1，将它们全部加起来，显然和大于0，从结果本身我们可以看出众数比其他数多。
 我们维护一个候选众数candidate和它出现的次数count。初始时candidate可以为任意值，count为0；
 我们遍历数组nums中的所有元素，对于每个元素x，在判断x之前，如果count的值为0，我们先将x的值赋予candidate，随后我们判断x：
 如果x与candidate相等，那么计数器count的值增加1；
@@ -85,7 +85,31 @@ func RemoveDuplicates(nums []int) int {
 }
 
 /*
-1.4 最长公共前缀
+1.4 进阶 移除元素
+给你一个数组 nums和一个值val，你需要原地移除所有数值等于val的元素，并返回移除后数组的新长度。
+不要使用额外的数组空间，你必须仅使用 O(1) 额外空间并原地修改输入数组。
+
+元素的顺序可以改变。你不需要考虑数组中超出新长度后面的元素。
+
+输入：nums = [3,2,2,3], val = 3
+输出：2, nums = [2,2]
+
+输入：nums = [0,1,2,2,3,0,4,2], val = 2
+输出：5, nums = [0,1,4,0,3]
+*/
+
+func RemoveElement(nums []int, val int) int {
+	for i := 0; i < len(nums); i++ {
+		if nums[i] == val {
+			nums = append(nums[:i], nums[i+1:]...)
+			i--
+		}
+	}
+	return len(nums)
+}
+
+/*
+1.5 最长公共前缀
 编写一个函数来查找字符串数组中的最长公共前缀。
 如果不存在公共前缀，返回空字符串""。
 
@@ -132,7 +156,7 @@ func lcp(str1, str2 string) string {
 }
 
 /*
-1.5 最长连续递增子序列
+1.6 最长连续递增子序列
 给定一个未经排序的整数数组，找到最长且连续递增的子序列，并返回该序列的长度。
 连续递增的子序列，可以由两个下标l和r（l < r）确定，如果对于每个l <= i < r，都有nums[i] < nums[i + 1] ，
 那么子序列 [nums[l], nums[l + 1], ..., nums[r - 1], nums[r]] 就是连续递增子序列。
@@ -160,7 +184,7 @@ func FindLengthOfLCIS(nums []int) int {
 }
 
 /*
-1.6 最大子序列和
+1.7 最大子序列和
 给定一个整数数组 nums，找到一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。
 
 示例 1：
@@ -192,66 +216,4 @@ func MaxSubArray(nums []int) int {
 		}
 	}
 	return max
-}
-
-/*
-1.8 买卖股票的最佳时机
-给定一个数组prices，它的第i个元素prices[i]表示一支给定股票第i天的价格。
-你只能选择某一天买入这只股票，并选择在未来的某一个不同的日子卖出该股票。设计一个算法来计算你所能获取的最大利润。
-返回你可以从这笔交易中获取的最大利润。如果你不能获取任何利润，返回0 。
-1 <= prices.length <= 105
-0 <= prices[i] <= 104
-要求时间复杂度为0(n),空间复杂度为O(1)
-*/
-
-// MaxProfit 每次迭代，更新最大利润profit和最低股票价格minPrice
-func MaxProfit(prices []int) int {
-	// minPrice初始值为prices[0], 最大利润profit初始值为0
-	minPrice, profit := prices[0], 0
-	for i := 1; i < len(prices); i++ {
-		profit = Utils.Max(profit, prices[i]-minPrice)
-		minPrice = Utils.Min(minPrice, prices[i])
-	}
-	return profit
-}
-
-/*
-1.8 全排列
-给定一个不含重复数字的数组nums，返回其所有可能的全排列。你可以按任意顺序返回答案。
-示例 1：
-输入：nums = [1,2,3]
-输出：[[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
-
-示例 2：
-输入：nums = [0,1]
-输出：[[0,1],[1,0]]
-
-示例 3：
-输入：nums = [1]
-输出：[[1]]
-*/
-
-func Permute(nums []int) [][]int {
-	var res [][]int
-	visited := make(map[int]bool, len(nums))
-	var dfs func([]int)
-	dfs = func(path []int) {
-		if len(path) == len(nums) {
-			temp := make([]int, len(path))
-			copy(temp, path)
-			res = append(res, path)
-			return
-		}
-		for _, v := range nums {
-			if visited[v] {
-				continue
-			}
-			path = append(path, v)
-			visited[v] = true
-			dfs(path[:len(path)-1])
-			visited[v] = false
-		}
-	}
-	dfs([]int{})
-	return res
 }
