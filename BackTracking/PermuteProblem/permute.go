@@ -82,9 +82,12 @@ func PermuteUnique(nums []int) [][]int {
 			if visited[i] || i > 0 && nums[i]==nums[i-1] && visited[i-1]{
 				continue
 			}
+			// 处理每一个元素
 			visited[i] = true
 			path = append(path, nums[i])
+			// 递归
 			backTrack()
+			// 回溯
 			visited[i] = false
 			path = path[:len(path)-1]
 		}
