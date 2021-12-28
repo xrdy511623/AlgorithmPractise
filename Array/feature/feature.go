@@ -69,19 +69,24 @@ func MajorityElement(nums []int) int {
 不要使用额外的数组空间，你必须在原地修改输入数组 并在使用O(1) 额外空间的条件下完成。
 */
 
+/*
+数组是有序的，那么重复的元素一定会相邻。在同一个数组里面操作，也就是不重复的元素移到数组的左侧，
+最后取左侧的数组的值。
+ */
+
 func RemoveDuplicates(nums []int) int {
 	n := len(nums)
 	if n == 0 {
 		return 0
 	}
-	slow := 1
+	slow := 0
 	for fast := 1; fast < n; fast++ {
 		if nums[fast] != nums[fast-1] {
-			nums[slow] = nums[fast]
 			slow++
+			nums[slow] = nums[fast]
 		}
 	}
-	return slow
+	return slow + 1
 }
 
 /*
@@ -107,6 +112,77 @@ func RemoveElement(nums []int, val int) int {
 	}
 	return len(nums)
 }
+
+
+/*
+双指针法，快慢指针fast,slow初始位置均为0，fast指向当前要处理的元素，slow指向下一个将要赋值的位置，
+如果fast指向的元素不等于val，那它一定是新数组的一个元素，我们将它赋值给slow指向的位置，同时快慢
+指针同时向右移动，若fast指向的元素等于val，那它不是新数组想要的元素，此时slow指针不动，fast向后移动一位。
+ */
+
+func RemoveElementsTwo(nums []int, val int)int{
+	fast, slow := 0, 0
+	for fast < len(nums){
+		if nums[fast] != val{
+			nums[slow] = nums[fast]
+			slow++
+		}
+		fast++
+	}
+	return slow
+}
+
+// 双指针法可以写得更简单一些
+func RemoveElementSimple(nums []int, val int)int{
+	index := 0
+	// 此时i就是快指针fast
+	for i:=0;i<len(nums);i++{
+		if nums[i] != val{
+			nums[index] = nums[i]
+			index++
+		}
+	}
+	return index
+}
+
+/*
+1.5 移动零
+给定一个数组nums，编写一个函数将所有0移动到数组的末尾，同时保持非零元素的相对顺序。
+
+示例:
+输入: [0,1,0,3,12]
+输出: [1,3,12,0,0]
+
+说明:
+必须在原数组上操作，不能拷贝额外的数组。
+尽量减少操作次数。
+ */
+
+/*
+思路:先处理非0元素，最后处理0
+index指针指向非0元素，count统计数组中零的个数，index的位置和count的数量初始值均为0，
+在for循环遍历过程中，如果遇到非0元素，则将其赋值给nums[index]，同时index指针向右移动一位。
+若遇到0，则count累加1。遍历结束后，index即指向所有非0元素最后一位的右边。意味着
+nums[index:index+count]区间内的元素都应该是0，那就循环count次，将0赋值给nums[index]就可以了，
+当然，每次赋值后index还得向后移动一位。
+ */
+
+func MoveZeroes(nums []int)  {
+	index, count := 0, 0
+	for i:=0;i<len(nums);i++{
+		if nums[i] != 0{
+			nums[index] = nums[i]
+			index++
+		}else{
+			count++
+		}
+	}
+	for i:=0;i<count;i++{
+		nums[index] = 0
+		index++
+	}
+}
+
 
 /*
 1.5 最长公共前缀
