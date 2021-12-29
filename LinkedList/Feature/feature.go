@@ -13,13 +13,10 @@ import "AlgorithmPractise/LinkedList/Entity"
 /*
 思路一:快慢双指针，最优解，不易想到
 设置快、慢两种指针，快指针每次跨两步，慢指针每次跨一步，如果快指针没有与慢指针相遇而是顺利到达链表尾部
-说明没有环；否则，存在环
-返回:
-True:有环
-False:没有环
-时间复杂度O(n),空间复杂度O(1)
+说明没有环；否则，存在环。原因是因为每走11轮，fast与slow的间距+1，fast终会追上slow。
 */
 
+// CheckRing 时间复杂度O(n),空间复杂度O(1)
 func CheckRing(head *Entity.ListNode) bool {
 	if head == nil || head.Next == nil {
 		return false
@@ -41,6 +38,7 @@ func CheckRing(head *Entity.ListNode) bool {
 时间复杂度O(n),空间复杂度O(n)
 */
 
+// CheckRingUseHashTable 时间复杂度O(n),空间复杂度O(n)
 func CheckRingUseHashTable(head *Entity.ListNode) bool {
 	if head == nil || head.Next == nil {
 		return false
@@ -154,7 +152,7 @@ func getIntersectionNode(headA, headB *Entity.ListNode) *Entity.ListNode {
 返回链表 4->5.
 */
 
-// GetKthFromEnd 顺序查找，倒数第k个节点即为正数第n-k个节点
+// GetKthFromEnd 顺序查找，倒数第k个节点即为正数第n-k+1个节点
 func GetKthFromEnd(head *Entity.ListNode, k int) *Entity.ListNode {
 	n := 0
 	cur := head
@@ -166,18 +164,28 @@ func GetKthFromEnd(head *Entity.ListNode, k int) *Entity.ListNode {
 	if n < k {
 		return nil
 	}
-	// 从头节点(head)遍历链表n-k次即得到目标节点
+	// head头节点是正数第1个节点，要走到正数第n-k+1个节点，需要走n-k步
 	for i := 0; i < n-k; i++ {
 		head = head.Next
 	}
 	return head
 }
 
-// GetKthNodeFromEnd 双指针法，快慢指针初始位置都是头节点，快指针先移动至k+1个节点，此时快慢指针相隔k个节点，然后双方以相同速度同时
-// 向后移动，则当快指针移动至链表尾部空节点时，此时慢指针的位置为n-k,即为所求节点
+
+/*
+思路: 双指针法，假设链表总共有n个节点(n>=k) 。那么求倒数第k个节点，即是求正数第n-k+1个节点。设快慢指针初始
+位置都是头节点，快指针先走k步移动至k+1个节点，此时快慢指针相隔k个节点，然后双方以相同速度同时向后移动，则当快
+指针移动至链表尾部空节点时，快指针走过了n-k步，此时慢指针也走了n-k步，正好正数是n-k+1个节点。
+(从头节点出发，所以要加1), 即为所求节点。
+ */
+
 func GetKthNodeFromEnd(head *Entity.ListNode, k int) *Entity.ListNode {
 	fast, slow := head, head
 	for i := 0; i < k; i++ {
+		// 若链表中节点总数少于k个，则返回nil
+		if fast == nil{
+			return nil
+		}
 		fast = fast.Next
 	}
 	for fast != nil {
