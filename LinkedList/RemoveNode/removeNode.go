@@ -22,7 +22,7 @@ func DeleteNode(head *Entity.ListNode, val int) *Entity.ListNode {
 	if head == nil {
 		return nil
 	}
-	dummy := &Entity.ListNode{0, head}
+	dummy := &Entity.ListNode{Next:head}
 	pre, cur := dummy, head
 	for cur.Val != val {
 		pre = pre.Next
@@ -56,7 +56,7 @@ func DeleteNode(head *Entity.ListNode, val int) *Entity.ListNode {
 
 // RemoveElements 时间复杂度O(N),空间复杂度O(1)
 func RemoveElements(head *Entity.ListNode, val int) *Entity.ListNode {
-	dummy := &Entity.ListNode{0, head}
+	dummy := &Entity.ListNode{Next:head}
 	prev, cur := dummy, head
 	for cur != nil{
 		if cur.Val == val{
@@ -95,7 +95,7 @@ func RemoveNthFromEnd(head *Entity.ListNode, n int) *Entity.ListNode {
 	if length == 0 || length - n < 0{
 		return head
 	}
-	dummy := &Entity.ListNode{0, head}
+	dummy := &Entity.ListNode{Next:head}
 	pre := dummy
 	for i := 0; i < length-n; i++ {
 		pre = pre.Next
@@ -106,9 +106,6 @@ func RemoveNthFromEnd(head *Entity.ListNode, n int) *Entity.ListNode {
 
 func GetLengthOfLinkedList(head *Entity.ListNode) int {
 	length := 0
-	if head == nil {
-		return length
-	}
 	for head != nil {
 		length++
 		head = head.Next
@@ -126,7 +123,7 @@ func GetLengthOfLinkedList(head *Entity.ListNode) int {
 
 // RemoveNthNodeFromEnd 双指针法
 func RemoveNthNodeFromEnd(head *Entity.ListNode, n int) *Entity.ListNode {
-	dummy := &Entity.ListNode{0, head}
+	dummy := &Entity.ListNode{Next: head}
 	pre, fast := dummy, head
 	for i := 0; i < n; i++ {
 		fast = fast.Next
@@ -183,7 +180,7 @@ func DeleteDuplicates(head *Entity.ListNode) *Entity.ListNode {
 		return head
 	}
 
-	dummy := &Entity.ListNode{0, head}
+	dummy := &Entity.ListNode{Next:head}
 	prev, cur := dummy, head
 	for cur != nil {
 		for cur.Next != nil && cur.Val == cur.Next.Val {

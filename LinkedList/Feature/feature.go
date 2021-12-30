@@ -7,7 +7,7 @@ import "AlgorithmPractise/LinkedList/Entity"
 给定一个链表，判断链表中是否有环。
 如果链表中有某个节点，可以通过连续跟踪next指针再次到达，则链表中存在环。 为了表示给定链表中的环，我们使用整数pos来表示链表尾连接到链表中的位置
 （索引从 0 开始）。 如果pos是-1，则在该链表中没有环。注意：pos不作为参数进行传递，仅仅是为了标识链表的实际情况。
-如果链表中存在环，则返回true 。 否则返回false 。
+如果链表中存在环，则返回true。 否则返回false 。
 */
 
 /*
@@ -160,7 +160,7 @@ func GetKthFromEnd(head *Entity.ListNode, k int) *Entity.ListNode {
 		n++
 		cur = cur.Next
 	}
-	// 如果链表长度小于k,则返回nil
+	// 如果链表长度小于k, 说明链表中节点总数小于k个, 则返回nil
 	if n < k {
 		return nil
 	}
@@ -175,7 +175,7 @@ func GetKthFromEnd(head *Entity.ListNode, k int) *Entity.ListNode {
 /*
 思路: 双指针法，假设链表总共有n个节点(n>=k) 。那么求倒数第k个节点，即是求正数第n-k+1个节点。设快慢指针初始
 位置都是头节点，快指针先走k步移动至k+1个节点，此时快慢指针相隔k个节点，然后双方以相同速度同时向后移动，则当快
-指针移动至链表尾部空节点时，快指针走过了n-k步，此时慢指针也走了n-k步，正好正数是n-k+1个节点。
+指针移动至链表尾部空节点时，快指针走过了n-k步，此时慢指针也走了n-k步，正好是正数第n-k+1个节点。
 (从头节点出发，所以要加1), 即为所求节点。
  */
 
@@ -218,29 +218,11 @@ func SortLinkedList(head *Entity.ListNode) *Entity.ListNode {
 	mid := slow.Next
 	slow.Next = nil
 	left, right := SortLinkedList(head), SortLinkedList(mid)
-	res := &Entity.ListNode{0, nil}
-	h := res
-	for left != nil && right != nil {
-		if left.Val < right.Val {
-			h.Next = left
-			left = left.Next
-		} else {
-			h.Next = right
-			right = right.Next
-		}
-		h = h.Next
-	}
-	if left != nil {
-		h.Next = left
-	} else {
-		h.Next = right
-	}
-
-	return res.Next
+	return MergeLinkedList(left, right)
 }
 
 func MergeLinkedList(l1, l2 *Entity.ListNode) *Entity.ListNode {
-	dummy := &Entity.ListNode{0, nil}
+	dummy := new(Entity.ListNode)
 	cur := dummy
 	for l1 != nil && l2 != nil {
 		if l1.Val < l2.Val {
@@ -261,46 +243,37 @@ func MergeLinkedList(l1, l2 *Entity.ListNode) *Entity.ListNode {
 	return dummy.Next
 }
 
+
 /*
-1.6 将两个升序链表合并为一个新的 升序 链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。
+1.6 将两个升序链表合并为一个新的升序链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。
 输入：l1 = [1,2,4], l2 = [1,3,4]
 输出：[1,1,2,3,4,4]
 */
 
 func mergeTwoLists(l1 *Entity.ListNode, l2 *Entity.ListNode) *Entity.ListNode {
-	dummy := &Entity.ListNode{0, nil}
+	dummy := new(Entity.ListNode)
 	cur := dummy
-	if l1 != nil && l2 != nil {
-		for l1 != nil && l2 != nil {
-			if l1.Val <= l2.Val {
-				cur.Next = l1
-				l1 = l1.Next
-			} else {
-				cur.Next = l2
-				l2 = l2.Next
-			}
-			cur = cur.Next
-		}
-
-		if l1 != nil {
+	for l1 != nil && l2 != nil{
+		if l1.Val < l2.Val{
 			cur.Next = l1
-		} else {
+			l1 = l1.Next
+		}else{
 			cur.Next = l2
+			l2 = l2.Next
 		}
-
-		return dummy.Next
+		cur = cur.Next
 	}
-
-	if l1 != nil {
-		return l1
-	} else {
-		return l2
+	if l1 != nil{
+		cur.Next = l1
+	}else{
+		cur.Next = l2
 	}
+	return dummy.Next
 }
 
 /*
 1.7 分隔链表
-给你一个链表的头节点 head 和一个特定值x ，请你对链表进行分隔，使得所有小于x的节点都出现在大于或等于x的节点之前。
+给你一个链表的头节点 head 和一个特定值x，请你对链表进行分隔，使得所有小于x的节点都出现在大于或等于x的节点之前。
 你应当保留两个分区中每个节点的初始相对位置。
 */
 

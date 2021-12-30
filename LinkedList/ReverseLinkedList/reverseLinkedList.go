@@ -18,7 +18,7 @@ func SwapPairs(head *Entity.ListNode) *Entity.ListNode {
 	if head == nil || head.Next == nil {
 		return head
 	}
-	dummy := &Entity.ListNode{0, head}
+	dummy := &Entity.ListNode{Next: head}
 	pre, cur := dummy, head
 	for cur != nil && cur.Next != nil {
 		firstNode := cur
@@ -60,11 +60,19 @@ k是一个正整数，它的值小于或等于链表的长度。
 你不能只是单纯的改变节点内部的值，而是需要实际进行节点交换。
 */
 
+/*
+本题的关键是找到k个一组组成的子链表的头尾结点head和tail,以及头结点的前一个结点prev和tail的下一个结点
+ndx。反转完后，要将反转后的子链表接入到原链表中，只需要prev.Next=head, tail.Next=ndx即可。第一次
+反转时，head显然就是链表的头结点，prev显然应该指向伪头结点dummy, tail显然就是dummy走k步后指向的结点。
+每次反转结束后需要更新prev和head指针，很明显下一次需要反转的子链表的头结点应该是ndx, prev应该指向
+上一次反转后子链表的尾结点tail。
+ */
+
 func ReverseKGroup(head *Entity.ListNode, k int) *Entity.ListNode {
-	dummy := &Entity.ListNode{0, head}
-	pre := dummy
+	dummy := &Entity.ListNode{Next: head}
+	prev := dummy
 	for head != nil {
-		tail := pre
+		tail := prev
 		// 如果链表中结点个数少于k个，那么也不用反转了，返回头结点即可
 		for i := 0; i < k; i++ {
 			tail = tail.Next
@@ -77,11 +85,11 @@ func ReverseKGroup(head *Entity.ListNode, k int) *Entity.ListNode {
 		// 调用反转链表函数得到反转后的头尾结点
 		head, tail = reverse(head, tail, k)
 		// 将头结点和尾结点接入到原来的链表中
-		pre.Next = head
+		prev.Next = head
 		tail.Next = ndx
 
 		// 更新pre和head指针，此时分别指向反转后的k个结点组成的链表的尾结点和反转前k个结点组成的链表尾结点的下一个结点
-		pre = tail
+		prev = tail
 		head = ndx
 	}
 	return dummy.Next
@@ -102,14 +110,23 @@ func reverse(head, tail *Entity.ListNode, k int) (*Entity.ListNode, *Entity.List
 例如对于链表1-2-3-4-5
 left=2,right=4
 最后应该返回1-4-3-2-5
-思路:k个一组反转链表的简化变形题，找到left位置前的节点pre,left位置的节点start,right位置的节点end,以及right位置的下一个节点ndx，
-将start,end，k=(right-left)+1作为参数传递给reverse(反转k个节点组成的链表)得到返回的head和tail节点，将pre节点的Next指针
-指向head节点，将tail节点的Next指针指向ndx节点即可。
+
+提示：
+链表中节点数目为 n
+1 <= n <= 500
+-500 <= Node.val <= 500
+1 <= left <= right <= n
 */
+
+/*
+思路:k个一组反转链表的简化变形题，找到left位置前的节点pre,left位置的节点start,right位置的节点end,
+以及right位置的下一个节点ndx，将start,end，k=(right-left)+1作为参数传递给reverse(反转k个节点组成的链表)
+得到返回的head和tail节点，将pre节点的Next指针指向head节点，将tail节点的Next指针指向ndx节点即可。
+ */
 
 func ReverseBetween(head *Entity.ListNode, left int, right int) *Entity.ListNode {
 	k := right - left + 1
-	dummy := &Entity.ListNode{0, head}
+	dummy := &Entity.ListNode{Next: head}
 	cur := dummy
 	for i := 0; i < left-1; i++ {
 		cur = cur.Next
@@ -122,6 +139,7 @@ func ReverseBetween(head *Entity.ListNode, left int, right int) *Entity.ListNode
 	end := cur
 	ndx := cur.Next
 	head, tail := reverse(start, end, k)
+	// 将反转后的子链表接入到原链表中
 	pre.Next = head
 	tail.Next = ndx
 	return dummy.Next
@@ -210,7 +228,9 @@ func GetMiddleNode(head *Entity.ListNode) *Entity.ListNode {
 // MergeLists 合并链表
 func MergeLists(l1, l2 *Entity.ListNode) {
 	var l1Tmp, l2Tmp *Entity.ListNode
-	for l1 != nil && l2 != nil {
+	for l1 != nil && l2 != nil{
+		l1Tmp = l1.Next
+		l2Tmp = l2.Next
 		l1.Next = l2
 		l1 = l1Tmp
 		l2.Next = l1
