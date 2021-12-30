@@ -208,10 +208,10 @@ func MergeTwoLists(l1, l2 *Entity.ListNode) *Entity.ListNode {
 
 // AddTwoNumbers 时间复杂度O(max(m,n)), m和n分别为两个链表的长度，空间复杂度O(1)
 func AddTwoNumbers(l1, l2 *Entity.ListNode) (head *Entity.ListNode) {
-	var ndx *Entity.ListNode
+	var tail *Entity.ListNode
 	// 进位值初始值为0
 	carry := 0
-	for l1 != nil || l2 != nil {
+	for l1 != nil || l2 != nil || carry != 0 {
 		n1, n2 := 0, 0
 		if l1 != nil {
 			n1 = l1.Val
@@ -225,14 +225,58 @@ func AddTwoNumbers(l1, l2 *Entity.ListNode) (head *Entity.ListNode) {
 		sum, carry = sum%10, sum/10
 		if head == nil {
 			head = &Entity.ListNode{Val: sum}
-			ndx = head
+			tail = head
 		} else {
-			ndx.Next = &Entity.ListNode{Val: sum}
-			ndx = ndx.Next
+			tail.Next = &Entity.ListNode{Val: sum}
+			tail = tail.Next
 		}
 	}
-	if carry > 0 {
-		ndx.Next = &Entity.ListNode{Val: carry}
+	return
+}
+
+/*
+1.4 两数相加II
+给你两个非空链表来代表两个非负整数。数字最高位位于链表开始位置。它们的每个节点只存储一位数字。将这两数相加
+会返回一个新的链表。
+
+你可以假设除了数字0之外，这两个数字都不会以零开头。
+
+输入：l1 = [7,2,4,3], l2 = [5,6,4]
+输出：[7,8,0,7]
+*/
+
+/*
+思路:利用栈先进后出的特性解决
+本题的主要难点在于链表中数位的顺序与我们做加法的顺序是相反的，为了逆序处理所有数位，我们可以使用栈：
+把所有数字压入栈中，再依次取出相加。计算过程中需要注意进位的情况。
+*/
+
+func AddTwoNumbersComplex(l1, l2 *Entity.ListNode) (head *Entity.ListNode) {
+	var stack1, stack2 []int
+	for l1 != nil {
+		stack1 = append(stack1, l1.Val)
+		l1 = l1.Next
+	}
+	for l2 != nil {
+		stack2 = append(stack2, l2.Val)
+		l2 = l2.Next
+	}
+	carry := 0
+	for len(stack1) != 0 || len(stack2) != 0 || carry != 0 {
+		n1, n2 := 0, 0
+		if len(stack1) != 0 {
+			n1 = stack1[len(stack1)-1]
+			stack1 = stack1[:len(stack1)-1]
+		}
+		if len(stack2) != 0 {
+			n2 = stack2[len(stack2)-1]
+			stack2 = stack2[:len(stack2)-1]
+		}
+		sum := n1 + n2 + carry
+		sum, carry = sum%10, sum/10
+		node := &Entity.ListNode{Val: sum}
+		node.Next = head
+		head = node
 	}
 	return
 }
