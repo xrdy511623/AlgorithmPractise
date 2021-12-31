@@ -6,7 +6,7 @@ import (
 )
 
 /*
-1.0 实现冒泡，快排和归并排序
+1.0 实现冒泡，插入排序，快排和归并排序
 */
 
 // BubbleSort 最坏时间复杂度O(n`2),最好时间复杂度O(n) 稳定算法
@@ -20,6 +20,23 @@ func BubbleSort(array []int) []int {
 		}
 	}
 
+	return array
+}
+
+func InsertSort(array []int) []int {
+	n := len(array)
+	if n == 0{
+		return array
+	}
+	for i:=1;i<n;i++{
+		for j:=i;j>=0;j--{
+			if array[j] < array[j-1]{
+				array[j], array[j-1] = array[j-1], array[j]
+			}else{
+				break
+			}
+		}
+	}
 	return array
 }
 

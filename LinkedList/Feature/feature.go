@@ -171,19 +171,18 @@ func GetKthFromEnd(head *Entity.ListNode, k int) *Entity.ListNode {
 	return head
 }
 
-
 /*
 思路: 双指针法，假设链表总共有n个节点(n>=k) 。那么求倒数第k个节点，即是求正数第n-k+1个节点。设快慢指针初始
 位置都是头节点，快指针先走k步移动至k+1个节点，此时快慢指针相隔k个节点，然后双方以相同速度同时向后移动，则当快
 指针移动至链表尾部空节点时，快指针走过了n-k步，此时慢指针也走了n-k步，正好是正数第n-k+1个节点。
 (从头节点出发，所以要加1), 即为所求节点。
- */
+*/
 
 func GetKthNodeFromEnd(head *Entity.ListNode, k int) *Entity.ListNode {
 	fast, slow := head, head
 	for i := 0; i < k; i++ {
 		// 若链表中节点总数少于k个，则返回nil
-		if fast == nil{
+		if fast == nil {
 			return nil
 		}
 		fast = fast.Next
@@ -243,7 +242,6 @@ func MergeLinkedList(l1, l2 *Entity.ListNode) *Entity.ListNode {
 	return dummy.Next
 }
 
-
 /*
 1.6 将两个升序链表合并为一个新的升序链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。
 输入：l1 = [1,2,4], l2 = [1,3,4]
@@ -253,19 +251,19 @@ func MergeLinkedList(l1, l2 *Entity.ListNode) *Entity.ListNode {
 func mergeTwoLists(l1 *Entity.ListNode, l2 *Entity.ListNode) *Entity.ListNode {
 	dummy := new(Entity.ListNode)
 	cur := dummy
-	for l1 != nil && l2 != nil{
-		if l1.Val < l2.Val{
+	for l1 != nil && l2 != nil {
+		if l1.Val < l2.Val {
 			cur.Next = l1
 			l1 = l1.Next
-		}else{
+		} else {
 			cur.Next = l2
 			l2 = l2.Next
 		}
 		cur = cur.Next
 	}
-	if l1 != nil{
+	if l1 != nil {
 		cur.Next = l1
-	}else{
+	} else {
 		cur.Next = l2
 	}
 	return dummy.Next
@@ -301,4 +299,38 @@ func PartitionLinkedList(head *Entity.ListNode, x int) *Entity.ListNode {
 	after.Next = nil
 	before.Next = after_head.Next
 	return before_head.Next
+}
+
+/*
+1.8 对链表进行插入排序
+输入: 4->2->1->3
+输出: 1->2->3->4
+*/
+
+func insertionSortList(head *Entity.ListNode) *Entity.ListNode {
+	if head == nil || head.Next == nil {
+		return head
+	}
+	dummy := &Entity.ListNode{Next: head}
+	// 有序链表的尾结点，待插入结点初始值为头结点以及头结点的下一个结点
+	lastSorted, cur := head, head.Next
+	for cur != nil {
+		// 如果尾结点的值小于等于待插入结点值，则保持原序即可
+		if lastSorted.Val <= cur.Val {
+			lastSorted = lastSorted.Next
+		} else {
+			// 否则，需要在有序链表部分找到待插入结点的位置
+			// 也就是小于等于待插入结点值的最大结点prev
+			prev := dummy
+			for prev.Next.Val <= cur.Val {
+				prev = prev.Next
+			}
+			// 将待插入结点插入到prev和lastSorted之间
+			lastSorted.Next = cur.Next
+			cur.Next = prev.Next
+			prev.Next = cur
+		}
+		cur = lastSorted.Next
+	}
+	return dummy.Next
 }
