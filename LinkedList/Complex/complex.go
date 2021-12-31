@@ -280,3 +280,54 @@ func AddTwoNumbersComplex(l1, l2 *Entity.ListNode) (head *Entity.ListNode) {
 	}
 	return
 }
+
+/*
+1.5 旋转链表
+给你一个链表的头节点head，旋转链表，将链表每个节点向右移动k个位置。
+输入：head = [1,2,3,4,5], k = 2
+输出：[4,5,1,2,3]
+*/
+
+/*
+思路:闭合为环
+记给定链表的长度为n，注意到当向右移动的次数k ≥n 时，我们仅需要向右移动k % n 次即可。因为每n次移动都会让
+链表变为原状。这样我们可以知道，新链表的最后一个节点为原链表的第 n - k % n 个节点（从1开始计数）。
+这样，我们可以先将给定的链表连接成环，然后将指定位置断开。
+
+具体代码中，我们首先计算出链表的长度n，并找到该链表的尾节点，将其与头节点相连。这样就得到了闭合为环的链表。
+然后我们找到新链表的最后一个节点（即原链表的第 n - k % n 个节点），将当前闭合为环的链表断开，即可得到我们
+所需要的结果。
+特别地，当链表长度不大于1，或者k为n的倍数时，新链表将与原链表相同，我们无需进行任何处理。
+
+*/
+
+func RotateRight(head *Entity.ListNode, k int) *Entity.ListNode {
+	if head == nil || head.Next == nil || k == 0 {
+		return head
+	}
+	n := 1
+	cur := head
+	// 统计链表的长度
+	for cur.Next != nil {
+		cur = cur.Next
+		n++
+	}
+	step := n - k%n
+	// 如果step等于0, 证明k为n的倍数，那么保持原链表不变即可
+	if step == 0 {
+		return head
+	}
+	// 链表成环，将原链表的尾结点的Next指向头结点即成为首尾相连的新链表
+	cur.Next = head
+	// 新链表的尾结点end是原链表的第n-k%n个结点，那么从头结点移动到end，需要移动n-k%n-1步
+	// 那么从原链表的尾结点移动到end，就需要多移动一步，即为n-k%n步。
+	for step > 0 {
+		cur = cur.Next
+		step--
+	}
+	// 因为是有环的链表，那么新链表的尾结点的Next指向的结点即为所求的头结点
+	ret := cur.Next
+	// 将新链表从尾部断开，去掉环。
+	cur.Next = nil
+	return ret
+}
