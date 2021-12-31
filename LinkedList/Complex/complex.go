@@ -331,3 +331,72 @@ func RotateRight(head *Entity.ListNode, k int) *Entity.ListNode {
 	cur.Next = nil
 	return ret
 }
+
+/*
+1.6 奇偶链表
+给定一个单链表，把所有的奇数节点和偶数节点分别排在一起。请注意，这里的奇数节点和偶数节点指的是节点编号的奇偶性，
+而不是节点的值的奇偶性。
+请尝试使用原地算法完成。你的算法的空间复杂度应为 O(1)，时间复杂度应为 O(nodes)，nodes为节点总数。
+*/
+
+/*
+思路:直观的做法是从头遍历链表，将编号为奇数的结点添加到奇数结点集合中，将编号为偶数的结点添加到偶数结点集合中，
+然后依次遍历奇数结点集合和偶数结点集合，对结点进行顺序连接即可。
+*/
+
+// OddEvenList 时间复杂度应为 O(2N),空间复杂度应为 O(N)
+func OddEvenList(head *Entity.ListNode) *Entity.ListNode {
+	if head == nil || head.Next == nil {
+		return head
+	}
+	var odd, even []*Entity.ListNode
+	n := 1
+	cur := head
+	for cur != nil {
+		if n%2 == 1 {
+			odd = append(odd, cur)
+		} else {
+			even = append(even, cur)
+		}
+		cur = cur.Next
+		n++
+	}
+	dummy := new(Entity.ListNode)
+	ndx := dummy
+	for _, node := range odd {
+		ndx.Next = node
+		ndx = ndx.Next
+	}
+	for _, node := range even {
+		ndx.Next = node
+		ndx = ndx.Next
+	}
+	ndx.Next = nil
+	return dummy.Next
+}
+
+/*
+思路:分离奇偶结点后再合并
+更简单的做法是在从头遍历链表过程中，逐个完成奇数结点链表和偶数结点链表的构建，最后将奇数结点链表尾部结点的
+Next指向偶数结点链表的头结点即可。
+*/
+
+// OddEvenListSimple 时间复杂度应为 O(N), 空间复杂度应为 O(1)
+func OddEvenListSimple(head *Entity.ListNode) *Entity.ListNode {
+	if head == nil || head.Next == nil {
+		return head
+	}
+	// 奇数结点链表和偶数结点链表的头结点分别为head和head.Next
+	odd, evenHead := head, head.Next
+	even := evenHead
+	for even != nil && even.Next != nil {
+		// 奇偶结点是相邻的，下面的写法很容易了
+		odd.Next = even.Next
+		odd = odd.Next
+		even.Next = odd.Next
+		even = even.Next
+	}
+	// 将奇数结点链表尾结点的Next指向偶数结点链表的头结点
+	odd.Next = evenHead
+	return head
+}
