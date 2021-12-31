@@ -347,7 +347,7 @@ func RotateRight(head *Entity.ListNode, k int) *Entity.ListNode {
 然后依次遍历奇数结点集合和偶数结点集合，对结点进行顺序连接即可。
 */
 
-// OddEvenList 时间复杂度应为 O(2N),空间复杂度应为 O(N)
+// OddEvenList 时间复杂度为O(2N),空间复杂度为O(N)
 func OddEvenList(head *Entity.ListNode) *Entity.ListNode {
 	if head == nil || head.Next == nil {
 		return head
@@ -384,7 +384,7 @@ func OddEvenList(head *Entity.ListNode) *Entity.ListNode {
 Next指向偶数结点链表的头结点即可。
 */
 
-// OddEvenListSimple 时间复杂度应为 O(N), 空间复杂度应为 O(1)
+// OddEvenListSimple 时间复杂度为O(N), 空间复杂度为O(1)
 func OddEvenListSimple(head *Entity.ListNode) *Entity.ListNode {
 	if head == nil || head.Next == nil {
 		return head
@@ -437,4 +437,37 @@ func SortOddAscEvenDescList(head *Entity.ListNode) *Entity.ListNode {
 	l2 := ReverseLinkedList.ReverseLinkedList(evenHead)
 	// 合并奇数结点链表和偶数结点链表这两个升序链表
 	return MergeTwoLists(l1, l2)
+}
+
+/*
+1.8 从链表中删去总和值为零的连续节点
+给你一个链表的头节点head，请你编写代码，反复删去链表中由总和值为0的连续节点组成的序列，直到不存在这样的
+序列为止。
+删除完毕后，请你返回最终结果链表的头节点。
+你可以返回任何满足题目要求的答案。
+
+输入：head = [1,2,-3,3,1]
+输出：[3,1]
+提示：答案 [1,2,1] 也是正确的。
+*/
+
+func RemoveZeroSumSubLists(head *Entity.ListNode) *Entity.ListNode {
+	dummy := &Entity.ListNode{Next: head}
+	occurred := make(map[int]*Entity.ListNode)
+	occurred[0] = dummy
+	sum := 0
+	for head != nil {
+		sum += head.Val
+		if _, ok := occurred[sum]; ok {
+			// 连续结点和是正数，如果重复出现，只能说明中间这一段的结点和为0
+			// 正数+0还是正数本身嘛，所以这一段是要跳过的。
+			occurred[sum].Next = head.Next
+			// 然后再去删除后的链表看是否还有总和值为0的连续结点需要删除
+			return RemoveZeroSumSubLists(dummy.Next)
+		} else {
+			occurred[sum] = head
+			head = head.Next
+		}
+	}
+	return dummy.Next
 }
