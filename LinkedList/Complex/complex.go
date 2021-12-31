@@ -471,3 +471,20 @@ func RemoveZeroSumSubLists(head *Entity.ListNode) *Entity.ListNode {
 	}
 	return dummy.Next
 }
+
+// RemoveZeroSumSubListsSimple 更简单的写法是下面这样，时间复杂度为O(2N), 空间复杂度为O(N)
+func RemoveZeroSumSubListsSimple(head *Entity.ListNode) *Entity.ListNode {
+	dummy := &Entity.ListNode{Val: 0, Next: head}
+	sum := 0
+	dict := make(map[int]*Entity.ListNode)
+	for p := dummy; p != nil; p = p.Next {
+		sum += p.Val
+		dict[sum] = p
+	}
+	sum = 0
+	for p := dummy; p != nil; p = p.Next {
+		sum += p.Val
+		p.Next = dict[sum].Next
+	}
+	return dummy.Next
+}
