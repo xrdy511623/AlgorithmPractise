@@ -1,6 +1,9 @@
 package Complex
 
-import "AlgorithmPractise/LinkedList/Entity"
+import (
+	"AlgorithmPractise/LinkedList/Entity"
+	"AlgorithmPractise/LinkedList/ReverseLinkedList"
+)
 
 /*
 1.1 LRU缓存机制
@@ -399,4 +402,39 @@ func OddEvenListSimple(head *Entity.ListNode) *Entity.ListNode {
 	// 将奇数结点链表尾结点的Next指向偶数结点链表的头结点
 	odd.Next = evenHead
 	return head
+}
+
+/*
+1.7 排序奇偶降链表
+给定一个奇数位升序，偶数位降序的链表，将其重新排序为一个升序链表。
+
+输入: 1->8->3->6->5->4->7->2
+输出: 1->2->3->4->5->6->7->8
+*/
+
+/*
+本题1.6 奇偶链表的变形题，更是一道综合题，其实如果把反转链表，奇偶链表，合并两个升序链表三道题目
+弄懂了，本题并不难解。首先从头到尾遍历链表，逐个完成奇数结点链表和偶数结点链表的构建。接着我们将
+降序排列的偶数结点链表反转，这样我们就得到了两个升序链表，最后将它们俩合并为一个升序链表即可
+*/
+
+func SortOddAscEvenDescList(head *Entity.ListNode) *Entity.ListNode {
+	if head == nil || head.Next == nil {
+		return head
+	}
+	odd, evenHead := head, head.Next
+	even := evenHead
+	// 在遍历链表过程中构建奇数结点链表和偶数结点链表
+	for even != nil && even.Next != nil {
+		odd.Next = even.Next
+		odd = odd.Next
+		even.Next = odd.Next
+		even = even.Next
+	}
+	odd.Next = nil
+	l1 := head
+	// 将偶数结点链表反转得到升序链表
+	l2 := ReverseLinkedList.ReverseLinkedList(evenHead)
+	// 合并奇数结点链表和偶数结点链表这两个升序链表
+	return MergeTwoLists(l1, l2)
 }
