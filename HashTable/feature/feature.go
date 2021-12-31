@@ -6,6 +6,51 @@ import (
 )
 
 /*
+1.0  有效的字母异位词
+给定两个字符串s和t ，编写一个函数来判断t是否是s的字母异位词。
+注意：若s和t中每个字符出现的次数都相同，则称s和t互为字母异位词。
+
+输入: s = "anagram", t = "nagaram"
+输出: true
+
+输入: s = "rat", t = "car"
+输出: false
+
+提示:
+1 <= s.length, t.length <= 5 * 104
+s 和 t 仅包含小写字母
+*/
+
+// IsAnagram 时间复杂度O(S+T)，空间复杂度O(S)
+func IsAnagram(s, t string) bool {
+	if len(s) != len(t) {
+		return false
+	}
+	freqS := make(map[byte]int)
+	for i := 0; i < len(s); i++ {
+		freqS[s[i]]++
+	}
+	for i := 0; i < len(t); i++ {
+		freqS[t[i]]--
+		if freqS[t[i]] < 0 {
+			return false
+		}
+	}
+	return true
+}
+
+func IsIsAnagramSimple(s, t string) bool {
+	var c1, c2 [26]int
+	for _, ch := range s {
+		c1[ch-'a']++
+	}
+	for _, ch := range t {
+		c2[ch-'a']++
+	}
+	return c1 == c2
+}
+
+/*
 1.1 两个数组的交集
 给定两个数组，编写一个函数来计算它们的交集。
 
@@ -26,7 +71,7 @@ func FindIntersection(nums1 []int, nums2 []int) []int {
 		hashTable[nums1[i]] = true
 	}
 	for i := 0; i < len(nums2); i++ {
-		if _, ok := hashTable[nums2[i]]; ok {
+		if hashTable[nums2[i]] {
 			res = append(res, nums2[i])
 		}
 		// 因为交集中相同的元素只保留一个，所以需要这么操作
@@ -36,7 +81,96 @@ func FindIntersection(nums1 []int, nums2 []int) []int {
 }
 
 /*
-1.2 无重复字符的最长子串
+1.2 快乐数
+编写一个算法来判断一个数n是不是快乐数。
+「快乐数」定义为：对于一个正整数，每一次将该数替换为它每个位置上的数字的平方和，然后重复这个过程直到这个数
+变为 1，也可能是无限循环但始终变不到1。如果可以变为1，那么这个数就是快乐数。
+如果n是快乐数就返回True；不是，则返回False 。
+
+示例：
+输入：19
+输出：true
+解释：
+1^2 + 9^2 = 82
+8^2 + 2^2 = 68
+6^2 + 8^2 = 100
+1^2 + 0^2 + 0^2 = 1
+*/
+
+/*
+思路:利用哈希表检查循环
+算法分为两部分，我们需要设计和编写代码。
+给一个数字n，它的下一个数字是什么？
+按照一系列的数字来判断我们是否进入了一个循环。
+第1部分我们按照题目的要求做数位分离，求平方和。
+第2部分可以使用哈希集合完成。每次生成链中的下一个数字时，我们都会检查它是否已经在哈希集合中。
+如果它不在哈希集合中，我们应该添加它。
+如果它在哈希集合中，这意味着我们处于一个死循环中，因此应该返回 false。
+*/
+
+// IsHappy 时间复杂度O(logN)，空间复杂度O(logN)
+func IsHappy(n int) bool {
+	occurred := make(map[int]bool)
+	for {
+		sum := GetSquareSum(n)
+		if sum == 1 {
+			return true
+		}
+		// 如果这个平方和重复出现，就证明陷入死循环，直接返回false
+		if occurred[sum] {
+			return false
+		} else {
+			// 否则，记录这个平方和出现过
+			occurred[sum] = true
+		}
+		// 重置n的值为前一个平方和
+		n = sum
+	}
+}
+
+// GetSquareSum 求正整数每个位置上的数字的平方和
+func GetSquareSum(n int) int {
+	sum := 0
+	for n > 0 {
+		sum += (n % 10) * (n % 10)
+		n = n / 10
+	}
+	return sum
+}
+
+/*
+思路二:快慢双指针法
+通过反复调用getNext(n) 得到的链是一个隐式的链表。隐式意味着我们没有实际的链表节点和指针，但数据仍然形成
+链表结构。起始数字是链表的头“节点”，链中的所有其他数字都是节点。next 指针是通过调用 getNext(n) 函数获得。
+意识到我们实际有个链表，那么这个问题就可以转换为检测一个链表是否有环。快慢指针法就派上了用场，如果链表有环，
+也就是平方和重复出现，那就意味着快慢指针一定会相遇，此时返回false,否则不会相遇，那么只需要判断fast是否
+等于1就可以了。
+*/
+
+// IsHappyNumber 时间复杂度O(logN)，空间复杂度O(1)
+func IsHappyNumber(n int) bool {
+	slow, fast := n, n
+	var step func(int) int
+	step = func(n int) int {
+		sum := 0
+		for n > 0 {
+			sum += (n % 10) * (n % 10)
+			n = n / 10
+		}
+		return sum
+	}
+	for fast != 1 {
+		slow = step(slow)
+		fast = step(step(fast))
+		if slow == fast && slow != 1 {
+			return false
+		}
+	}
+	return fast == 1
+}
+
+/*
+1.3 无重复字符的最长子串
 给定一个字符串s ，请你找出其中不含有重复字符的最长子串的长度。
 输入: s = "abcabcbb"
 输出: 3
@@ -80,7 +214,7 @@ func LengthOfLongestSubString(s string) int {
 }
 
 /*
-1.3 最长连续序列
+1.4 最长连续序列
 给定一个未排序的整数数组nums，找出数字连续的最长序列（不要求序列元素在原数组中连续）的长度。
 请你设计并实现时间复杂度为O(n)的算法解决此问题。
 
@@ -139,7 +273,7 @@ func LongestConsecutive(nums []int) int {
 }
 
 /*
-1.4 最小覆盖子串
+1.5 最小覆盖子串
 给你一个字符串s、一个字符串t。返回s中涵盖t所有字符的最小子串。如果s中不存在涵盖t所有字符的子串，则返回空字符串""。
 
 注意：
@@ -201,7 +335,7 @@ func MinWindow(s, t string) string {
 }
 
 /*
-1.5 和为k的连续子数组
+1.6 和为k的连续子数组
 给你一个整数数组nums和一个整数k ，请你统计并返回该数组中和为k的连续子数组的个数。
 
 示例1：
@@ -272,7 +406,7 @@ func SubarraySum(nums []int, k int) int {
 }
 
 /*
-1.6 前k个高频元素
+1.7 前k个高频元素
 给你一个整数数组nums和一个整数k ，请你返回其中出现频率前k高的元素。你可以按任意顺序返回答案。
 
 示例1:
