@@ -573,3 +573,45 @@ func reverseWords(s string) string {
 	}
 	return string(ss)
 }
+
+/*
+1.13 左旋转字符串
+字符串的左旋转操作是把字符串前面的若干个字符转移到字符串的尾部。请定义一个函数实现字符串左旋转操作的功能。
+比如，输入字符串"abcdefg"和数字2，该函数将返回左旋转两位得到的结果"cdefgab"。
+
+示例1：
+输入: s = "abcdefg", k = 2
+输出:"cdefgab"
+
+示例2：
+输入: s = "lrloseumgh", k = 6
+输出:"umghlrlose"
+
+限制：
+1 <= k < s.length <= 10000
+*/
+
+/*
+思路一:将前n个元素添加到tmp集合中，然后在ss[n:length]集合后边依次添加tmp集合中的元素即可。
+*/
+
+//  ReverseLeftWords 时间复杂度O(N),空间复杂度O(k)
+func ReverseLeftWords(s string, k int) string {
+	ss := []byte(s)
+	length := len(ss)
+	var tmp []byte
+	for i := 0; i < k; i++ {
+		tmp = append(tmp, ss[i])
+	}
+	ss = append(ss[k:length], tmp...)
+	return string(ss)
+}
+
+// ReverseLeftWordsSimple 时间复杂度O(N),空间复杂度O(1)
+func ReverseLeftWordsSimple(s string, n int) string {
+	ss := []byte(s)
+	reverse(ss[:n])
+	reverse(ss[n:])
+	reverse(ss)
+	return string(ss)
+}
