@@ -3,6 +3,7 @@ package feature
 import (
 	"AlgorithmPractise/Utils"
 	"math"
+	"strings"
 )
 
 /*
@@ -341,4 +342,96 @@ func MinSubArrayLen(target int, nums []int) int {
 		return 0
 	}
 	return minLength
+}
+
+/*
+1.9 反转字符串中的单词III
+给定一个字符串，你需要反转字符串中每个单词的字符顺序，同时仍保留空格和单词的初始顺序。
+
+示例：
+输入："Let's take LeetCode contest"
+输出："s'teL ekat edoCteeL tsetnoc"
+*/
+
+/*
+思路:以空格分割字符串s得到单词(字符串)集合，将每个单词反转后添加到结果集合中(字符串集合)
+最后返回strings.Join(res, " ")即可
+*/
+
+func ReverseWords(s string) string {
+	array := strings.Split(s, " ")
+	var res []string
+	for _, str := range array {
+		bytes := []byte(str)
+		n := len(bytes)
+		for i := 0; i < n/2; i++ {
+			temp := bytes[n-1-i]
+			bytes[n-1-i] = bytes[i]
+			bytes[i] = temp
+		}
+		res = append(res, string(bytes))
+	}
+	return strings.Join(res, " ")
+}
+
+/*
+声明一个新字符串。然后从头到尾遍历原字符串，直到找到空格为止，此时找到了一个单词，并能得到单词的起止位置。
+随后，根据单词的起止位置，可以将该单词逆序放到新字符串当中。如此循环多次，直到遍历完原字符串，就能得到翻转
+后的结果。
+*/
+
+func ReverseWordsTwo(s string) string {
+	n := len(s)
+	var res []byte
+	for i := 0; i < n; {
+		start := i
+		// 找到一个单词的末尾位置
+		for i < n && s[i] != ' ' {
+			i++
+		}
+		// 将s[start,i]区间内的字符逆序放入到res中
+		for p := i - 1; p >= start; p-- {
+			res = append(res, s[p])
+		}
+		for i < n && s[i] == ' ' {
+			i++
+			res = append(res, ' ')
+		}
+	}
+	return string(res)
+}
+
+/*
+1.10 反转字符串II
+给定一个字符串s和一个整数k，从字符串开头算起，每计数至2k个字符，就反转这2k字符中的前k个字符。
+如果剩余字符少于k个，则将剩余字符全部反转。
+如果剩余字符小于2k但大于或等于k个，则反转前k个字符，其余字符保持原样。
+
+输入：s = "abcdefg", k = 2
+输出："bacdfeg"
+*/
+
+func reverseStr(s string, k int) string {
+	bytes := []byte(s)
+	n := len(s)
+	for i := 0; i < n; i += 2 * k {
+		// 每2k个字符对前k个字符进行反转
+		// 剩余字符小于2k但大于或等于k个，则反转前k个字符
+		if i+k <= n {
+			reverse(bytes[i : i+k])
+		} else {
+			// 剩余字符少于k个，则将剩余字符全部反转。
+			reverse(bytes[i:n])
+		}
+	}
+	return string(bytes)
+}
+
+func reverse(s []byte) {
+	n := len(s)
+	for i := 0; i < n/2; i++ {
+		temp := s[n-1-i]
+		s[n-1-i] = s[i]
+		s[i] = temp
+	}
 }
