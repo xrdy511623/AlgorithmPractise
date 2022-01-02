@@ -411,7 +411,7 @@ func ReverseWordsTwo(s string) string {
 输出："bacdfeg"
 */
 
-func reverseStr(s string, k int) string {
+func ReverseStr(s string, k int) string {
 	bytes := []byte(s)
 	n := len(s)
 	for i := 0; i < n; i += 2 * k {
@@ -434,4 +434,58 @@ func reverse(s []byte) {
 		s[n-1-i] = s[i]
 		s[i] = temp
 	}
+}
+
+/*
+1.11 替换空格
+请实现一个函数，把字符串s中的每个空格替换成"%20"。
+
+示例1：
+输入：s = "We are happy."
+输出："We%20are%20happy."
+*/
+
+// ReplaceSpace 遍历添加 时间复杂度O(N),空间复杂度O(N)
+func ReplaceSpace(s string) string {
+	var res []byte
+	for i := 0; i < len(s); i++ {
+		if s[i] != ' ' {
+			res = append(res, s[i])
+		} else {
+			res = append(res, []byte("%20")...)
+		}
+	}
+	return string(res)
+}
+
+// ReplaceSpaceSimple 原地修改 时间复杂度O(N),空间复杂度O(1)
+func ReplaceSpaceSimple(s string) string {
+	b := []byte(s)
+	length := len(b)
+	spaceCount := 0
+	// 计算空格数量
+	for _, v := range b {
+		if v == ' ' {
+			spaceCount++
+		}
+	}
+	// 扩展原有切片
+	tmp := make([]byte, spaceCount*2)
+	b = append(b, tmp...)
+	i := length - 1
+	j := len(b) - 1
+	for i >= 0 {
+		if b[i] != ' ' {
+			b[j] = b[i]
+			i--
+			j--
+		} else {
+			b[j] = '0'
+			b[j-1] = '2'
+			b[j-2] = '%'
+			i--
+			j = j - 3
+		}
+	}
+	return string(b)
 }
