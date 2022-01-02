@@ -553,13 +553,13 @@ func ThreeSum(nums []int) [][]int {
 	}
 	// 对数组进行排序
 	sort.Ints(nums)
-	for i, v := range nums {
+	for i:=0;i<len(nums)-2;i++ {
 		// 因为nums是升序数组，所以nums[i]之后的数都会大于0，三个正数之和不可能等于0，所以此时要break
 		if nums[i] > 0 {
 			break
 		}
 		// nums[i] == nums[i-1], 去重
-		if i >= 1 && v == nums[i-1] {
+		if i >= 1 && nums[i] == nums[i-1] {
 			continue
 		}
 		// 左右指针初始值分别为i+1,len(nums)-1

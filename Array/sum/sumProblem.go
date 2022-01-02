@@ -3,6 +3,7 @@ package sum
 import (
 	"AlgorithmPractise/Utils"
 	"math"
+	"sort"
 	"strconv"
 )
 
@@ -129,4 +130,90 @@ func MyAtoi(s string) int {
 		i++
 	}
 	return sign * sum
+}
+
+/*
+1.4 四数之和
+给你一个由n个整数组成的数组nums ，和一个目标值target 。请你找出并返回满足下述全部条件且不重复的四元组
+[nums[a], nums[b], nums[c], nums[d]]（若两个四元组元素一一对应，则认为两个四元组重复）：
+
+0 <= a, b, c, d< n
+a、b、c 和 d 互不相同
+nums[a] + nums[b] + nums[c] + nums[d] == target
+你可以按任意顺序返回答案 。
+
+示例1：
+输入：nums = [1,0,-1,0,-2,2], target = 0
+输出：[[-2,-1,1,2],[-2,0,0,2],[-1,0,0,1]]
+
+示例2：
+输入：nums = [2,2,2,2,2], target = 8
+输出：[[2,2,2,2]]
+
+提示：
+1 <= nums.length <= 200
+-109 <= nums[i] <= 109
+-109 <= target <= 109
+*/
+
+func FourSum(nums []int, target int) [][]int {
+	var res [][]int
+	n := len(nums)
+	if n < 4 {
+		return res
+	}
+	// 首先对数组进行排序
+	sort.Ints(nums)
+	for i := 0; i < n-3; i++ {
+		// 防止重复数组进入res
+		if i >= 1 && nums[i] == nums[i-1] {
+			continue
+		}
+		// 最小的四个元素和都大于target,那么后续的数字都不用遍历了
+		if nums[i]+nums[i+1]+nums[i+2]+nums[i+3] > target {
+			break
+		}
+		// nums[i]加上最大的三个元素和都小于target，说明i需要向后移动
+		if nums[i]+nums[n-3]+nums[n-2]+nums[n-1] < target {
+			continue
+		}
+		// 遍历第二个元素
+		for j := i + 1; j < n-2; j++ {
+			// 同理，防止重复数组进入res
+			if j-i > 1 && nums[j] == nums[j-1] {
+				continue
+			}
+			// 同理，最小的四个元素和都大于target,那么后续的数字都不用遍历了
+			if nums[i]+nums[j]+nums[j+1]+nums[j+2] > target {
+				break
+			}
+			// nums[i]+nums[j]加上最大的两个元素和都小于target，说明j需要向后移动
+			if nums[i]+nums[j]+nums[n-2]+nums[n-1] < target {
+				continue
+			}
+			// 双指针
+			l, r := j+1, n-1
+			for l < r {
+				sum := nums[i] + nums[j] + nums[l] + nums[r]
+				if sum == target {
+					res = append(res, []int{nums[i], nums[j], nums[l], nums[r]})
+					// nums[l]去重
+					for l < r && nums[l] == nums[l+1] {
+						l++
+					}
+					// nums[r]去重
+					for l < r && nums[r] == nums[r-1] {
+						r--
+					}
+					l++
+					r--
+				} else if sum > target {
+					r--
+				} else {
+					l++
+				}
+			}
+		}
+	}
+	return res
 }
