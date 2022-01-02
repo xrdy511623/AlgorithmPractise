@@ -51,6 +51,46 @@ func IsIsAnagramSimple(s, t string) bool {
 }
 
 /*
+1.0.1 赎金信
+给你两个字符串：ransomNote 和 magazine，判断ransomNote能不能由magazine里面的字符构成。
+如果可以，返回true ；否则返回false 。
+
+magazine中的每个字符只能在ransomNote中使用一次。
+
+示例1：
+输入：ransomNote = "a", magazine = "b"
+输出：false
+
+示例2：
+输入：ransomNote = "aa", magazine = "ab"
+输出：false
+
+示例3：
+输入：ransomNote = "aa", magazine = "aab"
+输出：true
+*/
+
+/*
+思路:哈希表比较词频
+本题的意思是ransomNote中的字符，magazine中也必须有，而且这个字符在ransomNote中出现的次数必须小于
+等于magazine中出现的次数，否则就不行。
+*/
+
+func CanConstruct(ransomNote string, magazine string) bool {
+	record := make([]int, 26)
+	for _, v := range magazine {
+		record[v-'a']++
+	}
+	for _, v := range ransomNote {
+		record[v-'a']--
+		if record[v-'a'] < 0 {
+			return false
+		}
+	}
+	return true
+}
+
+/*
 1.1 两个数组的交集
 给定两个数组，编写一个函数来计算它们的交集。
 
@@ -170,7 +210,75 @@ func IsHappyNumber(n int) bool {
 }
 
 /*
-1.3 无重复字符的最长子串
+1.3 两数之和
+给定一个整数数组nums和一个整数目标值target，请你在该数组中找出和为目标值target的那两个整数，并返回它们的
+数组下标。
+你可以假设每种输入只会对应一个答案。但是，数组中同一个元素在答案里不能重复出现。
+你可以按任意顺序返回答案。
+
+输入：nums = [2,7,11,15], target = 9
+输出：[0,1]
+解释：因为 nums[0] + nums[1] == 9 ，返回 [0, 1] 。
+*/
+
+func TwoSum(nums []int, target int) []int {
+	hashMap := make(map[int]int)
+	for i, v := range nums {
+		if k, ok := hashMap[target-v]; ok {
+			return []int{k, i}
+		}
+		hashMap[v] = i
+	}
+	return nil
+}
+
+/*
+1.4 四数相加II
+给你四个整数数组nums1、nums2、nums3 和 nums4 ，数组长度都是 n ，请你计算有多少个元组 (i, j, k, l)
+能满足：
+0 <= i, j, k, l < n
+nums1[i] + nums2[j] + nums3[k] + nums4[l] == 0
+
+输入：nums1 = [1,2], nums2 = [-2,-1], nums3 = [-1,2], nums4 = [0,2]
+输出：2
+解释：
+两个元组如下：
+1. (0, 0, 0, 1) -> nums1[0] + nums2[0] + nums3[0] + nums4[1] = 1 + (-2) + (-1) + 2 = 0
+2. (1, 1, 0, 0) -> nums1[1] + nums2[1] + nums3[0] + nums4[0] = 2 + (-1) + (-1) + 0 = 0
+*/
+
+/*
+思路:分组+哈希表
+我们可以将四个数组分成两部分，A和B为一组，C和D为另外一组。
+对于A和B，我们使用二重循环对它们进行遍历，得到所有A[i]+B[j]的值并存入哈希映射中。对于哈希映射中的每个键值对，
+每个键表示一种A[i]+B[j]，对应的值为A[i]+B[j]出现的次数。
+
+对于C和D，我们同样使用二重循环对它们进行遍历。当遍历到C[k]+D[l]时，如果−(C[k]+D[l]) 出现在哈希映射中，
+那么将哈希表中key为−(C[k]+D[l])对应值累加进答案中。
+最终即可得到满足A[i]+B[j]+C[k]+D[l]=0 的四元组数目。
+*/
+
+// FourSumCount 时间复杂度O(2*N^2)，空间复杂度O(N^2)
+func FourSumCount(nums1 []int, nums2 []int, nums3 []int, nums4 []int) int {
+	sumMap := make(map[int]int)
+	for _, n1 := range nums1 {
+		for _, n2 := range nums2 {
+			sumMap[n1+n2]++
+		}
+	}
+	count := 0
+	for _, n3 := range nums3 {
+		for _, n4 := range nums4 {
+			if sumMap[-(n3+n4)] != 0 {
+				count += sumMap[-(n3 + n4)]
+			}
+		}
+	}
+	return count
+}
+
+/*
+1.5 无重复字符的最长子串
 给定一个字符串s ，请你找出其中不含有重复字符的最长子串的长度。
 输入: s = "abcabcbb"
 输出: 3
@@ -214,7 +322,7 @@ func LengthOfLongestSubString(s string) int {
 }
 
 /*
-1.4 最长连续序列
+1.6 最长连续序列
 给定一个未排序的整数数组nums，找出数字连续的最长序列（不要求序列元素在原数组中连续）的长度。
 请你设计并实现时间复杂度为O(n)的算法解决此问题。
 
@@ -273,7 +381,7 @@ func LongestConsecutive(nums []int) int {
 }
 
 /*
-1.5 最小覆盖子串
+1.7 最小覆盖子串
 给你一个字符串s、一个字符串t。返回s中涵盖t所有字符的最小子串。如果s中不存在涵盖t所有字符的子串，则返回空字符串""。
 
 注意：
@@ -335,7 +443,7 @@ func MinWindow(s, t string) string {
 }
 
 /*
-1.6 和为k的连续子数组
+1.8 和为k的连续子数组
 给你一个整数数组nums和一个整数k ，请你统计并返回该数组中和为k的连续子数组的个数。
 
 示例1：
@@ -406,7 +514,7 @@ func SubarraySum(nums []int, k int) int {
 }
 
 /*
-1.7 前k个高频元素
+1.9 前k个高频元素
 给你一个整数数组nums和一个整数k ，请你返回其中出现频率前k高的元素。你可以按任意顺序返回答案。
 
 示例1:
