@@ -474,6 +474,7 @@ func ReplaceSpaceSimple(s string) string {
 	b = append(b, tmp...)
 	i := length - 1
 	j := len(b) - 1
+	// 从后向前填充
 	for i >= 0 {
 		if b[i] != ' ' {
 			b[j] = b[i]
@@ -488,4 +489,87 @@ func ReplaceSpaceSimple(s string) string {
 		}
 	}
 	return string(b)
+}
+
+/*
+1.12 反转字符串里的单词
+给你一个字符串s ，逐个翻转字符串中的所有单词 。
+单词是由非空格字符组成的字符串。s中使用至少一个空格将字符串中的单词分隔开。
+
+请你返回一个翻转s中单词顺序并用单个空格相连的字符串。
+
+说明：
+输入字符串s可以在前面、后面或者单词间包含多余的空格。
+翻转后单词间应当仅用一个空格分隔。
+翻转后的字符串中不应包含额外的空格。
+
+示例1：
+输入：s = "the sky is blue"
+输出："blue is sky the"
+
+示例2：
+输入：s = " hello world "
+输出："world hello"
+解释：输入字符串可以在前面或者后面包含多余的空格，但是翻转后的字符不能包括。
+
+提示：
+1 <= s.length <= 104
+s 包含英文大小写字母、数字和空格 ' '
+s 中至少存在一个单词
+*/
+
+/*
+思路:先去掉冗余的空格然后反转整个字符串，然后再依次反转字符串中的每个单词。
+想一下，如果我们将整个字符串都反转过来，那么单词的顺序指定是倒序了，只不过单词本身也倒叙了，那么再把单词
+反转一下，单词不就正过来了。
+
+所以解题思路如下：
+移除多余空格
+将整个字符串反转
+将每个单词反转
+举个例子，源字符串为：" the sky is blue  "
+移除多余空格 : "the sky is blue"
+字符串反转："eulb si yks eht"
+单词反转："blue is sky the"
+这样我们就完成了翻转字符串里的单词。
+*/
+
+func reverseWords(s string) string {
+	ss := []byte(s)
+	length := len(ss)
+	slow, fast := 0, 0
+	// 去掉字符串最左边的冗余空格
+	for length > 0 && fast < length && ss[fast] == ' ' {
+		fast++
+	}
+	// 去掉单词之间的冗余空格
+	for ; fast < length; fast++ {
+		if fast > 1 && ss[fast] == ss[fast-1] && ss[fast] == ' ' {
+			continue
+		}
+		ss[slow] = ss[fast]
+		slow++
+	}
+	// 去掉字符串最右边的冗余空格
+	if slow > 1 && ss[slow-1] == ' ' {
+		ss = ss[:slow-1]
+	} else {
+		ss = ss[:slow]
+	}
+	// 反转整个字符串
+	reverse(ss)
+	i := 0
+	for i < len(ss) {
+		// 反转单个单词
+		j := i
+		// 找到单词的结束位置
+		for ; j < len(ss) && ss[j] != ' '; j++ {
+			continue
+		}
+		// 反转
+		reverse(ss[i:j])
+		// 更新下一个单词的起始位置，+1是要跳过单词间的空格
+		i = j + 1
+	}
+	return string(ss)
 }
