@@ -286,7 +286,7 @@ func FindLengthOfLCIS(nums []int) int {
 func MaxSubArray(nums []int) int {
 	max := nums[0]
 	for i := 1; i < len(nums); i++ {
-		if nums[i]+nums[i-1] > nums[i] {
+		if nums[i-1] > 0 {
 			nums[i] += nums[i-1]
 		}
 		if nums[i] > max {
@@ -418,7 +418,7 @@ func ReverseStr(s string, k int) string {
 		// 每2k个字符对前k个字符进行反转
 		// 剩余字符小于2k但大于或等于k个，则反转前k个字符
 		if i+k <= n {
-			reverse(bytes[i : i+k])
+			reverse(bytes[i:i+k])
 		} else {
 			// 剩余字符少于k个，则将剩余字符全部反转。
 			reverse(bytes[i:n])
@@ -493,7 +493,7 @@ func ReplaceSpaceSimple(s string) string {
 
 /*
 1.12 反转字符串里的单词
-给你一个字符串s ，逐个翻转字符串中的所有单词 。
+给你一个字符串s，逐个翻转字符串中的所有单词 。
 单词是由非空格字符组成的字符串。s中使用至少一个空格将字符串中的单词分隔开。
 
 请你返回一个翻转s中单词顺序并用单个空格相连的字符串。
@@ -617,7 +617,7 @@ func ReverseLeftWordsSimple(s string, n int) string {
 }
 
 /*
-1.14  实现 strStr()
+1.14  实现strStr()
 给你两个字符串haystack和needle ，请你在haystack字符串中找出needle字符串出现的第一个位置（下标从0开始）。
 如果不存在，则返回 -1 。
 

@@ -76,7 +76,8 @@ boolean empty() 如果队列为空，返回true；否则返回false
 你所使用的语言也许不支持栈。你可以使用list或者deque（双端队列）来模拟一个栈，只要是标准的栈操作即可。
 
 进阶：
-你能否实现每个操作均摊时间复杂度为O(1)的队列？换句话说，执行n个操作的总时间复杂度为 O(n) ，即使其中一个操作可能花费较长时间。
+你能否实现每个操作均摊时间复杂度为O(1)的队列？换句话说，执行n个操作的总时间复杂度为 O(n) ，即使
+其中一个操作可能花费较长时间。
 */
 
 type MyQueue struct {
@@ -103,6 +104,10 @@ func (q *MyQueue) Pop() int {
 			q.OutputStack = append(q.OutputStack, q.InputStack[0])
 			q.InputStack = q.InputStack[1:]
 		}
+	}else{
+		if len(q.InputStack) != 0{
+			q.OutputStack = append(q.OutputStack, q.InputStack[0])
+		}
 	}
 	value := q.OutputStack[0]
 	q.OutputStack = q.OutputStack[1:]
@@ -115,6 +120,10 @@ func (q *MyQueue) Peek() int {
 		for len(q.InputStack) != 0 {
 			q.OutputStack = append(q.OutputStack, q.InputStack[0])
 			q.InputStack = q.InputStack[1:]
+		}
+	}else{
+		if len(q.InputStack) != 0{
+			q.OutputStack = append(q.OutputStack, q.InputStack[0])
 		}
 	}
 	return q.OutputStack[0]
