@@ -3,6 +3,7 @@ package Stack
 import (
 	"AlgorithmPractise/Utils"
 	"math"
+	"strconv"
 )
 
 /*
@@ -35,16 +36,17 @@ import (
 
 /*
 栈+哈希表解决
-我们遍历给定的字符串s。当我们遇到一个左括号时，我们会期望在后续的遍历中，有一个相同类型的右括号将其闭合。由于后遇到的左括号要先闭合，因此
-我们可以将这个左括号放入栈顶。当我们遇到一个右括号时，我们需要将一个相同类型的左括号闭合。此时，我们可以取出栈顶的左括号并判断它们是否是
-相同类型的括号。如果不是相同的类型，或者栈中并没有左括号，那么字符串ss无效，返回False。为了快速判断括号的类型，我们可以使用哈希表存储
-每一种括号。哈希表的键为右括号，值为相同类型的左括号。
-在遍历结束后，如果栈中没有左括号，说明我们将字符串s中的所有左括号闭合，返回True，否则返回False。
-注意到有效字符串的长度一定为偶数，因此如果字符串的长度为奇数，我们可以直接返回False，省去后续的遍历判断过程。
+我们遍历给定的字符串s。当我们遇到一个左括号时，我们会期望在后续的遍历中，有一个相同类型的右括号将其闭合。由于后
+遇到的左括号要先闭合，因此我们可以将这个左括号放入栈顶。当我们遇到一个右括号时，我们需要一个相同类型的左括号闭合。
+此时，我们可以取出栈顶的左括号并判断它们是否是相同类型的括号。如果不是相同的类型，或者栈中并没有左括号，那么字符串
+ss无效，返回false。为了快速判断括号的类型，我们可以使用哈希表存储每一种括号。哈希表的键为右括号，值为相同类型的
+左括号。在遍历结束后，如果栈中没有左括号，说明我们将字符串s中的所有左括号闭合，返回true，否则返回false。
+注意到有效字符串的长度一定为偶数，因此如果字符串的长度为奇数，我们可以直接返回false，省去后续的遍历判断过程。
 */
 
 func IsValid(s string) bool {
 	length := len(s)
+	// 如果字符串的长度为奇数，我们可以直接返回False
 	if length%2 == 1 {
 		return false
 	}
@@ -104,8 +106,8 @@ func (q *MyQueue) Pop() int {
 			q.OutputStack = append(q.OutputStack, q.InputStack[0])
 			q.InputStack = q.InputStack[1:]
 		}
-	}else{
-		if len(q.InputStack) != 0{
+	} else {
+		if len(q.InputStack) != 0 {
 			q.OutputStack = append(q.OutputStack, q.InputStack[0])
 		}
 	}
@@ -121,8 +123,8 @@ func (q *MyQueue) Peek() int {
 			q.OutputStack = append(q.OutputStack, q.InputStack[0])
 			q.InputStack = q.InputStack[1:]
 		}
-	}else{
-		if len(q.InputStack) != 0{
+	} else {
+		if len(q.InputStack) != 0 {
 			q.OutputStack = append(q.OutputStack, q.InputStack[0])
 		}
 	}
@@ -178,4 +180,109 @@ func (ms *MinStack) Top() int {
 
 func (ms *MinStack) GetMin() int {
 	return ms.minStack[len(ms.minStack)-1]
+}
+
+/*
+1.4 删除字符串中的所有相邻重复项
+给出由小写字母组成的字符串S，重复项删除操作会选择两个相邻且相同的字母，并删除它们。
+在S上反复执行重复项删除操作，直到无法继续删除。
+
+在完成所有重复项删除操作后返回最终的字符串。答案保证唯一。
+
+
+示例：
+输入："abbaca"
+输出："ca"
+解释：
+例如，在 "abbaca" 中，我们可以删除"bb"由于两字母相邻且相同，这是此时唯一可以执行删除操作的重复项。之后我们得到
+字符串 "aaca"，其中又只有"aa"可以执行重复项删除操作，所以最后的字符串为"ca"。
+*/
+
+func RemoveDuplicates(s string) string {
+	var stack []byte
+	for i := 0; i < len(s); i++ {
+		if len(stack) > 0 && stack[len(stack)-1] == s[i] {
+			stack = stack[:len(stack)-1]
+		} else {
+			stack = append(stack, s[i])
+		}
+	}
+	return string(stack)
+}
+
+/*
+1.5 逆波兰表达式求值
+根据逆波兰表示法，求表达式的值。
+有效的算符包括+、-、*、/。每个运算对象可以是整数，也可以是另一个逆波兰表达式。
+
+说明：
+整数除法只保留整数部分。
+给定逆波兰表达式总是有效的。换句话说，表达式总会得出有效数值且不存在除数为 0 的情况。
+
+
+示例1：
+输入：tokens = ["2","1","+","3","*"]
+输出：9
+解释：该算式转化为常见的中缀算术表达式为：((2 + 1) * 3) = 9
+
+示例2：
+输入：tokens = ["4","13","5","/","+"]
+输出：6
+解释：该算式转化为常见的中缀算术表达式为：(4 + (13 / 5)) = 6
+
+示例3：
+输入：tokens = ["10","6","9","3","+","-11","*","/","*","17","+","5","+"]
+输出：22
+解释：
+该算式转化为常见的中缀算术表达式为：
+  ((10 * (6 / ((9 + 3) * -11))) + 17) + 5
+= ((10 * (6 / (12 * -11))) + 17) + 5
+= ((10 * (6 / -132)) + 17) + 5
+= ((10 * 0) + 17) + 5
+= (0 + 17) + 5
+= 17 + 5
+= 22
+
+
+提示：
+1 <= tokens.length <= 104
+tokens[i] 要么是一个算符（"+"、"-"、"*" 或 "/"），要么是一个在范围 [-200, 200] 内的整数
+
+逆波兰表达式：
+逆波兰表达式是一种后缀表达式，所谓后缀就是指算符写在后面。
+平常使用的算式则是一种中缀表达式，如 ( 1 + 2 ) * ( 3 + 4 ) 。
+该算式的逆波兰表达式写法为 ( ( 1 2 + ) ( 3 4 + ) * ) 。
+逆波兰表达式主要有以下两个优点：
+去掉括号后表达式无歧义，上式即便写成 1 2 + 3 4 + * 也可以依据次序计算出正确结果。
+适合用栈操作运算：遇到数字则入栈；遇到算符则取出栈顶两个数字进行计算，并将结果压入栈中。
+*/
+
+// EvalRPN 按照题意写代码即可
+func EvalRPN(tokens []string) int {
+	var stack []int
+	for _, v := range tokens {
+		num, err := strconv.Atoi(v)
+		if err == nil {
+			// 遇到数字入栈
+			stack = append(stack, num)
+		} else {
+			// 遇到运算符，取出顶两个数字进行计算，并将结果压入栈中
+			n := len(stack)
+			n1, n2 := stack[n-2], stack[n-1]
+			stack = stack[:n-2]
+			switch v {
+			case "+":
+				stack = append(stack, n1+n2)
+			case "-":
+				stack = append(stack, n1-n2)
+			case "*":
+				stack = append(stack, n1*n2)
+			case "/":
+				stack = append(stack, n1/n2)
+			}
+		}
+
+	}
+	// 返回栈中所剩的最后一个元素
+	return stack[0]
 }
