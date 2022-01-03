@@ -615,3 +615,85 @@ func ReverseLeftWordsSimple(s string, n int) string {
 	reverse(ss)
 	return string(ss)
 }
+
+/*
+1.14  实现 strStr()
+给你两个字符串haystack和needle ，请你在haystack字符串中找出needle字符串出现的第一个位置（下标从 0 开始）。如果不存在，则返回  -1 。
+
+示例1：
+输入：haystack = "hello", needle = "ll"
+输出：2
+
+示例2：
+输入：haystack = "aaaaa", needle = "bba"
+输出：-1
+
+示例3：
+输入：haystack = "", needle = ""
+输出：0
+
+提示：
+
+0 <= haystack.length, needle.length <= 5 * 104
+haystack和needle仅由小写英文字符组成
+*/
+
+// strStr 时间复杂度O(N*M),空间复杂度O(1)
+func strStr(haystack string, needle string) int {
+	n, m := len(haystack), len(needle)
+	if m == 0 {
+		return 0
+	}
+	for i := 0; i+m <= n; i++ {
+		if needle == haystack[i:i+m] {
+			return i
+		}
+	}
+	return -1
+}
+
+// strStrSimple KMP算法 时间复杂度O(N+M),空间复杂度O(M)
+func strStrSimple(haystack string, needle string) int {
+	n, m := len(haystack), len(needle)
+	if m == 0 {
+		return 0
+	}
+	next := make([]int, m)
+	GetNext(next, needle)
+	// 因为next数组里记录的起始位置为0
+	j := 0
+	// i从0开始匹配
+	for i := 0; i < n; i++ {
+		// 如果不匹配，就寻找之前匹配的位置
+		for j > 0 && haystack[i] != needle[j] {
+			j = next[j-1]
+		}
+		// 如果匹配，i和j同时向后移动
+		if haystack[i] == needle[j] {
+			j++
+		}
+		// 如果j从0移动到m的位置，意味着模式串与文本串匹配成功
+		if j == m {
+			return i - m + 1
+		}
+	}
+	return -1
+}
+
+func GetNext(next []int, s string) {
+	// next[j]就是记录着j（包括j）之前的子串的相同前后缀的长度。
+	j := 0
+	next[0] = 0
+	// j指向前缀起始位置，i指向后缀起始位置
+	for i := 1; i < len(s); i++ {
+		// 如果前后缀不相同，那么j就要向前回退
+		for j > 0 && s[i] != s[j] {
+			j = next[j-1]
+		}
+		// 说明找到了相同的前后缀, j++，同时记录next[i]
+		if s[i] == s[j] {
+			j++
+		}
+		next[i] = j
+	}
+}
