@@ -92,14 +92,11 @@ func PathSum(root *Entity.TreeNode, target int) [][]int {
 		}
 		copyTemp := copySlice(path)
 		if node.Left != nil {
-			temp1 := copyTemp
-			temp1 = append(temp1, node.Left.Val)
+			temp1 := append(copyTemp, node.Left.Val)
 			queue = append(queue, Group{node.Right, temp1})
 		}
-
 		if node.Right != nil {
-			temp2 := copyTemp
-			temp2 = append(temp2, node.Right.Val)
+			temp2 := append(copyTemp, node.Right.Val)
 			queue = append(queue, Group{node.Right, temp2})
 		}
 

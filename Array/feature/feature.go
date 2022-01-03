@@ -618,7 +618,8 @@ func ReverseLeftWordsSimple(s string, n int) string {
 
 /*
 1.14  实现 strStr()
-给你两个字符串haystack和needle ，请你在haystack字符串中找出needle字符串出现的第一个位置（下标从 0 开始）。如果不存在，则返回  -1 。
+给你两个字符串haystack和needle ，请你在haystack字符串中找出needle字符串出现的第一个位置（下标从0开始）。
+如果不存在，则返回 -1 。
 
 示例1：
 输入：haystack = "hello", needle = "ll"
@@ -696,4 +697,37 @@ func GetNext(next []int, s string) {
 		}
 		next[i] = j
 	}
+}
+
+/*
+1.15 重复的子字符串
+给定一个非空的字符串，判断它是否可以由它的一个子串重复多次构成。给定的字符串只含有小写英文字母，并且长度
+不超过10000。
+
+示例1:
+输入: "abab"
+输出: True
+解释: 可由子字符串"ab"重复两次构成。
+
+示例2:
+输入: "aba"
+输出: False
+
+示例3:
+输入: "abcabcabcabc"
+输出: True
+解释: 可由子字符串 "abc" 重复四次构成。 (或者子字符串 "abcabc" 重复两次构成。)
+*/
+
+func RepeatedSubstringPattern(s string) bool {
+	length := len(s)
+	if length == 0 {
+		return false
+	}
+	next := make([]int, length)
+	GetNext(next, s)
+	if next[length-1] != 0 && length%(length-next[length-1]) == 0 {
+		return true
+	}
+	return false
 }
