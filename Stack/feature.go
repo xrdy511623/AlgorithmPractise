@@ -375,13 +375,18 @@ func (sq *StrictQueue) Size() int {
 func MaxSlidingWindow(nums []int, k int) []int {
 	var res []int
 	sq := NewStrictQueue()
+	// 首先将前k个元素添加到队列中
 	for i := 0; i < k; i++ {
 		sq.Push(nums[i])
 	}
+	// 将前k个元素中的最大值添加到结果集合中
 	res = append(res, sq.Peek())
 	for i := k; i < len(nums); i++ {
+		// 队列移除最前面元素
 		sq.Pop(nums[i-k])
+		// 向队列添加新元素，也就是当前元素nums[i]
 		sq.Push(nums[i])
+		// 将当前队列中的最大值添加到结果集合中
 		res = append(res, sq.Peek())
 	}
 	return res
