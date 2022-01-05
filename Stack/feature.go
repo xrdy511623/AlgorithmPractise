@@ -391,3 +391,138 @@ func MaxSlidingWindow(nums []int, k int) []int {
 	}
 	return res
 }
+
+/*
+1.7 最长有效括号
+给你一个只包含 '('和 ')'的字符串，找出最长有效（格式正确且连续）括号子串的长度。
+
+示例1：
+输入：s = "(()"
+输出：2
+解释：最长有效括号子串是 "()"
+
+示例2：
+输入：s = ")()())"
+输出：4
+解释：最长有效括号子串是 "()()"
+
+示例3：
+输入：s = ""
+输出：0
+
+提示：
+0 <= s.length <= 3 * 104
+s[i] 为 '(' 或 ')'
+*/
+
+/*
+通过栈，我们可以在遍历给定字符串的过程中去判断到目前为止扫描的子串的有效性，同时能得到最长有效括号的长度。
+具体做法是我们始终保持栈底元素为当前已经遍历过的元素中「最后一个没有被匹配的右括号的下标」，这样的做法主要是考虑了
+边界条件的处理，栈里其他元素维护左括号的下标：
+
+对于遇到的每个‘(’ ，我们将它的下标放入栈中
+对于遇到的每个‘)’ ，我们先弹出栈顶元素表示匹配了当前右括号：
+如果栈为空，说明当前的右括号为没有被匹配的右括号，我们将其下标放入栈中来更新我们之前提到的「最后一个没有被匹配的
+右括号的下标」
+如果栈不为空，当前右括号的下标减去栈顶元素即为「以该右括号为结尾的最长有效括号的长度」
+我们从前往后遍历字符串并更新答案即可。
+
+需要注意的是，如果一开始栈为空，第一个字符为左括号的时候我们会将其放入栈中，这样就不满足提及的「最后一个没有被匹配
+的右括号的下标」，为了保持统一，我们在一开始的时候往栈中放入一个值为−1 的元素。
+*/
+
+// LongestValidParentheses 时间复杂度O(N), 空间复杂度O(N)
+func LongestValidParentheses(s string) int {
+	maxLength := 0
+	stack := []int{-1}
+	for i := 0; i < len(s); i++ {
+		if s[i] == '(' {
+			stack = append(stack, i)
+		} else {
+			stack = stack[:len(stack)-1]
+			if len(stack) == 0 {
+				stack = append(stack, i)
+			} else {
+				maxLength = Utils.Max(maxLength, i-stack[len(stack)-1])
+			}
+		}
+	}
+	return maxLength
+}
+
+/*
+第二种解法:贪心
+我们利用两个计数器left和right 。首先，我们从左到右遍历字符串，对于遇到的每个‘(’，我们增加left计数器，对于遇到的每个
+‘)’ ，我们增加right 计数器。每当left计数器与right计数器相等时，我们计算当前有效字符串的长度，并且记录目前为止找到
+的最长子字符串。当right计数器比left计数器大时，我们将left和right计数器同时重置为0。
+
+这样的做法贪心地考虑了以当前字符下标结尾的有效括号长度，每次当右括号数量多于左括号数量的时候之前的字符我们都扔掉
+不再考虑，重新从下一个字符开始计算，但这样会漏掉一种情况，就是遍历的时候左括号的数量始终大于右括号的数量，即 (()，
+这种时候最长有效括号是求不出来的。
+
+解决的方法也很简单，我们只需要从右往左遍历用类似的方法计算即可，只是这个时候判断条件反了过来：
+当left计数器比right计数器大时，我们将left和right计数器同时重置为0。
+当left 计数器与right计数器相等时，我们计算当前有效字符串的长度，并且记录目前为止找到的最长子字符串
+这样我们就能涵盖所有情况从而求解出答案。
+*/
+
+// LongestValidParenthesesSimple 时间复杂度O(N), 空间复杂度O(1)
+func LongestValidParenthesesSimple(s string) int {
+	left, right, maxLength := 0, 0, 0
+	for i := 0; i < len(s); i++ {
+		if s[i] == '(' {
+			left++
+		} else {
+			right++
+		}
+		if left == right {
+			maxLength = Utils.Max(maxLength, 2*right)
+		} else if right > left {
+			left, right = 0, 0
+		}
+	}
+	left, right = 0, 0
+	for i := len(s) - 1; i >= 0; i-- {
+		if s[i] == '(' {
+			left++
+		} else {
+			right++
+		}
+		if left == right {
+			maxLength = Utils.Max(maxLength, 2*right)
+		} else if left > right {
+			left, right = 0, 0
+		}
+	}
+	return maxLength
+}
+
+/*
+第三种解法:动态规划
+*/
+
+// LongestValidParenthesesComplex 时间复杂度O(N), 空间复杂度O(N)
+func LongestValidParenthesesComplex(s string) int {
+	n := len(s)
+	dp := make([]int, n)
+	maxLength := 0
+	for i := 1; i < n; i++ {
+		if s[i] == ')' {
+			if s[i-1] == '(' {
+				if i >= 2 {
+					dp[i] = dp[i-2] + 2
+				} else {
+					dp[i] = 2
+				}
+			} else if i-dp[i-1] > 0 && s[i-dp[i-1]-1] == '(' {
+				if i-dp[i-1] >= 2 {
+					dp[i] = dp[i-1] + dp[i-dp[i-1]-2] + 2
+				} else {
+					dp[i] = dp[i-1] + 2
+				}
+			}
+			maxLength = Utils.Max(maxLength, dp[i])
+		}
+	}
+	return maxLength
+}
