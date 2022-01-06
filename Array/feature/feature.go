@@ -768,7 +768,6 @@ func ExchangeSimple(nums []int) []int {
 	return nums
 }
 
-
 /*
 1.17 旋转数组
 给你一个数组，将数组中的元素向右轮转k个位置，其中k是非负数。
@@ -792,16 +791,21 @@ func ExchangeSimple(nums []int) []int {
 1 <= nums.length <= 105
 -231 <= nums[i] <= 231 - 1
 0 <= k <= 105
- */
+*/
 
 // Rotate 时间复杂度O(2N),空间复杂度O(1)
-func Rotate(nums []int, k int)  {
+func Rotate(nums []int, k int) {
 	n := len(nums)
 	k = k % n
-	if k == 0{
+	// k为0或者旋转次数为n的整数倍，那么数组会恢复原样
+	// 所以不做任何操作
+	if k == 0 {
 		return
 	}
+	// 先反转整个数组
 	ReverseArray(nums)
+	// 然后反转数组nums[:k]部分
 	ReverseArray(nums[:k])
+	// 最后反转数组nums[k:]部分
 	ReverseArray(nums[k:])
 }
