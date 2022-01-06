@@ -1,6 +1,7 @@
 package sort
 
 import (
+	"AlgorithmPractise/Array/feature"
 	"AlgorithmPractise/Utils"
 	"sort"
 )
@@ -25,14 +26,14 @@ func BubbleSort(array []int) []int {
 
 func InsertSort(array []int) []int {
 	n := len(array)
-	if n == 0{
+	if n == 0 {
 		return array
 	}
-	for i:=1;i<n;i++{
-		for j:=i;j>=0;j--{
-			if array[j] < array[j-1]{
+	for i := 1; i < n; i++ {
+		for j := i; j >= 0; j-- {
+			if array[j] < array[j-1] {
 				array[j], array[j-1] = array[j-1], array[j]
-			}else{
+			} else {
 				break
 			}
 		}
@@ -553,7 +554,7 @@ func ThreeSum(nums []int) [][]int {
 	}
 	// 对数组进行排序
 	sort.Ints(nums)
-	for i:=0;i<len(nums)-2;i++ {
+	for i := 0; i < len(nums)-2; i++ {
 		// 因为nums是升序数组，所以nums[i]之后的数都会大于0，三个正数之和不可能等于0，所以此时要break
 		if nums[i] > 0 {
 			break
@@ -803,4 +804,51 @@ func SortedSquares(nums []int) []int {
 		k--
 	}
 	return result
+}
+
+/*
+1.10 下一个排列
+实现获取下一个排列的函数，算法需要将给定数字序列重新排列成字典序中下一个更大的排列（即，组合出下一个更大的整数）。
+如果不存在下一个更大的排列，则将数字重新排列成最小的排列（即升序排列）。
+必须原地修改，只允许使用额外常数空间。
+
+
+示例1：
+输入：nums = [1,2,3]
+输出：[1,3,2]
+
+示例2：
+输入：nums = [3,2,1]
+输出：[1,2,3]
+
+示例3：
+输入：nums = [1,1,5]
+输出：[1,5,1]
+
+示例4：
+输入：nums = [1]
+输出：[1]
+*/
+
+/*
+对于长度为n的排列a：
+首先从后向前查找第一个顺序对(i,i+1)，满足a[i]<a[i+1]。这样「较小数」即为a[i]。此时[i+1,n)必然是下降序列。
+如果找到了顺序对，那么在区间[i+1,n) 中从后向前查找第一个元素j满足a[i] < a[j]。这样「较大数」即为a[j]。
+交换a[i]与a[j]，此时可以证明区间[i+1,n) 必为降序。我们可以直接使用双指针反转区间[i+1,n)使其变为升序，
+而无需对该区间进行排序。
+*/
+
+func NextPermutation(nums []int) {
+	n := len(nums)
+	i, j := n-2, n-1
+	for i >= 0 && nums[i] >= nums[i+1] {
+		i--
+	}
+	if i >= 0 {
+		for j >= 0 && nums[i] >= nums[j] {
+			j--
+		}
+		nums[i], nums[j] = nums[j], nums[i]
+	}
+	feature.ReverseArray(nums[i+1:])
 }
