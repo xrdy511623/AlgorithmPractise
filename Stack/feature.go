@@ -287,113 +287,9 @@ func EvalRPN(tokens []string) int {
 	return stack[0]
 }
 
-/*
-1.6 滑动窗口最大值
-给你一个整数数组nums，有一个大小为k的滑动窗口从数组的最左侧移动到数组的最右侧。你只可以看到在滑动窗口内的k个数字。
-滑动窗口每次只向右移动一位。
-
-返回滑动窗口中的最大值。
-
-示例1：
-输入：nums = [1,3,-1,-3,5,3,6,7], k = 3
-输出：[3,3,5,5,6,7]
-解释：
-滑动窗口的位置                最大值
----------------               -----
-[1  3  -1] -3  5  3  6  7       3
- 1 [3  -1  -3] 5  3  6  7       3
- 1  3 [-1  -3  5] 3  6  7       5
- 1  3  -1 [-3  5  3] 6  7       5
- 1  3  -1  -3 [5  3  6] 7       6
- 1  3  -1  -3  5 [3  6  7]      7
-
-提示：
-1 <= nums.length <= 105
--104 <= nums[i] <= 104
-1 <= k <= nums.length
-*/
-
-// maxSlidingWindow 暴力解法 时间复杂度O(N*K), 空间复杂度O(N)
-func maxSlidingWindow(nums []int, k int) []int {
-	var res []int
-	for i := 0; i+k <= len(nums); i++ {
-		res = append(res, Utils.MaxValueOfArray(nums[i:i+k]))
-	}
-	return res
-}
 
 /*
-思路:实现一个严格单调递减队列sq，在sq里维护有可能成为窗口里最大值的元素就可以了，同时保证sq里的元素是单调递减的。
-设计单调队列的时候，Pop和Push操作要保持如下规则：
-Pop(value)：如果窗口移除的元素value等于单调队列的出口元素，那么队列将弹出元素，否则不用任何操作
-Push(value)：如果窗口Push的元素value大于单调队列入口元素的数值，那么就将队列入口的元素弹出，直到Push的元素小于
-等于队列入口元素的数值为止。
-保持如上规则，每次窗口移动的时候，只要调用sq.Peek()就可以返回当前窗口的最大值。
-*/
-
-type StrictQueue struct {
-	Queue []int
-}
-
-func NewStrictQueue() *StrictQueue {
-	return &StrictQueue{
-		Queue: make([]int, 0),
-	}
-}
-
-func (sq *StrictQueue) Pop(value int) {
-	// 如果队列不为空且要移除的元素为队列中最大值，则将其弹出，否则不做任何操作
-	// 因为我们关心的是队列中的最大值
-	if !sq.IsEmpty() && sq.Queue[0] == value {
-		sq.Queue = sq.Queue[1:]
-	}
-}
-
-func (sq *StrictQueue) Push(value int) {
-	// 如果队列不为空且要添加的元素大于队列入口元素，则将队列入口元素弹出
-	// 直到添加的元素小于等于队列入口元素为止，以保证队列是严格单调递减的。
-	for !sq.IsEmpty() && sq.Queue[sq.Size()-1] < value {
-		sq.Queue = sq.Queue[:sq.Size()-1]
-	}
-	sq.Queue = append(sq.Queue, value)
-}
-
-func (sq *StrictQueue) Peek() int {
-	// 返回队列中的最大值
-	return sq.Queue[0]
-}
-
-func (sq *StrictQueue) IsEmpty() bool {
-	return len(sq.Queue) == 0
-}
-
-func (sq *StrictQueue) Size() int {
-	return len(sq.Queue)
-}
-
-// MaxSlidingWindow 时间复杂度O(N), 空间复杂度O(N)
-func MaxSlidingWindow(nums []int, k int) []int {
-	var res []int
-	sq := NewStrictQueue()
-	// 首先将前k个元素添加到队列中
-	for i := 0; i < k; i++ {
-		sq.Push(nums[i])
-	}
-	// 将前k个元素中的最大值添加到结果集合中
-	res = append(res, sq.Peek())
-	for i := k; i < len(nums); i++ {
-		// 队列移除最前面元素
-		sq.Pop(nums[i-k])
-		// 向队列添加新元素，也就是当前元素nums[i]
-		sq.Push(nums[i])
-		// 将当前队列中的最大值添加到结果集合中
-		res = append(res, sq.Peek())
-	}
-	return res
-}
-
-/*
-1.7 最长有效括号
+1.6 最长有效括号
 给你一个只包含 '('和 ')'的字符串，找出最长有效（格式正确且连续）括号子串的长度。
 
 示例1：
@@ -528,7 +424,7 @@ func LongestValidParenthesesComplex(s string) int {
 }
 
 /*
-1.8 有效的括号字符串
+1.7 有效的括号字符串
 给定一个只包含三种字符的字符串：（，),和 *，写一个函数来检验这个字符串是否为有效字符串。有效字符串具有如下规则：
 任何左括号(必须有相应的右括号)。
 任何右括号)必须有相应的左括号(。
