@@ -21,7 +21,7 @@ func ReverseArraySimple(nums []int) []int {
 }
 
 // ReverseArray 原地反转
-func ReverseArray(nums []int){
+func ReverseArray(nums []int) {
 	n := len(nums)
 	for i := 0; i < n/2; i++ {
 		temp := nums[n-1-i]
@@ -417,7 +417,7 @@ func ReverseStr(s string, k int) string {
 		// 每2k个字符对前k个字符进行反转
 		// 剩余字符小于2k但大于或等于k个，则反转前k个字符
 		if i+k <= n {
-			reverse(bytes[i:i+k])
+			reverse(bytes[i : i+k])
 		} else {
 			// 剩余字符少于k个，则将剩余字符全部反转。
 			reverse(bytes[i:n])
@@ -729,4 +729,41 @@ func RepeatedSubstringPattern(s string) bool {
 		return true
 	}
 	return false
+}
+
+/*
+1.16 调整数组顺序使奇数位于偶数前面
+输入一个整数数组，实现一个函数来调整该数组中数字的顺序，使得所有奇数在数组的前半部分，所有偶数在数组的后半部分。
+
+示例：
+输入：nums = [1,2,3,4]
+输出：[1,3,2,4]
+注：[3,1,2,4] 也是正确的答案之一。
+*/
+
+func Exchange(nums []int) []int {
+	var odd, even []int
+	for _, v := range nums {
+		if v%2 == 1 {
+			odd = append(odd, v)
+		} else {
+			even = append(even, v)
+		}
+	}
+	odd = append(odd, even...)
+	return odd
+}
+
+func ExchangeSimple(nums []int) []int {
+	l, r := 0, len(nums)-1
+	for l < r {
+		for l < r && nums[l]%2 == 1 {
+			l++
+		}
+		for l < r && nums[r]%2 == 0 {
+			r--
+		}
+		nums[l], nums[r] = nums[r], nums[l]
+	}
+	return nums
 }
