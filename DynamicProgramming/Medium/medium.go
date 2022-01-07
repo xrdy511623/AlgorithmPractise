@@ -182,8 +182,8 @@ func BagProblemSimple(weight, value []int, capacity int) int {
 1 确定dp数组以及定义
 dp[j]表示背包总容量为j,其所容纳的所有物品(集合元素)的最大价值(子集元素和)，
 由于数组元素容量不超过200，而元素最大值不超过100，所以数组元素和最大不会超过20000，所以背包的最大
-体积也就是sum/2不会超过10000，故dp数组的长度可定为10001; 当然，最精确的做法是遍历nums数组，累加数组元素得到数组元素和sum,
-长度就等于sum/2+1(整除是向下取整，所以要+1)
+体积也就是sum/2不会超过10000，故dp数组的长度可定为10001; 当然，最精确的做法是遍历nums数组，
+累加数组元素得到数组元素和sum,长度就等于sum/2+1(整除是向下取整，所以要+1)
 
 2 确定递推公式
 dp[j] = max(dp[j], dp[j-nums[i]]+nums[i])
@@ -343,9 +343,12 @@ nums: [1, 1, 1, 1, 1], target:3
 // FindTargetSumWays 时间复杂度O(n * capacity)，空间复杂度：O(capacity)， n为nums数组长度，capacity为背包容量，
 func FindTargetSumWays(nums []int, target int) int {
 	sum := Utils.SumOfArray(nums)
+	// target的绝对值比数组和还大，是不可能有结果的
 	if Utils.Abs(target) > sum {
 		return 0
 	}
+	// 因为本题转化为在nums数组中中找和为left的组合数，也就是找(sum + target) / 2的组合数
+	// 那么sum + target就不能为奇数
 	if (sum+target)%2 == 1 {
 		return 0
 	}
@@ -423,9 +426,9 @@ func FindMaxForm(strs []string, m, n int) int {
 	for _, str := range strs {
 		zeroNum := strings.Count(str, "0")
 		oneNum := strings.Count(str, "1")
-		for j := m; j >= zeroNum; j-- {
-			for k := n; k >= oneNum; k-- {
-				dp[j][k] = Utils.Max(dp[j][k], dp[j-zeroNum][k-oneNum]+1)
+		for i := m; i >= zeroNum; i-- {
+			for j := n; j >= oneNum; j-- {
+				dp[i][j] = Utils.Max(dp[i][j], dp[i-zeroNum][j-oneNum]+1)
 			}
 		}
 	}

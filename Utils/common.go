@@ -44,9 +44,6 @@ func MinValueOfArray(array []int) int {
 func SumOfArray(array []int) int {
 	sum := 0
 	n := len(array)
-	if n == 0 {
-		return sum
-	}
 	for i := 0; i < n; i++ {
 		sum += array[i]
 	}
