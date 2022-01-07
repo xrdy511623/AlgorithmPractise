@@ -16,7 +16,7 @@ func Fib(n int) int {
 	if n <= 1 {
 		return n
 	}
-	dp := make([]int, n+1, n+1)
+	dp := make([]int, n+1)
 	dp[0] = 0
 	dp[1] = 1
 	for i := 2; i <= n; i++ {
@@ -32,7 +32,7 @@ func FibSimple(n int) int {
 	if n <= 1 {
 		return n
 	}
-	dp := make([]int, 2, 2)
+	dp := make([]int, 2)
 	dp[0] = 0
 	dp[1] = 1
 	for i := 2; i <= n; i++ {
@@ -107,7 +107,7 @@ func ClimbStairs(n int) int {
 	if n <= 1 {
 		return n
 	}
-	dp := make([]int, n+1, n+1)
+	dp := make([]int, n+1)
 	dp[1], dp[2] = 1, 2
 	for i := 3; i <= n; i++ {
 		dp[i] = dp[i-1] + dp[i-2]
@@ -120,7 +120,7 @@ func ClimbStairsSimple(n int) int {
 	if n <= 1 {
 		return n
 	}
-	dp := make([]int, 2, 2)
+	dp := make([]int, 2)
 	dp[0], dp[1] = 1, 2
 	for i := 3; i <= n; i++ {
 		sum := dp[0] + dp[1]
@@ -132,9 +132,11 @@ func ClimbStairsSimple(n int) int {
 
 /*
 1.2 使用最小花费爬楼梯
-数组的每个下标作为一个阶梯，第i个阶梯对应着一个非负数的体力花费值cost[i]（下标从0开始）。
-每当你爬上一个阶梯你都要花费对应的体力值，一旦支付了相应的体力值，你就可以选择向上爬一个阶梯或者爬两个阶梯。
-请你找出达到楼层顶部的最低花费。在开始时，你可以选择从下标为0或1的元素作为初始阶梯。
+给你一个整数数组cost，其中cost[i]是从楼梯第i个台阶向上爬需要支付的费用。一旦你支付此费用，即可选择向上爬一个
+或者两个台阶。
+你可以选择从下标为0或下标为1的台阶开始爬楼梯。
+请你计算并返回达到楼梯顶部的最低花费。
+
 
 示例1：
 输入：cost = [10, 15, 20]
@@ -149,47 +151,48 @@ func ClimbStairsSimple(n int) int {
 
 /*
 1 确定dp数组以及下标含义
-dp[i]的定义:到达第i个台阶所花费的最小体力为dp[i](注意这里认为是第一步一定是要花费)
+dp[i]的定义:到达第i个台阶所花费的最小体力为dp[i]
 2 确定递推公式
 可以有两个途径得到dp[i],dp[i-1]和dp[i-2],那么究竟是选择dp[i-1]还是dp[i-2]呢？
-从题意来看，一定是选最小的，所以dp[i] = min(dp[i-1], dp[i-2]) + cost[i]
-注意这里为什么是加cost[i]，而不是cost[i-1],cost[i-2]之类的，因为题目中说了：每当你爬上一个阶梯你都要花费对应的体力值
+从题意来看，一定是选最小的。如果你到了第i-1个台阶所花费的最小体力是dp[i-1]，此时你要到达第i个台阶，根据题意
+cost[i]是从楼梯第i个台阶向上爬需要支付的费用，所以你从第i-1个台阶向上爬1个台阶到第i个台阶，还需要花费cost[i-1]体力
+总共需要花费dp[i-1]+cost[i-1],同理如果从第i-2个台阶向上爬2个台阶到第i个台阶，需花费dp[i-2]+cost[i-2]
+因此有dp[i] = min(dp[i-1]+cost[i-1], dp[i-2]) + cost[i-2]
+
 3 dp数组如何初始化
 根据dp数组的定义，dp数组初始化其实是比较难的，因为不可能初始化为第i台阶所花费的最少体力。
 那么看一下递归公式，dp[i]由dp[i-1]，dp[i-2]推出，既然初始化所有的dp[i]是不可能的，那么只初始化dp[0]和dp[1]就够了，其他的最终
-都是dp[0]和dp[1]推出。显然dp:=make([]int, len(cost), len(cost)];dp[0]=cost[0],dp[1]=cost[1]
+都是dp[0]和dp[1]推出。显然dp:=make([]int, len(cost)];dp[0]=0,dp[1]=0,因为根据题意可以选择从下标为0或
+下标为1的台阶开始爬楼梯，所以第0个和第1个台阶都可以是起点，花费为0。
 4 确定遍历顺序，由于是爬台阶,dp[i]又是由dp[i-1]，dp[i-2]推出，所以从前到后遍历cost数组就可以了。
 5 举例推导dp数组。以示例二为例，根据cost数组，举例推导一下dp数组。
-dp[0] = 1;dp[1] = 100;dp[2] = 2;dp[3] = 1;dp[4] = 3;dp[5] = 103;dp[6] = 4;dp[7] = 5;dp[8] = 104;dp[9] = 6;
-注意最后一步可以理解为不用花费，所以取倒数第一步，第二步的最小值,所以示例2的minCost := min(dp[8],dp[9])=min(104,6)=6
+dp[0] = 0;dp[1] = 0;dp[2] = 1;dp[3] = 2;dp[4] = 2;dp[5] = 3;dp[6] = 3;dp[7] = 4;dp[8] = 4;dp[9] = 5;
+爬到楼顶，也就是第n个台阶，可以从第n-1个台阶向上爬1个台阶到达，也可以从第n-2个台阶向上爬2个台阶到达，花费的体力分别为
+dp[n-1]+cost[n-1], dp[n-2]+cost[n-2]，我们求最小花费，自然是求两值中的较小值。
+所以最后返回min(dp[8]+cost[8], dp[9]+cost[9])=min(4+100,5+1)=min(104,6)=6
 */
 
 // MinCostClimbingStairs 时间复杂度O(N), 空间复杂度O(N)
 func MinCostClimbingStairs(cost []int) int {
 	n := len(cost)
-	dp := make([]int, n, n)
-	dp[0] = cost[0]
-	dp[1] = cost[1]
-	for i := 2; i < n; i++ {
-		dp[i] = Utils.Min(dp[i-1], dp[i-2]) + cost[i]
+	dp := make([]int, n)
+	// dp数组make初始化时默认值就是0,所以dp[0]和dp[1]不用再赋值了
+	for i:=2;i<n;i++{
+		dp[i] = Utils.Min(dp[i-1]+cost[i-1], dp[i-2]+cost[i-2])
 	}
-	// 注意最后一步可以理解为不用花费，所以取倒数第一步，第二步的最小值
-	return Utils.Min(dp[n-1], dp[n-2])
+	return Utils.Min(dp[n-1]+cost[n-1], dp[n-2]+cost[n-2])
 }
 
 // MinCostClimbingStairsSimple 同样的，可以优化一下空间复杂度.时间复杂度O(N), 空间复杂度O(1)
 func MinCostClimbingStairsSimple(cost []int) int {
 	n := len(cost)
-	dp := make([]int, 2, 2)
-	dp[0] = cost[0]
-	dp[1] = cost[1]
+	dp := make([]int, 2)
 	for i := 2; i < n; i++ {
-		minCost := Utils.Min(dp[0], dp[1]) + cost[i]
+		minCost := Utils.Min(dp[0]+cost[i-2], dp[1]+cost[i-1])
 		dp[0] = dp[1]
 		dp[1] = minCost
 	}
-	// 注意最后一步可以理解为不用花费，所以取倒数第一步，第二步的最小值
-	return Utils.Min(dp[0], dp[1])
+	return Utils.Min(dp[0]+cost[n-2], dp[1]+cost[n-1])
 }
 
 /*
