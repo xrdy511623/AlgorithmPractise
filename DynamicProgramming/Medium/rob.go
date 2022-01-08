@@ -69,7 +69,7 @@ func Rob(nums []int) int {
 
 /*
 实际上我们只需要维护两个状态值，所以可以写成下面这样，大大降低算法的空间复杂度
- */
+*/
 
 // RobSimple 时间复杂度O(N),空间复杂度O(1)
 func RobSimple(nums []int) int {
@@ -94,7 +94,6 @@ func RobSimple(nums []int) int {
 	}
 	return maxValue
 }
-
 
 /*
 1.2 打家劫舍II
@@ -162,7 +161,7 @@ func RobRange(nums []int, start, end int) int {
 
 /*
 实际上我们只需要维护两个状态值，所以可以写成下面这样，将算法的空间复杂度降低为O(1)
- */
+*/
 
 // RobRangeSimple 时间复杂度O(N),空间复杂度O(1)
 func RobRangeSimple(nums []int, start, end int) int {
@@ -172,7 +171,7 @@ func RobRangeSimple(nums []int, start, end int) int {
 	dp := make([]int, 2)
 	dp[0] = nums[start]
 	dp[1] = Utils.Max(nums[start], nums[start+1])
-	for i:=start+2;i<=end;i++{
+	for i := start + 2; i <= end; i++ {
 		newMax := Utils.Max(dp[0]+nums[i], dp[1])
 		dp[0] = dp[1]
 		dp[1] = newMax
@@ -180,10 +179,11 @@ func RobRangeSimple(nums []int, start, end int) int {
 	return dp[1]
 }
 
-
 /*
 1.3 打家劫舍III
-在上次打劫完一条街道之后和一圈房屋后，小偷又发现了一个新的可行窃的地区。这个地区只有一个入口，我们称之为“根”。 除了“根”之外，每栋房子有且只有一个“父“房子与之相连。一番侦察之后，聪明的小偷意识到“这个地方的所有房屋的排列类似于一棵二叉树”。 如果两个直接相连的房子在同一天晚上被打劫，房屋将自动报警。
+在上次打劫完一条街道之后和一圈房屋后，小偷又发现了一个新的可行窃的地区。这个地区只有一个入口，我们称之为“根”。
+除了“根”之外，每栋房子有且只有一个“父“房子与之相连。一番侦察之后，聪明的小偷意识到“这个地方的所有房屋的排列
+类似于一棵二叉树”。 如果两个直接相连的房子在同一天晚上被打劫，房屋将自动报警。
 
 计算在不触动警报的情况下，小偷一晚能够盗取的最高金额。
 
@@ -216,7 +216,7 @@ func RobRangeSimple(nums []int, start, end int) int {
 1 确定递归函数的参数和返回值
 这里我们要求一个节点 偷与不偷的两个状态所得到的金钱，那么返回值就是一个长度为2的数组。
 其实这里的返回数组就是dp数组。
-所以dp数组（dp table）以及下标的含义：下标为0记录不偷该节点所得到的的最大金钱，下标为1记录偷该节点所得到的的最大金钱。
+所以dp数组以及下标的含义:下标为0记录不偷该节点所得到的的最大金钱，下标为1记录偷该节点所得到的最大金钱。
 
 2 确定终止条件
 在遍历的过程中，如果遇到空节点的话，很明显，无论偷还是不偷都是0，所以就返回
@@ -227,7 +227,7 @@ func RobRangeSimple(nums []int, start, end int) int {
 通过递归右节点，得到右节点偷与不偷的金钱。
 
 4 确定单层递归的逻辑
-如果是偷当前节点，那么左右孩子就不能偷，val1 = cur->val + left[0] + right[0]; （如果对下标含义不理解就在回顾一下dp数组的含义）
+如果是偷当前节点，那么左右孩子就不能偷，val1 = cur->val + left[0] + right[0];
 如果不偷当前节点，那么左右孩子就可以偷，至于到底偷不偷一定是选一个最大的，所以:
 val2 = max(left[0], left[1]) + max(right[0], right[1]);
 最后当前节点的状态就是{val2, val1}; 即：{不偷当前节点得到的最大金钱，偷当前节点得到的最大金钱}
@@ -239,7 +239,7 @@ val2 = max(left[0], left[1]) + max(right[0], right[1]);
 最后头结点就是取下标0和下标1的最大值就是偷得的最大金钱。
 */
 
-// RobBinaryTree 时间复杂度：O(n) 每个节点只遍历了一次; 空间复杂度：O(logn) 算上递推系统栈的空间
+// RobBinaryTree 时间复杂度：O(N) 每个节点只遍历了一次; 空间复杂度：O(logN) 算上递推系统栈的空间
 func RobBinaryTree(root *Entity.TreeNode) int {
 	dp := RobTree(root)
 	return Utils.Max(dp[0], dp[1])
