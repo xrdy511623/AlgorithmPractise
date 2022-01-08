@@ -332,8 +332,72 @@ func UniquePathsWithObstacles(obstacleGrid [][]int) int {
 	return dp[m-1][n-1]
 }
 
+
 /*
-1.5 整数拆分
+进阶 1.5 最小路径和
+给定一个包含非负整数的m x n网格grid ，请找出一条从左上角到右下角的路径，使得路径上的数字总和为最小。
+说明：每次只能向下或者向右移动一步。
+
+示例一
+参见:网格.png
+输入：grid = [[1,3,1],[1,5,1],[4,2,1]]
+输出：7
+解释：因为路径 1→3→1→1→1 的总和最小。
+
+示例 2：
+输入：grid = [[1,2,3],[4,5,6]]
+输出：12
+*/
+
+/*
+1 确定dp数组以及下标含义
+dp[i][j]表示从grid[0,0]到grid[i,j]的最小路径和为dp[i][j]
+
+2 确定递推公式
+问题的关键在于推导出递推公式
+由于题目规定只能向右或者向下移动，那么要走到grid[i][j]，只能从grid[i-1][j]和grid[i][j-1]而来，前者是向下走一步，后者是向右走一步。
+而走到grid[i-1][j]和grid[i][j-1]的最小路径和分别为dp[i-1][j]和dp[i][j-1]，所以到grid[i,j]的最小路径和dp[i][j]其实就是
+min(dp[i-1][j], dp[i][j-1]) + grid[i][j]就好了。
+所以递推公式如下:
+dp[i][j] = min(dp[i-1][j], dp[i][j-1]) + grid[i][j]
+
+3 初始化dp数组
+dp[0][0] = grid[0][0]
+m, n := len(grid), len(grid[0])
+当1<=i<m时，dp[i][0] = dp[i-1][0] + grid[i][0](此时只能从上边走下来，因为它是最左边)
+当1<=j<n时，dp[0][j] = dp[0][j-1] + grid[0][j](此时只能从左边走过来，因为它是最上边的那一行)
+
+4 确定遍历顺序
+按照二维数组正序遍历即可
+*/
+
+func MinPathSum(grid [][]int) int {
+	if len(grid) == 0 || len(grid[0]) == 0 {
+		return 0
+	}
+	m, n := len(grid), len(grid[0])
+	dp := make([][]int, m)
+	for i := 0; i < m; i++ {
+		dp[i] = make([]int, n)
+	}
+	dp[0][0] = grid[0][0]
+	for i := 1; i < m; i++ {
+		dp[i][0] = dp[i-1][0] + grid[i][0]
+	}
+	for j := 1; j < n; j++ {
+		dp[0][j] = dp[0][j-1] + grid[0][j]
+	}
+	for i := 1; i < m; i++ {
+		for j := 1; j < n; j++ {
+			dp[i][j] = Utils.Min(dp[i-1][j], dp[i][j-1]) + grid[i][j]
+		}
+	}
+	return dp[m-1][n-1]
+}
+
+
+/*
+1.6 整数拆分
 给定一个正整数n，将其拆分为至少两个正整数的和，并使这些整数的乘积最大化。 返回你可以获得的最大乘积。
 
 示例 1:
