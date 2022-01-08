@@ -17,9 +17,6 @@ func Min(a, b int) int {
 
 func MaxValueOfArray(array []int) int {
 	max := array[0]
-	if len(array) == 1{
-		return max
-	}
 	for i := 1; i < len(array); i++ {
 		if array[i] > max {
 			max = array[i]
@@ -30,9 +27,6 @@ func MaxValueOfArray(array []int) int {
 
 func MinValueOfArray(array []int) int {
 	min := array[0]
-	if len(array) == 1{
-		return min
-	}
 	for i := 1; i < len(array); i++ {
 		if array[i] < min {
 			min = array[i]

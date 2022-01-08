@@ -68,7 +68,7 @@ func Rob(nums []int) int {
 }
 
 /*
-实际上我们只需要维护两个状态值，所以可以写成下面这样，大大算法的降低空间复杂度
+实际上我们只需要维护两个状态值，所以可以写成下面这样，大大降低算法的空间复杂度
  */
 
 // RobSimple 时间复杂度O(N),空间复杂度O(1)
@@ -127,6 +127,7 @@ c 不考虑首元素
 而b,c其实都包含了a这种情况，所以只需要考虑b,c这两种情况，最后比较两种情况下的最大值，取较大值即可
 */
 
+// RobRing 时间复杂度O(N),空间复杂度O(N)
 func RobRing(nums []int) int {
 	maxValue := 0
 	n := len(nums)
@@ -158,6 +159,27 @@ func RobRange(nums []int, start, end int) int {
 	}
 	return dp[end]
 }
+
+/*
+实际上我们只需要维护两个状态值，所以可以写成下面这样，将算法的空间复杂度降低为O(1)
+ */
+
+// RobRangeSimple 时间复杂度O(N),空间复杂度O(1)
+func RobRangeSimple(nums []int, start, end int) int {
+	if start == end {
+		return nums[start]
+	}
+	dp := make([]int, 2)
+	dp[0] = nums[start]
+	dp[1] = Utils.Max(nums[start], nums[start+1])
+	for i:=start+2;i<=end;i++{
+		newMax := Utils.Max(dp[0]+nums[i], dp[1])
+		dp[0] = dp[1]
+		dp[1] = newMax
+	}
+	return dp[1]
+}
+
 
 /*
 1.3 打家劫舍III
