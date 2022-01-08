@@ -29,10 +29,10 @@ func TestBagProblemSimple(t *testing.T) {
 
 func TestCanPartition(t *testing.T) {
 	nums := []int{1, 5, 11, 5}
-	get := CanPartition(nums)
+	got := CanPartition(nums)
 	want := true
-	if get != want {
-		t.Errorf("excepted:%v, got:%v", want, get)
+	if got != want {
+		t.Errorf("excepted:%v, got:%v", want, got)
 	}
 }
 
@@ -51,10 +51,10 @@ func TestMultiBagProblem(t *testing.T) {
 	weight := []int{1, 3, 4}
 	value := []int{15, 20, 30}
 	nums := []int{2, 3, 3}
-	get := MultiBagProblem(weight, value, nums, 10)
+	got := MultiBagProblem(weight, value, nums, 10)
 	want := 90
-	if get != want {
-		t.Errorf("excepted:%v, got:%v", want, get)
+	if got != want {
+		t.Errorf("excepted:%v, got:%v", want, got)
 	}
 	fmt.Println("pass")
 }
@@ -63,10 +63,10 @@ func TestMultiBagProblem(t *testing.T) {
 func TestMassageArrangement(t *testing.T) {
 	//nums := []int{2,1,4,5,3,1,1,3}
 	nums := []int{2,7,9,3,1}
-	get := MassageArrangement(nums)
+	got := MassageArrangement(nums)
 	want := 12
-	if get != want {
-		t.Errorf("excepted:%v, got:%v", want, get)
+	if got != want {
+		t.Errorf("excepted:%v, got:%v", want, got)
 	}
 	fmt.Println("pass")
 }

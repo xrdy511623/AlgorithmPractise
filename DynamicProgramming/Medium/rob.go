@@ -68,6 +68,35 @@ func Rob(nums []int) int {
 }
 
 /*
+实际上我们只需要维护两个状态值，所以可以写成下面这样，大大算法的降低空间复杂度
+ */
+
+// RobSimple 时间复杂度O(N),空间复杂度O(1)
+func RobSimple(nums []int) int {
+	maxValue := 0
+	n := len(nums)
+	switch n {
+	case 0:
+		maxValue = 0
+	case 1:
+		maxValue = nums[0]
+	case 2:
+		maxValue = Utils.Max(nums[0], nums[1])
+	default:
+		dp := make([]int, 2)
+		dp[0], dp[1] = nums[0], Utils.Max(nums[0], nums[1])
+		for i := 2; i < n; i++ {
+			newMax := Utils.Max(dp[0]+nums[i], dp[1])
+			dp[0] = dp[1]
+			dp[1] = newMax
+		}
+		maxValue = dp[1]
+	}
+	return maxValue
+}
+
+
+/*
 1.2 打家劫舍II
 你是一个专业的小偷，计划偷窃沿街的房屋，每间房内都藏有一定的现金。这个地方所有的房屋都围成一圈 ，这意味着第一个房屋和最后一个房屋是紧挨着的。
 同时，相邻的房屋装有相互连通的防盗系统，如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警 。
