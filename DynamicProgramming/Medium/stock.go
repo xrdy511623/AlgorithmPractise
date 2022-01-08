@@ -81,6 +81,19 @@ func MaxProfit(prices []int) int {
 	return dp[n-1][1]
 }
 
+// MaxProfitSimple 贪心的解法
+func MaxProfitSimple(prices []int) int {
+	minPrice, maxProfit := prices[0], 0
+	for i := 1; i < len(prices); i++ {
+		profit := prices[i] - minPrice
+		if profit > 0 {
+			maxProfit = Utils.Max(maxProfit, profit)
+		}
+		minPrice = Utils.Min(minPrice, prices[i])
+	}
+	return maxProfit
+}
+
 /*
 1.2 leetcode 122 买卖股票的最佳时机
 给定一个数组，它的第i个元素是一支给定股票第i天的价格。
@@ -185,7 +198,7 @@ func MaxProfitOneSimple(prices []int) int {
 }
 
 /*
-1.3 leetcode 123 买卖股票的最佳时机
+1.3 leetcode 123 买卖股票的最佳时机III
 给定一个数组，它的第i个元素是一支给定的股票在第i天的价格。
 设计一个算法来计算你所能获取的最大利润。你最多可以完成两笔交易。
 
@@ -269,8 +282,6 @@ func MaxProfitTwo(prices []int) int {
 	dp[0][3] = -prices[0]
 	dp[0][4] = 0
 	for i := 1; i < n; i++ {
-		// dp[i][0] = dp[i-1][0] why?
-		dp[i][0] = dp[i-1][0]
 		dp[i][1] = Utils.Max(dp[i-1][1], dp[i-1][0]-prices[i])
 		dp[i][2] = Utils.Max(dp[i-1][2], dp[i-1][1]+prices[i])
 		dp[i][3] = Utils.Max(dp[i-1][3], dp[i-1][2]-prices[i])
@@ -461,6 +472,65 @@ func MaxProfitIncludeFreeze(prices []int) int {
 }
 
 /*
+第二种思路:将每天的状态划分为四种其实更好理解，如果只划分为以上三种其实比较容易绕进去。
+1 确定dp数组及其下标含义
+dp[i][j]表示在第i天处于状态j时所获取的最大收益为dp[i][j]
+本次我们将每天的状态划分为四种，其实严格来讲是五种，不操作也是一种，但是不操作每天的最大收益都是0，就不讨论了。
+状态0为持有股票状态；
+状态1为卖出股票且已过冷冻期状态；
+状态2为今天卖出股票；
+状态3为今天是冷冻期；
+
+2 确定递归公式
+首先看状态0，即持有股票状态，它明显可以由以下三种状态推出:
+a 第i-1天就是持有股票状态(状态0)，今天也就是第i天继续保持此种状态，即dp[i][0]=dp[i-1][0]
+b 第i-1天是卖出股票且已过冷冻期状态(状态1)，今天买入，那么dp[i][0]=dp[i-1][1]-prices[i]
+c 第i-1天冷冻期状态(状态3)，今天买入，即dp[i][0]=dp[i-1][3]-prices[i]
+要求最大收益，所以有:
+dp[i][0]=max(dp[i-1][0], max(dp[i-1][1],dp[i-1][3])-prices[i])
+
+接下来看状态1，即卖出股票且已过冷冻期状态，它明显可以由以下两种状态推出:
+a 第i-1天就是卖出股票且已过冷冻期状态(状态1)，今天也就是第i天继续保持此种状态，即dp[i][1]=dp[i-1][1]
+b 第i-1天是冷冻期状态(状态3)，今天正好就是卖出股票且已过冷冻期状态，那么dp[i][1]=dp[i-1][3]
+要求最大收益，所以有:
+dp[i][1]=max(dp[i-1][1], dp[i-1][3])
+
+再看状态2，即今天卖出股票，它明显只能由以下一种状态推出:
+那就是第i-1天是持有股票状态(状态0)，今天也就是第i天卖出，所以有dp[i][2]=dp[i-1][0]+prices[i]
+
+最后看状态3，即今天是冷冻期状态，它明显只能由以下一种状态推出:
+那就是昨天，也就是第i-1天是刚刚卖出股票状态，所以有dp[i][3]=dp[i-1][2]
+
+3 dp数组初始化
+明显有dp[0][0]=-prices[0];dp[0][1]=0;dp[0][2]=0;dp[0][3]=0
+
+4 确定遍历顺序
+由递推公式可知，第1天状态由第i-1天推出，所以必然是从前向后遍历。
+
+5 举例推到dp数组
+略
+*/
+
+func MaxProfitIncludeFreezePeriod(prices []int) int {
+	n := len(prices)
+	if n == 0 {
+		return 0
+	}
+	dp := make([][]int, n)
+	for i := 0; i < n; i++ {
+		dp[i] = make([]int, 4)
+	}
+	dp[0][0] = -prices[0]
+	for i := 1; i < n; i++ {
+		dp[i][0] = Utils.Max(dp[i-1][0], Utils.Max(dp[i-1][1], dp[i-1][3])-prices[i])
+		dp[i][1] = Utils.Max(dp[i-1][1], dp[i-1][3])
+		dp[i][2] = dp[i-1][0] + prices[i]
+		dp[i][3] = dp[i-1][2]
+	}
+	return Utils.Max(dp[n-1][1], Utils.Max(dp[n-1][2], dp[n-1][3]))
+}
+
+/*
 1.6 leetcode714 买卖股票的最佳时机含手续费
 给定一个整数数组prices，其中第i个元素代表了第i天的股票价格；非负整数fee代表了交易股票的手续费用。
 你可以无限次地完成交易，但是你每笔交易都需要付手续费。如果你已经购买了一个股票，在卖出它之前你就不能再继续购买股票了。
@@ -495,7 +565,6 @@ func MaxProfitIncludeFee(prices []int, fee int) int {
 		dp[i] = make([]int, 2)
 	}
 	dp[0][0] = -prices[0]
-	dp[0][1] = 0
 	for i := 1; i < n; i++ {
 		dp[i][0] = Utils.Max(dp[i-1][0], dp[i-1][1]-prices[i])
 		dp[i][1] = Utils.Max(dp[i-1][1], dp[i-1][0]+prices[i]-fee)
