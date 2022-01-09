@@ -657,7 +657,8 @@ func IsSubSequenceSimple(s, t string) bool {
 /*
 1.9 不同的子序列
 给定一个字符串s和一个字符串t ，计算在s的子序列中t出现的个数。
-字符串的一个子序列是指，通过删除一些（也可以不删除）字符且不干扰剩余字符相对位置所组成的新字符串。（例如,"ACE"是"ABCDE"的一个子序列,而"AEC" 不是）
+字符串的一个子序列是指，通过删除一些（也可以不删除）字符且不干扰剩余字符相对位置所组成的新字符串。
+（例如,"ACE"是"ABCDE"的一个子序列,而"AEC" 不是）
 
 题目数据保证答案符合32位带符号整数范围。
 
@@ -676,7 +677,7 @@ func IsSubSequenceSimple(s, t string) bool {
 思路:动态规划
 
 1 确定dp数组以及下标的含义
-dp[i][j]：s[:i]中出现t[:j]的个数为dp[i][j]。
+dp[i][j]表示s[:i]中出现t[:j]的个数为dp[i][j]。
 
 2 确定递推公式
 这一类问题，基本是要分析两种情况
@@ -689,7 +690,8 @@ s[i-1]与t[j-1]相等以及s[i-1]与t[j-1]不相等
 所以递推公式为：dp[i][j] = dp[i-1][j];
 
 3 dp数组如何初始化
-从递推公式dp[i][j]=dp[i-1][j-1]+dp[i-1][j]; 和dp[i][j]=dp[i-1][j]; 中可以看出dp[i][0] 和dp[0][j]是一定要初始化的。
+从递推公式dp[i][j]=dp[i-1][j-1]+dp[i-1][j]; 和dp[i][j]=dp[i-1][j]; 中可以看出dp[i][0] 和dp[0][j]
+是一定要初始化的。
 
 首先看dp[i][0]，dp[i][0]一定都是1，因为空字符串是任何字符串的子串。
 再来看dp[0][j]，dp[0][j]一定都是0，非空字符串t无论如何也不可能出现在空字符串中。
@@ -708,6 +710,9 @@ dp[0][0]应该是1，空字符串s，可以删除0个元素，变成空字符串
 // NumDistinct 时间复杂度O(M*N)，空间复杂度O(M*N)
 func NumDistinct(s, t string) int {
 	m, n := len(s), len(t)
+	if m < n{
+		return 0
+	}
 	dp := make([][]int, m+1)
 	for i := 0; i <= m; i++ {
 		dp[i] = make([]int, n+1)
@@ -766,7 +771,7 @@ dp[i][j]的值取决于word1[i-1]与word1[j-1]是否相等
 略
 */
 
-// MinDistance 时间复杂度O(M*N)，空间复杂度O(M*N)
+// MinDistance 时间复杂度O((M+1)*(N+1))，空间复杂度O(M*N)
 func MinDistance(word1, word2 string) int {
 	m, n := len(word1), len(word2)
 	dp := make([][]int, m+1)
@@ -790,6 +795,35 @@ func MinDistance(word1, word2 string) int {
 }
 
 /*
+思路:将问题转换为求两个字符串的最长公共子序列
+给定两个字符串word1和word2，分别删除若干字符之后使得两个字符串相同，则剩下的字符为两个字符串的公共子序列。
+为了使删除操作的次数最少，剩下的字符应尽可能多。因此当剩下的字符为两个字符串的最长公共子序列时，删除操作的
+次数最少。因此，可以计算两个字符串的最长公共子序列的长度，然后分别计算两个字符串的长度和最长公共子序列的长度之差，
+即为两个字符串分别需要删除的字符数，两个字符串各自需要删除的字符数之和即为最少的删除操作的总次数。
+ */
+
+// MinDistanceSimple 时间复杂度O(M*N)，空间复杂度O(M*N)
+func MinDistanceSimple(word1, word2 string) int {
+	m, n := len(word1), len(word2)
+	dp := make([][]int, m+1)
+	for i:=0;i<=m;i++{
+		dp[i] = make([]int, n+1)
+	}
+	for i:=1;i<=m;i++{
+		for j:=1;j<=n;j++{
+			if word1[i-1] == word2[j-1]{
+				dp[i][j] = dp[i-1][j-1]+1
+			}else{
+				dp[i][j] = Utils.Max(dp[i-1][j], dp[i][j-1])
+			}
+		}
+	}
+	// 最长公共子序列长度为dp[m][n],所以结果为m-dp[m][n]+n-dp[m][n]
+	return m + n - 2 * dp[m][n]
+}
+
+
+/*
 1.11 给你两个单词word1和word2，请你计算出将word1转换成word2所使用的最少操作数。
 
 你可以对一个单词进行如下三种操作：
@@ -798,12 +832,13 @@ func MinDistance(word1, word2 string) int {
 替换一个字符
 
 示例1：
-输入：word1 = "horse", word2 = "ros" 输出：3 解释：horse -> rorse (将'h'替换为'r') rorse -> rose (删除 'r') rose -> ros
-(删除 'e')
+输入：word1 = "horse", word2 = "ros" 输出：3 解释：horse -> rorse (将'h'替换为'r') rorse -> rose
+(删除 'r') rose -> ros(删除 'e')
 
 示例2：
-输入：word1 = "intention", word2 = "execution" 输出：5 解释：intention -> inention (删除 't') inention -> enention
-(将'i'替换为'e') enention -> exention (将'n'替换为'x') exention -> exection (将'n'替换为'c') exection -> execution (插入'u')
+输入：word1 = "intention", word2 = "execution" 输出：5 解释：intention -> inention (删除 't')
+inention -> enention(将'i'替换为'e') enention -> exention (将'n'替换为'x') exention -> exection
+(将'n'替换为'c') exection -> execution (插入'u')
 
 提示：
 0 <= word1.length, word2.length <= 500
