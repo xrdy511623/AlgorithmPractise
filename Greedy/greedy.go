@@ -768,7 +768,7 @@ points[i].length == 2
 -2^31 <= xstart < xend <= 2^31 - 1
 */
 
-// FindMinArrowShots 时间复杂度O(NlogN),空间复杂度O(1)
+// FindMinArrowShots 时间复杂度O(NlogN),空间复杂度O(logN)
 func FindMinArrowShots(points [][]int) int {
 	n := len(points)
 	if n <= 1 {
