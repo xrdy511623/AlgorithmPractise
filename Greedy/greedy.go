@@ -310,28 +310,28 @@ func JumpSimple(nums []int) int {
 1 <= arr.length <= 5 * 10^4
 0 <= arr[i] <arr.length
 0 <= start < arr.length
- */
+*/
 
 // CanReach BFS解决，时间复杂度O(N),空间复杂度O(N)
 func CanReach(arr []int, start int) bool {
 	// 优先处理起始位置就满足的情况
-	if arr[start] == 0{
+	if arr[start] == 0 {
 		return true
 	}
 	// 哈希表used记录已经使用过的位置
 	used := make(map[int]bool)
 	used[start] = true
 	queue := []int{start}
-	for len(queue) != 0{
+	for len(queue) != 0 {
 		pos := queue[0]
 		queue = queue[1:]
 		// 记录下一个可能的位置(有两个，pos+arr[pos], pos-arr[pos])
-		nextPos := []int{pos+arr[pos], pos-arr[pos]}
-		for _, v := range nextPos{
+		nextPos := []int{pos + arr[pos], pos - arr[pos]}
+		for _, v := range nextPos {
 			// 这个位置不能越界，而且不能是已经使用过的位置，否则会陷入死循环
-			if v>=0&&v<len(arr)&&!used[v]{
+			if v >= 0 && v < len(arr) && !used[v] {
 				// 如果这个位置对应的值为0，返回true
-				if arr[v] == 0{
+				if arr[v] == 0 {
 					return true
 				}
 				// 如果没有找到值为0的位置，将该位置添加到队列末尾，以便之后从该位置计算下一个可能的位置
@@ -343,7 +343,6 @@ func CanReach(arr []int, start int) bool {
 	}
 	return false
 }
-
 
 /*
 1.8 K次取反后最大化的数组和
@@ -447,7 +446,7 @@ cost = [3,4,3]
 */
 
 /*
-思路:
+思路:贪心
 根据题意，我们可以得出两个结论:
 1 将每个加油站的剩余油量累加给left,即left+=gas[i]-cost[i],如果left<0,那么从出发站到i都不是起点；
 2 如果sum(gas)>=cost(gas)，那么问题一定有解。
@@ -469,7 +468,7 @@ cost = [3,4,3]
 
 有:left(c)<0
 
-c站也不能作为起点，因为去不了d！我们归纳出下面结论1。
+c站也不能作为起点，因为去不了d！我们归纳出结论1。
 
 再说第二条
 我们从起点0开始，累加每个站点的gas[i]−cost[i]，即left(i)
@@ -501,6 +500,7 @@ func CanCompleteCircuit(gas []int, cost []int) int {
 	}
 	return start
 }
+
 
 /*
 1.10 分发糖果
@@ -646,23 +646,30 @@ bills[i] 不是 5 就是 10 或是 20
 
 // LemonadeChange 时间复杂度O(N),空间复杂度O(1)
 func LemonadeChange(bills []int) bool {
+	// 维护5元和10元钞票的数量
 	five, ten := 0, 0
 	for _, bill := range bills {
+		// 如果是收到5元，直接收下，不用找零了
 		if bill == 5 {
 			five++
 		} else if bill == 10 {
+			// 收到10元，消耗一张5元钞票找零，如果没有5元钞票可以消耗，返回false
 			if five <= 0 {
 				return false
 			}
+			// 5元钞票数-1，10元超票数+1
 			five--
 			ten++
 		} else {
+			// 此时收到的是20，优先消耗一张10元和5元的钞票找零
 			if ten > 0 && five > 0 {
 				ten--
 				five--
+			// 实在不行，也可以消耗三张5元找零
 			} else if five >= 3 {
 				five -= 3
 			} else {
+			// 都不满足，返回false
 				return false
 			}
 		}
