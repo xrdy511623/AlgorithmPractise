@@ -136,9 +136,6 @@ func MaxSubArray(nums []int) int {
 	if n == 0 {
 		return 0
 	}
-	if n == 1 {
-		return nums[0]
-	}
 	max := nums[0]
 	for i := 1; i < n; i++ {
 		if nums[i-1] > 0 {
@@ -185,22 +182,19 @@ func MaxSubArray(nums []int) int {
 
 // MaxProfit 时间复杂度O(N),空间复杂度O(1)
 func MaxProfit(prices []int) int {
-	maxProfit := 0
+	maxP := 0
 	for i := 1; i < len(prices); i++ {
 		if profit := prices[i] - prices[i-1]; profit > 0 {
-			maxProfit += profit
+			maxP += profit
 		}
 	}
-	return maxProfit
+	return maxP
 }
 
 /*
 1.5 跳跃游戏
-给定一个非负整数数组，你最初位于数组的第一个位置。
-
-数组中的每个元素代表你在该位置可以跳跃的最大长度。
-
-判断你是否能够到达最后一个位置。
+给定一个非负整数数组，你最初位于数组的第一个位置。数组中的每个元素代表你在该位置可以跳跃的最大长度。判断
+你是否能够到达最后一个位置。
 
 示例 1:
 输入: [2,3,1,1,4]
@@ -276,21 +270,84 @@ func Jump(nums []int) int {
 func JumpSimple(nums []int) int {
 	n := len(nums)
 	// 初始化右边界end，当前所能到达的最大位置maxPosition，以及跳跃次数count为0
-	end, maxPosition, count := 0, 0, 0
+	end, rightMost, steps := 0, 0, 0
 	for i := 0; i < n-1; i++ {
-		// 更新当前所能到达的最大位置maxPosition
-		maxPosition = Utils.Max(i+nums[i], maxPosition)
+		// 更新当前所能到达的最大位置rightMost
+		rightMost = Utils.Max(i+nums[i], rightMost)
 		// 当下标移动到右边界时，跳跃次数需要加1，同时更新右边界为maxPosition
 		if i == end {
-			end = maxPosition
-			count++
+			end = rightMost
+			steps++
 		}
 	}
-	return count
+	return steps
 }
 
 /*
-1.7 K次取反后最大化的数组和
+1.7 跳跃游戏
+这里有一个非负整数数组arr，你最开始位于该数组的起始下标start处。当你位于下标i处时，你可以跳到i + arr[i]
+或者 i - arr[i]。
+
+请你判断自己是否能够跳到对应元素值为0的任一下标处。
+注意，不管是什么情况下，你都无法跳到数组之外。
+
+示例 1：
+输入：arr = [4,2,3,0,3,1,2], start = 5
+输出：true
+解释：
+到达值为 0 的下标 3 有以下可能方案：
+下标 5 -> 下标 4 -> 下标 1 -> 下标 3
+下标 5 -> 下标 6 -> 下标 4 -> 下标 1 -> 下标 3
+
+示例2：
+输入：arr = [4,2,3,0,3,1,2], start = 0
+输出：true
+解释：
+到达值为 0 的下标 3 有以下可能方案：
+下标 0 -> 下标 4 -> 下标 1 -> 下标 3
+
+提示：
+1 <= arr.length <= 5 * 10^4
+0 <= arr[i] <arr.length
+0 <= start < arr.length
+ */
+
+// CanReach BFS解决，时间复杂度O(N),空间复杂度O(N)
+func CanReach(arr []int, start int) bool {
+	// 优先处理起始位置就满足的情况
+	if arr[start] == 0{
+		return true
+	}
+	// 哈希表used记录已经使用过的位置
+	used := make(map[int]bool)
+	used[start] = true
+	queue := []int{start}
+	for len(queue) != 0{
+		pos := queue[0]
+		queue = queue[1:]
+		// 记录下一个可能的位置(有两个，pos+arr[pos], pos-arr[pos])
+		nextPos := []int{pos+arr[pos], pos-arr[pos]}
+		for _, v := range nextPos{
+			// 这个位置不能越界，而且不能是已经使用过的位置，否则会陷入死循环
+			if v>=0&&v<len(arr)&&!used[v]{
+				// 如果这个位置对应的值为0，返回true
+				if arr[v] == 0{
+					return true
+				}
+				// 如果没有找到值为0的位置，将该位置添加到队列末尾，以便之后从该位置计算下一个可能的位置
+				queue = append(queue, v)
+				// 同时标记该位置已经使用过了
+				used[v] = true
+			}
+		}
+	}
+	return false
+}
+
+
+
+/*
+1.8 K次取反后最大化的数组和
 给定一个整数数组 A，我们只能用以下方法修改该数组：我们选择某个索引i并将A[i]替换为-A[i]，然后总共重复这个过程K次。（我们可以多次选择同一个索引i。）
 以这种方式修改数组后，返回数组可能的最大和。
 
@@ -321,7 +378,7 @@ func JumpSimple(nums []int) int {
 剩下的次数就反复反转所有数里面绝对值最小的那个(如果剩下偶数次负负得正所以sum不变，奇数次相当于只反转一次最小的那个）
 */
 
-// 时间复杂度O(N),空间复杂度O(1)
+// LargestSumAfterKNegations 时间复杂度O(N),空间复杂度O(1)
 func LargestSumAfterKNegations(nums []int, k int) int {
 	sum := 0
 	minAbs := 101
@@ -342,7 +399,7 @@ func LargestSumAfterKNegations(nums []int, k int) int {
 }
 
 /*
-1.8 加油站
+1.9 加油站
 在一条环路上有N个加油站，其中第i个加油站有汽油gas[i]升。
 
 你有一辆油箱容量无限的的汽车，从第i个加油站开往第i+1个加油站需要消耗汽油cost[i] 升。你从其中的一个加油站出发，
@@ -441,7 +498,7 @@ func CanCompleteCircuit(gas []int, cost []int) int {
 }
 
 /*
-1.9 分发糖果
+1.10 分发糖果
 老师想给孩子们分发糖果，有N个孩子站成了一条直线，老师会根据每个孩子的表现，预先给他们评分。
 
 你需要按照以下要求，帮助老师给这些孩子分发糖果：
@@ -518,7 +575,7 @@ func DistributeCandy(ratings []int) int {
 }
 
 /*
-1.10 柠檬水找零
+1.11 柠檬水找零
 在柠檬水摊上，每一杯柠檬水的售价为 5 美元。
 
 顾客排队购买你的产品，（按账单 bills 支付的顺序）一次购买一杯。
@@ -609,7 +666,7 @@ func LemonadeChange(bills []int) bool {
 }
 
 /*
-1.11 根据身高重建队列
+1.12 根据身高重建队列
 假设有打乱顺序的一群人站成一个队列，数组people表示队列中一些人的属性（不一定按顺序）。每个people[i]=[hi, ki]
 表示第i个人的身高为hi ，前面正好有ki个身高大于或等于hi的人。
 
@@ -662,7 +719,7 @@ func ReconstructQueue(people [][]int) [][]int {
 }
 
 /*
-1.12 用最少数量的箭引爆气球
+1.13 用最少数量的箭引爆气球
 在二维空间中有许多球形的气球。对于每个气球，提供的输入是水平方向上，气球直径的开始和结束坐标。由于它是水平的，
 所以纵坐标并不重要，因此只要知道开始和结束的横坐标就足够了。开始坐标总是小于结束坐标。
 
@@ -722,7 +779,7 @@ func FindMinArrowShots(points [][]int) int {
 }
 
 /*
-1.13 给定一个区间的集合，找到需要移除区间的最小数量，使剩余区间互不重叠。
+1.14 给定一个区间的集合，找到需要移除区间的最小数量，使剩余区间互不重叠。
 注意: 可以认为区间的终点总是大于它的起点。 区间[1,2]和[2,3] 的边界相互“接触”，但没有相互重叠。
 
 示例1:
@@ -828,7 +885,7 @@ func EraseOverlapIntervals(intervals [][]int) int {
 }
 
 /*
-1.14 划分字母区间
+1.15 划分字母区间
 字符串 S 由小写字母组成。我们要把这个字符串划分为尽可能多的片段，同一字母最多出现在一个片段中。返回一个表示
 每个字符串片段的长度的列表。
 
@@ -871,7 +928,7 @@ func PartitionLabels(s string) []int {
 }
 
 /*
-1.15 合并区间
+1.16 合并区间
 给出一个区间的集合，请合并所有重叠的区间。
 
 示例1:
@@ -916,7 +973,7 @@ func Merge(intervals [][]int) [][]int {
 }
 
 /*
-1.16 删除被覆盖区间
+1.17 删除被覆盖区间
 给你一个区间列表，请你删除列表中被其他区间所覆盖的区间。
 只有c <= a且b <= d时，我们才认为区间[a,b)被区间[c,d) 覆盖。
 
@@ -990,7 +1047,7 @@ func removeCoveredIntervals(intervals [][]int) int {
 }
 
 /*
-1.17 单调递增的数字
+1.18 单调递增的数字
 给定一个非负整数N，找出小于或等于N的最大的整数，同时这个整数需要满足其各个位数上的数字是单调递增。
 （当且仅当每个相邻位数上的数字 x 和 y 满足 x <= y 时，我们称这个整数是单调递增的。）
 
@@ -1054,7 +1111,7 @@ func MonotoneIncreasingDigits(n int) int {
 }
 
 /*
-1.18 买卖股票的最佳时机含手续费
+1.19 买卖股票的最佳时机含手续费
 给定一个整数数组prices，其中第i个元素代表了第i天的股票价格 ；非负整数fee代表了交易股票的手续费用。
 你可以无限次地完成交易，但是你每笔交易都需要付手续费。如果你已经购买了一个股票，在卖出它之前你就不能再继续
 购买股票了。
@@ -1112,7 +1169,7 @@ func MaxProfitIncludeFee(prices []int, fee int) int {
 }
 
 /*
-1.19 监控二叉树
+1.20 监控二叉树
 给定一个二叉树，我们在树的节点上安装摄像头。
 节点上的每个摄影头都可以监视其父对象、自身及其直接子对象。
 计算监控树的所有节点所需的最小摄像头数量。
