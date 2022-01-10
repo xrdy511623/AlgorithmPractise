@@ -345,7 +345,6 @@ func CanReach(arr []int, start int) bool {
 }
 
 
-
 /*
 1.8 K次取反后最大化的数组和
 给定一个整数数组 A，我们只能用以下方法修改该数组：我们选择某个索引i并将A[i]替换为-A[i]，然后总共重复这个过程K次。（我们可以多次选择同一个索引i。）
@@ -376,22 +375,28 @@ func CanReach(arr []int, start int) bool {
 思路:
 由于我们必须反转k次，那么有不止k个负数的话，我们要反转里面最小的k个，这样数组和sum最大。有不到k个负数的话（数组会变为全部为正），
 剩下的次数就反复反转所有数里面绝对值最小的那个(如果剩下偶数次负负得正所以sum不变，奇数次相当于只反转一次最小的那个）
+[-8,-5,-5,-3,-2,3]
 */
 
 // LargestSumAfterKNegations 时间复杂度O(N),空间复杂度O(1)
 func LargestSumAfterKNegations(nums []int, k int) int {
 	sum := 0
+	// 根据题意，数组中的最大绝对值不会超过100
 	minAbs := 101
+	// 对原数组进行排序，得到升序排列数组
 	sort.Ints(nums)
 	for _, num := range nums {
+		// 迭代数组中的最小绝对值
 		minAbs = Utils.MinAbs(minAbs, num)
 		if num < 0 && k > 0 {
-			sum -= num
+			sum += -1 * num
 			k--
 		} else {
 			sum += num
 		}
 	}
+	// 如果k为正数，而且是偶数，那么此时任选一个正数j取反k次得到的值还是j本身, 之前遍历数组时累加的值
+	// 也是j，所以可以直接返回sum
 	if k > 0 && k%2 == 1 {
 		return sum - 2*minAbs
 	}

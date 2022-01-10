@@ -53,9 +53,9 @@ func Abs(x int) int {
 
 func MinAbs(a, b int)int{
 	if Abs(a) < Abs(b){
-		return a
+		return Abs(a)
 	}
-	return b
+	return Abs(b)
 }
 
 
