@@ -501,7 +501,6 @@ func CanCompleteCircuit(gas []int, cost []int) int {
 	return start
 }
 
-
 /*
 1.10 分发糖果
 老师想给孩子们分发糖果，有N个孩子站成了一条直线，老师会根据每个孩子的表现，预先给他们评分。
@@ -665,11 +664,11 @@ func LemonadeChange(bills []int) bool {
 			if ten > 0 && five > 0 {
 				ten--
 				five--
-			// 实在不行，也可以消耗三张5元找零
+				// 实在不行，也可以消耗三张5元找零
 			} else if five >= 3 {
 				five -= 3
 			} else {
-			// 都不满足，返回false
+				// 都不满足，返回false
 				return false
 			}
 		}
@@ -939,6 +938,25 @@ func PartitionLabels(s string) []int {
 	return res
 }
 
+// 用数组替代map来存储每个字符出现的最远位置，更节省空间一些，可以写成下面这样
+func PartitionLabelsTwo(s string) []int {
+	var res []int
+	marks := make([]int, 26)
+	size := len(s)
+	for i := 0; i < size; i++ {
+		marks[s[i]-'a'] = i
+	}
+	left, right := 0, 0
+	for i := 0; i < size; i++ {
+		right = Utils.Max(right, marks[s[i]-'a'])
+		if i == right {
+			res = append(res, right-left+1)
+			left = right + 1
+		}
+	}
+	return res
+}
+
 /*
 1.16 合并区间
 给出一个区间的集合，请合并所有重叠的区间。
@@ -1199,14 +1217,14 @@ func MaxProfitIncludeFee(prices []int, fee int) int {
 
 /*
 思路:贪心算法解决
-如果一个节点有孩子节点且没有被摄像机覆盖,则我们需要放置一个摄像机在该节点.此外,
-如果一个节点没有父节点且没有被覆盖，则必须放置一个摄像机在该节点.
+如果一个节点有孩子节点且孩子节点没有被摄像机覆盖,则我们需要放置一个摄像机在该节点.此外,
+如果一个节点没有父节点且自己没有被覆盖，则必须放置一个摄像机在该节点.
 还有一点很关键，就是遍历树的过程中，会遇到空节点，那么问题来了，空节点究竟是哪一种状态呢？空节点表示无覆盖？
 表示有摄像头？还是有覆盖呢？
 回归本质，为了让摄像头数量最少，我们要尽量让叶子节点的父节点安装摄像头，这样才能摄像头的数量最少。
 那么空节点不能是无覆盖的状态，这样叶子节点就要放摄像头了，空节点也不能是有摄像头的状态，这样叶子节点的父节点
 就没有必要放摄像头了，而是可以把摄像头放在叶子节点的爷爷节点上。
-所以空节点的状态只能是有覆盖，这样就可以在叶子节点的父节点放摄像头了
+所以空节点的状态只能是有覆盖，这样就可以在叶子节点的父节点放摄像头了。
 */
 
 // MinCameraCover 时间复杂度O(N), 空间复杂度O(2N)
