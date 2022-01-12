@@ -12,9 +12,9 @@ import (
 */
 
 /*
-1.0 路径总和
-给你二叉树的根节点root和一个表示目标和的整数targetSum 。判断该树中是否存在 根节点到叶子节点的路径，这条路径
-上所有节点值相加等于目标和targetSum 。如果存在，返回true ；否则，返回false 。
+leetcode 112. 路径总和
+1.0 给你二叉树的根节点root和一个表示目标和的整数targetSum 。判断该树中是否存在 根节点到叶子节点的路径，
+这条路径上所有节点值相加等于目标和targetSum 。如果存在，返回true ；否则，返回false 。
 叶子节点是指没有子节点的节点。
 
 示例:
@@ -30,28 +30,21 @@ func HasPathSum(root *Entity.TreeNode, targetSum int) bool {
 	if root == nil {
 		return false
 	}
-	if root.Left == nil && root.Right == nil {
-		return targetSum == root.Val
-	}
 	queue := []*Entity.TreeNode{root}
 	for len(queue) != 0 {
-		size := len(queue)
-		for _, node := range queue {
-			if node.Left == nil && node.Right == nil {
-				if node.Val == targetSum {
-					return true
-				}
-			}
-			if node.Left != nil {
-				node.Left.Val += node.Val
-				queue = append(queue, node.Left)
-			}
-			if node.Right != nil {
-				node.Right.Val += node.Val
-				queue = append(queue, node.Right)
-			}
+		node := queue[0]
+		queue = queue[1:]
+		if node.Left == nil && node.Right == nil && node.Val == targetSum {
+			return true
 		}
-		queue = queue[size:]
+		if node.Left != nil {
+			node.Left.Val += node.Val
+			queue = append(queue, node.Left)
+		}
+		if node.Right != nil {
+			node.Right.Val += node.Val
+			queue = append(queue, node.Right)
+		}
 	}
 	return false
 }
@@ -64,14 +57,18 @@ func HasPathSumSimple(root *Entity.TreeNode, targetSum int) bool {
 	if root == nil {
 		return false
 	}
+	// 递归终止条件，当前节点为叶子节点且该叶子节点路径和等于目标路径和targetSum
 	if root.Left == nil && root.Right == nil && root.Val == targetSum {
 		return true
 	}
+	// 只要左子树或右子树上有一个能返回true就行
 	return HasPathSumSimple(root.Left, targetSum-root.Val) || HasPathSumSimple(root.Right, targetSum-root.Val)
 }
 
 /*
-1.1 路径和:给定一个二叉树和一个目标和，找到所有从根节点到叶子节点路径总和等于给定目标和
+剑指Offer 34. 二叉树中和为某一值的路径
+113. 路径总和II
+1.1 给定一个二叉树和一个目标和，找到所有从根节点到叶子节点路径总和等于给定目标和
 的路径。(返回列表)
 说明: 叶子节点是指没有子节点的节点。
 */
@@ -90,14 +87,15 @@ func PathSum(root *Entity.TreeNode, target int) [][]int {
 		if node.Left == nil && node.Right == nil && sumOfArray(path) == target {
 			res = append(res, path)
 		}
-		copyTemp := copySlice(path)
+		temp := make([]int, len(path))
+		copy(temp, path)
 		if node.Left != nil {
-			temp1 := append(copyTemp, node.Left.Val)
-			queue = append(queue, Group{node.Right, temp1})
+			leftPath := append(temp, node.Left.Val)
+			queue = append(queue, Group{node.Right, leftPath})
 		}
 		if node.Right != nil {
-			temp2 := append(copyTemp, node.Right.Val)
-			queue = append(queue, Group{node.Right, temp2})
+			rightPath := append(temp, node.Right.Val)
+			queue = append(queue, Group{node.Right, rightPath})
 		}
 
 	}
@@ -115,14 +113,15 @@ func PathSumUseDfs(root *Entity.TreeNode, target int) [][]int {
 		if node.Left == nil && node.Right == nil && sumOfArray(path) == target {
 			res = append(res, path)
 		}
-		temp := copySlice(path)
+		temp := make([]int, len(path))
+		copy(temp, path)
 		if node.Left != nil {
-			temp1 := append(temp, node.Left.Val)
-			dfs(node.Left, temp1)
+			leftPath := append(temp, node.Left.Val)
+			dfs(node.Left, leftPath)
 		}
 		if node.Right != nil {
-			temp2 := append(temp, node.Right.Val)
-			dfs(node.Right, temp2)
+			rightPath := append(temp, node.Right.Val)
+			dfs(node.Right, rightPath)
 		}
 	}
 	dfs(root, []int{root.Val})
@@ -143,16 +142,8 @@ func sumOfArray(array []int) int {
 	return sum
 }
 
-func copySlice(src []int) []int {
-	dst := make([]int, 0, len(src))
-	for _, v := range src {
-		dst = append(dst, v)
-	}
-
-	return dst
-}
-
 /*
+
 1.2 路径和等于目标值的条数
 给定一个二叉树，它的每个结点都存放着一个整数值。
 找出路径和等于给定数值的路径总数。
@@ -185,24 +176,26 @@ func NumberOfPathSum(root *Entity.TreeNode, target int) int {
 	queue := []Group{{root, []int{root.Val}}}
 	for len(queue) != 0 {
 		node := queue[0].Node
-		temp := queue[0].Path
-		res += CountTarget(temp, target)
+		path := queue[0].Path
+		res += CountTarget(path, target)
 		queue = queue[1:]
 		// 增加0是因为当前节点本身的值也有可能等于目标值target,此时路径就是节点本身
-		temp = append(temp, 0)
+		path = append(path, 0)
+		temp := make([]int, len(path))
+		copy(temp, path)
 		if node.Left != nil {
-			var temp1 []int
+			var leftPath []int
 			for _, v := range temp {
-				temp1 = append(temp1, node.Left.Val+v)
+				leftPath = append(leftPath, node.Left.Val+v)
 			}
-			queue = append(queue, Group{node.Left, temp1})
+			queue = append(queue, Group{node.Left, leftPath})
 		}
 		if node.Right != nil {
-			var temp2 []int
+			var rightPath []int
 			for _, v := range temp {
-				temp2 = append(temp2, node.Right.Val+v)
+				rightPath = append(rightPath, node.Right.Val+v)
 			}
-			queue = append(queue, Group{node.Right, temp2})
+			queue = append(queue, Group{node.Right, rightPath})
 		}
 	}
 	return res
@@ -215,6 +208,32 @@ func CountTarget(s []int, target int) int {
 			count++
 		}
 	}
+	return count
+}
+
+/*
+哈希表+前缀和
+*/
+func pathSum(root *Entity.TreeNode, targetSum int) int {
+	preMap := make(map[int]int)
+	preMap[0] = 1
+	count := 0
+	var dfs func(*Entity.TreeNode, int)
+	dfs = func(node *Entity.TreeNode, preSum int) {
+		if node == nil {
+			return
+		}
+		preSum += node.Val
+		if v, ok := preMap[preSum]; ok {
+			count += v
+		}
+		preMap[preSum]++
+		dfs(node.Left, preSum)
+		dfs(node.Right, preSum)
+		preMap[preSum]--
+		return
+	}
+	dfs(root, 0)
 	return count
 }
 
@@ -330,7 +349,7 @@ func FindFrequentTreeSum(root *Entity.TreeNode) []int {
 */
 
 func MaxPathSum(root *Entity.TreeNode) int {
-	if root == nil{
+	if root == nil {
 		return 0
 	}
 	maxSum := math.MinInt32
@@ -656,15 +675,14 @@ func MaxAncestorDiffSimple(root *Entity.TreeNode) int {
 		queue = queue[1:]
 		tempMax := Utils.MaxValueOfArray(path) - Utils.MinValueOfArray(path)
 		maxVal = Utils.Max(maxVal, tempMax)
-		temp := copySlice(path)
+		temp := make([]int, len(path))
+		copy(temp, path)
 		if node.Left != nil {
-			leftPath := temp
-			leftPath = append(leftPath, node.Left.Val)
+			leftPath := append(temp, node.Left.Val)
 			queue = append(queue, Group{node.Left, leftPath})
 		}
 		if node.Right != nil {
-			rightPath := temp
-			rightPath = append(rightPath, node.Right.Val)
+			rightPath := append(temp, node.Right.Val)
 			queue = append(queue, Group{node.Right, rightPath})
 		}
 	}
@@ -696,7 +714,7 @@ func MaxAncestorDiffSimple(root *Entity.TreeNode) int {
 树上的每个结点都具有唯一的值0 <= node.val <= 500。
 目标结点target是树上的结点。
 0 <= K <= 1000.
- */
+*/
 
 /*
 思路:如果能知道节点的父节点,那么就可以知道所有与该节点距离为1的节点
@@ -707,15 +725,15 @@ func MaxAncestorDiffSimple(root *Entity.TreeNode) int {
 特别需要注意去重:假设节点p与target距离为n,那么其父节点par与target距离为n+1,那么par的父节点和
 左右子节点此时与target距离应为n+2,但是此时p就是par的子节点，它的距离不应该被更新为n+2,应该还是n
 它也不应被添加到队列中。
- */
+*/
 
 // 结构体Element由两部分组成，Node记录二叉树当前节点指针，Distance表示当前节点与target的距离
-type Element struct{
-	Node *Entity.TreeNode
+type Element struct {
+	Node     *Entity.TreeNode
 	Distance int
 }
 
-func DistanceK(root, target *Entity.TreeNode, k int)[]int{
+func DistanceK(root, target *Entity.TreeNode, k int) []int {
 	var res []int
 	// parentMap记录二叉树根节点外所有节点的父节点
 	parentMap := make(map[*Entity.TreeNode]*Entity.TreeNode)
@@ -725,15 +743,15 @@ func DistanceK(root, target *Entity.TreeNode, k int)[]int{
 	seen[target] = true
 	var dfs func(*Entity.TreeNode)
 	// dfs函数遍历整个二叉树，记录根节点外所有节点的父节点
-	dfs = func(node *Entity.TreeNode){
-		if node == nil{
+	dfs = func(node *Entity.TreeNode) {
+		if node == nil {
 			return
 		}
-		if node.Left != nil{
+		if node.Left != nil {
 			parentMap[node.Left] = node
 			dfs(node.Left)
 		}
-		if node.Right != nil{
+		if node.Right != nil {
 			parentMap[node.Right] = node
 			dfs(node.Right)
 		}
@@ -741,11 +759,11 @@ func DistanceK(root, target *Entity.TreeNode, k int)[]int{
 	dfs(root)
 	// 从target节点开始bfs搜索,那么此时与target的距离就是0
 	queue := []Element{{target, 0}}
-	for len(queue) != 0{
-		if queue[0].Distance == k{
+	for len(queue) != 0 {
+		if queue[0].Distance == k {
 			// 因为是queue是先进先出的队列，所以如果第一个元素与target的距离为k
 			// 代表队列中所有元素距离都是k
-			for _, element := range queue{
+			for _, element := range queue {
 				res = append(res, element.Node.Val)
 			}
 			// 此时已经找到了所有满足条件的节点，退出循环
@@ -757,12 +775,12 @@ func DistanceK(root, target *Entity.TreeNode, k int)[]int{
 		queue = queue[1:]
 		// 将与target距离相等的节点(当前节点的父节点，左子节点和右子节点)放到同一个数组中
 		array := []*Entity.TreeNode{parentMap[node], node.Left, node.Right}
-		for _, td := range array{
+		for _, td := range array {
 			// 如果这个节点非空，且没有出现在哈希表seen中
 			// 就可以将该节点添加到队列中，同时该节点与target距离即为当前节点与target距离+1
-			if td != nil && !seen[td]{
+			if td != nil && !seen[td] {
 				seen[td] = true
-				queue = append(queue, Element{td, d+1})
+				queue = append(queue, Element{td, d + 1})
 			}
 		}
 	}
