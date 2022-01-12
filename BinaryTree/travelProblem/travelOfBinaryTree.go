@@ -656,8 +656,8 @@ func ConstructFromPrePostSimple(preorder []int, postorder []int) *Entity.TreeNod
 
 
 /*
-3.4 最大二叉树
-给定一个不含重复元素的整数数组nums 。一个以此数组直接递归构建的最大二叉树定义如下：
+leetcode 654. 最大二叉树
+3.4 给定一个不含重复元素的整数数组nums 。一个以此数组直接递归构建的最大二叉树定义如下：
 
 二叉树的根是数组nums中的最大元素。
 左子树是通过数组中最大值左边部分 递归构造出的最大二叉树。
