@@ -993,9 +993,11 @@ func Merge(intervals [][]int) [][]int {
 	var merged [][]int
 	for i := 0; i < n; i++ {
 		size := len(merged)
+		// 若merged为空或merged数组末尾元素不与intervals[i]重叠，则将intervals[i]添加到merged中
 		if size == 0 || merged[size-1][1] < intervals[i][0] {
 			merged = append(merged, intervals[i])
 		} else {
+			// 否则将merged数组末尾元素与intervals[i]合并
 			merged[size-1][1] = Utils.Max(merged[size-1][1], intervals[i][1])
 		}
 	}

@@ -7,6 +7,9 @@ import (
 
 /*
 二叉树的遍历问题,一般都可以通过DFS(递归)和BFS(迭代)解决
+144. 二叉树的前序遍历
+94. 二叉树的中序遍历
+145. 二叉树的后序遍历
 */
 
 /*
@@ -121,16 +124,15 @@ func PostOrderTravelUseIteration(root *Entity.TreeNode) []int {
 func ReverseArray(array []int) []int {
 	length := len(array)
 	for i := 0; i < length/2; i++ {
-		temp := array[length-1-i]
-		array[length-1-i] = array[i]
-		array[i] = temp
+		temp := array[i]
+		array[i] = array[length-1-i]
+		array[length-1-i] = temp
 	}
-
 	return array
 }
 
 /*
-1.2进阶，N叉树的前序遍历
+1.2进阶 589 N叉树的前序遍历
 定一个N叉树，返回其节点值的前序遍历 。
 N叉树在输入中按层序遍历进行序列化表示，每组子节点由空值null分隔（请参见示例）。
    			1
@@ -141,6 +143,25 @@ N叉树在输入中按层序遍历进行序列化表示，每组子节点由空�
 
 最后应返回[1,3,5,6,2,4]
 */
+
+//  PreorderNTrees 递归解法
+func PreorderNTrees(root *Entity.Node) []int {
+	var res []int
+	if root == nil {
+		return res
+	}
+	var dfs func(*Entity.Node)
+	dfs = func(root *Entity.Node) {
+		if root != nil {
+			res = append(res, root.Val)
+			for _, node := range root.Children {
+				dfs(node)
+			}
+		}
+	}
+	dfs(root)
+	return res
+}
 
 // PreOrderOfnTress, node节点Children中的子节点逆序入栈，出栈时先进后出依次添加到结果集中
 func PreOrderOfnTress(root *Entity.Node) []int {
@@ -153,26 +174,17 @@ func PreOrderOfnTress(root *Entity.Node) []int {
 		node := stack[len(stack)-1]
 		stack = stack[:len(stack)-1]
 		res = append(res, node.Val)
-		if len(node.Children) != 0 {
-			stack = append(stack, reverseNodes(node.Children)...)
+		if node.Children != nil {
+			for i := len(node.Children) - 1; i >= 0; i-- {
+				stack = append(stack, node.Children[i])
+			}
 		}
 	}
-
 	return res
 }
 
-func reverseNodes(nodes []*Entity.Node) []*Entity.Node {
-	length := len(nodes)
-	for i := 0; i < length/2; i++ {
-		temp := nodes[length-1-i]
-		nodes[length-1-i] = nodes[i]
-		nodes[i] = temp
-	}
-	return nodes
-}
-
 /*
-1.3 进阶，N叉树的后序遍历
+1.3 进阶，590 N叉树的后序遍历
 定一个N叉树，返回其节点值的后序遍历 。
 N叉树在输入中按层序遍历进行序列化表示，每组子节点由空值null分隔（请参见示例）。
    			1
@@ -183,6 +195,25 @@ N叉树在输入中按层序遍历进行序列化表示，每组子节点由空�
 
 最后应返回[5，6，3，2，4，1]
 */
+
+// PostorderOfNTrees 递归
+func PostorderOfNTrees(root *Entity.Node) []int {
+	var res []int
+	if root == nil {
+		return res
+	}
+	var dfs func(*Entity.Node)
+	dfs = func(root *Entity.Node) {
+		if root != nil {
+			for _, node := range root.Children {
+				dfs(node)
+			}
+			res = append(res, root.Val)
+		}
+	}
+	dfs(root)
+	return res
+}
 
 // PostOrderOfnTress 与1.2类似，只是node节点Children中的子节点是顺序入栈，最后对结果集逆序即可。
 func PostOrderOfnTress(root *Entity.Node) []int {
