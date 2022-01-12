@@ -393,8 +393,8 @@ func ZigzagLevelOrder(root *Entity.TreeNode) [][]int {
 }
 
 /*
-2.5 二叉树的层平均值
-给定一个非空二叉树, 返回一个由每层节点平均值组成的数组。
+leetcode 637. 二叉树的层平均值
+2.5 给定一个非空二叉树, 返回一个由每层节点平均值组成的数组。
 */
 
 func AverageOfBinaryTree(root *Entity.TreeNode) []float64 {
@@ -473,8 +473,9 @@ func LevelOrderOfNTress(root *Entity.Node) [][]int {
 */
 
 /*
+leetcode 105. 从前序与中序遍历序列构造二叉树
 3.1 给定一棵二叉树的前序遍历preorder与中序遍历inorder结果集。请构造二叉树并返回其根节点。
-preorder和inorder均无重复元素
+preorder和inorder均无重复元素.
 */
 
 /*
@@ -512,19 +513,25 @@ func BuildTreeFromPreAndInSimple(preorder []int, inorder []int) *Entity.TreeNode
 		return nil
 	}
 	hashTable := make(map[int]int)
+	// 构建中序遍历序列inorder中节点值与位置的映射关系
 	for i, v := range inorder {
 		hashTable[v] = i
 	}
-	var dfs func(left, right int) *Entity.TreeNode
+	var dfs func(int, int) *Entity.TreeNode
 	dfs = func(left, right int) *Entity.TreeNode {
+		// 递归终止条件，left>right
 		if left > right {
 			return nil
 		}
+		// 根节点的值一定是前序遍历序列的第一个元素
 		val := preorder[0]
 		preorder = preorder[1:]
-		root := &Entity.TreeNode{val, nil, nil}
+		root := &Entity.TreeNode{Val: val}
+		// 找到根节点值在中序遍历序列inorder中的位置index
 		index := hashTable[val]
+		// 则中序遍历序列inorder左子树范围为[:index-1]
 		root.Left = dfs(left, index-1)
+		// 中序遍历序列inorder右子树范围为[index+1:]
 		root.Right = dfs(index+1, right)
 		return root
 	}
@@ -532,9 +539,17 @@ func BuildTreeFromPreAndInSimple(preorder []int, inorder []int) *Entity.TreeNode
 }
 
 /*
+leetcode 106. 从中序与后序遍历序列构造二叉树
 3.2 给定一棵二叉树的后序遍历postorder与中序遍历inorder结果集。请构造二叉树并返回其根节点。
 postorder和inorder均无重复元素
 */
+
+/*
+本题与上一题从前序与中序遍历序列构造二叉树其实是一样的，解法基本相同，所不同的是在单层递归逻辑中需要先设置
+右子节点，然后再设置左子节点。
+以题目中的二叉树为例，后序遍历序列postorder[9,15,7,20,3]末尾元素3一定是指向根节点的，在创建根节点后的
+后序遍历序列[9,15,7,20]末尾元素20一定是指向根节点的右子节点(右子树的根节点)的，如果设置成左子节点显然是错误的。
+ */
 
 func BuildTreeFromPostAndIn(inorder []int, postorder []int) *Entity.TreeNode {
 	if len(postorder) <= 0 || len(inorder) <= 0 || len(postorder) != len(inorder) {
@@ -551,9 +566,10 @@ func BuildTreeFromPostAndIn(inorder []int, postorder []int) *Entity.TreeNode {
 		}
 		val := postorder[len(postorder)-1]
 		postorder = postorder[:len(postorder)-1]
-		root := &Entity.TreeNode{val, nil, nil}
+		root := &Entity.TreeNode{Val: val}
 		index := hashTable[val]
 		// 想一想，为什么要先设置右子节点，如果先设置左子节点就会出错，why?
+		// 因为此时postorder[len(postorder)-1]，也就是20指向的一定是右子树的根节点
 		root.Right = dfs(index+1, right)
 		root.Left = dfs(left, index-1)
 		return root
