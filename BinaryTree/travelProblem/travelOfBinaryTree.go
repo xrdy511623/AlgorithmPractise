@@ -238,7 +238,8 @@ func PostOrderOfnTress(root *Entity.Node) []int {
 */
 
 /*
-2.1 从上到下打印出二叉树的每个节点，同一层的节点按照从左到右的顺序打印。
+2.1 剑指Offer32 - I. 从上到下打印二叉树
+从上到下打印出二叉树的每个节点，同一层的节点按照从左到右的顺序打印。
 以上面的示例二叉树为例，最后应返回[5,4,8,11,13,4,7,2,5,1]
 */
 
@@ -263,7 +264,8 @@ func LevelOrder(root *Entity.TreeNode) []int {
 }
 
 /*
-2.2 从上到下按层打印二叉树，同一层的节点按从左到右的顺序打印，每一层打印到一行。
+2.2 剑指Offer32 - II. 从上到下打印二叉树II
+从上到下按层打印二叉树，同一层的节点按从左到右的顺序打印，每一层打印到一行。
 以上面的示例二叉树为例，最后应返回[[5],[4,8],[11,13,4],[7,2,5,1]]
 */
 
@@ -273,26 +275,32 @@ func LevelOrderComplex(root *Entity.TreeNode) [][]int {
 		return res
 	}
 	queue := []*Entity.TreeNode{root}
-	level := 0
 	for len(queue) != 0 {
-		var temp []*Entity.TreeNode
-		res = append(res, []int{})
-		for _, node := range queue {
-			res[level] = append(res[level], node.Val)
+		levelSize := len(queue)
+		// 每一层都新建一个slice来存储该层所有节点值
+		var curLevel []int
+		// 队列queue始终存储同一层节点，循环levelSize次，意味着该层节点遍历完毕
+		for i := 0; i < levelSize; i++ {
+			// 满足队列先进先出特性
+			node := queue[0]
+			// 将该层节点值依次添加到curLevel中
+			curLevel = append(curLevel, node.Val)
+			queue = queue[1:]
 			if node.Left != nil {
-				temp = append(temp, node.Left)
+				queue = append(queue, node.Left)
 			}
 			if node.Right != nil {
-				temp = append(temp, node.Right)
+				queue = append(queue, node.Right)
 			}
 		}
-		level++
-		queue = temp
+		// 循环levelSize次后，意味着该层节点遍历完毕，将存储该层节点值的curLevel添加到结果集中
+		res = append(res, curLevel)
 	}
 	return res
 }
 
 /*
+leetcode 107. 二叉树的层序遍历II
 2.3 给定一个二叉树，返回其节点值自底向上的层序遍历。（即按从叶子节点所在层到根节点所在的层，逐层从左向右遍历）
 以上面的示例二叉树为例，最后应返回[[7,2,5,1],[11,13,4],[4,8],[5]]
 */
@@ -304,23 +312,22 @@ func LevelOrderBottom(root *Entity.TreeNode) [][]int {
 		return res
 	}
 	queue := []*Entity.TreeNode{root}
-	level := 0
 	for len(queue) != 0 {
-		var temp []*Entity.TreeNode
-		res = append(res, []int{})
-		for _, node := range queue {
-			res[level] = append(res[level], node.Val)
+		levelSize := len(queue)
+		var curLevel []int
+		for i := 0; i < levelSize; i++ {
+			node := queue[0]
+			curLevel = append(curLevel, node.Val)
+			queue = queue[1:]
 			if node.Left != nil {
-				temp = append(temp, node.Left)
+				queue = append(queue, node.Left)
 			}
 			if node.Right != nil {
-				temp = append(temp, node.Right)
+				queue = append(queue, node.Right)
 			}
 		}
-		level++
-		queue = temp
+		res = append(res, curLevel)
 	}
-
 	return ReverseComplexArray(res)
 }
 
@@ -335,9 +342,15 @@ func ReverseComplexArray(src [][]int) [][]int {
 }
 
 /*
-二叉树的锯齿形层序遍历
-2.4 给定一个二叉树，返回其节点值的锯齿形层序遍历。（即先从左往右，再从右往左进行下一层遍历，以此类推，
+剑指Offer32 - III. 从上到下打印二叉树III
+2.4 二叉树的锯齿形层序遍历
+给定一个二叉树，返回其节点值的锯齿形层序遍历。（即先从左往右，再从右往左进行下一层遍历，以此类推，
 层与层之间交替进行）。以上面的示例二叉树为例，最后应返回[[5],[8,4],[11,13,4],[1,5,2,7]]
+*/
+
+/*
+思路:BFS+队列解决
+根节点为第一层，根节点孩子节点为第二层... 以此类推。所以问题就转化为奇数层正序，偶数层逆序。
 */
 
 // ZigzagLevelOrder, 与2.2类似，所不同的是要加入层数(level)的判断，根据层数来确定是否要对该层的节点值进行逆序
@@ -349,24 +362,32 @@ func ZigzagLevelOrder(root *Entity.TreeNode) [][]int {
 	queue := []*Entity.TreeNode{root}
 	level := 1
 	for len(queue) != 0 {
-		var temp []*Entity.TreeNode
+		levelSize := len(queue)
+		// 每一层都新建一个slice来存储该层所有节点值
 		var curLevel []int
-		for _, node := range queue {
+		// 队列queue始终存储同一层节点，循环levelSize次，意味着该层节点遍历完毕
+		for i := 0; i < levelSize; i++ {
+			// 满足队列先进先出特性
+			node := queue[0]
+			queue = queue[1:]
+			// 将该层节点值依次添加到curLevel中
 			curLevel = append(curLevel, node.Val)
 			if node.Left != nil {
-				temp = append(temp, node.Left)
+				queue = append(queue, node.Left)
 			}
 			if node.Right != nil {
-				temp = append(temp, node.Right)
+				queue = append(queue, node.Right)
 			}
 		}
-		if level%2 == 0 {
-			res = append(res, ReverseArray(curLevel))
-		} else {
+		// 奇数层将curLevel原样添加到结果集合中
+		if level%2 == 1 {
 			res = append(res, curLevel)
+		} else {
+			// 偶数层将curLevel反转后添加到结果集合中
+			res = append(res, Utils.ReverseArray(curLevel))
 		}
+		// 循环levelSize次后，意味着该层节点遍历完毕，剩下的节点属于下一层，level累加1
 		level++
-		queue = temp
 	}
 	return res
 }
@@ -410,7 +431,7 @@ func GetAverageOfArray(s []int) float64 {
 }
 
 /*
-N叉树的层序遍历
+429. N叉树的层序遍历
 2.6 给定一个N叉树，返回其节点值的层序遍历。（即从左到右，逐层遍历）。
 树的序列化输入是用层序遍历，每组子节点都由null值分隔（参见示例）。
 			1
@@ -421,8 +442,8 @@ N叉树的层序遍历
 譬如对以上N叉树，最终应返回[[1],[3,2,4],[5,6]]
 */
 
-// LevelorderofnTress 解决思路与二叉树的层序遍历一样，BFS解决即可
-func LevelorderofnTress(root *Entity.Node) [][]int {
+// LevelOrderOfNTress 解决思路与二叉树的层序遍历一样，BFS解决即可
+func LevelOrderOfNTress(root *Entity.Node) [][]int {
 	var res [][]int
 	if root == nil {
 		return res
@@ -435,9 +456,9 @@ func LevelorderofnTress(root *Entity.Node) [][]int {
 			node := queue[0]
 			queue = queue[1:]
 			curLevel = append(curLevel, node.Val)
-			if len(node.Children) != 0 {
-				for _, v := range node.Children {
-					queue = append(queue, v)
+			if node.Children != nil {
+				for _, child := range node.Children {
+					queue = append(queue, child)
 				}
 			}
 		}
