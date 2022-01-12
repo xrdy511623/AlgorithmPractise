@@ -578,8 +578,8 @@ func BuildTreeFromPostAndIn(inorder []int, postorder []int) *Entity.TreeNode {
 }
 
 /*
-3.3 根据前序和后序遍历构造二叉树
-返回与给定的前序和后序遍历匹配的任何二叉树。
+leetcode 889. 根据前序和后序遍历构造二叉树
+3.3 返回与给定的前序和后序遍历匹配的任何二叉树。
 思路:前序遍历序列pre和后序遍历序列post长度相等,左右子树的长度也相等
 pre:根左右
 post:左右根
@@ -595,7 +595,7 @@ func ConstructFromPrePost(preorder []int, postorder []int) *Entity.TreeNode {
 	if len(preorder) == 0 {
 		return nil
 	}
-	root := &Entity.TreeNode{preorder[0], nil, nil}
+	root := &Entity.TreeNode{Val: preorder[0]}
 	if len(preorder) == 1 {
 		return root
 	}
@@ -616,6 +616,44 @@ func FindPosInArray(s []int, target int) int {
 	}
 	return -1
 }
+
+
+/*
+在后序遍历序列postorder中找左子树根节点的位置pos可以使用哈希表来优化，将时间复杂度降低至O(1)
+ */
+
+func ConstructFromPrePostSimple(preorder []int, postorder []int) *Entity.TreeNode {
+	hashTable := make(map[int]int)
+	// 在后序遍历序列postorder中建立元素和位置的映射关系
+	for i, v := range postorder{
+		hashTable[v] = i
+	}
+	// l1,r1,l2,r2分别代表前序遍历序列和后序遍历序列的首尾位置
+	var buildTree func(int, int, int, int)*Entity.TreeNode
+	buildTree = func(l1, r1, l2, r2 int)*Entity.TreeNode{
+		// 递归终止条件
+		if l1 > r1 || l2 > r2{
+			return nil
+		}
+		if l1 == r1{
+			return &Entity.TreeNode{Val:preorder[l1]}
+		}
+		// l1初始值为0，那么preorder[l1]一定是对应根节点的。
+		root := &Entity.TreeNode{Val:preorder[l1]}
+		// 先序遍历序列preorder是根左右，preorder[l1]对应根节点，那么preorder[l1+1]一定对应左子树根节点
+		// 确定左子树根节点在后序遍历序列postorder中的位置
+		pos := hashTable[preorder[l1+1]]
+		// 求root节点左子树的长度(后序遍历序列postorder是左右根，那么左子树长度即为pos-l2+1, l2初始值为0)
+		leftLength := pos - l2 + 1
+		// 确定左子树范围
+		root.Left = buildTree(l1+1, l1+leftLength, l2, pos)
+		// 确定右子树范围，右子树范围可以根据左子树范围推出
+		root.Right = buildTree(l1+leftLength+1, r1, pos+1, r2-1)
+		return root
+	}
+	return buildTree(0, len(preorder)-1, 0, len(postorder)-1)
+}
+
 
 /*
 3.4 最大二叉树
