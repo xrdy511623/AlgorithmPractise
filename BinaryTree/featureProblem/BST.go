@@ -551,7 +551,8 @@ func VerifyPreOrder(preOrder []int) bool {
 }
 
 /*
-1.11 二叉搜索树的最近公共祖先
+leetcode 235. 二叉搜索树的最近公共祖先
+1.11 给定一个二叉搜索树, 找到该树中两个指定节点的最近公共祖先。
 */
 
 // LowestCommonAncestor 迭代法解决
@@ -587,28 +588,29 @@ func LowestCommonAncestorUseRecursion(root, p, q *Entity.TreeNode) *Entity.TreeN
 
 // IncreasingBST 时间复杂度O(2*N)，空间复杂度O(N)
 func IncreasingBST(root *Entity.TreeNode) *Entity.TreeNode {
-	var res []int
+	var res []*Entity.TreeNode
 	var dfs func(*Entity.TreeNode)
-	dfs = func(root *Entity.TreeNode) {
-		if root != nil {
-			dfs(root.Left)
-			res = append(res, root.Val)
-			dfs(root.Right)
+	dfs = func(node *Entity.TreeNode) {
+		if node != nil {
+			dfs(node.Left)
+			res = append(res, node)
+			dfs(node.Right)
 		}
 	}
 	dfs(root)
-	dummyNode := &Entity.TreeNode{}
+	dummyNode := new(Entity.TreeNode)
 	cur := dummyNode
-	for _, val := range res {
-		cur.Right = &Entity.TreeNode{Val: val}
+	for _, node := range res {
+		cur.Right = node
+		node.Left, node.Right = nil, nil
 		cur = cur.Right
 	}
 	return dummyNode.Right
 }
 
-// IncreasingSimpleBST 更好的做法是在中序遍历的过程中改变节点指向，时间复杂度下降为O(N)
+// IncreasingSimpleBST 更好的做法是在中序遍历的过程中直接改变节点指向，时间复杂度下降为O(N)
 func IncreasingSimpleBST(root *Entity.TreeNode) *Entity.TreeNode {
-	dummyNode := &Entity.TreeNode{}
+	dummyNode := new(Entity.TreeNode)
 	cur := dummyNode
 	var helper func(*Entity.TreeNode)
 	helper = func(node *Entity.TreeNode) {
