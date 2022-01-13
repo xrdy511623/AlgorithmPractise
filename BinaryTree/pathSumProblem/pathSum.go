@@ -216,6 +216,7 @@ func CountTarget(s []int, target int) int {
 */
 func pathSum(root *Entity.TreeNode, targetSum int) int {
 	preMap := make(map[int]int)
+	// 处理包含根节点的情况，如果root.Val==targetSum,统计结果不能忽略它
 	preMap[0] = 1
 	count := 0
 	var dfs func(*Entity.TreeNode, int)
@@ -224,12 +225,13 @@ func pathSum(root *Entity.TreeNode, targetSum int) int {
 			return
 		}
 		preSum += node.Val
-		if v, ok := preMap[preSum]; ok {
+		if v, ok := preMap[preSum-targetSum]; ok {
 			count += v
 		}
 		preMap[preSum]++
 		dfs(node.Left, preSum)
 		dfs(node.Right, preSum)
+		// 回溯
 		preMap[preSum]--
 		return
 	}
@@ -238,8 +240,8 @@ func pathSum(root *Entity.TreeNode, targetSum int) int {
 }
 
 /*
-1.3 出现次数最多的子树元素和
-给你一个二叉树的根结点，请你找出出现次数最多的子树元素和。一个结点的子树元素和定义
+leetcode 508. 出现次数最多的子树元素和
+1.3 给你一个二叉树的根结点，请你找出出现次数最多的子树元素和。一个结点的子树元素和定义
 为以该结点为根的二叉树上所有结点的元素之和（包括结点本身）.
 你需要返回出现次数最多的子树元素和。如果有多个元素出现的次数相同，返回所有出现次数最多
 的子树元素和（不限顺序）。
@@ -272,6 +274,7 @@ DFS递归解决
 最后将出现频次最多的子树元素和添加到结果集合中即可。
 */
 
+// FindFrequentTreeSum 先序遍历+DFS
 func FindFrequentTreeSum(root *Entity.TreeNode) []int {
 	var res []int
 	if root == nil {
@@ -306,8 +309,8 @@ func FindFrequentTreeSum(root *Entity.TreeNode) []int {
 }
 
 /*
-1.4 最大路径和
-给定一个非空二叉树，返回其最大路径和。
+leetcode 124. 二叉树中的最大路径和
+1.4 给定一个非空二叉树，返回其最大路径和。
 本题中，路径被定义为一条从树中任意节点出发，达到任意节点的序列。该路径至少包含一个节点，
 且不一定经过根节点。
 示例 1:
@@ -358,23 +361,20 @@ func MaxPathSum(root *Entity.TreeNode) int {
 		if node == nil {
 			return 0
 		}
-		leftPath := dfs(node.Left)
-		rightPath := dfs(node.Right)
+		leftPath := Utils.Max(dfs(node.Left), 0)
+		rightPath := Utils.Max(dfs(node.Right), 0)
 		// 更新maxSum的值，左子树最大收益+右子树最大收益+节点本身的值
-		maxSum = Utils.Max(maxSum, Utils.Max(leftPath, 0)+Utils.Max(rightPath, 0)+node.Val)
-		if leftPath > rightPath {
-			return Utils.Max(0, leftPath) + node.Val
-		} else {
-			return Utils.Max(0, rightPath) + node.Val
-		}
+		maxSum = Utils.Max(maxSum, leftPath+rightPath+node.Val)
+		return Utils.Max(leftPath, rightPath) + node.Val
 	}
 	dfs(root)
 	return maxSum
 }
 
 /*
-1.5 左叶子之和
-计算给定二叉树的所有左叶子之和。
+leetcode 404. 左叶子之和
+1.5 计算给定二叉树的所有左叶子之和。
+
 示例：
     3
    / \
@@ -387,16 +387,16 @@ func MaxPathSum(root *Entity.TreeNode) int {
 
 // SumOfLeftLeaves BFS
 func SumOfLeftLeaves(root *Entity.TreeNode) int {
-	var res int
+	sum := 0
 	if root == nil {
-		return res
+		return sum
 	}
 	queue := []*Entity.TreeNode{root}
 	for len(queue) != 0 {
 		node := queue[0]
 		queue = queue[1:]
 		if node.Left != nil && node.Left.Left == nil && node.Left.Right == nil {
-			res += node.Left.Val
+			sum += node.Left.Val
 		}
 		if node.Left != nil {
 			queue = append(queue, node.Left)
@@ -405,7 +405,7 @@ func SumOfLeftLeaves(root *Entity.TreeNode) int {
 			queue = append(queue, node.Right)
 		}
 	}
-	return res
+	return sum
 }
 
 // SumOfLeftLeavesSimple DFS
@@ -428,10 +428,9 @@ func SumOfLeftLeavesSimple(root *Entity.TreeNode) int {
 }
 
 /*
-1.6 求根节点到叶节点数字之和
-给你一个二叉树的根节点root ，树中每个节点都存放有一个0到9之间的数字。
+leetcode 129. 求根节点到叶节点数字之和
+1.6 给你一个二叉树的根节点root ，树中每个节点都存放有一个0到9之间的数字。
 每条从根节点到叶节点的路径都代表一个数字：
-
 例如，从根节点到叶节点的路径 1 -> 2 -> 3 表示数字 123 。
 计算从根节点到叶节点生成的所有数字之和 。
 
@@ -453,34 +452,56 @@ func SumOfLeftLeavesSimple(root *Entity.TreeNode) int {
 因此，数字总和 = 495 + 491 + 40 = 1026
 */
 
-type LogicNode struct {
-	Node *Entity.TreeNode
-	Val  string
-}
-
 // SumNumbers BFS解决, 时间复杂度O(N),空间复杂度O(H),H为二叉树的高度
 func SumNumbers(root *Entity.TreeNode) int {
-	res := 0
+	sum := 0
 	if root == nil {
-		return res
+		return sum
 	}
-	stack := []LogicNode{{root, strconv.Itoa(root.Val)}}
-	for len(stack) != 0 {
-		logicNode := stack[len(stack)-1]
-		stack = stack[:len(stack)-1]
-		sum := logicNode.Val
-		if logicNode.Node.Left == nil && logicNode.Node.Right == nil {
-			pathSum, _ := strconv.Atoi(sum)
-			res += pathSum
+	queue := []*Entity.TreeNode{root}
+	for len(queue) != 0 {
+		node := queue[0]
+		queue = queue[1:]
+		if node.Left == nil && node.Right == nil {
+			sum += node.Val
 		}
-		if logicNode.Node.Right != nil {
-			stack = append(stack, LogicNode{logicNode.Node.Right, sum + strconv.Itoa(logicNode.Node.Right.Val)})
+		if node.Left != nil {
+			node.Left.Val += node.Val * 10
+			queue = append(queue, node.Left)
 		}
-		if logicNode.Node.Left != nil {
-			stack = append(stack, LogicNode{logicNode.Node.Left, sum + strconv.Itoa(logicNode.Node.Left.Val)})
+		if node.Right != nil {
+			node.Right.Val += node.Val * 10
+			queue = append(queue, node.Right)
 		}
 	}
-	return res
+	return sum
+}
+
+/*
+递归三部曲:
+1 确定递归函数的参数和返回值
+参数为当前二叉树根节点的指针以及不含当前节点的路径和pathSum，返回值为当前二叉树所有叶子节点路径和
+2 明确递归终止条件
+遇到空节点，返回0；遇到叶子节点，返回该叶子节点路径和。
+3 确定单层递归逻辑
+当前节点路径和sum为不含当前节点的路径和pathSum*10+node.Val,如果当前节点为叶子节点，返回当前节点路径和sum
+否则到其左子树和右子树寻找叶子节点，将左子树和右子树所有叶子节点路径和累加返回。
+*/
+
+// SumNumbersSimple DFS递归解决
+func SumNumbersSimple(root *Entity.TreeNode) int {
+	var dfs func(*Entity.TreeNode, int) int
+	dfs = func(node *Entity.TreeNode, pathSum int) int {
+		if node == nil {
+			return 0
+		}
+		sum := node.Val + pathSum*10
+		if node.Left == nil && node.Right == nil {
+			return sum
+		}
+		return dfs(node.Left, sum) + dfs(node.Right, sum)
+	}
+	return dfs(root, 0)
 }
 
 /*
@@ -503,28 +524,27 @@ func BinaryTreePaths(root *Entity.TreeNode) []string {
 	if root == nil {
 		return res
 	}
-	stack := []NodePath{NodePath{root, strconv.Itoa(root.Val)}}
-	for len(stack) != 0 {
-		np := stack[len(stack)-1]
-		stack = stack[:len(stack)-1]
+	queue := []NodePath{NodePath{root, strconv.Itoa(root.Val)}}
+	for len(queue) != 0 {
+		np := queue[0]
+		queue = queue[1:]
 		if np.Node.Left == nil && np.Node.Right == nil {
 			res = append(res, np.Path)
 		}
-		if np.Node.Right != nil {
-			path := np.Path + "->" + strconv.Itoa(np.Node.Right.Val)
-			stack = append(stack, NodePath{np.Node.Right, path})
-		}
 		if np.Node.Left != nil {
 			path := np.Path + "->" + strconv.Itoa(np.Node.Left.Val)
-			stack = append(stack, NodePath{np.Node.Left, path})
+			queue = append(queue, NodePath{np.Node.Left, path})
+		}
+		if np.Node.Right != nil {
+			path := np.Path + "->" + strconv.Itoa(np.Node.Right.Val)
+			queue = append(queue, NodePath{np.Node.Right, path})
 		}
 
 	}
 	return res
 }
 
-// DFS解决
-
+// BinaryTreePathsUseDFS DFS+先序遍历解决
 func BinaryTreePathsUseDFS(root *Entity.TreeNode) []string {
 	var paths []string
 	var dfs func(*Entity.TreeNode, string)
@@ -544,6 +564,7 @@ func BinaryTreePathsUseDFS(root *Entity.TreeNode) []string {
 	dfs(root, "")
 	return paths
 }
+
 
 /*
 1.8 祖父节点值为偶数的节点之和
