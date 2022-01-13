@@ -826,8 +826,8 @@ func FindMode(root *Entity.TreeNode) []int {
 }
 
 /*
-1.17 修剪二叉搜索树
-给你二叉搜索树的根节点root ，同时给定最小边界low和最大边界high。通过修剪二叉搜索树，使得所有节点的值
+leetcode 669. 修剪二叉搜索树
+1.17 给你二叉搜索树的根节点root ，同时给定最小边界low和最大边界high。通过修剪二叉搜索树，使得所有节点的值
 在[low, high]中。修剪树不应该改变保留在树中的元素的相对结构（即，如果没有被移除，原有的父代子代关系
 都应当保留）。 可以证明，存在唯一的答案。
 
@@ -862,8 +862,8 @@ func TrimBST(root *Entity.TreeNode, low, high int) *Entity.TreeNode {
 }
 
 /*
-1.18 两棵二叉搜索树中的所有元素
-给你root1和root2这两棵二叉搜索树。
+leetcode 1305. 两棵二叉搜索树中的所有元素
+1.18 给你root1和root2这两棵二叉搜索树。
 请你返回一个列表，其中包含两棵树中的所有整数并按升序排序。
 
 示例1:
@@ -874,32 +874,36 @@ func TrimBST(root *Entity.TreeNode, low, high int) *Entity.TreeNode {
 // GetAllElements 中序遍历+归并排序
 func GetAllElements(root1, root2 *Entity.TreeNode) []int {
 	var dfs func(*Entity.TreeNode) []int
-	dfs = func(node *Entity.TreeNode) []int {
-		var list []int
+	dfs = func(node *Entity.TreeNode) (res []int) {
 		if node == nil {
-			return list
+			return res
 		}
-		list = append(list, dfs(node.Left)...)
-		list = append(list, node.Val)
-		list = append(list, dfs(node.Right)...)
-		return list
+		res = append(res, dfs(node.Left)...)
+		res = append(res, node.Val)
+		res = append(res, dfs(node.Right)...)
+		return res
 	}
-	var res []int
 	l1, l2 := dfs(root1), dfs(root2)
-	length1, length2 := len(l1), len(l2)
+	if len(l1) == 0 {
+		return l2
+	}
+	if len(l2) == 0 {
+		return l1
+	}
+	var ret []int
 	s1, s2 := 0, 0
-	for s1 < length1 && s2 < length2 {
-		if l1[s1] <= l2[s2] {
-			res = append(res, l1[s1])
+	for s1 < len(l1) && s2 < len(l2) {
+		if l1[s1] < l2[s2] {
+			ret = append(ret, l1[s1])
 			s1++
 		} else {
-			res = append(res, l2[s2])
+			ret = append(ret, l2[s2])
 			s2++
 		}
 	}
-	res = append(res, l1[s1:]...)
-	res = append(res, l2[s2:]...)
-	return res
+	ret = append(ret, l1[s1:]...)
+	ret = append(ret, l2[s2:]...)
+	return ret
 }
 
 /*
