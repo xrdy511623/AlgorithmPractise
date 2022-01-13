@@ -926,3 +926,25 @@ func BstFromPreorder(preorder []int) *Entity.TreeNode {
 	root.Right = BstFromPreorder(right)
 	return root
 }
+
+/*
+1.20 拓展: 后序遍历构造二叉搜索树
+*/
+
+func BstFromPostorder(postorder []int) *Entity.TreeNode {
+	if len(postorder) == 0 {
+		return nil
+	}
+	root := &Entity.TreeNode{Val: postorder[len(postorder)-1]}
+	var left, right []int
+	for _, v := range postorder[:len(postorder)-1] {
+		if v < root.Val {
+			left = append(left, v)
+		} else {
+			right = append(right, v)
+		}
+	}
+	root.Left = BstFromPreorder(left)
+	root.Right = BstFromPreorder(right)
+	return root
+}
