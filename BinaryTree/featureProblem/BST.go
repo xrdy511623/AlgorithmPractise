@@ -150,14 +150,14 @@ leetcode 98. 验证二叉搜索树
 func CheckIsValidBST(root *Entity.TreeNode) bool {
 	minValue := math.MinInt64
 	var stack []*Entity.TreeNode
-	for len(stack) > 0 || root != nil{
-		if root != nil{
+	for len(stack) > 0 || root != nil {
+		if root != nil {
 			stack = append(stack, root)
 			root = root.Left
-		}else{
+		} else {
 			root = stack[len(stack)-1]
 			stack = stack[:len(stack)-1]
-			if root.Val <= minValue{
+			if root.Val <= minValue {
 				return false
 			}
 			minValue = root.Val
@@ -220,8 +220,9 @@ func SearchBSTSimple(root *Entity.TreeNode, val int) *Entity.TreeNode {
 }
 
 /*
-1.5 中序后继节点
-设计一个算法，找出二叉搜索树中指定节点的“下一个”节点（也即中序后继）。
+面试题 04.06. 后继者
+剑指Offer II 053. 二叉搜索树中的中序后继
+1.5 设计一个算法，找出二叉搜索树中指定节点的“下一个”节点（也即中序后继）。
 如果指定节点没有对应的“下一个”节点，则返回null。
 */
 
@@ -262,7 +263,6 @@ func InorderSuccessor(root, p *Entity.TreeNode) *Entity.TreeNode {
 	}
 }
 
-
 // InorderSuccessorUseIteration 迭代法解决，时间复杂度降低为O(pos),空间复杂度降低为O(1)
 func InorderSuccessorUseIteration(root, p *Entity.TreeNode) *Entity.TreeNode {
 	var prev *Entity.TreeNode
@@ -270,13 +270,17 @@ func InorderSuccessorUseIteration(root, p *Entity.TreeNode) *Entity.TreeNode {
 		if root.Val < p.Val {
 			root = root.Right
 		} else {
+			// prev为大于p的父节点
 			prev = root
 			root = root.Left
 		}
 	}
+	// 此时在BST中找到了节点p
+	// 如果p节点没有右子节点，则其中序后继节点为prev
 	if p.Right == nil {
 		return prev
 	} else {
+		// 否则可在其右子树中寻找其中序后继节点
 		post := p.Right
 		for post.Left != nil {
 			post = post.Left
@@ -286,8 +290,8 @@ func InorderSuccessorUseIteration(root, p *Entity.TreeNode) *Entity.TreeNode {
 }
 
 /*
-1.6 二叉搜索树的范围和
-给定二叉搜索树的根结点root，返回值位于范围[low, high] 之间的所有结点的值的和。
+leetcode 938. 二叉搜索树的范围和
+1.6 给定二叉搜索树的根结点root，返回值位于范围[low, high] 之间的所有结点的值的和。
 
 示例:
 输入：root = [10,5,15,3,7,null,18], low = 7, high = 15
@@ -334,8 +338,8 @@ func RangeSumBSTSimple(root *Entity.TreeNode, low int, high int) int {
 }
 
 /*
-1.7 把二叉搜索树转换为累加树
-给出二叉搜索树的根节点，该树的节点值各不相同，请你将其转换为累加树（Greater Sum Tree），使每个节点
+leetcode 538. 把二叉搜索树转换为累加树
+1.7 给出二叉搜索树的根节点，该树的节点值各不相同，请你将其转换为累加树（Greater Sum Tree），使每个节点
 node的新值等于原树中大于或等于node.val的值之和。
 
 提醒一下，二叉搜索树满足下列约束条件：
@@ -419,9 +423,8 @@ func SortedArrayToBST(nums []int) *Entity.TreeNode {
 }
 
 /*
-1.9 有序链表转换二叉搜索树
-给定一个单链表，其中的元素按升序排序，将其转换为高度平衡的二叉搜索树。
-
+leetcode 109. 有序链表转换二叉搜索树
+1.9 给定一个单链表，其中的元素按升序排序，将其转换为高度平衡的二叉搜索树。
 本题中，一个高度平衡二叉树是指一个二叉树每个节点的左右两个子树的高度差的绝对值不超过1。
 
 示例:
@@ -436,7 +439,7 @@ func SortedArrayToBST(nums []int) *Entity.TreeNode {
 */
 
 /*
-思路:本题与1.29 将有序数组转换为二叉搜索树本质上是一样的，不同的是多了一个顺序遍历有序链表得到升序
+思路:本题与1.29 将有序数组转换为二叉搜索树本质上是一样的，不过是多了一个顺序遍历有序链表得到升序
 数组的过程。
 */
 
@@ -455,7 +458,7 @@ func sortedListToBST(head *Entity2.ListNode) *Entity.TreeNode {
 			return nil
 		}
 		mid := len(nums) / 2
-		root := &Entity.TreeNode{nums[mid], nil, nil}
+		root := &Entity.TreeNode{Val: nums[mid]}
 		root.Left = dfs(nums[:mid])
 		root.Right = dfs(nums[mid+1:])
 		return root
@@ -464,9 +467,9 @@ func sortedListToBST(head *Entity2.ListNode) *Entity.TreeNode {
 }
 
 /*
-1.10 验证二叉搜索树的后序遍历序列
-输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历结果。如果是则返回true，否则返回false。假设输入的数组的
-任意两个数字都互不相同。
+剑指Offer 33. 二叉搜索树的后序遍历序列
+1.10 输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历结果。如果是则返回true，否则返回false。假设输入
+的数组的任意两个数字都互不相同。
 输入: [1,6,3,2,5]
 输出: false
 
@@ -501,7 +504,7 @@ recur(m,j−1):判断此树的右子树是否正确。
 */
 
 func VerifyPostOrder(postOrder []int) bool {
-	var recur func(array []int, start, stop int) bool
+	var recur func([]int, int, int) bool
 	recur = func(array []int, start, stop int) bool {
 		if start >= stop {
 			return true
@@ -518,6 +521,33 @@ func VerifyPostOrder(postOrder []int) bool {
 	}
 
 	return recur(postOrder, 0, len(postOrder)-1)
+}
+
+/*
+1.10.1 拓展 验证二叉搜索树的前序遍历序列
+输入一个整数数组，判断该数组是不是某二叉搜索树的前序遍历结果。如果是则返回true，否则返回false。假设输入
+的数组的任意两个数字都互不相同。
+输入: [8，5，1，7，10，12]
+输出: true
+*/
+
+func VerifyPreOrder(preOrder []int) bool {
+	var recur func([]int, int, int) bool
+	recur = func(nums []int, start, stop int) bool {
+		if start >= stop {
+			return true
+		}
+		p := start + 1
+		for nums[p] < nums[start] {
+			p++
+		}
+		m := p
+		for nums[p] > nums[start] && p < stop {
+			p++
+		}
+		return p == stop && recur(nums, start+1, m-1) && recur(nums, m, stop)
+	}
+	return recur(preOrder, 0, len(preOrder)-1)
 }
 
 /*
@@ -867,4 +897,32 @@ func GetAllElements(root1, root2 *Entity.TreeNode) []int {
 	res = append(res, l1[s1:]...)
 	res = append(res, l2[s2:]...)
 	return res
+}
+
+/*
+1008. 前序遍历构造二叉搜索树
+1.19 返回与给定前序遍历preorder相匹配的二叉搜索树（binary search tree）的根结点。
+题目保证，对于给定的测试用例，总能找到满足要求的二叉搜索树。
+
+示例：
+输入：[8,5,1,7,10,12]
+输出：[8,5,10,1,7,null,12]
+*/
+
+func BstFromPreorder(preorder []int) *Entity.TreeNode {
+	if len(preorder) == 0 {
+		return nil
+	}
+	root := &Entity.TreeNode{Val: preorder[0]}
+	var left, right []int
+	for _, v := range preorder[1:] {
+		if v < root.Val {
+			left = append(left, v)
+		} else {
+			right = append(right, v)
+		}
+	}
+	root.Left = BstFromPreorder(left)
+	root.Right = BstFromPreorder(right)
+	return root
 }
