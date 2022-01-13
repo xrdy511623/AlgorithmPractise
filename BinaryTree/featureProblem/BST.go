@@ -581,9 +581,9 @@ func LowestCommonAncestorUseRecursion(root, p, q *Entity.TreeNode) *Entity.TreeN
 }
 
 /*
-1.12 展平二叉搜索树
-给你一棵二叉搜索树，请按中序遍历 将其重新排列为一棵递增顺序搜索树，使树中最左边的节点成为树的根节点，并且每个节点没有左子节点，
-只有一个右子节点。
+剑指Offer II 052. 展平二叉搜索树
+1.12 给你一棵二叉搜索树，请按中序遍历 将其重新排列为一棵递增顺序搜索树，使树中最左边的节点成为树的根节点，
+并且每个节点没有左子节点，只有一个右子节点。
 */
 
 // IncreasingBST 时间复杂度O(2*N)，空间复杂度O(N)
@@ -629,10 +629,10 @@ func IncreasingSimpleBST(root *Entity.TreeNode) *Entity.TreeNode {
 }
 
 /*
-1.13 二叉搜索树迭代器
-实现一个二叉搜索树迭代器类BSTIterator，表示一个按中序遍历二叉搜索树（BST）的迭代器：
-BSTIterator(TreeNode root) 初始化BSTIterator类的一个对象。BST的根节点root会作为构造函数的一部分给出。指针应初始化为一个不存在于
-BST中的数字，且该数字小于BST中的任何元素。
+leetcode 173. 二叉搜索树迭代器
+1.13 实现一个二叉搜索树迭代器类BSTIterator，表示一个按中序遍历二叉搜索树（BST）的迭代器：
+BSTIterator(TreeNode root) 初始化BSTIterator类的一个对象。BST的根节点root会作为构造函数的一部分给出。
+指针应初始化为一个不存在于BST中的数字，且该数字小于BST中的任何元素。
 boolean hasNext() 如果向指针右侧遍历存在数字，则返回true ；否则返回false 。
 int next()将指针向右移动，然后返回指针处的数字。
 注意，指针初始化为一个不存在于BST中的数字，所以对next()的首次调用将返回 BST 中的最小元素。
@@ -644,10 +644,10 @@ type BSTIterator struct {
 	Root *Entity.TreeNode
 }
 
-func Constructor(root *Entity.TreeNode) *BSTIterator {
+func Constructor(root *Entity.TreeNode) BSTIterator {
 	nums := make([]int, 0)
 	Inorder(root, &nums)
-	return &BSTIterator{
+	return BSTIterator{
 		Nums: nums,
 		Root: root,
 	}
@@ -673,8 +673,8 @@ func Inorder(node *Entity.TreeNode, nums *[]int) {
 }
 
 /*
-1.14 生成不同的二叉搜索树
-给你一个整数n，请你生成并返回所有由n个节点组成且节点值从1到n互不相同的不同二叉搜索树 。
+leetcode 95. 不同的二叉搜索树
+1.14 给你一个整数n，请你生成并返回所有由n个节点组成且节点值从1到n互不相同的不同二叉搜索树。
 可以按任意顺序返回答案。
 输入：n = 3
 输出：[[1,null,2,null,3],[1,null,3,2],[2,1,3],[3,1,null,null,2],[3,2,null,1]]
@@ -712,8 +712,8 @@ func Helper(start, end int) []*Entity.TreeNode {
 }
 
 /*
-1.15 二叉搜索树的最小绝对差
-给你一个二叉搜索树的根节点root ，返回树中任意两不同节点值之间的最小差值 。
+leetcode 530. 二叉搜索树的最小绝对差
+1.15 给你一个二叉搜索树的根节点root ，返回树中任意两不同节点值之间的最小差值。
 差值是一个正数，其数值等于两值之差的绝对值。
 
 示例:
@@ -768,8 +768,8 @@ func GetMinimumDifferenceSimple(root *Entity.TreeNode) int {
 }
 
 /*
-1.16 二叉搜索树中的众数
-给定一个有相同值的二叉搜索树（BST），找出BST中的所有众数（出现频率最高的元素）。
+leetcode 501. 二叉搜索树中的众数
+1.16 给定一个有相同值的二叉搜索树（BST），找出BST中的所有众数（出现频率最高的元素）。
 
 假定BST有如下定义：
 结点左子树中所含结点的值小于等于当前结点的值
@@ -807,6 +807,7 @@ func FindMode(root *Entity.TreeNode) []int {
 			// 否则，出现频次重置为1
 			count = 1
 		}
+		prev = node
 		// 如果出现频次与最大出现频次相等，说明当前节点值为众数
 		if count == maxCount {
 			res = append(res, node.Val)
