@@ -565,10 +565,9 @@ func BinaryTreePathsUseDFS(root *Entity.TreeNode) []string {
 	return paths
 }
 
-
 /*
-1.8 祖父节点值为偶数的节点之和
-给你一棵二叉树，请你返回满足以下条件的所有节点的值之和：
+leetcode 1315. 祖父节点值为偶数的节点和
+1.8 给你一棵二叉树，请你返回满足以下条件的所有节点的值之和：
 该节点的祖父节点的值为偶数。（一个节点的祖父节点是指该节点的父节点的父节点。）
 如果不存在祖父节点值为偶数的节点，那么返回0 。
 */
@@ -643,8 +642,8 @@ func SumEvenGrandparentSimple(root *Entity.TreeNode) int {
 }
 
 /*
-1.9 节点与其祖先之间的最大差值
-给定二叉树的根节点root，找出存在于不同节点A和B之间的最大值V，其中V = |A.val - B.val|，
+leetcode 1026. 节点与其祖先之间的最大差值
+1.9 给定二叉树的根节点root，找出存在于不同节点A和B之间的最大值V，其中V = |A.val - B.val|，
 且A是B的祖先。
 (如果 A 的任何子节点之一为 B，或者 A 的任何子节点是 B 的祖先，那么我们认为 A 是 B 的祖先)
 
@@ -683,28 +682,51 @@ func MaxAncestorDiff(root *Entity.TreeNode) int {
 	return dfs(root, root.Val, root.Val)
 }
 
+type MaxDiff struct {
+	Node *Entity.TreeNode
+	// Diff中存储两个数，分别是当前节点与其所有祖先节点值中的最大值和最小值
+	Diff []int
+}
+
 // MaxAncestorDiffSimple BFS
 func MaxAncestorDiffSimple(root *Entity.TreeNode) int {
 	maxVal := 0
 	if root == nil {
 		return maxVal
 	}
-	queue := []Group{Group{root, []int{root.Val}}}
+	queue := []MaxDiff{MaxDiff{root, []int{root.Val, root.Val}}}
 	for len(queue) != 0 {
 		node := queue[0].Node
-		path := queue[0].Path
+		diff := queue[0].Diff
+		max, min := diff[0], diff[1]
 		queue = queue[1:]
-		tempMax := Utils.MaxValueOfArray(path) - Utils.MinValueOfArray(path)
-		maxVal = Utils.Max(maxVal, tempMax)
-		temp := make([]int, len(path))
-		copy(temp, path)
+		// 迭代最大差值maxVal
+		maxVal = Utils.Max(maxVal, max-min)
 		if node.Left != nil {
-			leftPath := append(temp, node.Left.Val)
-			queue = append(queue, Group{node.Left, leftPath})
+			// 迭代当前节点左子节点Diff中的最大值和最小值
+			// 就是将左子节点的值与其父亲节点，也就是当前节点的值进行比较
+			leftMax, leftMin := max, min
+			if leftMax < node.Left.Val {
+				leftMax = node.Left.Val
+			}
+			if leftMin > node.Left.Val {
+				leftMin = node.Left.Val
+			}
+			leftDiff := []int{leftMax, leftMin}
+			queue = append(queue, MaxDiff{node.Left, leftDiff})
 		}
 		if node.Right != nil {
-			rightPath := append(temp, node.Right.Val)
-			queue = append(queue, Group{node.Right, rightPath})
+			// 迭代当前节点右子节点Diff中的最大值和最小值
+			// 就是将右子节点的值与其父亲节点，也就是当前节点的值进行比较
+			rightMax, rightMin := max, min
+			if rightMax < node.Right.Val {
+				rightMax = node.Right.Val
+			}
+			if rightMin > node.Right.Val {
+				rightMin = node.Right.Val
+			}
+			rightDiff := []int{rightMax, rightMin}
+			queue = append(queue, MaxDiff{node.Right, rightDiff})
 		}
 	}
 	return maxVal
