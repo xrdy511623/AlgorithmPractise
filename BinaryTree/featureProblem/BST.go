@@ -14,8 +14,8 @@ BST二叉搜索树(Binary Search Tree)是一种特殊类型的二叉树，它的
 */
 
 /*
-1.1 二叉搜索树中的插入操作
-给定二叉搜索树（BST）的根节点和要插入树中的值，将值插入二叉搜索树。 返回插入后二叉搜索树的根节点。
+leetcode 701. 二叉搜索树中的插入操作
+1.1 给定二叉搜索树（BST）的根节点和要插入树中的值，将值插入二叉搜索树。 返回插入后二叉搜索树的根节点。
 输入数据保证，新值和原始二叉搜索树中的任意节点值都不同。
 注意，可能存在多种有效的插入方式，只要树在插入后仍保持为二叉搜索树即可。你可以返回任意有效的结果。
 */
@@ -60,8 +60,8 @@ func InsertIntoBSTSimple(root *Entity.TreeNode, val int) *Entity.TreeNode {
 }
 
 /*
-1.2 删除二叉搜索树中的节点
-给定一个二叉搜索树的根节点root和一个值 key，删除二叉搜索树中的key对应的节点，并保证二叉搜索树的性质不变。
+leetcode 450. 删除二叉搜索树中的节点
+1.2 给定一个二叉搜索树的根节点root和一个值 key，删除二叉搜索树中的key对应的节点，并保证二叉搜索树的性质不变。
 返回二叉搜索树（有可能被更新）的根节点的引用。
 
 一般来说，删除节点可分为两个步骤：
@@ -82,14 +82,15 @@ func InsertIntoBSTSimple(root *Entity.TreeNode, val int) *Entity.TreeNode {
 1 如果key < root.Val，说明要删除的节点在BST的左子树，那么递归的去左子树删除即可
 2 如果key > root.Val，说明要删除的节点在BST的右子树，那么递归的去右子树删除即可
 3 如果key = root.Val，说明要删除的节点就是本节点，这一类又分以下三种情况
-a 要删除的节点是叶子节点，那很简单，直接将当前节点删除，置为nil即可
+a 要删除的节点是叶子节点，那很简单，直接将当前节点删除，置为nil即可;
 b 要删除的节点有右子节点，那么为了维持BST的特性，我们需要找到该节点的后继节点post(BST中大于它的最小节点)，
-将该节点的值更新为后继节点post的值，然后递归的在当前节点的右子树中删除该后继节点post
+将该节点的值更新为后继节点post的值，然后递归的在当前节点的右子树中删除该后继节点post;
 c 要删除的节点有左子节点，那么为了维持BST的特性，我们需要找到该节点的前驱节点pre(BST中小于于它的最大节点)，
-将该节点的值更新为前驱节点pre的值，然后递归的在当前节点的左子树中删除该前驱节点pre
-最后返回当前节点的引用即可
+将该节点的值更新为前驱节点pre的值，然后递归的在当前节点的左子树中删除该前驱节点pre;
+最后返回当前节点的引用即可。
 */
 
+// DeleteNodeInBST 时间复杂度O(logN)，空间复杂度O(H)
 func DeleteNodeInBST(root *Entity.TreeNode, key int) *Entity.TreeNode {
 	if root == nil {
 		return nil
@@ -136,8 +137,8 @@ func Successor(cur *Entity.TreeNode) *Entity.TreeNode {
 }
 
 /*
-1.3 验证二叉搜索树
-给你一个二叉树的根节点root，判断其是否是一个有效的二叉搜索树。
+leetcode 98. 验证二叉搜索树
+1.3 给你一个二叉树的根节点root，判断其是否是一个有效的二叉搜索树。
 
 有效二叉搜索树定义如下：
 节点的左子树只包含小于当前节点的数。
@@ -147,23 +148,20 @@ func Successor(cur *Entity.TreeNode) *Entity.TreeNode {
 
 // CheckIsValidBST 一个很容易想到的思路是中序遍历二叉树，如果它是BST，就会得到一个升序序列，否则就不是BST
 func CheckIsValidBST(root *Entity.TreeNode) bool {
-	if root == nil {
-		return false
-	}
-	var dfs func(root *Entity.TreeNode) []int
-	dfs = func(root *Entity.TreeNode) (res []int) {
-		if root == nil {
-			return res
-		}
-		res = append(res, dfs(root.Left)...)
-		res = append(res, root.Val)
-		res = append(res, dfs(root.Right)...)
-		return res
-	}
-	sortedArray := dfs(root)
-	for i := 1; i < len(sortedArray); i++ {
-		if sortedArray[i] <= sortedArray[i-1] {
-			return false
+	minValue := math.MinInt64
+	var stack []*Entity.TreeNode
+	for len(stack) > 0 || root != nil{
+		if root != nil{
+			stack = append(stack, root)
+			root = root.Left
+		}else{
+			root = stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
+			if root.Val <= minValue{
+				return false
+			}
+			minValue = root.Val
+			root = root.Right
 		}
 	}
 	return true
@@ -188,12 +186,12 @@ func helper(root *Entity.TreeNode, min, max int) bool {
 }
 
 /*
-1.4 二叉搜索树中的搜索
-给定二叉搜索树（BST）的根节点和一个值。你需要在BST中找到节点值等于给定值的节点。返回以该节点为根的子树。
+leetcode 700. 二叉搜索树中的搜索
+1.4 给定二叉搜索树（BST）的根节点和一个值。你需要在BST中找到节点值等于给定值的节点。返回以该节点为根的子树。
 如果节点不存在，则返回NULL。
 */
 
-// DFS递归
+// SearchBST DFS递归
 func SearchBST(root *Entity.TreeNode, val int) *Entity.TreeNode {
 	if root == nil || root.Val == val {
 		return root
@@ -207,7 +205,7 @@ func SearchBST(root *Entity.TreeNode, val int) *Entity.TreeNode {
 	return nil
 }
 
-// 迭代法
+// SearchBSTSimple 迭代法
 func SearchBSTSimple(root *Entity.TreeNode, val int) *Entity.TreeNode {
 	for root != nil {
 		if root.Val < val {
@@ -263,6 +261,7 @@ func InorderSuccessor(root, p *Entity.TreeNode) *Entity.TreeNode {
 		return nil
 	}
 }
+
 
 // InorderSuccessorUseIteration 迭代法解决，时间复杂度降低为O(pos),空间复杂度降低为O(1)
 func InorderSuccessorUseIteration(root, p *Entity.TreeNode) *Entity.TreeNode {
