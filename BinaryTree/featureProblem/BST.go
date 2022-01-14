@@ -956,3 +956,62 @@ func BstFromPostorder(postorder []int) *Entity.TreeNode {
 	root.Right = BstFromPreorder(right)
 	return root
 }
+
+/*
+剑指 Offer II 056. 二叉搜索树中两个节点之和
+1.21 给定一个二叉搜索树的 根节点 root 和一个整数 k , 请判断该二叉搜索树中是否存在两个节点它们的值之和等于 k 。
+假设二叉搜索树中节点的值均唯一。
+
+示例1：
+输入: root = [8,6,10,5,7,9,11], k = 12
+输出: true
+解释: 节点 5 和节点 7 之和等于 12
+
+示例2：
+输入: root = [8,6,10,5,7,9,11], k = 22
+输出: false
+解释: 不存在两个节点值之和为 22 的节点
+*/
+
+// FindTarget 先序遍历+哈希表
+func FindTarget(root *Entity.TreeNode, k int) bool {
+	hashtable := make(map[int]bool)
+	var dfs func(*Entity.TreeNode) bool
+	dfs = func(node *Entity.TreeNode) bool {
+		if node == nil {
+			return false
+		}
+		if hashtable[k-node.Val] {
+			return true
+		}
+		hashtable[node.Val] = true
+		return dfs(node.Left) || dfs(node.Right)
+	}
+	return dfs(root)
+}
+
+// findTarget 中序遍历+双指针
+func findTarget(root *Entity.TreeNode, k int) bool {
+	var sortedArray []int
+	var dfs func(*Entity.TreeNode)
+	dfs = func(node *Entity.TreeNode) {
+		if node == nil {
+			return
+		}
+		dfs(node.Left)
+		sortedArray = append(sortedArray, node.Val)
+		dfs(node.Right)
+	}
+	dfs(root)
+	l, r := 0, len(sortedArray)-1
+	for l < r {
+		if sortedArray[l]+sortedArray[r] == k {
+			return true
+		} else if sortedArray[l]+sortedArray[r] > k {
+			r--
+		} else {
+			l++
+		}
+	}
+	return false
+}

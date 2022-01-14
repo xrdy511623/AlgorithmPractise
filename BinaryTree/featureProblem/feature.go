@@ -274,17 +274,18 @@ func RightSideView(root *Entity.TreeNode) []int {
 	}
 	queue := []*Entity.TreeNode{root}
 	for len(queue) != 0 {
-		var temp []*Entity.TreeNode
-		for _, node := range queue {
+		levelSize := len(queue)
+		res = append(res, queue[levelSize-1].Val)
+		for i:=0;i<levelSize;i++{
+			node := queue[0]
+			queue = queue[1:]
 			if node.Left != nil {
-				temp = append(temp, node.Left)
+				queue = append(queue, node.Left)
 			}
 			if node.Right != nil {
-				temp = append(temp, node.Right)
+				queue = append(queue, node.Right)
 			}
 		}
-		res = append(res, queue[len(queue)-1].Val)
-		queue = temp
 	}
 	return res
 }
@@ -386,8 +387,8 @@ func IsCompleteTree(root *Entity.TreeNode) bool {
 
 
 /*
-1.8 相同的二叉树
-给你两棵二叉树的根节点p和q ，编写一个函数来检验这两棵树是否相同。
+leetcode 100. 相同的树
+1.8 给你两棵二叉树的根节点p和q ，编写一个函数来检验这两棵树是否相同。
 如果两个树在结构上相同，并且节点具有相同的值，则认为它们是相同的。
 */
 
@@ -403,8 +404,8 @@ func IsSameTree(p, q *Entity.TreeNode) bool {
 }
 
 /*
-1.9 二叉树的最大宽度
-给定一个二叉树，编写一个函数来获取这个树的最大宽度。树的宽度是所有层中的最大宽度。这个二叉树与满二叉树
+662. 二叉树最大宽度
+1.9 给定一个二叉树，编写一个函数来获取这个树的最大宽度。树的宽度是所有层中的最大宽度。这个二叉树与满二叉树
 （full binary tree）结构相同，但一些节点为空。
 
 每一层的宽度被定义为两个端点（该层最左和最右的非空节点，两端点间的null节点也计入长度）之间的长度。
@@ -454,9 +455,8 @@ func WidthOfBinaryTree(root *Entity.TreeNode) int {
 }
 
 /*
-1.10 对称二叉树
-给定一个二叉树，检查它是否是镜像对称的。
-
+leetcode 101. 对称二叉树
+1.10 给定一个二叉树，检查它是否是镜像对称的。
 
 例如，二叉树[1,2,2,3,4,4,3] 是对称的。
 
@@ -475,6 +475,10 @@ func WidthOfBinaryTree(root *Entity.TreeNode) int {
    \   \
    3    3
 
+提示：
+树中节点数目在范围 [1, 1000] 内
+-100 <= Node.val <= 100
+
 */
 
 /*
@@ -483,8 +487,9 @@ func WidthOfBinaryTree(root *Entity.TreeNode) int {
 [4,3,2]反转之后的结果，找到这个规律问题就好解决了。不过，还需要注意的是，按照题意如果子树中有空节点，也需要
 填充到遍历后的序列中，否则会出错。以[1,2,2,null,3,null,3]这棵二叉树为例，如果忽略掉空节点，其左子树的先序
 遍历序列[2,3]正好也是其右子树后序遍历序列[3, 2]反转后的结果，得出结论这棵二叉树也是对称的，显然是不对的，所以
-这里我们对空节点一律以0填充。这样，其左子树的先序遍历序列preOrder就变成了[2, 0, 3, 0, 0],右子树后序遍历序列
-postOrder为[0, 0, 0, 3, 2], postOrder反转后是[2, 3, 0, 0, 0]，显然与preOrder不同，问题得以解决。
+这里我们对空节点一律以101(节点值介于-100和100之间)填充。这样，其左子树的先序遍历序列preOrder就变成了
+[2, 101, 3, 101, 101],右子树后序遍历序列postOrder为[101, 101, 101, 3, 2], postOrder反转后是
+[2, 3, 101, 101, 101]，显然与preOrder不同，问题得以解决。
 */
 
 func IsSymmetric(root *Entity.TreeNode) bool {
@@ -500,7 +505,7 @@ func IsSymmetric(root *Entity.TreeNode) bool {
 func PreOrder(node *Entity.TreeNode) []int {
 	var res []int
 	if node == nil {
-		res = append(res, 0)
+		res = append(res, 101)
 		return res
 	}
 	res = append(res, node.Val)
@@ -512,7 +517,7 @@ func PreOrder(node *Entity.TreeNode) []int {
 func PostOrder(node *Entity.TreeNode) []int {
 	var res []int
 	if node == nil {
-		res = append(res, 0)
+		res = append(res, 101)
 		return res
 	}
 	res = append(res, PostOrder(node.Left)...)
@@ -527,7 +532,7 @@ func PostOrder(node *Entity.TreeNode) []int {
 返回真,如果根节点的左右子节点有一个为空,返回假;如果节点的左右子节点都不为空,判断
 左右子节点的值是否相等,如果不相等则返回假,如果相等则继续递归判断;由于左右子节点的子节点一共有4个
 (包括空节点),所以将node1.left与node2.right进行比较判断, 将node1.right与node2.right
-进行比较判断
+进行比较判断。
 */
 
 func IsSymmetricUseBFS(root *Entity.TreeNode) bool {
@@ -648,8 +653,8 @@ func GetMaxElement(root *Entity.TreeNode, max *int) {
 }
 
 /*
-1.12 二叉树的最小深度
-给定一个二叉树，找出其最小深度。
+leetcode 111. 二叉树的最小深度
+1.12 给定一个二叉树，找出其最小深度。
 最小深度是从根节点到最近叶子节点的最短路径上的节点数量。
 说明: 叶子节点是指没有子节点的节点。
 
