@@ -10,7 +10,8 @@ import (
 )
 
 /*
-1.1 翻转二叉树
+leetcode 226. 翻转二叉树
+1.1 翻转一棵二叉树。
 */
 
 /*
@@ -32,8 +33,7 @@ func InvertBinaryTree(root *Entity.TreeNode) *Entity.TreeNode {
 	}
 	left := InvertBinaryTree(root.Left)
 	right := InvertBinaryTree(root.Right)
-	root.Left = right
-	root.Right = left
+	root.Left, root.Right = right, left
 	return root
 }
 
@@ -42,9 +42,7 @@ func InvertBinaryTreeTwo(root *Entity.TreeNode) *Entity.TreeNode {
 	if root == nil {
 		return nil
 	}
-	temp := root.Left
-	root.Left = root.Right
-	root.Right = temp
+	root.Left, root.Right = root.Right, root.Left
 	InvertBinaryTreeTwo(root.Left)
 	InvertBinaryTreeTwo(root.Right)
 	return root
@@ -114,7 +112,7 @@ func InvertTreeUseBFS(root *Entity.TreeNode) *Entity.TreeNode {
 */
 
 func MaxDepth(root *Entity.TreeNode) int {
-	var maxDepth int
+	maxDepth := 0
 	if root == nil {
 		return maxDepth
 	}
@@ -143,12 +141,12 @@ DFS递归法求解
 复杂度等价于二叉树的高度。
 递归三部曲:
 1 确定递归函数的参数和返回值
-参数为当前二叉树根节点的指针，返回值为当前二叉树的最大深度
+参数为当前二叉树根节点的指针，返回值为当前二叉树的最大深度。
 2 明确递归终止条件
-遇到空节点，返回0，表明上一层已经是叶子节点，深度不会再增加了
+遇到空节点，返回0，表明上一层已经是叶子节点，深度不会再增加了。
 3 确定单层递归逻辑
 当前二叉树的最大深度,如果当前二叉树根节点为空，则返回0，否则返回其左子树的最大深度ld和右子树的最大深度rd的
-较大值+1(1代表根节点这一层的深度)
+较大值+1(1代表根节点这一层的深度)。
 
 */
 
@@ -160,8 +158,9 @@ func MaxDepthUseDfs(root *Entity.TreeNode) int {
 }
 
 /*
-1.3 二叉树的最近公共祖先
-给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。
+leetcode 236. 二叉树的最近公共祖先
+1.3 给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。
+
 提示：
 树中节点数目在范围 [2, 105] 内。
 -109 <= Node.val <= 109
@@ -199,7 +198,7 @@ func NearestCommonAncestorUseIteration(root, p, q *Entity.TreeNode) *Entity.Tree
 		return root
 	}
 	parentDict := make(map[int]*Entity.TreeNode)
-	visited := make(map[int]int)
+	visited := make(map[int]bool)
 	var dfs func(node *Entity.TreeNode)
 	dfs = func(node *Entity.TreeNode) {
 		if node.Left != nil {
@@ -213,11 +212,11 @@ func NearestCommonAncestorUseIteration(root, p, q *Entity.TreeNode) *Entity.Tree
 	}
 	dfs(root)
 	for p != nil {
-		visited[p.Val]++
+		visited[p.Val] = true
 		p = parentDict[p.Val]
 	}
 	for q != nil {
-		if _, ok := visited[q.Val]; ok {
+		if visited[q.Val] {
 			return q
 		}
 		q = parentDict[q.Val]
@@ -226,8 +225,8 @@ func NearestCommonAncestorUseIteration(root, p, q *Entity.TreeNode) *Entity.Tree
 }
 
 /*
-1.4 计算二叉树的直径
-给定一棵二叉树，你需要计算它的直径长度。一棵二叉树的直径长度是任意两个节点路径长度中的
+leetcode 543. 二叉树的直径
+1.4 给定一棵二叉树，你需要计算它的直径长度。一棵二叉树的直径长度是任意两个节点路径长度中的
 最大值。这条路径可能穿过也可能不穿过根节点。
 注意：两节点之间的路径长度是以它们之间边的数目表示。
 */
@@ -259,8 +258,8 @@ func DiameterOfBinaryTree(root *Entity.TreeNode) int {
 }
 
 /*
-1.5 二叉树的右视图
-给定一个二叉树的根节点root，想象自己站在它的右侧，按照从顶部到底部的顺序，返回从右侧所能看到的节点值。
+leetcode 199. 二叉树的右视图
+1.5 给定一个二叉树的根节点root，想象自己站在它的右侧，按照从顶部到底部的顺序，返回从右侧所能看到的节点值。
 */
 
 /*
@@ -291,15 +290,15 @@ func RightSideView(root *Entity.TreeNode) []int {
 }
 
 /*
-1.6 平衡二叉树
-给定一个二叉树，判断它是否是高度平衡的二叉树。
+leetcode 110. 平衡二叉树
+1.6 给定一个二叉树，判断它是否是高度平衡的二叉树。
 本题中，一棵高度平衡二叉树定义为：
 一个二叉树每个节点的左右两个子树的高度差的绝对值不超过1 。
 */
 
 /*
 思路:自顶向下的递归
-利用二叉树的前序遍历，即对于当前遍历到的节点，首先计算左右子树的高度，如果左右子树的高度差是否不超过1，再分别
+利用二叉树的前序遍历，即对于当前遍历到的节点，首先计算左右子树的高度，如果左右子树的高度差不超过1，再分别
 递归地遍历左右子节点，并判断左子树和右子树是否平衡。这是一个自顶向下的递归的过程。
 时间复杂度：O(n^2)，其中n是二叉树中的节点个数。
 最坏情况下，二叉树是满二叉树，需要遍历二叉树中的所有节点，时间复杂度是 O(n)。
@@ -351,10 +350,10 @@ func Height(root *Entity.TreeNode) int {
 }
 
 /*
-1.7 二叉树的完全性检验
-给定一个二叉树，确定它是否是一个完全二叉树。
+958. 二叉树的完全性检验
+1.7 给定一个二叉树，确定它是否是一个完全二叉树。
 百度百科中对完全二叉树的定义如下：
-若设二叉树的深度为 h，除第 h 层外，其它各层 (1～h-1) 的节点数都达到最大个数，第 h 层所有的节点都连续集中在
+若设二叉树的深度为h，除第h层外，其它各层 (1～h-1) 的节点数都达到最大个数，第h层所有的节点都连续集中在
 最左边，这就是完全二叉树。（注：第h层可能包含 1~2h个节点。）
 */
 
@@ -368,23 +367,23 @@ func IsCompleteTree(root *Entity.TreeNode) bool {
 	if root == nil {
 		return true
 	}
-	stack := []Element{{root, 1}}
-	var res []int
-	p := 1
-	for len(stack) != 0 {
-		node := stack[0].Node
-		p = stack[0].Number
-		res = append(res, node.Val)
-		stack = stack[1:]
+	queue := []Element{{root, 1}}
+	seq, count := 0, 0
+	for len(queue) != 0 {
+		node := queue[0].Node
+		seq = queue[0].Number
+		count++
+		queue = queue[1:]
 		if node.Left != nil {
-			stack = append(stack, Element{node.Left, 2 * p})
+			queue = append(queue, Element{node.Left, 2 * seq})
 		}
 		if node.Right != nil {
-			stack = append(stack, Element{node.Right, 2*p + 1})
+			queue = append(queue, Element{node.Right, 2*seq + 1})
 		}
 	}
-	return p == len(res)
+	return seq == count
 }
+
 
 /*
 1.8 相同的二叉树

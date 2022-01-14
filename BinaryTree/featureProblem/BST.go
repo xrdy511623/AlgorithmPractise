@@ -621,6 +621,7 @@ func IncreasingSimpleBST(root *Entity.TreeNode) *Entity.TreeNode {
 		helper(node.Left)
 		cur.Right = node
 		node.Left = nil
+		node.Right = nil
 		cur = node
 		helper(node.Right)
 	}
