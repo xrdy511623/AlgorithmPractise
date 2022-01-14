@@ -736,14 +736,14 @@ func MinDepthUseBFS(root *Entity.TreeNode) int {
 }
 
 /*
-1.13 完全二叉树的节点个数
-给你一棵完全二叉树的根节点root，求出该树的节点个数。
+leetcode 222. 完全二叉树的节点个数
+1.13 给你一棵完全二叉树的根节点root，求出该树的节点个数。
 完全二叉树的定义如下：在完全二叉树中，除了最底层节点可能没填满外，其余每层节点数都达到最大值，并且最下面一层
 的节点都集中在该层最左边的若干位置。若最底层为第h层，则该层包含 1~2^h个节点。
 */
 
 /*
-时间复杂度O(N)的解法就不说了，DFS和BFS都可以。这里为了提高算法效率，需要好好利用完全二叉树的特性
+时间复杂度O(N)的解法就不说了，DFS和BFS都可以。这里为了提高算法效率，需要好好利用完全二叉树的特性。
 完全二叉树只有两种情况，情况一：就是满二叉树，情况二：最后一层叶子节点没有满。
 对于情况一，可以直接用 2^树深度 - 1 来计算，注意这里根节点深度为1。
 对于情况二，分别递归左孩子，和右孩子，递归到某一深度一定会有左孩子或者右孩子为满二叉树，然后依然可以
@@ -772,26 +772,27 @@ func CountNodes(root *Entity.TreeNode) int {
 }
 
 /*
-1.14 找树左下角的值
-给定一个二叉树的根节点root，请找出该二叉树的最底层最左边节点的值。
+leetcode 513. 找树左下角的值
+1.14 给定一个二叉树的根节点root，请找出该二叉树的最底层最左边节点的值。
 假设二叉树中至少有一个节点。
 */
 
 /*
-思路一:广度优先遍历(BFS),用一个二维数组保存二叉树每一层节点的值，最后返回最后一层最左边的元素即可
+思路一:广度优先遍历(BFS),用一个数组保存二叉树每一层最左侧节点的值，最后返回这个数组的末尾元素即可
 */
 
 func FindBottomLeftValue(root *Entity.TreeNode) int {
 	if root.Left == nil && root.Right == nil {
 		return root.Val
 	}
-	var res [][]int
+	var res []int
 	queue := []*Entity.TreeNode{root}
 	for len(queue) != 0 {
-		var curLevel []int
 		size := len(queue)
-		for _, node := range queue {
-			curLevel = append(curLevel, node.Val)
+		res = append(res, queue[0].Val)
+		for i:=0;i<size;i++{
+			node := queue[0]
+			queue = queue[1:]
 			if node.Left != nil {
 				queue = append(queue, node.Left)
 			}
@@ -799,10 +800,8 @@ func FindBottomLeftValue(root *Entity.TreeNode) int {
 				queue = append(queue, node.Right)
 			}
 		}
-		queue = queue[size:]
-		res = append(res, curLevel)
 	}
-	return res[len(res)-1][0]
+	return res[len(res)-1]
 }
 
 /*
@@ -814,28 +813,28 @@ func FindBottomLeftValueSimple(root *Entity.TreeNode) int {
 		return root.Val
 	}
 	maxDepth, res := 0, 0
-	var helper func(*Entity.TreeNode, int)
-	helper = func(root *Entity.TreeNode, depth int) {
-		if root.Left == nil && root.Right == nil {
+	var dfs func(*Entity.TreeNode, int)
+	dfs = func(node *Entity.TreeNode, depth int) {
+		if node.Left == nil && node.Right == nil {
 			if depth > maxDepth {
 				maxDepth = depth
 				res = root.Val
 			}
-			if root.Left != nil {
-				depth++
-				helper(root.Left, depth)
-				// 回溯,如果root有右子树，depth需要与遍历root左子树之前保持一致
-				depth--
-			}
-			if root.Right != nil {
-				depth++
-				helper(root.Right, depth)
-				// 回溯
-				depth--
-			}
+		}
+		if node.Left != nil {
+			depth++
+			dfs(node.Left, depth)
+			// 回溯,如果root有右子树，depth需要与遍历root左子树之前保持一致
+			depth--
+		}
+		if node.Right != nil {
+			depth++
+			dfs(node.Right, depth)
+			// 回溯
+			depth--
 		}
 	}
-	helper(root, 0)
+	dfs(root, 0)
 	return res
 }
 
