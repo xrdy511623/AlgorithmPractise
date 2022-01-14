@@ -276,7 +276,7 @@ func RightSideView(root *Entity.TreeNode) []int {
 	for len(queue) != 0 {
 		levelSize := len(queue)
 		res = append(res, queue[levelSize-1].Val)
-		for i:=0;i<levelSize;i++{
+		for i := 0; i < levelSize; i++ {
 			node := queue[0]
 			queue = queue[1:]
 			if node.Left != nil {
@@ -384,7 +384,6 @@ func IsCompleteTree(root *Entity.TreeNode) bool {
 	}
 	return seq == count
 }
-
 
 /*
 leetcode 100. 相同的树
@@ -560,8 +559,8 @@ func BFS(node1, node2 *Entity.TreeNode) bool {
 }
 
 /*
-1.11 另一棵树的子树
-给你两棵二叉树root和subRoot 。检验root中是否包含和subRoot具有相同结构和节点值的子树。如果存在，返回
+leetcode 572. 另一棵树的子树
+1.11 给你两棵二叉树root和subRoot 。检验root中是否包含和subRoot具有相同结构和节点值的子树。如果存在，返回
 true；否则，返回false 。
 
 二叉树tree的一棵子树包括tree的某个节点和这个节点的所有后代节点。tree也可以看做它自身的一棵子树。
@@ -790,7 +789,7 @@ func FindBottomLeftValue(root *Entity.TreeNode) int {
 	for len(queue) != 0 {
 		size := len(queue)
 		res = append(res, queue[0].Val)
-		for i:=0;i<size;i++{
+		for i := 0; i < size; i++ {
 			node := queue[0]
 			queue = queue[1:]
 			if node.Left != nil {
@@ -839,8 +838,8 @@ func FindBottomLeftValueSimple(root *Entity.TreeNode) int {
 }
 
 /*
-1.15 合并二叉树
-给定两个二叉树，想象当你将它们中的一个覆盖到另一个上时，两个二叉树的一些节点便会重叠。
+leetcode 617. 合并二叉树
+1.15 给定两个二叉树，想象当你将它们中的一个覆盖到另一个上时，两个二叉树的一些节点便会重叠。
 你需要将他们合并为一个新的二叉树。合并的规则是如果两个节点重叠，那么将他们的值相加作为节点合并后的新值，
 否则不为NULL的节点将直接作为新二叉树的节点。
 
@@ -870,7 +869,7 @@ func FindBottomLeftValueSimple(root *Entity.TreeNode) int {
 注意: 合并必须从两个树的根节点开始。
 */
 
-// DFS递归解决
+// MergeTrees 递归解决
 func MergeTrees(root1 *Entity.TreeNode, root2 *Entity.TreeNode) *Entity.TreeNode {
 	if root1 == nil && root2 == nil {
 		return nil
@@ -881,16 +880,15 @@ func MergeTrees(root1 *Entity.TreeNode, root2 *Entity.TreeNode) *Entity.TreeNode
 	if root1 == nil && root2 != nil {
 		return root2
 	}
-	root := &Entity.TreeNode{root1.Val + root2.Val, nil, nil}
+	root := &Entity.TreeNode{Val: root1.Val + root2.Val}
 	root.Left = MergeTrees(root1.Left, root2.Left)
 	root.Right = MergeTrees(root1.Right, root2.Right)
 	return root
 }
 
 /*
-1.16 最长同值路径
-给定一个二叉树，找到最长的路径，这个路径中的每个节点具有相同值。 这条路径可以经过也可以不经过根节点。
-
+leetcode 687. 最长同值路径
+1.16 给定一个二叉树，找到最长的路径，这个路径中的每个节点具有相同值。 这条路径可以经过也可以不经过根节点。
 注意：两个节点之间的路径长度由它们之间的边数表示。
 
 示例 1:
@@ -949,8 +947,8 @@ func LongestSameValuePath(root *Entity.TreeNode) int {
 }
 
 /*
-1.17 寻找重复的子树
-给定一棵二叉树，返回所有重复的子树。对于同一类的重复子树，你只需要返回其中任意一棵的根节点即可。
+leetcode 652. 寻找重复的子树
+1.17 给定一棵二叉树，返回所有重复的子树。对于同一类的重复子树，你只需要返回其中任意一棵的根节点即可。
 两棵树重复是指它们具有相同的结构以及相同的节点值。
 
 示例 1：
@@ -1001,10 +999,10 @@ func FindDuplicateSubtrees(root *Entity.TreeNode) []*Entity.TreeNode {
 }
 
 /*
-1.18 二叉树中的列表
-给你一棵以root为根的二叉树和一个head为第一个节点的链表。
+leetcode 1367. 二叉树中的列表
+1.18 给你一棵以root为根的二叉树和一个head为第一个节点的链表。
 如果在二叉树中，存在一条一直向下的路径，且每个点的数值恰好一一对应以head为首的链表中每个节点的值，那么
-请你返回True ，否则返回 False 。
+请你返回True ，否则返回False 。
 一直向下的路径的意思是：从树中某个节点开始，一直连续向下的路径。
 
 示例:
@@ -1017,21 +1015,23 @@ func IsSubPath(head *Entity2.ListNode, root *Entity.TreeNode) bool {
 	if root == nil {
 		return false
 	}
-	var dfs func(*Entity2.ListNode, *Entity.TreeNode) bool
-	dfs = func(head *Entity2.ListNode, root *Entity.TreeNode) bool {
-		if head == nil {
-			return true
-		}
-		if root == nil {
-			return false
-		}
-		if head.Val != root.Val {
-			return false
-		}
-		return dfs(head.Next, root.Left) || dfs(head.Next, root.Right)
-	}
-	return dfs(head, root) || IsSubPath(head, root.Left) || IsSubPath(head, root.Right)
+	// 看看根节点向下能不能找到与链表相同的路径，或者根节点的左子树或右子树中寻找与链表相同的路径
+	return help(head, root) || IsSubPath(head, root.Left) || IsSubPath(head, root.Right)
 }
+
+func help(head *Entity2.ListNode, root *Entity.TreeNode)bool{
+	if head == nil{
+		return true
+	}
+	if root == nil{
+		return false
+	}
+	if head.Val != root.Val{
+		return false
+	}
+	return help(head.Next, root.Left) || help(head.Next, root.Right)
+}
+
 
 /*
 1.19 二叉树展开为链表
