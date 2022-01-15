@@ -1019,23 +1019,22 @@ func IsSubPath(head *Entity2.ListNode, root *Entity.TreeNode) bool {
 	return help(head, root) || IsSubPath(head, root.Left) || IsSubPath(head, root.Right)
 }
 
-func help(head *Entity2.ListNode, root *Entity.TreeNode)bool{
-	if head == nil{
+func help(head *Entity2.ListNode, root *Entity.TreeNode) bool {
+	if head == nil {
 		return true
 	}
-	if root == nil{
+	if root == nil {
 		return false
 	}
-	if head.Val != root.Val{
+	if head.Val != root.Val {
 		return false
 	}
 	return help(head.Next, root.Left) || help(head.Next, root.Right)
 }
 
-
 /*
-1.19 二叉树展开为链表
-给你二叉树的根节点root ，请你将它展开为一个单链表：
+leetcode 114. 二叉树展开为链表
+1.19 给你二叉树的根节点root ，请你将它展开为一个单链表：
 
 展开后的单链表应该同样使用TreeNode ，其中right子指针指向链表中下一个节点，而左子指针始终为null 。
 展开后的单链表应该与二叉树先序遍历 顺序相同。
@@ -1067,8 +1066,8 @@ func Flatten(root *Entity.TreeNode) {
 }
 
 /*
-1.20 填充每个节点的下一个右侧节点指针
-给定一个完美二叉树，其所有叶子节点都在同一层，每个父节点都有两个子节点。二叉树定义如下：
+leetcode 116. 填充每个节点的下一个右侧节点指针
+1.20 给定一个完美二叉树，其所有叶子节点都在同一层，每个父节点都有两个子节点。二叉树定义如下：
 
 struct Node {
   int val;
@@ -1106,7 +1105,7 @@ func Connect(root *Node) *Node {
 	return root
 }
 
-// ConnectNext 第二种方案, BFS 时间复杂度O(N), 空间复杂度O(N)
+// ConnectNext 第二种方案, BFS 时间复杂度O(N), 空间复杂度O(1)
 func ConnectNext(root *Node) *Node {
 	if root == nil {
 		return nil
@@ -1151,8 +1150,8 @@ func ConnectNextSimple(root *Node) *Node {
 }
 
 /*
-1.21 填充每个节点的下一个右侧节点指针II
-给定一个二叉树
+leetcode 117. 填充每个节点的下一个右侧节点指针 II
+1.21 给定一个二叉树
 
 struct Node {
   int val;
@@ -1160,8 +1159,12 @@ struct Node {
   Node *right;
   Node *next;
 }
-填充它的每个next 指针，让这个指针指向其下一个右侧节点。如果找不到下一个右侧节点，则将next指针设置为NULL。
+填充它的每个next指针，让这个指针指向其下一个右侧节点。如果找不到下一个右侧节点，则将next指针设置为NULL。
 初始状态下，所有next指针都被设置为NULL。
+*/
+
+/*
+BFS的解法依然有效，这里就不重复了。
 */
 
 // ConnectNextComplex 每层单链表法 时间复杂度O(N), 空间复杂度O(1)
@@ -1192,8 +1195,8 @@ func ConnectNextComplex(root *Node) *Node {
 }
 
 /*
-1.22 特定深度节点链表
-给定一棵二叉树，设计一个算法，创建含有某一深度上所有节点的链表（比如，若一棵树的深度为D，则会创建出D个链表）。
+leetcode 面试题 04.03. 特定深度节点链表
+1.22 给定一棵二叉树，设计一个算法，创建含有某一深度上所有节点的链表（比如，若一棵树的深度为D，则会创建出D个链表）。
 返回一个包含所有深度的链表的数组。
 
  		   5
@@ -1217,13 +1220,12 @@ func ListOfDepth(root *Entity.TreeNode) []*Entity2.ListNode {
 	queue := []*Entity.TreeNode{root}
 	for len(queue) != 0 {
 		size := len(queue)
-		dummy := &Entity2.ListNode{0, nil}
-		p := dummy
+		dummy := &Entity2.ListNode{}
+		cur := dummy
 		for i := 0; i < size; i++ {
 			node := queue[i]
-			listNode := &Entity2.ListNode{node.Val, nil}
-			p.Next = listNode
-			p = p.Next
+			cur.Next = &Entity2.ListNode{Val: node.Val}
+			cur = cur.Next
 			if node.Left != nil {
 				queue = append(queue, node.Left)
 			}
@@ -1238,8 +1240,8 @@ func ListOfDepth(root *Entity.TreeNode) []*Entity2.ListNode {
 }
 
 /*
-1.23 删除给定值的叶子节点
-给你一棵以root为根的二叉树和一个整数target,请你删除所有值为target的叶子节点.
+leetcode 1325. 删除给定值的叶子节点
+1.23 给你一棵以root为根的二叉树和一个整数target,请你删除所有值为target的叶子节点.
 注意,一旦删除值为target的叶子节点，它的父节点就可能变成叶子节点；如果新叶子节点的值
 恰好也是target,那么这个节点也应该被删除.也就是说，你需要重复此过程直到不能继续删除.
 */
@@ -1258,8 +1260,8 @@ func RemoveLeafNodes(root *Entity.TreeNode, target int) *Entity.TreeNode {
 }
 
 /*
-1.24 层数最深叶子节点的和
-给你一棵二叉树的根节点root ，请你返回 层数最深的叶子节点的和。
+leetcode 1302. 层数最深叶子节点的和
+1.24 给你一棵二叉树的根节点root ，请你返回 层数最深的叶子节点的和。
 
 示例:
 输入：root = [1,2,3,4,5,null,6,7,null,null,null,null,8]
@@ -1270,41 +1272,34 @@ func RemoveLeafNodes(root *Entity.TreeNode, target int) *Entity.TreeNode {
 1 <= Node.val <= 100
 */
 
-type Nd struct {
-	Node  *Entity.TreeNode
-	Depth int
-}
-
 // DeepestLeavesSum BFS解决
 func DeepestLeavesSum(root *Entity.TreeNode) int {
 	sum := 0
 	if root == nil {
 		return sum
 	}
-	maxDepth := 0
-	queue := []Nd{Nd{root, 1}}
+	depth, maxDepth := 1, 0
+	queue := []*Entity.TreeNode{root}
 	for len(queue) != 0 {
 		size := len(queue)
-		// 既然是层序遍历，那么最后一层的叶子节点肯定是最后被添加到队列中的
-		// 所以叶子节点一定是优先从队列末尾处得到。
-		nd := queue[size-1]
-		queue = queue[:size-1]
-		node, depth := nd.Node, nd.Depth
-		// 如果此时最大深度小于当前层的深度，那么需要更新最大深度和sum的值
-		// 也就是说只要没遍历到深度最大的层，就会一直更新maxDepth和sum
-		if maxDepth < depth {
-			maxDepth, sum = depth, node.Val
-			// 若此时最大深度等于当前层深度，证明已经到了最深层，sum累加当前节点值
-		} else if maxDepth == depth {
-			sum += node.Val
+		for i := 0; i < size; i++ {
+			node := queue[0]
+			queue = queue[1:]
+			if node.Left == nil && node.Right == nil {
+				if maxDepth < depth {
+					maxDepth, sum = depth, node.Val
+				} else if maxDepth == depth {
+					sum += node.Val
+				}
+			}
+			if node.Left != nil {
+				queue = append(queue, node.Left)
+			}
+			if node.Right != nil {
+				queue = append(queue, node.Right)
+			}
 		}
-		// 当前节点若有子节点，则其子节点的深度为父节点深度+1
-		if node.Left != nil {
-			queue = append(queue, Nd{node.Left, depth + 1})
-		}
-		if node.Right != nil {
-			queue = append(queue, Nd{node.Right, depth + 1})
-		}
+		depth++
 	}
 	return sum
 }
@@ -1334,8 +1329,8 @@ func DeepestLeavesSumSimple(root *Entity.TreeNode) int {
 }
 
 /*
-1.25 二叉树的坡度
-给你一个二叉树的根节点root，计算并返回整个树的坡度 。
+563. 二叉树的坡度
+1.25 给你一个二叉树的根节点root，计算并返回整个树的坡度 。
 一个树的节点的坡度定义即为，该节点左子树的节点之和和右子树节点之和的差的绝对值 。如果没有左子树的话，
 左子树的节点之和为0 ；没有右子树的话也是一样。空节点的坡度是0 。
 整个树的坡度就是其所有节点的坡度之和。
@@ -1384,11 +1379,10 @@ func FindTilt(root *Entity.TreeNode) int {
 }
 
 /*
-1.26 最深叶节点的最近公共祖先
-给你一个有根节点的二叉树，找到它最深的叶节点的最近公共祖先。
+leetcode 1123. 最深叶节点的最近公共祖先
+1.26 给你一个有根节点的二叉树，找到它最深的叶节点的最近公共祖先。
 
 回想一下：
-
 叶节点是二叉树中没有子节点的节点
 树的根节点的深度为0，如果某一节点的深度为d，那它的子节点的深度就是d+1
 如果我们假定A是一组节点S的最近公共祖先，S中的每个节点都在以A为根节点的子树中，且A的深度达到此条件下
@@ -1449,6 +1443,65 @@ func LcaDeepestLeaves(root *Entity.TreeNode) *Entity.TreeNode {
 	node, _ := dfs(root)
 	return node
 }
+
+func LcaDeepestLeavesUseBFS(root *Entity.TreeNode) *Entity.TreeNode {
+	if root == nil {
+		return nil
+	}
+	parentDict := make(map[*Entity.TreeNode]*Entity.TreeNode)
+	var leafSet [][]*Entity.TreeNode
+	queue := []*Entity.TreeNode{root}
+	for len(queue) > 0 {
+		size := len(queue)
+		var curLevel []*Entity.TreeNode
+		for i := 0; i < size; i++ {
+			node := queue[0]
+			queue = queue[1:]
+			// 收集每一层的叶子节点
+			if node.Left == nil && node.Right == nil {
+				curLevel = append(curLevel, node)
+			}
+			if node.Left != nil {
+				queue = append(queue, node.Left)
+				// 记录子节点的父节点
+				parentDict[node.Left] = node
+			}
+			if node.Right != nil {
+				queue = append(queue, node.Right)
+				// 记录子节点的父节点
+				parentDict[node.Right] = node
+			}
+
+		}
+		if len(curLevel) > 0 {
+			leafSet = append(leafSet, curLevel)
+		}
+	}
+	// 获取最深层叶子节点集合
+	leaves := leafSet[len(leafSet)-1]
+	// 如果只有一个叶子节点，返回它自己
+	if len(leaves) == 1 {
+		return leaves[0]
+	}
+	// 最深叶子节点一定是从左到右排列，不一定属于同一个父亲节点的子节点，那么按最糟糕的情况算，找出集合
+	// 最左侧叶子节点与最右侧叶子节点的最近公共祖先即可。
+	p, q := leaves[0], leaves[len(leaves)-1]
+	visited := make(map[int]bool)
+	pAns := parentDict[p]
+	for pAns != nil {
+		visited[pAns.Val] = true
+		pAns = parentDict[pAns]
+	}
+	qAns := parentDict[q]
+	for qAns != nil {
+		if visited[qAns.Val] {
+			return qAns
+		}
+		qAns = parentDict[qAns]
+	}
+	return nil
+}
+
 
 /*
 1.27 叶子相似的树

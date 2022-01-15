@@ -11,8 +11,8 @@ for循环横向遍历，递归纵向遍历，回溯不断调整结果集。
 */
 
 /*
-1.1 组合
-给定两个整数n和k，返回范围 [1, n]中所有可能的k个数的组合。
+leetcode 77. 组合
+1.1 给定两个整数n和k，返回范围 [1, n]中所有可能的k个数的组合。
 你可以按任何顺序返回答案。
 
 示例1：
@@ -64,12 +64,8 @@ func Combine(n, k int) [][]int {
 		return res
 	}
 	var path []int
-	var backTrack func(int, int, int)
-	backTrack = func(n, k, start int) {
-		// 剪枝：path长度加上区间 [start, n]的长度小于k，不可能构造出长度为k的path
-		if len(path)+n-start+1 < k {
-			return
-		}
+	var backTrack func(int)
+	backTrack = func(start int) {
 		// 递归终止条件
 		// 如果已经找到了长度为k的path,便将path添加到结果集res中，结束递归
 		if len(path) == k {
@@ -82,19 +78,19 @@ func Combine(n, k int) [][]int {
 		for i := start; i <= n-(k-len(path))+1; i++ {
 			// 处理每一个节点(元素)
 			path = append(path, i)
-			// 因为是组合，元素不能重复，所以下一层递归从i+1开始
-			backTrack(n, k, i+1)
+			// 递归，因为是组合，元素不能重复，所以下一层递归从i+1开始
+			backTrack(i + 1)
 			// 回溯
 			path = path[:len(path)-1]
 		}
 	}
-	backTrack(n, k, 1)
+	backTrack(1)
 	return res
 }
 
 /*
-1.2 组合总和III
-找出所有相加之和为n的k个数的组合。组合中只允许含有1-9的正整数，并且每种组合中不存在重复的数字。
+leetcode 216. 组合总和III
+1.2 找出所有相加之和为n的k个数的组合。组合中只允许含有1-9的正整数，并且每种组合中不存在重复的数字。
 
 说明：
 所有数字都是正整数。
@@ -116,8 +112,9 @@ func Combine(n, k int) [][]int {
 func CombinationSumThird(k int, n int) [][]int {
 	var res [][]int
 	var path []int
-	var backTrack func(int, int)
-	backTrack = func(sum, start int) {
+	sum := 0
+	var backTrack func(int)
+	backTrack = func(start int) {
 		// 剪枝，如果当前路径和已经大于n,后续遍历就没有意义了
 		if sum > n {
 			return
@@ -136,19 +133,19 @@ func CombinationSumThird(k int, n int) [][]int {
 			sum += i
 			path = append(path, i)
 			// 递归
-			backTrack(sum, i+1)
+			backTrack(i + 1)
 			// 回溯
 			sum -= i
 			path = path[:len(path)-1]
 		}
 	}
-	backTrack(0, 1)
+	backTrack(1)
 	return res
 }
 
 /*
-1.3 电话号码的字母组合
-给定一个仅包含数字2-9的字符串，返回所有它能表示的字母组合。答案可以按任意顺序返回。
+leetcode 17. 电话号码的字母组合
+1.3 给定一个仅包含数字2-9的字符串，返回所有它能表示的字母组合。答案可以按任意顺序返回。
 给出数字到字母的映射如下（与电话按键相同）。注意1不对应任何字母。
 
 示例1：
@@ -203,7 +200,7 @@ func LetterCombinations(digits string) []string {
 		letters := m[digits[index]]
 		for i := 0; i < len(letters); i++ {
 			// for循环遍历letters，拼接temp字符串
-			temp = temp + string(letters[i])
+			temp += string(letters[i])
 			// 递归，从index+1下标继续拼接
 			backTrack(index + 1)
 			// 回溯
@@ -216,8 +213,8 @@ func LetterCombinations(digits string) []string {
 }
 
 /*
-1.4 组合总和
-给定一个无重复元素的数组candidates和一个目标数target ，找出candidates中所有可以使数字和为target的组合。
+leetcode 39. 组合总和
+1.4 给定一个无重复元素的数组candidates和一个目标数target ，找出candidates中所有可以使数字和为target的组合。
 candidates中的数字可以无限制重复被选取。
 
 说明：
@@ -254,11 +251,13 @@ func CombinationSum(candidates []int, target int) [][]int {
 		if sum > target {
 			return
 		}
-		for i := start; i < len(candidates); i++ {
+		for i := start; i < len(candidates) && sum+candidates[i] <= target; i++ {
 			sum += candidates[i]
 			path = append(path, candidates[i])
 			// 因为candidates中的元素可以无限制重复选取，所以这里不再是i+1了
+			// 递归
 			backTrack(i)
+			// 回溯
 			sum -= candidates[i]
 			path = path[:len(path)-1]
 		}
@@ -280,8 +279,8 @@ func CompletePack(candidates []int, target int) int {
 }
 
 /*
-1.5 组合总和II
-给定一个数组candidates和一个目标数target，找出candidates中所有可以使数字和为target的组合。
+leetcode 40. 组合总和 II
+1.5 给定一个数组candidates和一个目标数target，找出candidates中所有可以使数字和为target的组合。
 candidates中的每个数字在每个组合中只能使用一次。
 
 注意：解集不能包含重复的组合。
