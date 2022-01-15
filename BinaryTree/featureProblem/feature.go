@@ -1483,7 +1483,7 @@ func LcaDeepestLeavesUseBFS(root *Entity.TreeNode) *Entity.TreeNode {
 	if len(leaves) == 1 {
 		return leaves[0]
 	}
-	// 最深叶子节点一定是从左到右排列，不一定属于同一个父亲节点的子节点，那么按最糟糕的情况算，找出集合
+	// 最深叶子节点一定是从左到右排列，不一定都是属于同一个父亲节点的子节点，那么按最糟糕的情况算，找出集合
 	// 最左侧叶子节点与最右侧叶子节点的最近公共祖先即可。
 	p, q := leaves[0], leaves[len(leaves)-1]
 	visited := make(map[int]bool)
