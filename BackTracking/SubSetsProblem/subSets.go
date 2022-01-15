@@ -3,8 +3,8 @@ package SubSetsProblem
 import "sort"
 
 /*
-1.1 子集
-给定一组不含重复元素的整数数组nums，返回该数组所有可能的子集（幂集）。
+leetcode 78. 子集
+1.1 给定一组不含重复元素的整数数组nums，返回该数组所有可能的子集（幂集）。
 说明：解集不能包含重复的子集。
 
 示例:
@@ -46,8 +46,8 @@ func Subsets(nums []int) [][]int {
 }
 
 /*
-1.2 子集II
-给定一个可能包含重复元素的整数数组nums，返回该数组所有可能的子集（幂集）。
+leetcode 90. 子集II
+1.2 给定一个可能包含重复元素的整数数组nums，返回该数组所有可能的子集（幂集）。
 说明：解集不能包含重复的子集。
 
 示例:
@@ -63,9 +63,9 @@ func Subsets(nums []int) [][]int {
 func SubsetsWithDup(nums []int) [][]int {
 	var res [][]int
 	var path []int
-	var backTrack func(int)
 	// 对nums数组进行排序
 	sort.Ints(nums)
+	var backTrack func(int)
 	backTrack = func(start int) {
 		// 递归终止条件，当start移动到数组nums末尾元素后
 		if start > len(nums) {
@@ -124,7 +124,7 @@ func FindSubsequences(nums []int) [][]int {
 			return
 		}
 		// 递归终止条件
-		if len(path) == 2{
+		if len(path) >= 2{
 			temp := make([]int, len(path))
 			copy(temp, path)
 			res = append(res, temp)
