@@ -10,6 +10,16 @@ import (
 1.0 实现冒泡，插入排序，快排和归并排序
 */
 
+/*
+将无序数组中的元素从左向右依次迭代,(n=len(array)比较相邻两个元素的大小,若左边的大于右边的元素,那么它们俩
+互换位置,经过第一次迭代,数组中最大的元素便会冒泡似地层层向上传递到数组末尾位置;
+第二次迭代前面n-1个元素,以同样的方式进行比较交换,那么数组中第二大的元素便会上浮冒泡到倒数
+第二个位置....
+重复上面的动作,直到没有两个元素可以比较为止(也就是剩下一个元素),此时这个元素就是数组中最小的
+最后形成的就是一个从小到大的有序数组
+最坏时间复杂度O(n`2),最好时间复杂度O(n) 稳定
+*/
+
 // BubbleSort 最坏时间复杂度O(n`2),最好时间复杂度O(n) 稳定算法
 func BubbleSort(array []int) []int {
 	n := len(array)
@@ -24,13 +34,20 @@ func BubbleSort(array []int) []int {
 	return array
 }
 
+/*
+每次挑选一个元素插入到已排序数组中,初始时已排序数组中只有一个元素.
+最坏时间复杂度O(n`2),最好时间复杂度O(n) 稳定
+*/
+
 func InsertSort(array []int) []int {
 	n := len(array)
 	if n == 0 {
 		return array
 	}
+	// 从第二个位置,即下标为1的元素开始向前插入
 	for i := 1; i < n; i++ {
-		for j := i; j >= 0; j-- {
+		for j := i; j > 0; j-- {
+			// 从第i个元素开始向前比较,如果小于前一个元素,交换位置
 			if array[j] < array[j-1] {
 				array[j], array[j-1] = array[j-1], array[j]
 			} else {
@@ -50,27 +67,27 @@ func InsertSort(array []int) []int {
 时间复杂度O(nlogn),最坏时间复杂度O(n`2)
 */
 
-func QuickSort(array []int, start, stop int) {
+func QuickSort(nums []int, start, stop int) {
 	if start >= stop {
 		return
 	}
-	mid := array[start]
-	left := start
-	right := stop
+	pivot := nums[start]
+	left, right := start, stop
 	for left < right {
-		for left < right && array[right] >= mid {
-			right -= 1
+		for left < right && nums[right] >= pivot {
+			right--
 		}
-		array[left] = array[right]
-		for left < right && array[left] < mid {
-			left += 1
+		nums[left] = nums[right]
+		for left < right && nums[left] < pivot {
+			left++
 		}
-		array[right] = array[left]
+		nums[right] = nums[left]
 	}
-
-	array[right] = mid
-	QuickSort(array, start, right-1)
-	QuickSort(array, right+1, stop)
+	// 此时left==right,我们找到了基准值pivot的正确位置left/right
+	nums[left] = pivot
+	// 递归地将小于基准值pivot的子序列和大于基准值pivot的子序列进行分区操作
+	QuickSort(nums, start, left-1)
+	QuickSort(nums, left+1, stop)
 }
 
 /*
@@ -127,7 +144,7 @@ func BinarySearch(array []int, target int) int {
 	}
 	start, stop := 0, n-1
 	for start <= stop {
-		mid := start + (stop-start)/2
+		mid := (start + stop) / 2
 		if target == array[mid] {
 			return mid
 		} else if target > array[mid] {
@@ -156,8 +173,9 @@ func BinarySearchUseRecursion(array []int, target int) bool {
 }
 
 /*
-1.1 二分查找变形之一:在排序数组中查找元素的第一个和最后一个位置
-定一个按照升序排列的整数数组nums，和一个目标值target。找出给定目标值在数组中的开始位置和结束位置。
+Leetcode 34. 在排序数组中查找元素的第一个和最后一个位置
+1.1 二分查找变形之一:在排序数组中查找元素的第一个和最后一个位置。
+给定一个按照升序排列的整数数组nums，和一个目标值target。找出给定目标值在数组中的开始位置和结束位置。
 如果数组中不存在目标值target，返回[-1, -1]。
 */
 
@@ -222,6 +240,7 @@ func BinarySearchLastEqualTarget(array []int, target int) int {
 
 /*
 1.2 在排序数组中统计一个数在数组中出现的次数
+要求时间复杂度为O(logN),空间复杂度为O(1)
 示例 1:
 输入: nums = [5,7,7,8,8,10], target = 8
 输出: 2
@@ -229,8 +248,8 @@ func BinarySearchLastEqualTarget(array []int, target int) int {
 输出: 0
 
 思路: 在排序数组中找出等于目标值target的起始位置index，如果index为-1,证明数组中无此元素，返回0，
-否则从数组index位置开始向后遍历数组元素，只要数组元素等于target，则使用map将其出现次数累加1,如果遇到不等于
-target的元素，说明后面的元素都大于target，此时退出循环，最后返回map中target的对应值即可
+否则从数组index位置开始向后遍历数组元素，只要数组元素等于target，则将其出现次数count累加1,如果遇到不等于
+target的元素，说明后面的元素都大于target，此时退出循环，最后返回count即可
 */
 
 func Search(nums []int, target int) int {
@@ -238,15 +257,15 @@ func Search(nums []int, target int) int {
 	if index == -1 {
 		return 0
 	}
-	m := make(map[int]int, 0)
+	count := 0
 	for _, num := range nums[index:] {
 		if num == target {
-			m[target]++
+			count++
 		} else {
 			break
 		}
 	}
-	return m[target]
+	return count
 }
 
 /*
