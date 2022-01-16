@@ -239,6 +239,7 @@ func BinarySearchLastEqualTarget(array []int, target int) int {
 }
 
 /*
+剑指Offer 53 - I. 在排序数组中查找数字I
 1.2 在排序数组中统计一个数在数组中出现的次数
 要求时间复杂度为O(logN),空间复杂度为O(1)
 示例 1:
@@ -269,69 +270,54 @@ func Search(nums []int, target int) int {
 }
 
 /*
-1.3 搜索旋转排序数组
-整数数组nums按升序排列，数组中的值互不相同 。
-在传递给函数之前，nums在预先未知的某个下标k（0 <= k < nums.length）上进行了旋转，使数组变为[nums[k], nums[k+1], ...,
-nums[n-1], nums[0], nums[1], ..., nums[k-1]]（下标从0开始计数）。例如，[0,1,2,4,5,6,7]在下标3处经旋转后可能变为
-[4,5,6,7,0,1,2] 。
-
-给你旋转后的数组nums和一个整数target ，如果nums中存在这个目标值target ，则返回它的下标，否则返回-1。
-
-示例 1：
-输入：nums = [4,5,6,7,0,1,2], target = 0
-输出：4
-
-示例2：
-输入：nums = [4,5,6,7,0,1,2], target = 3
-输出：-1
-
-示例3：
-输入：nums = [1], target = 0
-输出：-1
+旋转数组专题
 */
 
 /*
-解决思路:虽然进行旋转后的数组整体上不再是有序的了，但是从中间某个位置将数组分成左右两部分时，一定有一部分是有序的，所以我们仍然可以
-通过二分查找来解决此问题，只不过需要根据有序的部分确定应该如何改变二分查找的上下限，因为我们可以根据有序的部分判断出target是否在
-这个部分。
-如果 [l, mid - 1]是有序数组，且target的大小满足 [nums[l],nums[mid]]，则我们应该将搜索范围缩小至[l, mid-1]，否则在
-[mid+1, r]中寻找。
-如果[mid, r] 是有序数组，且target的大小满足[nums[mid+1],nums[r]]，则我们应该将搜索范围缩小至[mid+1, r]，否则在
-[l, mid-1]中寻找。
-时间复杂度O(logN),空间复杂度O(1)
+leetcode 189. 轮转数组
+1.3 给你一个数组，将数组中的元素向右轮转k个位置，其中k是非负数。
+
+示例1:
+输入: nums = [1,2,3,4,5,6,7], k = 3
+输出: [5,6,7,1,2,3,4]
+解释:
+向右轮转 1 步: [7,1,2,3,4,5,6]
+向右轮转 2 步: [6,7,1,2,3,4,5]
+向右轮转 3 步: [5,6,7,1,2,3,4]
+
+示例2:
+输入：nums = [-1,-100,3,99], k = 2
+输出：[3,99,-1,-100]
+解释:
+向右轮转 1 步: [99,-1,-100,3]
+向右轮转 2 步: [3,99,-1,-100]
+
+提示：
+1 <= nums.length <= 105
+-231 <= nums[i] <= 231 - 1
+0 <= k <= 105
 */
 
-func RevolveArraySearch(nums []int, target int) int {
+// Rotate 时间复杂度O(2N),空间复杂度O(1)
+func Rotate(nums []int, k int) {
 	n := len(nums)
-	if n == 0 {
-		return -1
+	k = k % n
+	// k为0或者旋转次数为n的整数倍，那么数组会恢复原样
+	// 所以不做任何操作
+	if k == 0 {
+		return
 	}
-	l, r := 0, n-1
-	for l <= r {
-		mid := (l + r) / 2
-		if target == nums[mid] {
-			return mid
-		}
-		if nums[0] <= nums[mid] {
-			if nums[0] <= target && target < nums[mid] {
-				r = mid - 1
-			} else {
-				l = mid + 1
-			}
-		} else {
-			if nums[mid] < target && target <= nums[n-1] {
-				l = mid + 1
-			} else {
-				r = mid - 1
-			}
-		}
-	}
-	return -1
+	// 先反转整个数组
+	Utils.ReverseArray(nums)
+	// 然后反转数组nums[:k]部分
+	Utils.ReverseArray(nums[:k])
+	// 最后反转数组nums[k:]部分
+	Utils.ReverseArray(nums[k:])
 }
 
 /*
-1.4 寻找旋转排序数组中的最小值
-已知一个长度为 n 的数组，预先按照升序排列，经由1到n次旋转后，得到输入数组。例如，原数组nums = [0,1,2,4,5,6,7]
+leetcode 153. 寻找旋转排序数组中的最小值
+1.4 已知一个长度为n的数组，预先按照升序排列，经由1到n次旋转后，得到输入数组。例如，原数组nums = [0,1,2,4,5,6,7]
 在变化后可能得到：
 若旋转4次，则可以得到 [4,5,6,7,0,1,2]
 若旋转7次，则可以得到 [0,1,2,4,5,6,7]
@@ -438,8 +424,8 @@ func FindMinSimple(nums []int) int {
 }
 
 /*
-1.4.1 寻找旋转排序数组中的最小值II
-已知一个长度为n的数组，预先按照升序排列，经由1到n次旋转后，得到输入数组。例如，原数组nums = [0,1,4,4,5,6,7]
+leetcode 154. 寻找旋转排序数组中的最小值II
+1.5 已知一个长度为n的数组，预先按照升序排列，经由1到n次旋转后，得到输入数组。例如，原数组nums = [0,1,4,4,5,6,7]
 在变化后可能得到：
 若旋转 4 次，则可以得到 [4,5,6,7,0,1,4]
 若旋转 7 次，则可以得到 [0,1,4,4,5,6,7]
@@ -493,8 +479,210 @@ func FindMinTwoSimple(nums []int) int {
 }
 
 /*
-1.5 数组中的第K个最大元素
-给定整数数组nums和整数k，请返回数组中第k个最大的元素。
+leetcode 33. 搜索旋转排序数组
+1.6 整数数组nums按升序排列，数组中的值互不相同。
+在传递给函数之前，nums在预先未知的某个下标k（0 <= k < nums.length）上进行了旋转，使数组变为[nums[k],
+nums[k+1], ...,nums[n-1], nums[0], nums[1], ..., nums[k-1]]（下标从0开始计数）。例如，
+[0,1,2,4,5,6,7]在下标3处经旋转后可能变为[4,5,6,7,0,1,2] 。
+
+给你旋转后的数组nums和一个整数target ，如果nums中存在这个目标值target ，则返回它的下标，否则返回-1。
+
+示例 1：
+输入：nums = [4,5,6,7,0,1,2], target = 0
+输出：4
+
+示例2：
+输入：nums = [4,5,6,7,0,1,2], target = 3
+输出：-1
+
+示例3：
+输入：nums = [1], target = 0
+输出：-1
+
+提示：
+
+1 <= nums.length <= 5000
+-10^4 <= nums[i] <= 10^4
+nums 中的每个值都 独一无二
+题目数据保证 nums 在预先未知的某个下标上进行了旋转
+-10^4 <= target <= 10^4
+
+*/
+
+/*
+解决思路:虽然进行旋转后的数组整体上不再是有序的了，但是从中间某个位置将数组分成左右两部分时，一定有一部分是有序的，
+所以我们仍然可以通过二分查找来解决此问题，只不过需要根据有序的部分确定应该如何改变二分查找的上下限，因为我们可以
+根据有序的部分判断出target是否在这个部分。
+如果 [l, mid - 1]是有序数组，且target的大小满足 [nums[l],nums[mid]]，则我们应该将搜索范围缩小至[l, mid-1]，
+否则在 [mid+1, r]中寻找。
+如果[mid, r] 是有序数组，且target的大小满足[nums[mid+1],nums[r]]，则我们应该将搜索范围缩小至[mid+1, r]，
+否则在[l, mid-1]中寻找。
+时间复杂度O(logN),空间复杂度O(1)
+*/
+
+func RevolveArraySearch(nums []int, target int) int {
+	n := len(nums)
+	if n == 0 {
+		return -1
+	}
+	l, r := 0, n-1
+	for l <= r {
+		mid := (l + r) / 2
+		// 中间值即为target,直接返回mid
+		if target == nums[mid] {
+			return mid
+		}
+		// 此时前半部分有序
+		if nums[l] <= nums[mid] {
+			// 此时target落在前半部分有序区间内
+			if nums[l] <= target && target < nums[mid] {
+				r = mid - 1
+			} else {
+				// 此时target落在后半部分无序区间内
+				l = mid + 1
+			}
+		} else {
+			// 此时后半部分有序
+			// 此时target落在后半部分有序区间内
+			if nums[mid] < target && target <= nums[r] {
+				l = mid + 1
+			} else {
+				// 此时target落在前半部分无序区间内
+				r = mid - 1
+			}
+		}
+	}
+	// 循环结束没有找到目标值target，返回-1
+	return -1
+}
+
+/*
+leetcode 81. 搜索旋转排序数组II
+1.7 已知存在一个按非降序排列的整数数组nums ，数组中的值不必互不相同。
+在传递给函数之前，nums在预先未知的某个下标 k（0 <= k < nums.length）上进行了旋转，使数组变为
+[nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]（下标从0开始计数）。例如，
+[0,1,2,4,4,4,5,6,6,7] 在下标5处经旋转后可能变为 [4,5,6,6,7,0,1,2,4,4] 。
+
+给你 旋转后 的数组 nums 和一个整数 target ，请你编写一个函数来判断给定的目标值是否存在于数组中。
+如果nums中存在这个目标值target ，则返回true ，否则返回false 。
+
+示例1：
+输入：nums = [2,5,6,0,0,1,2], target = 0
+输出：true
+
+示例2：
+输入：nums = [2,5,6,0,0,1,2], target = 3
+输出：false
+
+
+提示：
+1 <= nums.length <= 5000
+-104 <= nums[i] <= 104
+题目数据保证nums在预先未知的某个下标上进行了旋转
+-104 <= target <= 104
+*/
+
+func SearchTarget(nums []int, target int) bool {
+	n := len(nums)
+	if n == 0 {
+		return false
+	}
+	l, r := 0, len(nums)-1
+	for l <= r {
+		// 关键在于处理重复元素
+		// 若左边有重复数字，将左边界l右移
+		for l < r && nums[l] == nums[l+1] {
+			l++
+		}
+		// 若右边有重复数字，将右边界r左移
+		for l < r && nums[r] == nums[r-1] {
+			r--
+		}
+		mid := (l + r) / 2
+		// 中间值即为target,返回true
+		if nums[mid] == target {
+			return true
+		}
+		// 此时数组前半部分有序
+		if nums[l] <= nums[mid] {
+			// 此时target落在前半部分有序区间内
+			if nums[l] <= target && target < nums[mid] {
+				r = mid - 1
+			} else {
+				// 此时target落在后半部分无序区间内
+				l = mid + 1
+			}
+		} else {
+			// 此时数组后半部分有序
+			// 此时target落在后半部分有序区间内
+			if nums[mid] < target && target <= nums[r] {
+				l = mid + 1
+			} else {
+				// 此时target落在前半部分无序区间内
+				r = mid - 1
+			}
+		}
+	}
+	return false
+}
+
+/*
+leetcode 面试题 10.03. 搜索旋转数组
+1.8 搜索旋转数组。给定一个排序后的数组，包含n个整数，但这个数组已被旋转过很多次了，次数不详。请编写代码找出数组
+中的某个元素，假设数组元素原先是按升序排列的。若有多个相同元素，返回索引值最小的一个。
+
+示例1:
+输入: arr = [15, 16, 19, 20, 25, 1, 3, 4, 5, 7, 10, 14], target = 5
+输出: 8（元素5在该数组中的索引）
+
+示例2:
+输入：arr = [15, 16, 19, 20, 25, 1, 3, 4, 5, 7, 10, 14], target = 11
+输出：-1 （没有找到）
+
+提示:
+arr 长度范围在[1, 1000000]之间
+*/
+
+func SearchRotateArray(arr []int, target int) int {
+	n := len(arr)
+	if n == 0 {
+		return -1
+	}
+	l, r := 0, n-1
+	for l <= r {
+		// 当左边界l对应元素为target时直接返回l,因为题目要求返回最小索引
+		if arr[l] == target {
+			return l
+		}
+		mid := (l + r) / 2
+		// 当中间值等于target时，将右边界r左移到mid，因为mid左边可能还有等于target的元素
+		if arr[mid] == target {
+			r = mid
+		} else if arr[l] < arr[mid] {
+			if arr[l] <= target && target < arr[mid] {
+				r = mid - 1
+			} else {
+				l = mid + 1
+			}
+		} else if arr[l] > arr[mid] {
+			if arr[mid] < target && target <= arr[r] {
+				l = mid + 1
+			} else {
+				r = mid - 1
+			}
+		} else {
+			// 当中间值与左边界l对应的元素相等时，将左边界l右移
+			// 因为此时arr[l]==arr[mid]但是arr[mid] != target,即arr[l] != target
+			// 所以target一定落在[l+1:r]区间内
+			l++
+		}
+	}
+	return -1
+}
+
+/*
+leetcode 215. 数组中的第K个最大元素
+1.9 给定整数数组nums和整数k，请返回数组中第k个最大的元素。
 请注意，你需要找的是数组排序后的第k个最大的元素，而不是第k个不同的元素。
 
 示例 1:
@@ -524,8 +712,9 @@ func FindKthLargest(nums []int, k int) int {
 /*
 思路:快排可以解决问题，但是它需要确定数组中所有元素的正确位置，对于本题而言，我们只需要确定第k大元素的位置pos,
 我们只需要确保pos左边的元素都比它小，pos右边的元素都比它大即可，不需要关心其左边和右边的集合是否有序，所以，我们
-需要对快排进行改进，将目标值的位置pos与分区函数Partition求得的位置index进行比对，如果两值相等，说明index对应的元素即为
-所求值，如果index<pos，则递归的在[index+1, right]范围求解；否则则在[left, index-1]范围求解，如此便可大幅缩小求解范围。
+需要对快排进行改进，将目标值的位置pos与分区函数Partition求得的位置index进行比对，如果两值相等，说明index对应的
+元素即为所求值，如果index<pos，则递归的在[index+1, right]范围求解；否则则在[left, index-1]范围求解，如此便
+可大幅缩小求解范围。
 */
 
 func FindKthLargestElement(nums []int, k int) int {
@@ -573,7 +762,7 @@ func TopkSplit(nums []int, k, left, right int) {
 // 以下是利用快排解决topK类问题的总结
 
 /*
-1.5.1 获得前k小的数
+1.9.1 获得前k小的数
 */
 
 func TopkSmallest(nums []int, k int) []int {
@@ -582,7 +771,7 @@ func TopkSmallest(nums []int, k int) []int {
 }
 
 /*
-1.5.2 获得前k大的数
+1.9.2 获得前k大的数
 */
 
 func TopkLargest(nums []int, k int) []int {
@@ -591,7 +780,7 @@ func TopkLargest(nums []int, k int) []int {
 }
 
 /*
-1.5.3 获取第k小的数
+1.9.3 获取第k小的数
 */
 
 func TopkSmallestElement(nums []int, k int) int {
@@ -600,7 +789,7 @@ func TopkSmallestElement(nums []int, k int) int {
 }
 
 /*
-1.5.4 获取第k大的数
+1.9.4 获取第k大的数
 */
 
 func TopkLargestElement(nums []int, k int) int {
@@ -609,7 +798,7 @@ func TopkLargestElement(nums []int, k int) int {
 }
 
 /*
-1.6 寻找两个有序数组的中位数
+1.10 寻找两个有序数组的中位数
 给定两个大小分别为 m 和 n 的正序（从小到大）数组nums1和nums2。请你找出并返回这两个正序数组的中位数 。
 算法的时间复杂度应该为O(log(m+n)) 。
 输入：nums1 = [1,3], nums2 = [2]
@@ -722,7 +911,7 @@ func getKthElement(nums1, nums2 []int, k int) int {
 }
 
 /*
-1.7 三数之和
+1.11 三数之和
 给你一个包含n个整数的数组nums，判断nums中是否存在三个元素 a，b，c ，使得a + b + c = 0 ？请你找出所有和为0且不重复的三元组。
 注意：答案中不可以包含重复的三元组。
 */
@@ -830,7 +1019,7 @@ func DropDuplicates(src [][]int) (dst [][]int) {
 }
 
 /*
-1.8 求x的n次方
+1.12 求x的n次方
 用O(N)的时间复杂度解决是很容易，你能在O(logN)时间复杂度内解决吗？
 */
 
@@ -869,7 +1058,7 @@ func MyPowSimple(x float64, n int) float64 {
 }
 
 /*
-1.9 二维数组中的查找
+1.13 二维数组中的查找
 在一个 n * m 的二维数组中，每一行都按照从左到右递增的顺序排序，每一列都按照从上到下递增的顺序排序。请完成一个
 高效的函数，输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。
 
@@ -943,7 +1132,7 @@ func FindNumberIn2DArray(matrix [][]int, target int) bool {
 }
 
 /*
-1.10 有序数组的平方
+1.14 有序数组的平方
 给你一个按非递减顺序排序的整数数组nums，返回每个数字的平方组成的新数组，要求也按非递减顺序排序。
 
 示例1：
@@ -989,7 +1178,7 @@ func SortedSquares(nums []int) []int {
 }
 
 /*
-1.11 下一个排列
+1.15 下一个排列
 实现获取下一个排列的函数，算法需要将给定数字序列重新排列成字典序中下一个更大的排列（即，组合出下一个更大的整数）。
 如果不存在下一个更大的排列，则将数字重新排列成最小的排列（即升序排列）。
 必须原地修改，只允许使用额外常数空间。
