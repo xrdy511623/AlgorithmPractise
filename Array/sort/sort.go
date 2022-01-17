@@ -941,8 +941,9 @@ func FindMidInSortedArrays(nums1, nums2 []int) float64 {
 }
 
 /*
-1.11 三数之和
-给你一个包含n个整数的数组nums，判断nums中是否存在三个元素 a，b，c ，使得a + b + c = 0 ？请你找出所有和为0且不重复的三元组。
+leetcode 15. 三数之和
+1.11 给你一个包含n个整数的数组nums，判断nums中是否存在三个元素 a，b，c ，使得a + b + c = 0 ？请你找出所有和
+为0且不重复的三元组。
 注意：答案中不可以包含重复的三元组。
 */
 
@@ -1049,8 +1050,8 @@ func DropDuplicates(src [][]int) (dst [][]int) {
 }
 
 /*
-1.12 求x的n次方
-用O(N)的时间复杂度解决是很容易，你能在O(logN)时间复杂度内解决吗？
+leetcode 50. Pow(x, n)
+1.12 用O(N)的时间复杂度解决是很容易，你能在O(logN)时间复杂度内解决吗？
 */
 
 // MyPow 简单递归解决, 递归调用n次，所以时间复杂度为O(N)，空间复杂度O(1)
@@ -1088,13 +1089,13 @@ func MyPowSimple(x float64, n int) float64 {
 }
 
 /*
-1.13 二维数组中的查找
-在一个 n * m 的二维数组中，每一行都按照从左到右递增的顺序排序，每一列都按照从上到下递增的顺序排序。请完成一个
-高效的函数，输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。
+剑指Offer 04. 二维数组中的查找
+1.13 在一个 n * m 的二维数组中，每一行都按照从左到右递增的顺序排序，每一列都按照从上到下递增的顺序排序。
+请完成一个高效的函数，输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。
 
 示例:
 
-现有矩阵 matrix 如下：
+现有矩阵matrix如下：
 
 [
   [1,   4,  7, 11, 15],
@@ -1114,8 +1115,8 @@ func FindNumberIn2DArrayBinary(matrix [][]int, target int) bool {
 		return false
 	}
 	for _, nums := range matrix {
-		if existed := BinarySearchUseRecursion(nums, target); existed {
-			return existed
+		if BinarySearchUseRecursion(nums, target) {
+			return true
 		} else {
 			continue
 		}
@@ -1135,10 +1136,10 @@ func FindNumberIn2DArrayBinary(matrix [][]int, target int) bool {
 若数组为空，返回false
 初始化行下标为0，列下标为二维数组的列数减1
 重复下列步骤，直到行下标或列下标超出边界
-获得当前下标位置的元素 num
-如果 num 和 target 相等，返回 true
-如果 num 大于 target，列下标减 1
-如果 num 小于 target，行下标加 1
+获得当前下标位置的元素num
+如果num和target 相等，返回true
+如果num大于target，列下标减 1
+如果num小于target，行下标加 1
 循环体执行完毕仍未找到元素等于 target ，说明不存在这样的元素，返回 false
 */
 
@@ -1162,8 +1163,8 @@ func FindNumberIn2DArray(matrix [][]int, target int) bool {
 }
 
 /*
-1.14 有序数组的平方
-给你一个按非递减顺序排序的整数数组nums，返回每个数字的平方组成的新数组，要求也按非递减顺序排序。
+leetcode 977. 有序数组的平方
+1.14 给你一个按非递减顺序排序的整数数组nums，返回每个数字的平方组成的新数组，要求也按非递减顺序排序。
 
 示例1：
 输入：nums = [-4,-1,0,3,10]
@@ -1192,19 +1193,19 @@ nums已按非递减顺序 排序
 
 func SortedSquares(nums []int) []int {
 	n := len(nums)
-	result := make([]int, n)
-	i, j, k := 0, n-1, n-1
-	for i <= j {
-		if nums[i]*nums[i] > nums[j]*nums[j] {
-			result[k] = nums[i] * nums[i]
-			i++
+	res := make([]int, len(nums))
+	l, r, index := 0, n-1, n-1
+	for l <= r && index >= 0 {
+		if nums[l]*nums[l] > nums[r]*nums[r] {
+			res[index] = nums[l] * nums[l]
+			l++
 		} else {
-			result[k] = nums[j] * nums[j]
-			j--
+			res[index] = nums[r] * nums[r]
+			r--
 		}
-		k--
+		index--
 	}
-	return result
+	return res
 }
 
 /*
@@ -1232,20 +1233,34 @@ func SortedSquares(nums []int) []int {
 */
 
 /*
-对于长度为n的排列a：
-首先从后向前查找第一个顺序对(i,i+1)，满足a[i]<a[i+1]。这样「较小数」即为a[i]。此时[i+1,n)必然是下降序列。
-如果找到了顺序对，那么在区间[i+1,n) 中从后向前查找第一个元素j满足a[i] < a[j]。这样「较大数」即为a[j]。
-交换a[i]与a[j]，此时可以证明区间[i+1,n) 必为降序。我们可以直接使用双指针反转区间[i+1,n)使其变为升序，
-而无需对该区间进行排序。
+我们希望下一个数比当前数大，这样才满足“下一个排列”的定义。因此只需要将后面的「大数」与前面的「小数」交换，就能得到
+一个更大的数。比如123456，将5和6交换就能得到一个更大的数123465。
+我们还希望下一个数增加的幅度尽可能的小，这样才满足“下一个排列与当前排列紧邻“的要求。为了满足这个要求，我们需要：
+在尽可能靠右的低位进行交换，需要从后向前查找。
+将一个尽可能小的「大数」与前面的「小数」交换。比如123465，下一个排列应该把5和4交换而不是把6和4交换
+将「大数」换到前面后，需要将「大数」后面的所有数重置为升序，升序排列就是最小的排列。以 123465 为例：
+首先按照上一步，交换5和4，得到 123564；然后需要将5之后的数重置为升序，得到123546。显然123546比123564更小，
+123546就是123465的下一个排列。
+以上就是求“下一个排列”的分析过程。
+
+算法过程
+标准的“下一个排列”算法可以描述为：
+1 从后向前查找第一个相邻升序的元素对 (i,j)，满足 A[i] < A[j]。此时 [j,end) 必然是降序
+2 在 [j,end) 从后向前查找第一个满足 A[i] < A[k]的 k。A[i]、A[k] 分别就是上文所说的「小数」、「大数」
+3 将 A[i] 与 A[k] 交换
+4 可以断定这时 [j,end) 必然是降序，逆置 [j,end)，使其升序
+如果在步骤1找不到符合的升序相邻元素对，说明当前 [begin,end) 为一个降序顺序，则直接跳到步骤4
+
 */
 
 func NextPermutation(nums []int) {
 	n := len(nums)
-	i, j := n-2, n-1
+	i := n - 2
 	for i >= 0 && nums[i] >= nums[i+1] {
 		i--
 	}
 	if i >= 0 {
+		j := n - 1
 		for j >= 0 && nums[i] >= nums[j] {
 			j--
 		}
