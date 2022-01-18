@@ -339,3 +339,125 @@ func MassageArrangement(nums []int) int {
 	}
 	return maxValue
 }
+
+/*
+leetcode 740. 删除并获得点数
+1.5 给你一个整数数组nums，你可以对它进行一些操作。
+每次操作中，选择任意一个nums[i]，删除它并获得nums[i]的点数。之后，你必须删除所有等于nums[i]-1和nums[i]+1的元素。
+开始你拥有0个点数。返回你能通过这些操作获得的最大点数。
+
+示例1：
+输入：nums = [3,4,2]
+输出：6
+解释：
+删除4获得4个点数，因此3也被删除。
+之后，删除2获得2个点数。总共获得6个点数。
+
+示例2：
+输入：nums = [2,2,3,3,3,4]
+输出：9
+解释：
+删除3获得3个点数，接着要删除两个2和4 。
+之后，再次删除3获得3个点数，再次删除3获得3个点数。
+总共获得9个点数。
+
+提示：
+1 <= nums.length <= 2 * 104
+1 <= nums[i] <= 10^4
+*/
+
+/*
+思路:动态规划
+根据题意，选择了数组nums中任一元素x，在将x删除后，x以及所有等于x-1以及x+1的元素都会从数组中删去，获得的点数为x,
+所以如果数组中有多个元素值都是x(个数记为y)，那么我们获得的点数就是x*y,也就是所有值为x的元素之和。因此，我们可以
+维护一个nums的元素和数组sum,下标为数组nums中的所有元素，值为数组nums中该元素之和，以示例2为例，sum数组就应该是
+[0*0, 1*0, 2*2, 3*3, 4*1], 对应的是数组nums中0，1，2，3，4的元素和(元素和等于元素值*元素出现次数)，到这一步，
+递推公式也就呼之欲出了。下面我们展开讲一下:
+
+1 确定dp数组及其下标含义
+dp[i]表示删除数组nums中的元素i(nums[i])所获得的最大点数为dp[i]。注意，此时你操作的数组元素范围是[0, i]。
+这里说一下dp数组长度，根据dp数组下标含义，dp数组最后一位应该是数组nums中的最大元素maxValue，表示删除
+maxValue所获最大点数，因此dp数组长度应为maxValue+1，同理sum数组的长度也应该是maxValue+1。
+2 确定递归公式
+sum数组中所有元素都是从0开始到数组nums中最大元素按升序排列的(nums[i]之和)，那么删除nums[i]所得到的的最大点数
+可以由以下两种情况推出:
+a 不删除元素i,所获得的点数就是dp[i-1]
+b 删除元素i,所获得的点数就是dp[i-2]+sum[i]。根据题意，值为i-1(nums[i]-1)的元素都会被删去，所以可供我们操作的
+元素范围就是[0,i-2]，所获得的最大点数就是dp[i-2]，删除元素i所获得的点数根据题意就是sum[i](如果不清楚就再看一下
+sum数组的定义)
+所以递推公式就是dp[i] = max(dp[i-1], dp[i-2]+sum[i])
+3 dp数组初始化
+根据题意，1 <= nums[i] <= 10^4, 也就是元素i(nums[i])的值最小为1，所以我们从1开始初始化赋值，数组nums中不会
+有元素0，我们初始化dp[0]=0就好了，那么很明显dp[1]=sum[1]，删除元素1所获点数就是sum[1];dp[2]根据递推公式
+也很容易求出来，dp[2] = max(dp[1], dp[0]+sum[2])，由于dp[0]=0，所以dp[2] = max(dp[1], sum[2])
+4 确定遍历顺序
+从递推公式可知，dp[i]是由dp[i-1]和dp[i-2]推出的，所以肯定是从前往后遍历。
+5 举例推到dp数组
+nums=[2,2,3,3,3,4]
+dp下标  0   1   2   3   4
+值      0   0   4   9   9
+所以最后返回9，根据递推公式，想获得最大点数，操作范围一定要最广，所以最大点数一定是在[0,maxValue]范围取得的，
+应该返回dp[maxValue]
+*/
+
+// DeleteAndEarn 时间复杂度O(3N),空间复杂度O(2N)
+func DeleteAndEarn(nums []int) int {
+	n := len(nums)
+	if n == 0 || nums == nil {
+		return 0
+	}
+	if n == 1 {
+		return nums[0]
+	}
+	maxValue := nums[0]
+	for i := 1; i < n; i++ {
+		if maxValue < nums[i] {
+			maxValue = nums[i]
+		}
+	}
+	sum := make([]int, maxValue+1)
+	for _, num := range nums {
+		sum[num] += num
+	}
+	dp := make([]int, maxValue+1)
+	dp[1] = sum[1]
+	dp[2] = Utils.Max(dp[1], dp[0]+sum[2])
+	for i := 3; i <= maxValue; i++ {
+		dp[i] = Utils.Max(dp[i-1], dp[i-2]+sum[i])
+	}
+	return dp[maxValue]
+}
+
+/*
+仔细观察上面的代码，其实我们只需要维护两个状态值，所以可以写成下面这样，将算法的空间复杂度降低O(N)
+*/
+
+// DeleteAndEarnSimple 时间复杂度O(3N),空间复杂度O(N)
+func DeleteAndEarnSimple(nums []int) int {
+	n := len(nums)
+	if n == 0 || nums == nil {
+		return 0
+	}
+	if n == 1 {
+		return nums[0]
+	}
+	maxValue := nums[0]
+	for i := 1; i < n; i++ {
+		if maxValue < nums[i] {
+			maxValue = nums[i]
+		}
+	}
+	sum := make([]int, maxValue+1)
+	for _, num := range nums {
+		sum[num] += num
+	}
+	dp := make([]int, 2)
+	dp[0] = sum[1]
+	dp[1] = Utils.Max(dp[0], sum[2])
+	for i := 3; i <= maxValue; i++ {
+		newMax := Utils.Max(dp[1], dp[0]+sum[i])
+		dp[0] = dp[1]
+		dp[1] = newMax
+	}
+	return dp[1]
+}
