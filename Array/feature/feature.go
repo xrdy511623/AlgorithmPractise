@@ -308,8 +308,8 @@ func RemoveDuplicates(nums []int) int {
 }
 
 /*
-1.8 进阶 移除元素
-给你一个数组 nums和一个值val，你需要原地移除所有数值等于val的元素，并返回移除后数组的新长度。
+leetcode 27. 移除元素
+1.8 给你一个数组nums和一个值val，你需要原地移除所有数值等于val的元素，并返回移除后数组的新长度。
 不要使用额外的数组空间，你必须仅使用 O(1) 额外空间并原地修改输入数组。
 
 元素的顺序可以改变。你不需要考虑数组中超出新长度后面的元素。
@@ -349,22 +349,11 @@ func RemoveElementsTwo(nums []int, val int) int {
 	return slow
 }
 
-// 双指针法可以写得更简单一些
-func RemoveElementSimple(nums []int, val int) int {
-	index := 0
-	// 此时i就是快指针fast
-	for i := 0; i < len(nums); i++ {
-		if nums[i] != val {
-			nums[index] = nums[i]
-			index++
-		}
-	}
-	return index
-}
+
 
 /*
-1.9 移动零
-给定一个数组nums，编写一个函数将所有0移动到数组的末尾，同时保持非零元素的相对顺序。
+leetcode 283. 移动零
+1.9 给定一个数组nums，编写一个函数将所有0移动到数组的末尾，同时保持非零元素的相对顺序。
 
 示例:
 输入: [0,1,0,3,12]
@@ -385,24 +374,22 @@ nums[index:index+count]区间内的元素都应该是0，那就循环count次，
 */
 
 func MoveZeroes(nums []int) {
-	index, count := 0, 0
+	index := 0
 	for i := 0; i < len(nums); i++ {
 		if nums[i] != 0 {
 			nums[index] = nums[i]
 			index++
-		} else {
-			count++
 		}
 	}
-	for i := 0; i < count; i++ {
+	for index < len(nums){
 		nums[index] = 0
 		index++
 	}
 }
 
 /*
-1.10 最长公共前缀
-编写一个函数来查找字符串数组中的最长公共前缀。
+leetcode 14. 最长公共前缀
+1.10 编写一个函数来查找字符串数组中的最长公共前缀。
 如果不存在公共前缀，返回空字符串""。
 
 示例 1：
@@ -448,8 +435,8 @@ func lcp(str1, str2 string) string {
 }
 
 /*
-1.11 最长连续递增子序列
-给定一个未经排序的整数数组，找到最长且连续递增的子序列，并返回该序列的长度。
+leetcode 674. 最长连续递增序列
+1.11 给定一个未经排序的整数数组，找到最长且连续递增的子序列，并返回该序列的长度。
 连续递增的子序列，可以由两个下标l和r（l < r）确定，如果对于每个l <= i < r，都有nums[i] < nums[i + 1] ，
 那么子序列 [nums[l], nums[l + 1], ..., nums[r - 1], nums[r]] 就是连续递增子序列。
 
@@ -476,8 +463,8 @@ func FindLengthOfLCIS(nums []int) int {
 }
 
 /*
-1.12 最大子序列和
-给定一个整数数组 nums，找到一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。
+leetcode 53. 最大子数组和
+1.12 给定一个整数数组nums，找到一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。
 
 示例 1：
 输入：nums = [-2,1,-3,4,-1,2,1,-5,4]
@@ -511,8 +498,8 @@ func MaxSubArray(nums []int) int {
 }
 
 /*
-1.13 长度最小的子数组
-给定一个含有n个正整数的数组和一个正整数s ，找出该数组中满足其和 ≥ s 的长度最小的连续子数组，并返回其长度。
+leetcode 209. 长度最小的子数组
+1.13 给定一个含有n个正整数的数组和一个正整数s ，找出该数组中满足其和 ≥ s 的长度最小的连续子数组，并返回其长度。
 如果不存在符合条件的子数组，返回0。
 
 示例：
@@ -560,8 +547,8 @@ func MinSubArrayLen(target int, nums []int) int {
 }
 
 /*
-1.14 反转字符串中的单词III
-给定一个字符串，你需要反转字符串中每个单词的字符顺序，同时仍保留空格和单词的初始顺序。
+leetcode 557. 反转字符串中的单词III
+1.14 给定一个字符串，你需要反转字符串中每个单词的字符顺序，同时仍保留空格和单词的初始顺序。
 
 示例：
 输入："Let's take LeetCode contest"
@@ -570,7 +557,7 @@ func MinSubArrayLen(target int, nums []int) int {
 
 /*
 思路:以空格分割字符串s得到单词(字符串)集合，将每个单词反转后添加到结果集合中(字符串集合)
-最后返回strings.Join(res, " ")即可
+最后返回strings.Join(res, " ")即可。
 */
 
 func ReverseWords(s string) string {
@@ -608,17 +595,18 @@ func ReverseWordsTwo(s string) string {
 		for p := i - 1; p >= start; p-- {
 			res = append(res, s[p])
 		}
+		// 空格保持原样，添加到res中
 		for i < n && s[i] == ' ' {
-			i++
 			res = append(res, ' ')
+			i++
 		}
 	}
 	return string(res)
 }
 
 /*
-1.15 反转字符串II
-给定一个字符串s和一个整数k，从字符串开头算起，每计数至2k个字符，就反转这2k字符中的前k个字符。
+leetcode 541. 反转字符串II
+1.15 给定一个字符串s和一个整数k，从字符串开头算起，每计数至2k个字符，就反转这2k字符中的前k个字符。
 如果剩余字符少于k个，则将剩余字符全部反转。
 如果剩余字符小于2k但大于或等于k个，则反转前k个字符，其余字符保持原样。
 
@@ -633,7 +621,7 @@ func ReverseStr(s string, k int) string {
 		// 每2k个字符对前k个字符进行反转
 		// 剩余字符小于2k但大于或等于k个，则反转前k个字符
 		if i+k <= n {
-			reverse(bytes[i : i+k])
+			reverse(bytes[i:i+k])
 		} else {
 			// 剩余字符少于k个，则将剩余字符全部反转。
 			reverse(bytes[i:n])
@@ -652,8 +640,8 @@ func reverse(s []byte) {
 }
 
 /*
-1.16 替换空格
-请实现一个函数，把字符串s中的每个空格替换成"%20"。
+剑指Offer 05. 替换空格
+1.16 请实现一个函数，把字符串s中的每个空格替换成"%20"。
 
 示例1：
 输入：s = "We are happy."
@@ -707,10 +695,9 @@ func ReplaceSpaceSimple(s string) string {
 }
 
 /*
-1.17 反转字符串里的单词
-给你一个字符串s，逐个翻转字符串中的所有单词 。
+leetcode 151. 翻转字符串里的单词
+1.17 给你一个字符串s，逐个翻转字符串中的所有单词 。
 单词是由非空格字符组成的字符串。s中使用至少一个空格将字符串中的单词分隔开。
-
 请你返回一个翻转s中单词顺序并用单个空格相连的字符串。
 
 说明：
@@ -765,7 +752,7 @@ func reverseWords(s string) string {
 		ss[slow] = ss[fast]
 		slow++
 	}
-	// 去掉字符串最右边的冗余空格
+	// 去掉字符串最右边的冗余空格, 也就是如果字符串s最后一位是空格要去掉
 	if slow > 1 && ss[slow-1] == ' ' {
 		ss = ss[:slow-1]
 	} else {
@@ -778,8 +765,8 @@ func reverseWords(s string) string {
 		// 反转单个单词
 		j := i
 		// 找到单词的结束位置
-		for ; j < len(ss) && ss[j] != ' '; j++ {
-			continue
+		for j < len(ss) && ss[j] != ' '{
+			j++
 		}
 		// 反转
 		reverse(ss[i:j])
@@ -790,8 +777,8 @@ func reverseWords(s string) string {
 }
 
 /*
-1.18 左旋转字符串
-字符串的左旋转操作是把字符串前面的若干个字符转移到字符串的尾部。请定义一个函数实现字符串左旋转操作的功能。
+剑指Offer 58 - II. 左旋转字符串
+1.18 字符串的左旋转操作是把字符串前面的若干个字符转移到字符串的尾部。请定义一个函数实现字符串左旋转操作的功能。
 比如，输入字符串"abcdefg"和数字2，该函数将返回左旋转两位得到的结果"cdefgab"。
 
 示例1：
@@ -832,8 +819,8 @@ func ReverseLeftWordsSimple(s string, n int) string {
 }
 
 /*
-1.19  实现strStr()
-给你两个字符串haystack和needle ，请你在haystack字符串中找出needle字符串出现的第一个位置（下标从0开始）。
+leetcode 28. 实现 strStr()
+1.19 给你两个字符串haystack和needle ，请你在haystack字符串中找出needle字符串出现的第一个位置（下标从0开始）。
 如果不存在，则返回 -1 。
 
 示例1：
@@ -888,7 +875,7 @@ func strStrSimple(haystack string, needle string) int {
 		if haystack[i] == needle[j] {
 			j++
 		}
-		// 如果j从0移动到m的位置，意味着模式串与文本串匹配成功
+		// 如果j从0移动到m的位置，意味着模式串needle与文本串haystack匹配成功
 		if j == m {
 			return i - m + 1
 		}
