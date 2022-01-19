@@ -1,43 +1,25 @@
 package sum
 
 import (
-	"AlgorithmPractise/Utils"
 	"math"
 	"sort"
 	"strconv"
 )
 
 /*
-1.1 连续子数组的最大和
-输入一个整型数组，数组中的一个或连续多个整数组成一个子数组。求所有子数组的和的最大值。
-要求时间复杂度为O(n)。
-输入: nums = [-2,1,-3,4,-1,2,1,-5,4]
-输出: 6
-解释: 连续子数组 [4,-1,2,1]的和最大，为6。
-*/
-
-func maxSubArray(nums []int) int {
-	for i := 1; i < len(nums); i++ {
-		nums[i] += Utils.Max(nums[i-1], 0)
-	}
-	return Utils.MaxValueOfArray(nums)
-}
-
-/*
-1.2 字符串相加
-给定两个字符串形式的非负整数num1和num2，计算它们的和并同样以字符串形式返回。
+leetcode 415. 字符串相加
+1.1 给定两个字符串形式的非负整数num1和num2，计算它们的和并同样以字符串形式返回。
 你不能使用任何內建的用于处理大整数的库，也不能直接将输入的字符串转换为整数形式。
 
-示例 1：
-
+示例1：
 输入：num1 = "11", num2 = "123"
 输出："134"
-示例 2：
 
+示例2：
 输入：num1 = "456", num2 = "77"
 输出："533"
-示例 3：
 
+示例3：
 输入：num1 = "0", num2 = "0"
 输出："0"
 
@@ -60,27 +42,26 @@ func maxSubArray(nums []int) int {
 func AddStrings(num1, num2 string) string {
 	// 进位值初始值为0
 	add := 0
-	result := ""
+	res := ""
 	// 从低位开始相加，每循环一次，索引向左移动一位
 	for i, j := len(num1)-1, len(num2)-1; i >= 0 || j >= 0 || add != 0; i, j = i-1, j-1 {
-		var x, y int
+		sum := 0
 		if i >= 0 {
-			x = int(num1[i] - '0')
+			sum += int(num1[i] - '0')
 		}
 		if j >= 0 {
-			y = int(num2[j] - '0')
+			sum += int(num2[j] - '0')
 		}
-		sum := x + y + add
-		result = strconv.Itoa(sum%10) + result
+		sum += add
+		res = strconv.Itoa(sum%10) + res
 		add = sum / 10
 	}
-	return result
+	return res
 }
 
 /*
-1.3 字符串转换整数
-请你来实现一个myAtoi(string s)函数，使其能将字符串转换成一个32位有符号整数（类似 C/C++ 中的atoi函数）。
-
+leetcode 8. 字符串转换整数 (atoi)
+1.2 请你来实现一个myAtoi(string s)函数，使其能将字符串转换成一个32位有符号整数（类似C/C++中的atoi函数）。
 函数myAtoi(string s) 的算法如下：
 
 读入字符串并丢弃无用的前导空格
@@ -133,8 +114,8 @@ func MyAtoi(s string) int {
 }
 
 /*
-1.4 四数之和
-给你一个由n个整数组成的数组nums ，和一个目标值target 。请你找出并返回满足下述全部条件且不重复的四元组
+leetcode 18. 四数之和
+1.3 给你一个由n个整数组成的数组nums，和一个目标值target。请你找出并返回满足下述全部条件且不重复的四元组
 [nums[a], nums[b], nums[c], nums[d]]（若两个四元组元素一一对应，则认为两个四元组重复）：
 
 0 <= a, b, c, d< n
@@ -180,7 +161,7 @@ func FourSum(nums []int, target int) [][]int {
 		// 遍历第二个元素
 		for j := i + 1; j < n-2; j++ {
 			// 同理，防止重复数组进入res
-			if j-i > 1 && nums[j] == nums[j-1] {
+			if j > i+1 && nums[j] == nums[j-1] {
 				continue
 			}
 			// 同理，最小的四个元素和都大于target,那么后续的数字都不用遍历了
