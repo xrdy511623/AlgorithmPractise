@@ -3,12 +3,12 @@ package feature
 import (
 	"AlgorithmPractise/Utils"
 	"math"
+	"sort"
 )
 
-
 /*
-1.0 赎金信
-给你两个字符串：ransomNote 和 magazine，判断ransomNote能不能由magazine里面的字符构成。
+leetcode 383. 赎金信
+1.1给你两个字符串：ransomNote 和 magazine，判断ransomNote能不能由magazine里面的字符构成。
 如果可以，返回true ；否则返回false 。
 
 magazine中的每个字符只能在ransomNote中使用一次。
@@ -47,8 +47,8 @@ func CanConstruct(ransomNote string, magazine string) bool {
 }
 
 /*
-1.1 两个数组的交集
-给定两个数组，编写一个函数来计算它们的交集。
+leetcode 349. 两个数组的交集
+1.2 给定两个数组，编写一个函数来计算它们的交集。
 
 示例1：
 输入：nums1 = [1,2,2,1], nums2 = [2,2]
@@ -62,22 +62,91 @@ func CanConstruct(ransomNote string, magazine string) bool {
 // FindIntersection 时间复杂度O(M+N)，空间复杂度O(M)
 func FindIntersection(nums1 []int, nums2 []int) []int {
 	var res []int
-	hashTable := make(map[int]bool)
-	for i := 0; i < len(nums1); i++ {
-		hashTable[nums1[i]] = true
+	visited := make(map[int]bool)
+	for _, v := range nums1 {
+		visited[v] = true
 	}
-	for i := 0; i < len(nums2); i++ {
-		if hashTable[nums2[i]] {
-			res = append(res, nums2[i])
+	for _, num := range nums2 {
+		if visited[num] {
+			res = append(res, num)
+			// 去重
+			visited[num] = false
 		}
-		// 因为交集中相同的元素只保留一个，所以需要这么操作
-		delete(hashTable, nums2[i])
 	}
 	return res
 }
 
 /*
-1.2 快乐数
+leetcode 350. 两个数组的交集II
+1.3 给你两个整数数组nums1和nums2 ，请你以数组形式返回两数组的交集。返回结果中每个元素出现的次数，应与元素
+在两个数组中都出现的次数一致（如果出现次数不一致，则考虑取较小值）。可以不考虑输出结果的顺序。
+
+示例1：
+输入：nums1 = [1,2,2,1], nums2 = [2,2]
+输出：[2,2]
+
+示例2:
+输入：nums1 = [4,9,5], nums2 = [9,4,9,8,4]
+输出：[4,9]
+
+提示：
+1 <= nums1.length, nums2.length <= 1000
+0 <= nums1[i], nums2[i] <= 1000
+
+进阶：
+如果给定的数组已经排好序呢？你将如何优化你的算法？
+如果nums1的大小比nums2小，哪种方法更优？
+如果nums2的元素存储在磁盘上，内存是有限的，并且你不能一次加载所有的元素到内存中，你该怎么办？
+*/
+
+// Intersect 时间复杂度: O(M+N) 空间复杂度: O(min(M,N))
+func Intersect(nums1 []int, nums2 []int) []int {
+	var res []int
+	visited := make(map[int]int)
+	for _, num := range nums1 {
+		visited[num]++
+	}
+	for _, num := range nums2 {
+		if visited[num] > 0 {
+			res = append(res, num)
+			visited[num]--
+		}
+	}
+	return res
+}
+
+/*
+思路二:排序+双指针
+如果两个数组是已经排好序的，那么使用双指针会更有效率，此时时间复杂度会降低到O(min(M,N)),空间复杂度也可以降低
+到O(min(M,N))。
+如果nums2的元素存储在磁盘上，磁盘内存是有限的，并且你不能一次加载所有的元素到内存中。那么就无法高效地对nums2
+进行排序，因此推荐使用方法一而不是方法二。在方法一中，nums2只关系到查询操作，因此每次读取nums2中的一部分数据，
+并进行处理即可。
+*/
+
+// IntersectTwo 未排序的情况下，时间复杂度: O(M*logM+N*logN+min(M,N)) 空间复杂度: O(min(M,N))
+func IntersectTwo(nums1 []int, nums2 []int) []int {
+	var res []int
+	m, n := len(nums1), len(nums2)
+	sort.Ints(nums1)
+	sort.Ints(nums2)
+	index1, index2 := 0, 0
+	for index1 < m && index2 < n {
+		if nums1[index1] < nums2[index2] {
+			index1++
+		} else if nums1[index1] > nums2[index2] {
+			index2++
+		} else {
+			res = append(res, nums1[index1])
+			index1++
+			index2++
+		}
+	}
+	return res
+}
+
+/*
+1.4 快乐数
 编写一个算法来判断一个数n是不是快乐数。
 「快乐数」定义为：对于一个正整数，每一次将该数替换为它每个位置上的数字的平方和，然后重复这个过程直到这个数
 变为 1，也可能是无限循环但始终变不到1。如果可以变为1，那么这个数就是快乐数。
@@ -166,7 +235,7 @@ func IsHappyNumber(n int) bool {
 }
 
 /*
-1.3 两数之和
+1.5 两数之和
 给定一个整数数组nums和一个整数目标值target，请你在该数组中找出和为目标值target的那两个整数，并返回它们的
 数组下标。
 你可以假设每种输入只会对应一个答案。但是，数组中同一个元素在答案里不能重复出现。
@@ -189,7 +258,7 @@ func TwoSum(nums []int, target int) []int {
 }
 
 /*
-1.4 四数相加II
+1.6 四数相加II
 给你四个整数数组nums1、nums2、nums3 和 nums4 ，数组长度都是 n ，请你计算有多少个元组 (i, j, k, l)
 能满足：
 0 <= i, j, k, l < n
@@ -234,7 +303,7 @@ func FourSumCount(nums1 []int, nums2 []int, nums3 []int, nums4 []int) int {
 }
 
 /*
-1.5 无重复字符的最长子串
+1.7 无重复字符的最长子串
 给定一个字符串s ，请你找出其中不含有重复字符的最长子串的长度。
 输入: s = "abcabcbb"
 输出: 3
@@ -278,7 +347,7 @@ func LengthOfLongestSubString(s string) int {
 }
 
 /*
-1.6 最长连续序列
+1.8 最长连续序列
 给定一个未排序的整数数组nums，找出数字连续的最长序列（不要求序列元素在原数组中连续）的长度。
 请你设计并实现时间复杂度为O(n)的算法解决此问题。
 
@@ -337,7 +406,7 @@ func LongestConsecutive(nums []int) int {
 }
 
 /*
-1.7 最小覆盖子串
+1.9 最小覆盖子串
 给你一个字符串s、一个字符串t。返回s中涵盖t所有字符的最小子串。如果s中不存在涵盖t所有字符的子串，则返回空字符串""。
 
 注意：
@@ -399,8 +468,8 @@ func MinWindow(s, t string) string {
 }
 
 /*
-1.8 和为k的连续子数组
-给你一个整数数组nums和一个整数k ，请你统计并返回该数组中和为k的连续子数组的个数。
+1.10 和为k的连续子数组
+给你一个整数数组nums和一个整数k，请你统计并返回该数组中和为k的连续子数组的个数。
 
 示例1：
 输入：nums = [1,1,1], k = 2
@@ -470,7 +539,7 @@ func SubarraySum(nums []int, k int) int {
 }
 
 /*
-1.9 前k个高频元素
+1.11 前k个高频元素
 给你一个整数数组nums和一个整数k ，请你返回其中出现频率前k高的元素。你可以按任意顺序返回答案。
 
 示例1:
@@ -517,7 +586,7 @@ func TopKFrequent(nums []int, k int) []int {
 }
 
 /*
-1.10 LFU 缓存
+1.12 LFU 缓存
 请你为最不经常使用（LFU）缓存算法设计并实现数据结构。
 
 实现LFUCache 类：

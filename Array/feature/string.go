@@ -1,5 +1,7 @@
 package feature
 
+import "AlgorithmPractise/Utils"
+
 /*
 字符串变位词(异位词)专题
 */
@@ -273,4 +275,66 @@ func GroupAnagrams(strs []string) [][]string {
 		res = append(res, v)
 	}
 	return res
+}
+
+/*
+剑指Offer II 016. 不含重复字符的最长子字符串
+leetcode 3. 无重复字符的最长子串
+1.5 给定一个字符串s ，请你找出其中不含有重复字符的最长连续子字符串的长度。
+
+示例1:
+输入: s = "abcabcbb"
+输出: 3
+解释: 因为无重复字符的最长子字符串是"abc"，所以其长度为3。
+
+示例2:
+输入: s = "bbbbb"
+输出: 1
+解释: 因为无重复字符的最长子字符串是"b"，所以其长度为1。
+
+示例3:
+输入: s = "pwwkew"
+输出: 3
+解释: 因为无重复字符的最长子串是 "wke"，所以其长度为 3。
+请注意，你的答案必须是 子串 的长度，"pwke" 是一个子序列，不是子串。
+
+示例4:
+输入: s = ""
+输出: 0
+
+提示：
+0 <= s.length <= 5 * 104
+s由英文字母、数字、符号和空格组成
+*/
+
+/*
+思路:哈希表+滑动窗口
+这道题需要通过滑动窗口来解决，只不过这次的边界获取要通过哈希表来实现。
+首先我们创建一个哈希表visited，并且初始化滑动窗口左边界start=0，字符串s中最长不含重复字符的连续子串长度
+maxLength=0
+下来我们从下标0开始遍历字符串:
+每当遍历到字符串中的一个字符时，首先需要判断该字符在哈希表visited中是否出现过(判重)
+如果该字符串没有在哈希表中，表示该字符不重复，无需移动左边界start，将该字符串及对应下标加入哈希表中。
+如果该字符在哈希表中出现过，表示找到了重复的元素，此时我们需要移动左边界start:
+若start小于哈希表中该字符之前出现的位置pos，则移动至pos+1（因为在位置pos处已经重复了，需要跳过）
+若start大于哈希表中该字符之前出现的位置pos，表示重复的字符在左边界以外，忽略即可。
+将哈希表visited中当前字符的出现位置pos更新为当前位置i。
+每次遍历后，迭代最大长度maxLength的值。
+最终返回maxLength即可。
+*/
+
+// LengthOfLongestSubstring
+func LengthOfLongestSubstring(s string) int {
+	start, maxLength := 0, 0
+	visited := make(map[byte]int)
+	// i其实就是窗口右边界
+	for i := 0; i < len(s); i++ {
+		if pos, ok := visited[s[i]]; ok {
+			// 如果当前字符在哈希表中出现过，更新窗口左边界start
+			start = Utils.Max(start, pos+1)
+		}
+		visited[s[i]] = i
+		maxLength = Utils.Max(maxLength, i-start+1)
+	}
+	return maxLength
 }
