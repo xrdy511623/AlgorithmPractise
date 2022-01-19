@@ -1,9 +1,58 @@
 package feature
 
 /*
+字符串变位词(异位词)专题
+*/
+
+/*
+leetcode 242. 有效的字母异位词
+1.1 给定两个字符串s和t ，编写一个函数来判断t是否是s的字母异位词。
+注意：若s和t中每个字符出现的次数都相同，则称s和t互为字母异位词。
+
+输入: s = "anagram", t = "nagaram"
+输出: true
+
+输入: s = "rat", t = "car"
+输出: false
+
+提示:
+1 <= s.length, t.length <= 5 * 104
+s 和 t 仅包含小写字母
+*/
+
+// IsAnagram 时间复杂度O(S+T)，空间复杂度O(S)
+func IsAnagram(s, t string) bool {
+	if len(s) != len(t) {
+		return false
+	}
+	freqS := make(map[byte]int)
+	for i := 0; i < len(s); i++ {
+		freqS[s[i]]++
+	}
+	for i := 0; i < len(t); i++ {
+		freqS[t[i]]--
+		if freqS[t[i]] < 0 {
+			return false
+		}
+	}
+	return true
+}
+
+func IsIsAnagramSimple(s, t string) bool {
+	var c1, c2 [26]int
+	for _, ch := range s {
+		c1[ch-'a']++
+	}
+	for _, ch := range t {
+		c2[ch-'a']++
+	}
+	return c1 == c2
+}
+
+/*
 剑指 Offer II 014. 字符串中的变位词
 leetcode 567. 字符串的排列
-1.1 给定两个字符串s1和s2，写一个函数来判断s2是否包含s1的某个变位词。
+1.2 给定两个字符串s1和s2，写一个函数来判断s2是否包含s1的某个变位词。
 换句话说，第一个字符串的排列之一是第二个字符串的子串。
 
 示例1：
@@ -110,4 +159,118 @@ func CheckInclusionSimple(s1 string, s2 string) bool {
 		}
 	}
 	return false
+}
+
+/*
+剑指Offer II 015. 字符串中的所有变位词
+leetcode 438. 找到字符串中所有字母异位词
+1.3 给定两个字符串s和p，找到s中所有p的变位词的子串，返回这些子串的起始索引。不考虑答案输出的顺序。
+变位词指字母相同，但排列不同的字符串。
+
+示例1:
+输入: s = "cbaebabacd", p = "abc"
+输出: [0,6]
+解释:
+起始索引等于 0 的子串是 "cba", 它是 "abc" 的变位词。
+起始索引等于 6 的子串是 "bac", 它是 "abc" 的变位词。
+
+示例 2:
+输入: s = "abab", p = "ab"
+输出: [0,1,2]
+解释:
+起始索引等于 0 的子串是 "ab", 它是 "ab" 的变位词。
+起始索引等于 1 的子串是 "ba", 它是 "ab" 的变位词。
+起始索引等于 2 的子串是 "ab", 它是 "ab" 的变位词。
+
+提示:
+1 <= s.length, p.length <= 3 * 104
+s和p仅包含小写字母
+*/
+
+func FindAnagrams(s string, p string) []int {
+	var res []int
+	m, n := len(s), len(p)
+	if n > m {
+		return res
+	}
+	var nums [26]int
+	for i, v := range p {
+		nums[v-'a']--
+		nums[s[i]-'a']++
+	}
+	diff := 0
+	for _, num := range nums {
+		if num != 0 {
+			diff++
+		}
+	}
+	if diff == 0 {
+		// 此时s的起始索引当然是0
+		res = append(res, 0)
+	}
+	for i := n; i < m; i++ {
+		// x, y分别为进入滑动窗口和离开滑动窗口的元素
+		// i其实就是滑动窗口的末尾位置
+		x, y := s[i]-'a', s[i-n]-'a'
+		if nums[x] == 0 {
+			diff++
+		}
+		nums[x]++
+		if nums[x] == 0 {
+			diff--
+		}
+		if nums[y] == 0 {
+			diff++
+		}
+		nums[y]--
+		if nums[y] == 0 {
+			diff--
+		}
+		if diff == 0 {
+			// 此时的i为符合条件的子串的末尾位置
+			// 所以子串的起始位置就是i-len(p)+1,也就是i-n+1
+			res = append(res, i-n+1)
+		}
+	}
+	return res
+}
+
+/*
+leetcode 49. 字母异位词分组
+1.4 给你一个字符串数组，请你将字母异位词组合在一起。可以按任意顺序返回结果列表。
+字母异位词是由重新排列源单词的字母得到的一个新单词，所有源单词中的字母通常恰好只用一次。
+
+示例1:
+输入: strs = ["eat", "tea", "tan", "ate", "nat", "bat"]
+输出: [["bat"],["nat","tan"],["ate","eat","tea"]]
+
+示例2:
+输入: strs = [""]
+输出: [[""]]
+
+示例3:
+输入: strs = ["a"]
+输出: [["a"]]
+
+提示：
+1 <= strs.length <= 104
+0 <= strs[i].length <= 100
+strs[i]仅包含小写字母
+*/
+
+func GroupAnagrams(strs []string) [][]string {
+	hashTable := make(map[[26]int][]string)
+	for _, str := range strs {
+		nums := [26]int{}
+		for _, v := range str {
+			nums[v-'a']++
+		}
+		// 利用哈希表将字符出现次数相同的字符串放到同一个数组中
+		hashTable[nums] = append(hashTable[nums], str)
+	}
+	res := make([][]string, 0, len(hashTable))
+	for _, v := range hashTable {
+		res = append(res, v)
+	}
+	return res
 }

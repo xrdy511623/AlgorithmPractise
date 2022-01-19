@@ -5,53 +5,9 @@ import (
 	"math"
 )
 
-/*
-1.0  有效的字母异位词
-给定两个字符串s和t ，编写一个函数来判断t是否是s的字母异位词。
-注意：若s和t中每个字符出现的次数都相同，则称s和t互为字母异位词。
-
-输入: s = "anagram", t = "nagaram"
-输出: true
-
-输入: s = "rat", t = "car"
-输出: false
-
-提示:
-1 <= s.length, t.length <= 5 * 104
-s 和 t 仅包含小写字母
-*/
-
-// IsAnagram 时间复杂度O(S+T)，空间复杂度O(S)
-func IsAnagram(s, t string) bool {
-	if len(s) != len(t) {
-		return false
-	}
-	freqS := make(map[byte]int)
-	for i := 0; i < len(s); i++ {
-		freqS[s[i]]++
-	}
-	for i := 0; i < len(t); i++ {
-		freqS[t[i]]--
-		if freqS[t[i]] < 0 {
-			return false
-		}
-	}
-	return true
-}
-
-func IsIsAnagramSimple(s, t string) bool {
-	var c1, c2 [26]int
-	for _, ch := range s {
-		c1[ch-'a']++
-	}
-	for _, ch := range t {
-		c2[ch-'a']++
-	}
-	return c1 == c2
-}
 
 /*
-1.0.1 赎金信
+1.0 赎金信
 给你两个字符串：ransomNote 和 magazine，判断ransomNote能不能由magazine里面的字符构成。
 如果可以，返回true ；否则返回false 。
 
