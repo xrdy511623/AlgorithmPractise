@@ -1,7 +1,6 @@
 package feature
 
 import (
-	"AlgorithmPractise/Utils"
 	"math"
 	"sort"
 )
@@ -146,10 +145,10 @@ func IntersectTwo(nums1 []int, nums2 []int) []int {
 }
 
 /*
-1.4 快乐数
-编写一个算法来判断一个数n是不是快乐数。
+leetcode 202. 快乐数
+1.4 编写一个算法来判断一个数n是不是快乐数。
 「快乐数」定义为：对于一个正整数，每一次将该数替换为它每个位置上的数字的平方和，然后重复这个过程直到这个数
-变为 1，也可能是无限循环但始终变不到1。如果可以变为1，那么这个数就是快乐数。
+变为1，也可能是无限循环但始终变不到1。如果可以变为1，那么这个数就是快乐数。
 如果n是快乐数就返回True；不是，则返回False 。
 
 示例：
@@ -235,8 +234,8 @@ func IsHappyNumber(n int) bool {
 }
 
 /*
-1.5 两数之和
-给定一个整数数组nums和一个整数目标值target，请你在该数组中找出和为目标值target的那两个整数，并返回它们的
+leetcode 1. 两数之和
+1.5 给定一个整数数组nums和一个整数目标值target，请你在该数组中找出和为目标值target的那两个整数，并返回它们的
 数组下标。
 你可以假设每种输入只会对应一个答案。但是，数组中同一个元素在答案里不能重复出现。
 你可以按任意顺序返回答案。
@@ -302,53 +301,10 @@ func FourSumCount(nums1 []int, nums2 []int, nums3 []int, nums4 []int) int {
 	return count
 }
 
-/*
-1.7 无重复字符的最长子串
-给定一个字符串s ，请你找出其中不含有重复字符的最长子串的长度。
-输入: s = "abcabcbb"
-输出: 3
-解释: 因为无重复字符的最长子串是 "abc"，所以其长度为 3。
-
-输入: s = "bbbbb"
-输出: 1
-解释: 因为无重复字符的最长子串是 "b"，所以其长度为 1。
-
-输入: s = "pwwkew"
-输出: 3
-解释: 因为无重复字符的最长子串是"wke"，所以其长度为 3。
-请注意，你的答案必须是子串的长度，"pwke"是一个子序列，不是子串。
-
-输入: s = ""
-输出: 0
-*/
-
-func LengthOfLongestSubString(s string) int {
-	// 哈希表，记录字符串中的字符是否出现过
-	occurred := make(map[byte]int, 0)
-	// 最长子串长度初始值为0，最长子串最右边界(右指针)初始值为-1，表示此时右指针尚未移动
-	maxLength, rp := 0, -1
-	n := len(s)
-	// i从0开始递增，它就是子串的左边界，左指针
-	for i := 0; i < n; i++ {
-		// 左指针每向右移动一位，则在哈希表中将其前面的字符删除
-		if i != 0 {
-			delete(occurred, s[i-1])
-		}
-		// 只要右指针不越界(超出字符串的长度-1)且右指针对应的字符没有在哈希表中出现过，则哈希表中
-		// 记录该字符，同时右指针持续向右移动一位
-		for rp+1 < n && occurred[s[rp+1]] == 0 {
-			occurred[s[rp+1]]++
-			rp++
-		}
-		// i每迭代一次，则迭代maxLength的值，最大长度等于右指针-左指针+1
-		maxLength = Utils.Max(maxLength, rp-i+1)
-	}
-	return maxLength
-}
 
 /*
-1.8 最长连续序列
-给定一个未排序的整数数组nums，找出数字连续的最长序列（不要求序列元素在原数组中连续）的长度。
+leetcode 128. 最长连续序列
+1.7 给定一个未排序的整数数组nums，找出数字连续的最长序列（不要求序列元素在原数组中连续）的长度。
 请你设计并实现时间复杂度为O(n)的算法解决此问题。
 
 示例 1：
@@ -379,19 +335,19 @@ x+y，其长度为y+1，我们不断枚举并更新答案即可。
 */
 
 func LongestConsecutive(nums []int) int {
-	hashTable := make(map[int]bool)
+	occurred := make(map[int]bool)
 	// 哈希表去重
 	for _, num := range nums {
-		hashTable[num] = true
+		occurred[num] = true
 	}
 	maxLength := 0
-	for num := range hashTable {
+	for num := range occurred {
 		// 跳过num-1，否则会重复做无用功
-		if !hashTable[num-1] {
+		if !occurred[num-1] {
 			cur := num
 			length := 1
 			// 不断枚举cur+1,cur+2 ...,判断是否存在于哈希表中
-			for hashTable[cur+1] {
+			for occurred[cur+1] {
 				cur++
 				// 如果每次cur累加1都满足，则以cur为起点的连续递增序列长度累加1
 				length++

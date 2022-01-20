@@ -1,6 +1,8 @@
 package Medium
 
-import "AlgorithmPractise/Utils"
+import (
+	"AlgorithmPractise/Utils"
+)
 
 /*
 1.1 最长递增子序列
@@ -477,7 +479,43 @@ func MaxSubArraySimple(nums []int) int {
 }
 
 /*
-1.7  乘积最大子数组
+leetcode 918. 环形子数组的最大和
+1.7 给定一个由整数数组A表示的环形数组C，求 C的非空子数组的最大可能和。
+在此处，环形数组意味着数组的末端将会与开头相连呈环状。（形式上，当0 <= i < A.length时C[i] = A[i]，
+且当i >= 0时C[i+A.length] = C[i]）
+
+此外，子数组最多只能包含固定缓冲区A中的每个元素一次。（形式上，对于子数组C[i], C[i+1], ..., C[j]，不存在
+i <= k1, k2 <= j其中k1 % A.length= k2 % A.length）
+
+示例1：
+输入：[1,-2,3,-2]
+输出：3
+解释：从子数组 [3] 得到最大和3
+
+示例2：
+输入：[5,-3,5]
+输出：10
+解释：从子数组 [5,5] 得到最大和 5 + 5 = 10
+*/
+
+func MaxSubarraySumCircular(nums []int) int {
+	n := len(nums)
+	curMax, curMin, maxSub, minSub, sum := nums[0], nums[0], nums[0], nums[0], nums[0]
+	for i := 1; i < n; i++ {
+		sum += nums[i]
+		curMax = Utils.Max(curMax+nums[i], nums[i])
+		maxSub = Utils.Max(curMax, maxSub)
+		curMin = Utils.Min(curMin+nums[i], nums[i])
+		minSub = Utils.Min(curMin, minSub)
+	}
+	if sum == minSub {
+		return maxSub
+	}
+	return Utils.Max(maxSub, sum-minSub)
+}
+
+/*
+1.8  乘积最大子数组
 给你一个整数数组nums，请你找出数组中乘积最大的连续子数组（该子数组中至少包含一个数字），并返回该子数组所
 对应的乘积。
 
@@ -565,7 +603,7 @@ func MaxProductSimple(nums []int) int {
 }
 
 /*
-1.8 判断子序列
+1.9 判断子序列
 给定字符串s和t ，判断s是否为t的子序列。
 字符串的一个子序列是原始字符串删除一些（也可以不删除）字符而不改变剩余字符相对位置形成的新字符串(例如,"ace"是"abcde"的一个子序列，而"aec"不是）
 
@@ -655,7 +693,7 @@ func IsSubSequenceSimple(s, t string) bool {
 }
 
 /*
-1.9 不同的子序列
+1.10 不同的子序列
 给定一个字符串s和一个字符串t ，计算在s的子序列中t出现的个数。
 字符串的一个子序列是指，通过删除一些（也可以不删除）字符且不干扰剩余字符相对位置所组成的新字符串。
 （例如,"ACE"是"ABCDE"的一个子序列,而"AEC" 不是）
@@ -734,7 +772,7 @@ func NumDistinct(s, t string) int {
 }
 
 /*
-1.10 两个字符串的删除操作
+1.11 两个字符串的删除操作
 给定两个单词word1和word2，找到使得word1和word2相同所需的最小步数，每步可以删除任意一个字符串中的一个字符。
 
 示例：
@@ -823,7 +861,7 @@ func MinDistanceSimple(word1, word2 string) int {
 }
 
 /*
-1.11 编辑距离
+1.12 编辑距离
 给你两个单词word1和word2，请你计算出将word1转换成word2所使用的最少操作数。
 
 你可以对一个单词进行如下三种操作：
@@ -897,7 +935,7 @@ func MinDistanceComplex(word1, word2 string) int {
 }
 
 /*
-1.12 回文子串
+1.13 回文子串
 给定一个字符串，你的任务是计算这个字符串中有多少个回文子串。
 具有不同开始位置或结束位置的子串，即使是由相同的字符组成，也会被视作不同的子串。
 
@@ -1006,7 +1044,7 @@ func Extend(s string, i, j, n int) int {
 }
 
 /*
-1.13 最长回文子序列
+1.14 最长回文子序列
 给定一个字符串s ，找到其中最长的回文子序列，并返回该序列的长度。可以假设s的最大长度为 1000 。
 示例 1: 输入: "bbbab" 输出: 4 一个可能的最长回文子序列为 "bbbb"。
 示例 2: 输入:"cbbd" 输出: 2 一个可能的最长回文子序列为 "bb"。
@@ -1071,7 +1109,7 @@ func LongestPalindromeSubSeq(s string) int {
 }
 
 /*
-1.14 最长递增子序列的个数
+1.15 最长递增子序列的个数
 给定一个未排序的整数数组，找到最长递增子序列的个数。
 
 示例1:
