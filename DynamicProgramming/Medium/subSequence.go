@@ -480,7 +480,7 @@ func MaxSubArraySimple(nums []int) int {
 
 /*
 leetcode 918. 环形子数组的最大和
-1.7 给定一个由整数数组A表示的环形数组C，求 C的非空子数组的最大可能和。
+1.7 给定一个由整数数组A表示的环形数组C，求C的非空子数组的最大可能和。
 在此处，环形数组意味着数组的末端将会与开头相连呈环状。（形式上，当0 <= i < A.length时C[i] = A[i]，
 且当i >= 0时C[i+A.length] = C[i]）
 
@@ -498,8 +498,18 @@ i <= k1, k2 <= j其中k1 % A.length= k2 % A.length）
 解释：从子数组 [5,5] 得到最大和 5 + 5 = 10
 */
 
+/*
+思路:动态规划
+如果数组nums中所有元素都是负数，那么此时数组元素之和sum与数组的最小子数组和minSub相等，此时的环形数组C的最大
+子数组和应该是数组nums的最大子数组和maxSub(也就是绝对值最小的负数)，否则应该是数组nums的最大子数组和maxSub
+以及sum-minSub两个值之间取较大值
+ */
+
 func MaxSubarraySumCircular(nums []int) int {
 	n := len(nums)
+	// curMax, curMin分别表示包含当前元素nums[i]的最大子数组和，最小子数组和
+	// maxSub, minSub则分别表示数组nums的最大子数组和，最小子数组和
+	// sum表示数组nums的元素之和
 	curMax, curMin, maxSub, minSub, sum := nums[0], nums[0], nums[0], nums[0], nums[0]
 	for i := 1; i < n; i++ {
 		sum += nums[i]
