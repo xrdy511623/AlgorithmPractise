@@ -3,17 +3,17 @@ package Feature
 import "AlgorithmPractise/LinkedList/Entity"
 
 /*
-1.1 判断链表是否有环
-给定一个链表，判断链表中是否有环。
-如果链表中有某个节点，可以通过连续跟踪next指针再次到达，则链表中存在环。 为了表示给定链表中的环，我们使用整数pos来表示链表尾连接到链表中的位置
-（索引从 0 开始）。 如果pos是-1，则在该链表中没有环。注意：pos不作为参数进行传递，仅仅是为了标识链表的实际情况。
-如果链表中存在环，则返回true。 否则返回false 。
+leetcode 141. 环形链表
+1.1 给定一个链表，判断链表中是否有环。
+如果链表中有某个节点，可以通过连续跟踪next指针再次到达，则链表中存在环。 为了表示给定链表中的环，我们使用整数
+pos来表示链表尾连接到链表中的位置（索引从0开始）。 如果pos是-1，则在该链表中没有环。注意：pos不作为参数进行
+传递，仅仅是为了标识链表的实际情况。如果链表中存在环，则返回true。 否则返回false 。
 */
 
 /*
 思路一:快慢双指针，最优解，不易想到
-设置快、慢两种指针，快指针每次跨两步，慢指针每次跨一步，如果快指针没有与慢指针相遇而是顺利到达链表尾部
-说明没有环；否则，存在环。原因是因为每走11轮，fast与slow的间距+1，fast终会追上slow。
+设置快、慢两个指针，快指针每次跨两步，慢指针每次跨一步，如果快指针没有与慢指针相遇而是顺利到达链表尾部
+说明没有环；否则，存在环。原因是因为每走1轮，fast与slow的间距+1，fast终会追上slow。
 */
 
 // CheckRing 时间复杂度O(n),空间复杂度O(1)
@@ -22,7 +22,7 @@ func CheckRing(head *Entity.ListNode) bool {
 		return false
 	}
 	fast, slow := head, head
-	for fast != nil && fast.Next != nil {
+	for fast.Next != nil && fast.Next.Next != nil {
 		fast = fast.Next.Next
 		slow = slow.Next
 		if fast == slow {
@@ -43,40 +43,43 @@ func CheckRingUseHashTable(head *Entity.ListNode) bool {
 	if head == nil || head.Next == nil {
 		return false
 	}
-	visited := make(map[*Entity.ListNode]int)
+	visited := make(map[*Entity.ListNode]bool)
 	for head != nil {
-		if _, ok := visited[head]; ok {
+		if visited[head] {
 			return true
-		} else {
-			visited[head]++
-			head = head.Next
 		}
+		visited[head] = true
+		head = head.Next
 	}
 	return false
 }
 
 /*
-1.2 进阶 环形链表
+leetcode 142. 环形链表II
+1.2 进阶
 给定一个链表，返回链表开始入环的第一个节点。如果链表无环，则返回null。
-为了表示给定链表中的环，我们使用整数pos来表示链表尾连接到链表中的位置（索引从0开始）。 如果pos是 -1，则在该链表中没有环。注意，pos
-仅仅是用于标识环的情况，并不会作为参数传递到函数中。
+为了表示给定链表中的环，我们使用整数pos来表示链表尾连接到链表中的位置（索引从0开始）。 如果pos是 -1，
+则在该链表中没有环。注意，pos仅仅是用于标识环的情况，并不会作为参数传递到函数中。
 说明：不允许修改给定的链表。
 */
 
-// DetectCycleUseHashTable 思路1，从头结点开始遍历链表，若哈希表中不存在此结点，则将其添加到哈希表中，否则意味着遇到了开始入环的
-// 第一个结点 (重复节点), 时间复杂度O(N),空间复杂度O(N)
+/*
+思路1，从头结点开始遍历链表，若哈希表中不存在此结点，则将其添加到哈希表中，否则意味着遇到了开始入环的
+第一个结点 (重复节点)
+*/
+
+// DetectCycleUseHashTable 时间复杂度O(N),空间复杂度O(N)
 func DetectCycleUseHashTable(head *Entity.ListNode) *Entity.ListNode {
 	if head == nil || head.Next == nil {
 		return nil
 	}
-	seen := make(map[*Entity.ListNode]struct{})
+	seen := make(map[*Entity.ListNode]bool)
 	for head != nil {
-		if _, ok := seen[head]; ok {
+		if seen[head] {
 			return head
-		} else {
-			seen[head] = struct{}{}
-			head = head.Next
 		}
+		seen[head] = true
+		head = head.Next
 	}
 	return nil
 }
@@ -103,8 +106,9 @@ func DetectCycle(head *Entity.ListNode) *Entity.ListNode {
 }
 
 /*
-1.3 两个链表的第一个公共节点
-输入两个链表，找出它们的第一个公共节点。
+leetcode 160. 相交链表
+剑指Offer 52. 两个链表的第一个公共节点
+1.3 输入两个链表，找出它们的第一个公共节点。
 输入：intersectVal = 8, listA = [4,1,8,4,5], listB = [5,0,1,8,4,5], skipA = 2, skipB = 3
 输出：Reference of the node with value = 8
 输入解释：相交节点的值为8 （注意，如果两个列表相交则不能为 0）。从各自的表头开始算起，链表A为 [4,1,8,4,5]，链表B为 [5,0,1,8,4,5]。
@@ -144,9 +148,11 @@ func getIntersectionNode(headA, headB *Entity.ListNode) *Entity.ListNode {
 }
 
 /*
-1.4 链表中倒数第k个节点
-输入一个链表，输出该链表中倒数第k个节点。为了符合大多数人的习惯，本题从1开始计数，即链表的尾节点是倒数第1个节点。
-例如，一个链表有6个节点，从头节点开始，它们的值依次是 1、2、3、4、5、6。这个链表的倒数第3个节点是值为4的节点。
+剑指Offer 22. 链表中倒数第k个节点
+面试题 02.02. 返回倒数第k个节点
+1.4 输入一个链表，输出该链表中倒数第k个节点。为了符合大多数人的习惯，本题从1开始计数，即链表的尾节点是倒数
+第1个节点。例如，一个链表有6个节点，从头节点开始，它们的值依次是 1、2、3、4、5、6。这个链表的倒数第3个节点
+是值为4的节点。
 示例：
 给定一个链表: 1->2->3->4->5, 和 k = 2.
 返回链表 4->5.
@@ -195,8 +201,37 @@ func GetKthNodeFromEnd(head *Entity.ListNode, k int) *Entity.ListNode {
 }
 
 /*
-1.5 链表排序
-给你链表的头结点head，请将其按升序排列并返回排序后的链表 。
+leetcode 21. 合并两个有序链表
+1.5 将两个升序链表合并为一个新的升序链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。
+输入：l1 = [1,2,4], l2 = [1,3,4]
+输出：[1,1,2,3,4,4]
+*/
+
+func MergeTwoLists(l1 *Entity.ListNode, l2 *Entity.ListNode) *Entity.ListNode {
+	dummy := new(Entity.ListNode)
+	cur := dummy
+	for l1 != nil && l2 != nil {
+		if l1.Val < l2.Val {
+			cur.Next = l1
+			l1 = l1.Next
+		} else {
+			cur.Next = l2
+			l2 = l2.Next
+		}
+		cur = cur.Next
+	}
+	if l1 != nil {
+		cur.Next = l1
+	} else {
+		cur.Next = l2
+	}
+	return dummy.Next
+}
+
+/*
+leetcode 148. 排序链表
+剑指Offer II 077. 链表排序
+1.6 给你链表的头结点head，请将其按升序排列并返回排序后的链表 。
 进阶：
 你可以在O(nlogn) 时间复杂度和常数级空间复杂度下，对链表进行排序吗？
 输入：head = [-1,5,3,4,0]
@@ -209,70 +244,21 @@ func SortLinkedList(head *Entity.ListNode) *Entity.ListNode {
 		return head
 	}
 	// 利用快慢指针寻找链表中间结点，将链表一分为二
-	slow, fast := head, head.Next
-	for fast != nil && fast.Next != nil {
+	slow, fast := head, head
+	for fast.Next != nil && fast.Next.Next != nil {
 		fast = fast.Next.Next
 		slow = slow.Next
 	}
 	mid := slow.Next
 	slow.Next = nil
 	left, right := SortLinkedList(head), SortLinkedList(mid)
-	return MergeLinkedList(left, right)
-}
-
-func MergeLinkedList(l1, l2 *Entity.ListNode) *Entity.ListNode {
-	dummy := new(Entity.ListNode)
-	cur := dummy
-	for l1 != nil && l2 != nil {
-		if l1.Val < l2.Val {
-			cur.Next = l1
-			l1 = l1.Next
-		} else {
-			cur.Next = l2
-			l2 = l2.Next
-		}
-		cur = cur.Next
-	}
-	if l1 != nil {
-		cur.Next = l1
-	} else {
-		cur.Next = l2
-	}
-
-	return dummy.Next
+	return MergeTwoLists(left, right)
 }
 
 /*
-1.6 将两个升序链表合并为一个新的升序链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。
-输入：l1 = [1,2,4], l2 = [1,3,4]
-输出：[1,1,2,3,4,4]
-*/
-
-func mergeTwoLists(l1 *Entity.ListNode, l2 *Entity.ListNode) *Entity.ListNode {
-	dummy := new(Entity.ListNode)
-	cur := dummy
-	for l1 != nil && l2 != nil {
-		if l1.Val < l2.Val {
-			cur.Next = l1
-			l1 = l1.Next
-		} else {
-			cur.Next = l2
-			l2 = l2.Next
-		}
-		cur = cur.Next
-	}
-	if l1 != nil {
-		cur.Next = l1
-	} else {
-		cur.Next = l2
-	}
-	return dummy.Next
-}
-
-/*
-1.7 分隔链表
-给你一个链表的头节点 head 和一个特定值x，请你对链表进行分隔，使得所有小于x的节点都出现在大于或等于x的节点之前。
-你应当保留两个分区中每个节点的初始相对位置。
+leetcode 86. 分隔链表
+1.7 给你一个链表的头节点head和一个特定值x，请你对链表进行分隔，使得所有小于x的节点都出现在大于或等于x的
+节点之前。你应当保留两个分区中每个节点的初始相对位置。
 */
 
 /*
@@ -283,8 +269,8 @@ func mergeTwoLists(l1 *Entity.ListNode, l2 *Entity.ListNode) *Entity.ListNode {
 */
 
 func PartitionLinkedList(head *Entity.ListNode, x int) *Entity.ListNode {
-	before_head, after_head := &Entity.ListNode{0, nil}, &Entity.ListNode{0, nil}
-	before, after := before_head, after_head
+	beforeHead, afterHead := new(Entity.ListNode), new(Entity.ListNode)
+	before, after := beforeHead, afterHead
 	for head != nil {
 		if head.Val < x {
 			before.Next = head
@@ -296,13 +282,20 @@ func PartitionLinkedList(head *Entity.ListNode, x int) *Entity.ListNode {
 		head = head.Next
 	}
 	// 拼接两个链表
+	// 将after的Next指针指向nil，这一点一定要记住
 	after.Next = nil
-	before.Next = after_head.Next
-	return before_head.Next
+	before.Next = afterHead.Next
+	return beforeHead.Next
 }
 
 /*
-1.8 对链表进行插入排序
+leetcode 147. 对链表进行插入排序
+1.8 对链表进行插入排序。
+插入排序算法：
+插入排序是迭代的，每次只移动一个元素，直到所有元素可以形成一个有序的输出列表。
+每次迭代中，插入排序只从输入数据中移除一个待排序的元素，找到它在序列中适当的位置，并将其插入。
+重复直到所有输入数据插入完为止。
+
 输入: 4->2->1->3
 输出: 1->2->3->4
 */
@@ -312,7 +305,7 @@ func insertionSortList(head *Entity.ListNode) *Entity.ListNode {
 		return head
 	}
 	dummy := &Entity.ListNode{Next: head}
-	// 有序链表的尾结点，待插入结点初始值为头结点以及头结点的下一个结点
+	// 有序链表的尾结点，待插入结点初始值分别为头结点以及头结点的下一个结点
 	lastSorted, cur := head, head.Next
 	for cur != nil {
 		// 如果尾结点的值小于等于待插入结点值，则保持原序即可
