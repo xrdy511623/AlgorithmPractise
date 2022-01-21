@@ -792,6 +792,49 @@ func GetMaxLenSimple(nums []int) int {
 }
 
 /*
+思路:贪心
+子数组乘积为正数，即要求该段子数组中没有0且负数的个数为偶数，这样我们可以用三个变量：
+pos:该段正数个数，初始化为0
+ng:该段负数个数，初始化为0
+first:第一个负数出现的位置，初始化为-1
+来记录需要的数量，然后对数组进行遍历：
+1.如果当前neg % 2 = 0，说明偶数个数为正该段组数组的所有元素相乘为正，
+那么maxLength = max(maxLength, pos + neg)。
+2.如果当前neg % 2 != 0，我们可以贪心的进行选取组数组，只要去掉该段字数组的一个负数便可以使负数个数为偶数，
+即乘积为正，这时，即从第一个负数开始，后面的位置到当前位置所有数的乘积可以为正，
+此时:maxLength = max(ans, 当前位置下标i- first).
+3.如果遍历的当前元素为0，则将所有变量重新初始化，因为0不可能包含在任何子数组中，而使得乘积为正。
+*/
+
+func GetMaxLenTwo(nums []int) int {
+	n := len(nums)
+	if n == 0 {
+		return 0
+	}
+	pos, ng, first, maxLength := 0, 0, -1, 0
+	for i := 0; i < n; i++ {
+		if nums[i] == 0 {
+			pos, ng, first = 0, 0, -1
+		}
+		if nums[i] > 0 {
+			pos++
+		}
+		if nums[i] < 0 {
+			if first == -1 {
+				first = i
+			}
+			ng++
+		}
+		if ng%2 == 0 {
+			maxLength = Utils.Max(maxLength, pos+ng)
+		} else {
+			maxLength = Utils.Max(maxLength, i-first)
+		}
+	}
+	return maxLength
+}
+
+/*
 1.10 判断子序列
 给定字符串s和t ，判断s是否为t的子序列。
 字符串的一个子序列是原始字符串删除一些（也可以不删除）字符而不改变剩余字符相对位置形成的新字符串(例如,"ace"是"abcde"的一个子序列，而"aec"不是）
