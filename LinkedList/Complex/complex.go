@@ -123,8 +123,8 @@ func (l *LRUCache) RemoveTail() *DoubleLinkedListNode {
 }
 
 /*
-1.2 合并k个排序链表
-给你一个链表数组，每个链表都已经按升序排列。
+leetcode 23. 合并K个升序链表
+1.2 给你一个链表数组，每个链表都已经按升序排列。
 请你将所有链表合并到一个升序链表中，返回合并后的链表。
 给你一个链表数组，每个链表都已经按升序排列。
 
@@ -153,8 +153,8 @@ func (l *LRUCache) RemoveTail() *DoubleLinkedListNode {
 
 /*
 首先简化问题，合并两个有序链表是容易做到的，见MergeTwoLists代码
-那么合并多个有序链表，我们第一个想到的办法就是用一个变量ans来维护合并的链表，第i次循环把第i个链表和ans合并，答案保存到ans中。
-但这样做时间复杂度高达O(k^2n),联想到数组的归并排序，我们不难想到用分治合并的思路进行优化。
+那么合并多个有序链表，我们第一个想到的办法就是用一个变量ans来维护合并的链表，第i次循环把第i个链表和ans合并，
+答案保存到ans中。但这样做时间复杂度高达O(k^2n),联想到数组的归并排序，我们不难想到用分治合并的思路进行优化。
 将k个链表配对并将同一对中的链表合并；
 第一轮合并以后， k个链表被合并成了k/2个链表，平均长度为2n/k, 然后是k/4个链表,k/8个链表等等；
 重复这一过程，直到我们得到了最终的有序链表。
@@ -200,8 +200,8 @@ func MergeTwoLists(l1, l2 *Entity.ListNode) *Entity.ListNode {
 }
 
 /*
-1.3 两数相加
-给你两个非空的链表，表示两个非负的整数。它们每位数字都是按照逆序的方式存储的，并且每个节点只能存储一位数字。
+leetcode 2. 两数相加
+1.3 给你两个非空的链表，表示两个非负的整数。它们每位数字都是按照逆序的方式存储的，并且每个节点只能存储一位数字。
 请你将两个数相加，并以相同形式返回一个表示和的链表。
 你可以假设除了数字0之外，这两个数都不会以0开头。
 输入：l1 = [2,4,3], l2 = [5,6,4]
@@ -210,36 +210,33 @@ func MergeTwoLists(l1, l2 *Entity.ListNode) *Entity.ListNode {
 */
 
 // AddTwoNumbers 时间复杂度O(max(m,n)), m和n分别为两个链表的长度，空间复杂度O(1)
-func AddTwoNumbers(l1, l2 *Entity.ListNode) (head *Entity.ListNode) {
-	var tail *Entity.ListNode
+func AddTwoNumbers(l1, l2 *Entity.ListNode) *Entity.ListNode {
+	dummy := new(Entity.ListNode)
+	cur := dummy
 	// 进位值初始值为0
 	carry := 0
-	for l1 != nil || l2 != nil || carry != 0 {
-		n1, n2 := 0, 0
+	for l1 != nil || l2 != nil || carry > 0 {
+		sum := 0
 		if l1 != nil {
-			n1 = l1.Val
+			sum += l1.Val
 			l1 = l1.Next
 		}
 		if l2 != nil {
-			n2 = l2.Val
+			sum += l2.Val
 			l2 = l2.Next
 		}
-		sum := n1 + n2 + carry
-		sum, carry = sum%10, sum/10
-		if head == nil {
-			head = &Entity.ListNode{Val: sum}
-			tail = head
-		} else {
-			tail.Next = &Entity.ListNode{Val: sum}
-			tail = tail.Next
-		}
+		sum += carry
+		cur.Next = &Entity.ListNode{Val: sum % 10}
+		cur = cur.Next
+		carry = sum / 10
 	}
-	return
+	return dummy.Next
 }
 
 /*
-1.4 两数相加II
-给你两个非空链表来代表两个非负整数。数字最高位位于链表开始位置。它们的每个节点只存储一位数字。将这两数相加
+leetcode 445. 两数相加II
+剑指OfferII 025. 链表中的两数相加
+1.4 给你两个非空链表来代表两个非负整数。数字最高位位于链表开始位置。它们的每个节点只存储一位数字。将这两数相加
 会返回一个新的链表。
 
 你可以假设除了数字0之外，这两个数字都不会以零开头。
@@ -255,38 +252,39 @@ func AddTwoNumbers(l1, l2 *Entity.ListNode) (head *Entity.ListNode) {
 */
 
 func AddTwoNumbersComplex(l1, l2 *Entity.ListNode) (head *Entity.ListNode) {
-	var stack1, stack2 []int
+	var s1, s2 []int
 	for l1 != nil {
-		stack1 = append(stack1, l1.Val)
+		s1 = append(s1, l1.Val)
 		l1 = l1.Next
 	}
 	for l2 != nil {
-		stack2 = append(stack2, l2.Val)
+		s2 = append(s2, l2.Val)
 		l2 = l2.Next
 	}
+	// 初始进位值carry为0
 	carry := 0
-	for len(stack1) != 0 || len(stack2) != 0 || carry != 0 {
-		n1, n2 := 0, 0
-		if len(stack1) != 0 {
-			n1 = stack1[len(stack1)-1]
-			stack1 = stack1[:len(stack1)-1]
+	for len(s1) > 0 || len(s2) > 0 || carry > 0 {
+		sum := 0
+		if len(s1) > 0 {
+			sum += s1[len(s1)-1]
+			s1 = s1[:len(s1)-1]
 		}
-		if len(stack2) != 0 {
-			n2 = stack2[len(stack2)-1]
-			stack2 = stack2[:len(stack2)-1]
+		if len(s2) > 0 {
+			sum += s2[len(s2)-1]
+			s2 = s2[:len(s2)-1]
 		}
-		sum := n1 + n2 + carry
-		sum, carry = sum%10, sum/10
-		node := &Entity.ListNode{Val: sum}
+		sum += carry
+		node := &Entity.ListNode{Val: sum % 10}
 		node.Next = head
 		head = node
+		carry = sum / 10
 	}
 	return
 }
 
 /*
-1.5 旋转链表
-给你一个链表的头节点head，旋转链表，将链表每个节点向右移动k个位置。
+leetcode 61. 旋转链表
+1.5 给你一个链表的头节点head，旋转链表，将链表每个节点向右移动k个位置。
 输入：head = [1,2,3,4,5], k = 2
 输出：[4,5,1,2,3]
 */
@@ -315,15 +313,16 @@ func RotateRight(head *Entity.ListNode, k int) *Entity.ListNode {
 		cur = cur.Next
 		n++
 	}
-	step := n - k%n
-	// 如果step等于0, 证明k为n的倍数，那么保持原链表不变即可
-	if step == 0 {
+	k = k % n
+	// 如果k等于0, 证明k为n的倍数，那么保持原链表不变即可
+	if k == 0 {
 		return head
 	}
+	step := n - k
 	// 链表成环，将原链表的尾结点的Next指向头结点即成为首尾相连的新链表
 	cur.Next = head
-	// 新链表的尾结点end是原链表的第n-k%n个结点，那么从头结点移动到end，需要移动n-k%n-1步
-	// 那么从原链表的尾结点移动到end，就需要多移动一步，即为n-k%n步。
+	// 新链表的尾结点end是原链表的第n-k个结点，那么从头结点移动到end，需要移动n-k-1步
+	// 那么从原链表的尾结点移动到end，就需要多移动一步，即为n-k步。
 	for step > 0 {
 		cur = cur.Next
 		step--
@@ -336,47 +335,11 @@ func RotateRight(head *Entity.ListNode, k int) *Entity.ListNode {
 }
 
 /*
-1.6 奇偶链表
-给定一个单链表，把所有的奇数节点和偶数节点分别排在一起。请注意，这里的奇数节点和偶数节点指的是节点编号的奇偶性，
-而不是节点的值的奇偶性。
+leetcode 328. 奇偶链表
+1.6 给定一个单链表，把所有的奇数节点和偶数节点分别排在一起。请注意，这里的奇数节点和偶数节点指的是节点编号的
+奇偶性，而不是节点的值的奇偶性。
 请尝试使用原地算法完成。你的算法的空间复杂度应为 O(1)，时间复杂度应为 O(nodes)，nodes为节点总数。
 */
-
-/*
-思路:直观的做法是从头遍历链表，将编号为奇数的结点添加到奇数结点集合中，将编号为偶数的结点添加到偶数结点集合中，
-然后依次遍历奇数结点集合和偶数结点集合，对结点进行顺序连接即可。
-*/
-
-// OddEvenList 时间复杂度为O(2N),空间复杂度为O(N)
-func OddEvenList(head *Entity.ListNode) *Entity.ListNode {
-	if head == nil || head.Next == nil {
-		return head
-	}
-	var odd, even []*Entity.ListNode
-	n := 1
-	cur := head
-	for cur != nil {
-		if n%2 == 1 {
-			odd = append(odd, cur)
-		} else {
-			even = append(even, cur)
-		}
-		cur = cur.Next
-		n++
-	}
-	dummy := new(Entity.ListNode)
-	ndx := dummy
-	for _, node := range odd {
-		ndx.Next = node
-		ndx = ndx.Next
-	}
-	for _, node := range even {
-		ndx.Next = node
-		ndx = ndx.Next
-	}
-	ndx.Next = nil
-	return dummy.Next
-}
 
 /*
 思路:分离奇偶结点后再合并
@@ -402,6 +365,30 @@ func OddEvenListSimple(head *Entity.ListNode) *Entity.ListNode {
 	// 将奇数结点链表尾结点的Next指向偶数结点链表的头结点
 	odd.Next = evenHead
 	return head
+}
+
+// oddEvenList 根据结点编号奇偶性分别迭代出奇数结点链表和偶数结点链表最后再合并
+func oddEvenList(head *Entity.ListNode) *Entity.ListNode {
+	if head == nil || head.Next == nil {
+		return head
+	}
+	beforeOdd, beforeEven := new(Entity.ListNode), new(Entity.ListNode)
+	odd, even := beforeOdd, beforeEven
+	num := 1
+	for head != nil {
+		if num%2 == 1 {
+			odd.Next = head
+			odd = odd.Next
+		} else {
+			even.Next = head
+			even = even.Next
+		}
+		num++
+		head = head.Next
+	}
+	odd.Next = beforeEven.Next
+	even.Next = nil
+	return beforeOdd.Next
 }
 
 /*
@@ -434,14 +421,14 @@ func SortOddAscEvenDescList(head *Entity.ListNode) *Entity.ListNode {
 	odd.Next = nil
 	l1 := head
 	// 将偶数结点链表反转得到升序链表
-	l2 := ReverseLinkedList.ReverseLinkedList(evenHead)
+	l2 := ReverseLinkedList.Reverse(evenHead)
 	// 合并奇数结点链表和偶数结点链表这两个升序链表
 	return MergeTwoLists(l1, l2)
 }
 
 /*
-1.8 从链表中删去总和值为零的连续节点
-给你一个链表的头节点head，请你编写代码，反复删去链表中由总和值为0的连续节点组成的序列，直到不存在这样的
+leetcode 1171. 从链表中删去总和值为零的连续节点
+1.8 给你一个链表的头节点head，请你编写代码，反复删去链表中由总和值为0的连续节点组成的序列，直到不存在这样的
 序列为止。
 删除完毕后，请你返回最终结果链表的头节点。
 你可以返回任何满足题目要求的答案。
@@ -459,8 +446,8 @@ func RemoveZeroSumSubLists(head *Entity.ListNode) *Entity.ListNode {
 	for head != nil {
 		sum += head.Val
 		if _, ok := occurred[sum]; ok {
-			// 连续结点和是正数，如果重复出现，只能说明中间这一段的结点和为0
-			// 正数+0还是正数本身嘛，所以这一段是要跳过的。
+			// 如果重复出现一个连续结点和sum，只能说明中间这一段的结点和为0
+			// sum+0还是sum本身嘛，所以这一段是要跳过的。
 			occurred[sum].Next = head.Next
 			// 然后再去删除后的链表看是否还有总和值为0的连续结点需要删除
 			return RemoveZeroSumSubLists(dummy.Next)

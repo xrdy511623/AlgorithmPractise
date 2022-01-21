@@ -3,8 +3,8 @@ package RemoveNode
 import "AlgorithmPractise/LinkedList/Entity"
 
 /*
-1.1
-给定单向链表的头指针和一个要删除的节点的值，定义一个函数删除该节点。
+剑指Offer 18. 删除链表的节点
+1.1 给定单向链表的头指针和一个要删除的节点的值，定义一个函数删除该节点。
 返回删除后的链表的头节点。
 示例 1:
 输入: head = [4,5,1,9], val = 5
@@ -34,8 +34,8 @@ func DeleteNode(head *Entity.ListNode, val int) *Entity.ListNode {
 
 
 /*
-1.2 移除链表元素
-给你一个链表的头节点head和一个整数val ，请你删除链表中所有满足Node.val == val的节点，并返回新的头节点。
+leetcode 203. 移除链表元素
+1.2 给你一个链表的头节点head和一个整数val ，请你删除链表中所有满足Node.val == val的节点，并返回新的头节点。
 
 示例1：
 输入：head = [1,2,6,3,4,5,6], val = 6
@@ -71,6 +71,8 @@ func RemoveElements(head *Entity.ListNode, val int) *Entity.ListNode {
 
 
 /*
+leetcode 19. 删除链表的倒数第N个结点
+剑指Offer II 021. 删除链表的倒数第n个结点
 1.3 给你一个链表，删除链表的倒数第n个结点，并且返回链表的头结点。
 进阶：你能尝试使用一趟扫描实现吗？
 
@@ -124,29 +126,32 @@ func GetLengthOfLinkedList(head *Entity.ListNode) int {
 // RemoveNthNodeFromEnd 双指针法
 func RemoveNthNodeFromEnd(head *Entity.ListNode, n int) *Entity.ListNode {
 	dummy := &Entity.ListNode{Next: head}
-	pre, fast := dummy, head
+	slow, fast := dummy, head
 	for i := 0; i < n; i++ {
 		fast = fast.Next
 	}
 	for fast != nil {
 		fast = fast.Next
-		pre = pre.Next
+		slow = slow.Next
 	}
-	pre.Next = pre.Next.Next
+	slow.Next = slow.Next.Next
 	return dummy.Next
 }
 
 /*
-1.4：删除排序链表中的重复元素
-存在一个按升序排列的链表，给你这个链表的头节点head，请你删除所有重复的元素，使每个元素只出现一次 。
+leetcode 83. 删除排序链表中的重复元素
+1.4 存在一个按升序排列的链表，给你这个链表的头节点head，请你删除所有重复的元素，使每个元素只出现一次 。
 返回同样按升序排列的结果链表。
 譬如1-2-3-3-5
 返回1-2-3-5
 */
 
-// DeleteDuplicatesSimple  从头结点开始遍历链表，遇有与其Next指针指向结点值相等的，则将该节点
-// Next指针指向Next.Next，这样便跳过了重复结点。
-func DeleteDuplicatesSimple(head *Entity.ListNode) *Entity.ListNode {
+/*
+从头结点开始遍历链表，遇有与其Next指针指向结点值相等的，则将该节点Next指针指向Next.Next，这样便跳过了重复
+结点。
+ */
+
+func DeleteDuplicate(head *Entity.ListNode) *Entity.ListNode {
 	if head == nil || head.Next == nil {
 		return head
 	}
@@ -162,9 +167,10 @@ func DeleteDuplicatesSimple(head *Entity.ListNode) *Entity.ListNode {
 }
 
 /*
-1.5 变形题 删除排序链表中的重复元素
-存在一个按升序排列的链表，给你这个链表的头节点head，请你删除链表中所有存在数字重复情况的节点，只保留原始链表中没有重复出现的数字。
-返回同样按升序排列的结果链表。
+leetcode 82. 删除排序链表中的重复元素II
+1.5 变形题
+存在一个按升序排列的链表，给你这个链表的头节点head，请你删除链表中所有存在数字重复情况的节点，只保留原始链表
+中没有重复出现的数字。返回同样按升序排列的结果链表。
 譬如1-2-3-3-5
 返回1-2-5
 */
@@ -209,14 +215,13 @@ func RemoveDuplicateNodes(head *Entity.ListNode) *Entity.ListNode {
 		return head
 	}
 	cur := head
-	occurred := make(map[int]int)
-	occurred[head.Val] = 1
-	for cur.Next != nil {
+	occurred := make(map[int]bool)
+	for cur.Next != nil{
 		node := cur.Next
-		if _, ok := occurred[node.Val]; !ok {
-			occurred[node.Val]++
+		if !occurred[node.Val]{
+			occurred[node.Val] = true
 			cur = cur.Next
-		} else {
+		}else{
 			cur.Next = cur.Next.Next
 		}
 	}

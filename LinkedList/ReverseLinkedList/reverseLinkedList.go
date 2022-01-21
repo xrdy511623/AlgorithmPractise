@@ -3,12 +3,12 @@ package ReverseLinkedList
 import "AlgorithmPractise/LinkedList/Entity"
 
 /*
-反转链表
+反转链表专题
 */
 
 /*
-1.1 两两交换链表中的节点
-给定一个链表，两两交换其中相邻的节点，并返回交换后的链表。
+Leetcode 24. 两两交换链表中的节点
+1.1 给定一个链表，两两交换其中相邻的节点，并返回交换后的链表。
 你不能只是单纯的改变节点内部的值，而是需要实际的进行节点交换。
 譬如1-2-3-4-5-6
 应返回2-1-4-3-6-5
@@ -21,27 +21,50 @@ func SwapPairs(head *Entity.ListNode) *Entity.ListNode {
 	dummy := &Entity.ListNode{Next: head}
 	pre, cur := dummy, head
 	for cur != nil && cur.Next != nil {
-		firstNode := cur
-		secondNode := cur.Next
+		firstNode, secondNode := cur, cur.Next
 		pre.Next = secondNode
 		firstNode.Next = secondNode.Next
 		secondNode.Next = firstNode
-
 		// 更新pre和cur指针
-		pre = cur
-		cur = cur.Next
+		pre, cur = cur, cur.Next
 	}
 	return dummy.Next
 }
 
 /*
+其实这个问题可以转化为K个一组反转链表的特例，此时K=2，所以可以像下面这样写
+ */
+
+func SwapPairsTwo(head *Entity.ListNode) *Entity.ListNode {
+	dummy := &Entity.ListNode{Next:head}
+	prev := dummy
+	for head != nil{
+		tail := prev
+		for i:=0;i<2;i++{
+			tail = tail.Next
+			if tail == nil{
+				return dummy.Next
+			}
+		}
+		ndx := tail.Next
+		head, tail = reverse(head, tail, 2)
+		prev.Next = head
+		tail.Next = ndx
+		prev = tail
+		head = ndx
+	}
+	return dummy.Next
+}
+
+/*
+leetcode 206. 反转链表
 1.2 基础题:反转一个链表
 譬如1-2-3-4-5-6
 应返回6-5-4-3-2-1
 */
 
 // ReverseLinkedList 思路:迭代法，时间复杂度O(n),空间复杂度O(1)
-func ReverseLinkedList(head *Entity.ListNode) *Entity.ListNode {
+func Reverse(head *Entity.ListNode) *Entity.ListNode {
 	var prev *Entity.ListNode
 	cur := head
 	for cur != nil {
@@ -51,8 +74,8 @@ func ReverseLinkedList(head *Entity.ListNode) *Entity.ListNode {
 }
 
 /*
-1.3 进阶 k个一组反转链表
-给你一个链表，每k个节点一组进行翻转，请你返回翻转后的链表。
+leetcode 25. K 个一组翻转链表
+1.3 进阶 给你一个链表，每k个节点一组进行翻转，请你返回翻转后的链表。
 k是一个正整数，它的值小于或等于链表的长度。
 如果节点总数不是k的整数倍，那么请将最后剩余的节点保持原有顺序。
 进阶：
@@ -105,14 +128,16 @@ func reverse(head, tail *Entity.ListNode, k int) (*Entity.ListNode, *Entity.List
 }
 
 /*
+leetcode 92. 反转链表II
 1.4 变形题
-给你单链表的头指针head和两个整数left和right ，其中left <= right 。请你反转从位置left到位置right的链表节点，返回反转后的链表。
+给你单链表的头指针head和两个整数left和right ，其中left <= right 。请你反转从位置left到位置right的链表
+节点，返回反转后的链表。
 例如对于链表1-2-3-4-5
 left=2,right=4
 最后应该返回1-4-3-2-5
 
 提示：
-链表中节点数目为 n
+链表中节点数目为n
 1 <= n <= 500
 -500 <= Node.val <= 500
 1 <= left <= right <= n
@@ -146,6 +171,7 @@ func ReverseBetween(head *Entity.ListNode, left int, right int) *Entity.ListNode
 }
 
 /*
+leetcode 143. 重排链表
 1.5 重排链表
 给定一个单链表L的头节点 head ，单链表L表示为：
 L0 → L1 → … → Ln - 1 → Ln
@@ -208,9 +234,10 @@ func ReOrderLinkedListSimple(head *Entity.ListNode) {
 	mid := GetMiddleNode(head)
 	l1 := head
 	l2 := mid.Next
+	// 将原链表从mid结点截断
 	mid.Next = nil
 	// 将链表右半部分反转
-	l2 = ReverseLinkedList(l2)
+	l2 = Reverse(l2)
 	// 将链表左半部分与右半部分依次合并
 	MergeLists(l1, l2)
 }
