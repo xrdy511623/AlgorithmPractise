@@ -2,7 +2,6 @@ package Medium
 
 import (
 	"AlgorithmPractise/Utils"
-	"math"
 )
 
 /*
@@ -590,48 +589,4 @@ func MaxProfitIncludeFeeSimple(prices []int, fee int) int {
 		buy = Utils.Max(buy, sell-prices[i])
 	}
 	return sell
-}
-
-/*
-leetcode 1014. 最佳观光组合
-1.7 给你一个正整数数组values，其中values[i]表示第i个观光景点的评分，并且两个景点i和j之间的距离为j - i。
-一对景点（i < j）组成的观光组合的得分为values[i] + values[j] + i - j ，也就是景点的评分之和减去它们两者
-之间的距离。
-
-返回一对观光景点能取得的最高分。
-
-示例1：
-输入：values = [8,1,5,2,6]
-输出：11
-解释：i = 0, j = 2, values[i] + values[j] + i - j = 8 + 5 + 0 - 2 = 11
-
-示例2：
-输入：values = [1,2]
-输出：2
-
-提示：
-2 <= values.length <= 5 * 104
-1 <= values[i] <= 1000
-*/
-
-/*
-对于两个景点i和j而言(i<j)，它们的最高得分是values[i]+values[j]+i-j。那么我们可以对每一个景点j,遍历它之前的
-景点i(i的区间为[0,j-1])，对于景点j而言，values[j]-j值是固定的，所以要values[i]+values[j]+i-j最大，就是要
-values[i]+i最大，也就是需要在j之前的所有景点中找到一个最大的values[i]+[i]，我们记为preMax.
-所以我们的思路就呼之欲出了。
-我们从前向后遍历values数组(从下标1开始)，动态的维护景点j之前的preMax, 不断迭代最高得分highestScore即可。
-于是有highestScore = Max(highestScore, preMax+values[j]-j)，计算景点j的最高得分，并迭代highestScore。
-preMax = Max(preMax, values[j]+j)，更新preMax为下一个景点j+1所用
-*/
-
-func MaxScoreSightseeingPair(values []int) int {
-	highestScore := math.MinInt32
-	preMax := values[0] + 0
-	for j := 1; j < len(values); j++ {
-		// 计算景点j的最高得分，并迭代highestScore
-		highestScore = Utils.Max(highestScore, preMax+values[j]-j)
-		// 更新preMax为下一个景点j+1所用
-		preMax = Utils.Max(preMax, values[j]+j)
-	}
-	return highestScore
 }

@@ -7,6 +7,7 @@ import (
 )
 
 /*
+leetcode 20. 有效的括号
 1.1  有效的括号
 给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串s ，判断字符串是否有效。
 有效字符串需满足：
@@ -65,8 +66,8 @@ func IsValid(s string) bool {
 }
 
 /*
-1.2 用栈实现队列
-请你仅使用两个栈实现先入先出队列。队列应当支持一般队列支持的所有操作（push、pop、peek、empty）：
+leetcode 232. 用栈实现队列
+1.2 请你仅使用两个栈实现先入先出队列。队列应当支持一般队列支持的所有操作（push、pop、peek、empty）：
 
 实现MyQueue类：
 void push(int x) 将元素 x 推到队列的末尾
@@ -140,8 +141,8 @@ func (q *MyQueue) Empty() bool {
 }
 
 /*
-1.3 最小栈
-设计一个支持 push，pop，top操作，并能在常数时间内检索到最小元素的栈。
+leetcode 155. 最小栈
+1.3 设计一个支持 push，pop，top操作，并能在常数时间内检索到最小元素的栈。
 
 push(x) —— 将元素 x 推入栈中。
 pop()—— 删除栈顶的元素。
@@ -183,19 +184,18 @@ func (ms *MinStack) GetMin() int {
 }
 
 /*
-1.4 删除字符串中的所有相邻重复项
-给出由小写字母组成的字符串S，重复项删除操作会选择两个相邻且相同的字母，并删除它们。
+leetcode 1047. 删除字符串中的所有相邻重复项
+1.4 给出由小写字母组成的字符串S，重复项删除操作会选择两个相邻且相同的字母，并删除它们。
 在S上反复执行重复项删除操作，直到无法继续删除。
 
 在完成所有重复项删除操作后返回最终的字符串。答案保证唯一。
-
 
 示例：
 输入："abbaca"
 输出："ca"
 解释：
-例如，在 "abbaca" 中，我们可以删除"bb"由于两字母相邻且相同，这是此时唯一可以执行删除操作的重复项。之后我们得到
-字符串 "aaca"，其中又只有"aa"可以执行重复项删除操作，所以最后的字符串为"ca"。
+例如，在 "abbaca" 中，我们可以删除"bb"由于两字母相邻且相同，这是此时唯一可以执行删除操作的重复项。之后我们
+得到字符串 "aaca"，其中又只有"aa"可以执行重复项删除操作，所以最后的字符串为"ca"。
 */
 
 func RemoveDuplicates(s string) string {
@@ -211,7 +211,76 @@ func RemoveDuplicates(s string) string {
 }
 
 /*
-1.5 逆波兰表达式求值
+leetcode 1209. 删除字符串中的所有相邻重复项II
+1.5 给你一个字符串s，「k 倍重复项删除操作」将会从s中选择k个相邻且相等的字母，并删除它们，使被删去的字符串的
+左侧和右侧连在一起。
+你需要对s重复进行无限次这样的删除操作，直到无法继续为止。
+在执行完所有删除操作后，返回最终得到的字符串。
+本题答案保证唯一。
+
+示例1：
+输入：s = "abcd", k = 2
+输出："abcd"
+解释：没有要删除的内容。
+
+示例2：
+输入：s = "deeedbbcccbdaa", k = 3
+输出："aa"
+解释：
+先删除 "eee" 和 "ccc"，得到 "ddbbbdaa"
+再删除 "bbb"，得到 "dddaa"
+最后删除 "ddd"，得到 "aa"
+
+示例3：
+输入：s = "pbbcggttciiippooaais", k = 2
+输出："ps"
+
+提示：
+1 <= s.length <= 10^5
+2 <= k <= 10^4
+s中只含有小写英文字母。
+*/
+
+/*
+思路:栈+双指针
+初始慢指针j等于 0。
+使用快指针i遍历字符串：
+进入循环后第一个操作是
+令s[i] = s[j]。
+如果j > 0 && s[j] = s[j - 1]，则栈顶元素加 1。
+否则，栈中压入 1。
+如果计数器等于k，j = j - k，并弹出栈顶元素。
+返回字符串的前j个字符。
+*/
+
+func RemoveDuplicatesComplex(s string, k int) string {
+	n := len(s)
+	if n < k {
+		return s
+	}
+	var stack []int
+	j := 0
+	ss := []byte(s)
+	for i := 0; i < n; i++ {
+		ss[j] = ss[i]
+		if j == 0 || ss[j] != ss[j-1] {
+			stack = append(stack, 1)
+		} else {
+			increment := stack[len(stack)-1] + 1
+			if increment == k {
+				j -= k
+				stack = stack[:len(stack)-1]
+			} else {
+				stack[len(stack)-1] = increment
+			}
+		}
+		j++
+	}
+	return string(ss[:j])
+}
+
+/*
+1.6 逆波兰表达式求值
 根据逆波兰表示法，求表达式的值。
 有效的算符包括+、-、*、/。每个运算对象可以是整数，也可以是另一个逆波兰表达式。
 
@@ -287,9 +356,8 @@ func EvalRPN(tokens []string) int {
 	return stack[0]
 }
 
-
 /*
-1.6 最长有效括号
+1.7 最长有效括号
 给你一个只包含 '('和 ')'的字符串，找出最长有效（格式正确且连续）括号子串的长度。
 
 示例1：
@@ -424,7 +492,7 @@ func LongestValidParenthesesComplex(s string) int {
 }
 
 /*
-1.7 有效的括号字符串
+1.8 有效的括号字符串
 给定一个只包含三种字符的字符串：（，),和 *，写一个函数来检验这个字符串是否为有效字符串。有效字符串具有如下规则：
 任何左括号(必须有相应的右括号)。
 任何右括号)必须有相应的左括号(。
