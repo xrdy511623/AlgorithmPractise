@@ -26,3 +26,13 @@ func TestNumberOfArithmeticSlices(t *testing.T) {
 		fmt.Println("test pass")
 	}
 }
+
+func TestNthUglyNumber(t *testing.T) {
+	got := NthUglyNumber(10)
+	want := 12
+	if got != want {
+		t.Errorf("got:%v,expected:%v", got, want)
+	} else {
+		fmt.Println("test pass")
+	}
+}

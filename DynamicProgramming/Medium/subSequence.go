@@ -1376,11 +1376,11 @@ if (nums[i] > nums[j]) dp[i] = max(dp[i], dp[j] + 1);
 以nums[i]为结尾的数组，最长递增子序列的个数为count[i]。
 那么在nums[i] > nums[j]前提下，如果在[0, i-1]的范围内，找到了j，使得dp[j] + 1 > dp[i]，说明找到了一个
 更长的递增子序列。
-那么以j为结尾的子数组的最长递增子序列的个数，就是最新的以i为结尾的子串的最长递增子序列的个数，即：
+那么以i为结尾的子数组的最长递增子序列的个数，就是最新的以j为结尾的子串的最长递增子序列的个数，即：
 count[i] = count[j]。
 在nums[i] > nums[j]前提下，如果在[0, i-1]的范围内，找到了j，使得dp[j] + 1 == dp[i]，说明找到了两个相同
 长度的递增子序列。
-那么以i为结尾的子串的最长递增子序列的个数，就应该加上以j为结尾的子串的最长递增子序列的个数，即：
+那么以i为结尾的子串的最长递增子序列的个数，就应该加上以j为结尾的最长递增子序列的个数，即：
 count[i] += count[j];
 
 这里count[i]记录了以nums[i]为结尾的数组，最长递增子序列的个数。dp[i]记录了i之前（包括i）最长递增序列的长度。
@@ -1533,7 +1533,6 @@ func NumberOfArithmeticSlices(nums []int) int {
 	return count
 }
 
-
 /*
 leetcode 446. 等差数列划分II - 子序列
 1.18 给你一个整数数组nums ，返回nums中所有等差子序列的数目。
@@ -1564,15 +1563,15 @@ leetcode 446. 等差数列划分II - 子序列
 提示：
 1 <= nums.length <= 1000
 -231 <= nums[i] <= 231 - 1
- */
+*/
 
 // NumberOfArithmeticSlicesComplex 时间复杂度O(N^2)，空间复杂度O(N^2)
 func NumberOfArithmeticSlicesComplex(nums []int) int {
 	dp := make([]map[int]int, len(nums))
 	count := 0
-	for i, x := range nums{
+	for i, x := range nums {
 		dp[i] = make(map[int]int)
-		for j, y := range nums[:i]{
+		for j, y := range nums[:i] {
 			d := x - y
 			cnt := dp[j][d]
 			// 为什么+=cnt? dp[j][d]表示以nums[j]为结尾，等差为d的子序列个数
@@ -1642,6 +1641,48 @@ func NumDecoding(s string) int {
 		}
 		if i >= 2 && s[i-2] != '0' && (s[i-2]-'0')*10+s[i-1]-'0' <= 26 {
 			dp[i] += dp[i-2]
+		}
+	}
+	return dp[n]
+}
+
+/*
+leetcode 264. 丑数II
+1.20 给你一个整数n ，请你找出并返回第n个 丑数 。
+丑数就是只包含质因数2、3 或5的正整数。
+
+示例1：
+输入：n = 10
+输出：12
+解释：[1, 2, 3, 4, 5, 6, 8, 9, 10, 12] 是由前10个丑数组成的序列。
+
+示例2：
+输入：n = 1
+输出：1
+解释：1通常被视为丑数。
+
+提示：
+1 <= n <= 1690
+*/
+
+func NthUglyNumber(n int) int {
+	dp := make([]int, n+1)
+	dp[1] = 1
+	p2, p3, p5 := 1, 1, 1
+	for i := 2; i <= n; i++ {
+		// x2和x3以及x5三个数是有可能相等的,那么当它们相等时，它们对应的指针都需要向后移动
+		// 否则dp数组中会出现重复数字(譬如x2=x3=6,此时p2=3,p3=2,p5=1，dp[6]=6)，dp[7]仍然是6
+		// 因此不能使用if/else if/else的判断逻辑
+		x2, x3, x5 := dp[p2]*2, dp[p3]*3, dp[p5]*5
+		dp[i] = Utils.Min(x2, Utils.Min(x3, x5))
+		if dp[i] == x2 {
+			p2++
+		}
+		if dp[i] == x3 {
+			p3++
+		}
+		if dp[i] == x5 {
+			p5++
 		}
 	}
 	return dp[n]
