@@ -349,8 +349,6 @@ func RemoveElementsTwo(nums []int, val int) int {
 	return slow
 }
 
-
-
 /*
 leetcode 283. 移动零
 1.9 给定一个数组nums，编写一个函数将所有0移动到数组的末尾，同时保持非零元素的相对顺序。
@@ -381,7 +379,7 @@ func MoveZeroes(nums []int) {
 			index++
 		}
 	}
-	for index < len(nums){
+	for index < len(nums) {
 		nums[index] = 0
 		index++
 	}
@@ -622,7 +620,7 @@ func ReverseStr(s string, k int) string {
 		// 每2k个字符对前k个字符进行反转
 		// 剩余字符小于2k但大于或等于k个，则反转前k个字符
 		if i+k <= n {
-			reverse(bytes[i:i+k])
+			reverse(bytes[i : i+k])
 		} else {
 			// 剩余字符少于k个，则将剩余字符全部反转。
 			reverse(bytes[i:n])
@@ -766,7 +764,7 @@ func reverseWords(s string) string {
 		// 反转单个单词
 		j := i
 		// 找到单词的结束位置
-		for j < len(ss) && ss[j] != ' '{
+		for j < len(ss) && ss[j] != ' ' {
 			j++
 		}
 		// 反转
@@ -973,10 +971,9 @@ func ExchangeSimple(nums []int) []int {
 	return nums
 }
 
-
 /*
-leetcode 263. 丑数
-给你一个整数n ，请你判断n是否为丑数 。如果是，返回true ；否则，返回false 。
+leetcode 263. 丑数I
+1.22 给你一个整数n ，请你判断n是否为丑数 。如果是，返回true ；否则，返回false 。
 丑数就是只包含质因数2、3 或5的正整数。
 
 示例1：
@@ -1001,7 +998,7 @@ leetcode 263. 丑数
 
 提示：
 -231 <= n <= 231 - 1
- */
+*/
 
 /*
 根据丑数的定义，0和负整数一定不是丑数。
@@ -1009,17 +1006,88 @@ leetcode 263. 丑数
 都是0时，n=1。
 为判断n是否满足上述形式，可以对n反复除以2,3,5直到n不再包含质因数2,3,5。若剩下的数等于1，则说明n不包含其
 他质因数，是丑数；否则，说明n包含其他质因数，不是丑数。
- */
+*/
 
 func IsUgly(n int) bool {
-	if n <= 0{
+	if n <= 0 {
 		return false
 	}
 	factors := []int{2, 3, 5}
-	for _, f := range factors{
-		for n % f == 0{
+	for _, f := range factors {
+		for n%f == 0 {
 			n /= f
 		}
 	}
 	return n == 1
+}
+
+/*
+leetcode 1201. 丑数III
+1.23 给你四个整数：n 、a 、b 、c ，请你设计一个算法来找出第n个丑数。
+丑数是可以被a或b或c整除的正整数 。
+*/
+
+// NthUglyNumber，二分法+容斥原理
+func NthUglyNumber(n int, a int, b int, c int) int {
+	ab, ac, bc := lcm(a, b), lcm(a, c), lcm(b, c)
+	abc := lcm(ab, c)
+	left, right := 0, n*Utils.Min(a, Utils.Min(b, c))
+	for left <= right {
+		mid := (left + right) / 2
+		count := mid/a + mid/b + mid/c - mid/ab - mid/ac - mid/bc + mid/abc
+		if count == n {
+			if mid%a == 0 && mid%b == 0 && mid%c == 0 {
+				return mid
+			} else {
+				right = mid - 1
+			}
+		} else if count < n {
+			left = mid + 1
+		} else {
+			right = mid - 1
+		}
+	}
+	return left
+}
+
+// lcm 求两个正整数的最小公倍数
+func lcm(x, y int) int {
+	return x * y / gcd(x, y)
+}
+
+// gcd 求两个正整数的最大公约数
+func gcd(x, y int) int {
+	temp := x % y
+	if temp > 0 {
+		return gcd(y, temp)
+	}
+	return y
+}
+
+/*
+leetcode 878. 第N个神奇数字
+1.24 如果正整数可以被A或B整除，那么它是神奇的。
+返回第N个神奇数字。由于答案可能非常大，返回它模 10^9 + 7 的结果。
+*/
+
+func NthMagicalNumber(n int, a int, b int) int {
+	mod := int(1e9) + 7
+	ab := lcm(a, b)
+	left, right := 0, n*Utils.Min(a, b)
+	for left <= right {
+		mid := (left + right) / 2
+		count := mid/a + mid/b - mid/ab
+		if count == n {
+			if mid%a == 0 && mid%b == 0 {
+				return mid % mod
+			} else {
+				right = mid - 1
+			}
+		} else if count > n {
+			left = mid - 1
+		} else {
+			right = mid + 1
+		}
+	}
+	return left % mod
 }
