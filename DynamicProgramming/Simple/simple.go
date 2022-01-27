@@ -177,7 +177,7 @@ func MinCostClimbingStairs(cost []int) int {
 	n := len(cost)
 	dp := make([]int, n)
 	// dp数组make初始化时默认值就是0,所以dp[0]和dp[1]不用再赋值了
-	for i:=2;i<n;i++{
+	for i := 2; i < n; i++ {
 		dp[i] = Utils.Min(dp[i-1]+cost[i-1], dp[i-2]+cost[i-2])
 	}
 	return Utils.Min(dp[n-1]+cost[n-1], dp[n-2]+cost[n-2])
@@ -332,7 +332,6 @@ func UniquePathsWithObstacles(obstacleGrid [][]int) int {
 	return dp[m-1][n-1]
 }
 
-
 /*
 进阶 1.5 最小路径和
 给定一个包含非负整数的m x n网格grid ，请找出一条从左上角到右下角的路径，使得路径上的数字总和为最小。
@@ -394,7 +393,6 @@ func MinPathSum(grid [][]int) int {
 	}
 	return dp[m-1][n-1]
 }
-
 
 /*
 1.6 整数拆分
@@ -463,4 +461,57 @@ func IntegerBreak(n int) int {
 		}
 	}
 	return dp[n]
+}
+
+/*
+Leetcode 118. 杨辉三角
+1.7 给定一个非负整数numRows，生成杨辉三角的前numRows行。
+在杨辉三角中，每个数是它左上方和右上方的数的和。
+
+示例1:
+输入: numRows = 5
+输出: [[1],[1,1],[1,2,1],[1,3,3,1],[1,4,6,4,1]]
+*/
+
+func Generate(numRows int) [][]int {
+	dp := make([][]int, numRows)
+	for i := 0; i < numRows; i++ {
+		// 每一行数组的长度等于行数
+		dp[i] = make([]int, i+1)
+		dp[i][0] = 1
+		dp[i][i] = 1
+		for j := 1; j < i; j++ {
+			dp[i][j] = dp[i-1][j-1] + dp[i-1][j]
+		}
+	}
+	return dp
+}
+
+/*
+leetcode 119. 杨辉三角II
+给定一个非负索引rowIndex，返回「杨辉三角」的第rowIndex行。
+在「杨辉三角」中，每个数是它左上方和右上方的数的和。
+示例1:
+输入: rowIndex = 3
+输出: [1,3,3,1]
+*/
+
+func GetRow(rowIndex int) []int {
+	row := make([]int, rowIndex+1)
+	row[0] = 1
+	for i := 1; i <= rowIndex; i++ {
+		for j := i; j > 0; j-- {
+			row[j] += row[j-1]
+		}
+	}
+	return row
+}
+
+func GetRowSimple(rowIndex int) []int {
+	row := make([]int, rowIndex+1)
+	row[0] = 1
+	for i := 1; i <= rowIndex; i++ {
+		row[i] = row[i-1] * (rowIndex - i + 1) / i
+	}
+	return row
 }
