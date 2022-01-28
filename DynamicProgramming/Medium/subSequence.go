@@ -1687,3 +1687,75 @@ func NthUglyNumber(n int) int {
 	}
 	return dp[n]
 }
+
+/*
+leetcode 931. 下降路径最小和
+1.21 给你一个n x n 的方形整数数组matrix ，请你找出并返回通过matrix的下降路径的最小和。
+下降路径可以从第一行中的任何元素开始，并从每一行中选择一个元素。在下一行选择的元素和当前行所选元素最多相隔
+一列（即位于正下方或者沿对角线向左或者向右的第一个元素）。具体来说，位置 (row, col) 的下一个元素应当是
+(row + 1, col - 1)、(row + 1, col) 或者 (row + 1, col + 1) 。
+输入：matrix = [[2,1,3],[6,5,4],[7,8,9]]
+输出：13
+*/
+
+func minFallingPathSum(matrix [][]int) int {
+	n := len(matrix)
+	dp := make([][]int, n)
+	for i := 0; i < n; i++ {
+		dp[i] = make([]int, n)
+	}
+	for j := 0; j < n; j++ {
+		dp[n-1][j] = matrix[n-1][j]
+	}
+	for i := n - 2; i >= 0; i-- {
+		for j := 0; j < n; j++ {
+			dp[i][j] = dp[i+1][j]
+			if j > 0 {
+				dp[i][j] = Utils.Min(dp[i+1][j-1], dp[i][j])
+			}
+			if j+1 < n {
+				dp[i][j] = Utils.Min(dp[i+1][j+1], dp[i][j])
+			}
+			dp[i][j] += matrix[i][j]
+		}
+	}
+	return Utils.MinValueOfArray(dp[0])
+}
+
+/*
+leetcode 120. 三角形最小路径和
+1.22 给定一个三角形triangle ，找出自顶向下的最小路径和。
+每一步只能移动到下一行中相邻的结点上。相邻的结点在这里指的是下标与上一层结点下标相同或者等于上一层结点下标+1
+的两个结点。也就是说，如果正位于当前行的下标i ，那么下一步可以移动到下一行的下标i或i+1 。
+
+示例1：
+输入：triangle = [[2],[3,4],[6,5,7],[4,1,8,3]]
+输出：11
+解释：如下面简图所示：
+   2
+  3 4
+ 6 5 7
+4 1 8 3
+自顶向下的最小路径和为11（即，2+3+5+1= 11）。
+*/
+
+func MinimumTotal(triangle [][]int) int {
+	n := len(triangle)
+	dp := make([][]int, n)
+	for i := 0; i < n; i++ {
+		dp[i] = make([]int, i+1)
+	}
+	for j := 0; j < n; j++ {
+		dp[n-1][j] = triangle[n-1][j]
+	}
+	for i := n - 2; i >= 0; i-- {
+		for j := 0; j < i+1; j++ {
+			dp[i][j] = dp[i+1][j]
+			if j+1 <= i+1 {
+				dp[i][j] = Utils.Min(dp[i+1][j+1], dp[i][j])
+			}
+			dp[i][j] += triangle[i][j]
+		}
+	}
+	return dp[0][0]
+}
