@@ -796,3 +796,186 @@ func MultiBagProblem(weight, value, nums []int, capacity int) int {
 	}
 	return dp[capacity]
 }
+
+/*
+leetcode 931. 下降路径最小和
+1.15 给你一个n x n 的方形整数数组matrix ，请你找出并返回通过matrix的下降路径的最小和。
+下降路径可以从第一行中的任何元素开始，并从每一行中选择一个元素。在下一行选择的元素和当前行所选元素最多相隔
+一列（即位于正下方或者沿对角线向左或者向右的第一个元素）。具体来说，位置 (row, col) 的下一个元素应当是
+(row + 1, col - 1)、(row + 1, col) 或者 (row + 1, col + 1) 。
+输入：matrix = [[2,1,3],[6,5,4],[7,8,9]]
+输出：13
+*/
+
+func minFallingPathSum(matrix [][]int) int {
+	n := len(matrix)
+	dp := make([][]int, n)
+	for i := 0; i < n; i++ {
+		dp[i] = make([]int, n)
+	}
+	for j := 0; j < n; j++ {
+		dp[n-1][j] = matrix[n-1][j]
+	}
+	for i := n - 2; i >= 0; i-- {
+		for j := 0; j < n; j++ {
+			dp[i][j] = dp[i+1][j]
+			if j > 0 {
+				dp[i][j] = Utils.Min(dp[i+1][j-1], dp[i][j])
+			}
+			if j+1 < n {
+				dp[i][j] = Utils.Min(dp[i+1][j+1], dp[i][j])
+			}
+			dp[i][j] += matrix[i][j]
+		}
+	}
+	return Utils.MinValueOfArray(dp[0])
+}
+
+/*
+leetcode 120. 三角形最小路径和
+1.16 给定一个三角形triangle ，找出自顶向下的最小路径和。
+每一步只能移动到下一行中相邻的结点上。相邻的结点在这里指的是下标与上一层结点下标相同或者等于上一层结点下标+1
+的两个结点。也就是说，如果正位于当前行的下标i ，那么下一步可以移动到下一行的下标i或i+1 。
+
+示例1：
+输入：triangle = [[2],[3,4],[6,5,7],[4,1,8,3]]
+输出：11
+解释：如下面简图所示：
+   2
+  3 4
+ 6 5 7
+4 1 8 3
+自顶向下的最小路径和为11（即，2+3+5+1= 11）。
+*/
+
+func MinimumTotal(triangle [][]int) int {
+	n := len(triangle)
+	dp := make([][]int, n)
+	for i := 0; i < n; i++ {
+		dp[i] = make([]int, i+1)
+	}
+	for j := 0; j < n; j++ {
+		dp[n-1][j] = triangle[n-1][j]
+	}
+	for i := n - 2; i >= 0; i-- {
+		for j := 0; j < i+1; j++ {
+			dp[i][j] = dp[i+1][j]
+			if j+1 <= i+1 {
+				dp[i][j] = Utils.Min(dp[i+1][j+1], dp[i][j])
+			}
+			dp[i][j] += triangle[i][j]
+		}
+	}
+	return dp[0][0]
+}
+
+/*
+leetcode 1277. 统计全为1的正方形子矩阵
+1.17 给你一个m * n的矩阵，矩阵中的元素不是 0 就是 1，请你统计并返回其中完全由1组成的正方形子矩阵的个数。
+
+示例1：
+输入：matrix =
+[
+[0,1,1,1],
+[1,1,1,1],
+[0,1,1,1]
+]
+输出：15
+解释：
+边长为 1 的正方形有 10 个。
+边长为 2 的正方形有 4 个。
+边长为 3 的正方形有 1 个。
+正方形的总数 = 10 + 4 + 1 = 15.
+*/
+
+/*
+思路:动态规划
+我们用dp[i][j]表示以matrix[i][j]为右下角的正方形最大边长。在计算出所有的的dp[i][j]后，我们将它们累加，
+即可得到矩阵matrix中正方形的数目。
+我们尝试挖掘dp[i][j]与相邻位置的关系来计算出dp[i][j]的值。
+若dp[i][j]=4，那么我们可以看到其左侧位置(i,j-1),上方位置(i-1,j),左上方位置(i-1,j-1)均可作为一个边长为3
+的正方形的右下角，也就是说，这些位置的dp值(边长)至少为3，即:
+dp[i,j-1] >= dp[i][j]-1
+dp[i-1,j] >= dp[i][j]-1
+dp[i-1,j-1] >= dp[i][j]-1
+将以上不等式联立，可得:
+min(dp[i,j-1], dp[i-1,j], dp[i-1,j-1]) >= dp[i][j]-1
+简单移项，可得:
+dp[i][j] <= min(dp[i,j-1], dp[i-1,j], dp[i-1,j-1]) + 1
+
+这是我们通过固定dp[i][j] 的值，判断其相邻位置与之的关系得到的不等式。同理，我们也可以固定dp[i][j]相邻位置
+的值，得到另外的限制条件。
+
+若dp[i,j-1], dp[i-1,j], dp[i-1,j-1]中最小值为3, 也就是说(i,j-1),(i-1,j),(i-1,j-1)均可作为一个边长
+至少为3的正方形的右下角，那么如果位置(i,j)的元素为1(matrix[i][j]=1)，那么位置(i,j)可以作为一个边长为4的
+正方形的右下角，即dp[i][j]>=4, 即:
+dp[i][j] >= min(dp[i,j-1], dp[i-1,j], dp[i-1,j-1]) + 1
+将其与上一个不等式联立，可得:
+dp[i][j] = min(dp[i,j-1], dp[i-1,j], dp[i-1,j-1]) + 1
+
+这样我们就得到了dp[i][j]的递推公式，此外还要考虑一些边界条件和特殊情况，即可得到完整的递推公式
+1 if i==0 || j==0, dp[i][j] = matrix[i][j]
+2 else if matrix[i][j] == 0, dp[i][j] = 0
+3 else dp[i][j] = min(dp[i,j-1], dp[i-1,j], dp[i-1,j-1]) + 1
+*/
+
+func CountSquares(matrix [][]int) int {
+	m, n := len(matrix), len(matrix[0])
+	count := 0
+	dp := make([][]int, m)
+	for i := 0; i < m; i++ {
+		dp[i] = make([]int, n)
+		for j := 0; j < n; j++ {
+			if i == 0 || j == 0 {
+				dp[i][j] = matrix[i][j]
+			} else if matrix[i][j] == 0 {
+				dp[i][j] = 0
+			} else {
+				dp[i][j] = Utils.Min(dp[i-1][j], Utils.Min(dp[i][j-1], dp[i-1][j-1])) + 1
+			}
+			count += dp[i][j]
+		}
+	}
+	return count
+}
+
+/*
+leetcode 221. 最大正方形
+1.18 在一个由 '0' 和 '1' 组成的二维矩阵内，找到只包含 '1' 的最大正方形，并返回其面积。
+
+示例1:
+输入：matrix = [["1","0","1","0","0"],["1","0","1","1","1"],["1","1","1","1","1"],
+["1","0","0","1","0"]]
+输出：4
+
+提示：
+m == matrix.length
+n == matrix[i].length
+1 <= m, n <= 300
+matrix[i][j] 为 '0' 或 '1'
+*/
+
+func MaximalSquare(matrix [][]byte) int {
+	maxSide := 0
+	dp := make([][]int, len(matrix))
+	for i := 0; i < len(matrix); i++ {
+		dp[i] = make([]int, len(matrix[i]))
+		for j := 0; j < len(matrix[i]); j++ {
+			dp[i][j] = int(matrix[i][j] - '0')
+			if dp[i][j] == 1 {
+				maxSide = 1
+			}
+		}
+	}
+	for i := 1; i < len(matrix); i++ {
+		for j := 1; j < len(matrix[i]); j++ {
+			if dp[i][j] == 1 {
+				dp[i][j] = Utils.Min(dp[i-1][j], Utils.Min(dp[i][j-1], dp[i-1][j-1])) + 1
+				if maxSide < dp[i][j] {
+					maxSide = dp[i][j]
+				}
+			}
+		}
+	}
+	return maxSide * maxSide
+}
