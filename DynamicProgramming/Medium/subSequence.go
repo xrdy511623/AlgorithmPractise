@@ -1341,7 +1341,60 @@ func LongestPalindromeSubSeq(s string) int {
 }
 
 /*
-1.16 最长递增子序列的个数
+leetcode 5. 最长回文子串
+1.16 给你一个字符串 s，找到 s 中最长的回文子串。
+
+示例1：
+输入：s = "babad"
+输出："bab"
+解释："aba" 同样是符合题意的答案。
+
+示例2：
+输入：s = "cbbd"
+输出："bb"
+
+示例3：
+输入：s = "a"
+输出："a"
+
+示例4：
+输入：s = "ac"
+输出："a"
+
+提示：
+1 <= s.length <= 1000
+s 仅由数字和英文字母（大写和/或小写）组成
+*/
+
+func longestPalindrome(s string) string {
+	n := len(s)
+	if n == 0 {
+		return ""
+	}
+	start, end := 0, 0
+	for i := 0; i < n; i++ {
+		l1, r1 := ExpandAroundCenter(s, i, i, n)
+		if r1-l1 > end-start {
+			start, end = l1, r1
+		}
+		l2, r2 := ExpandAroundCenter(s, i, i+1, n)
+		if r2-l2 > end-start {
+			start, end = l2, r2
+		}
+	}
+	return s[start : end+1]
+}
+
+func ExpandAroundCenter(s string, i, j, n int) (int, int) {
+	for i >= 0 && j < n && s[i] == s[j] {
+		i--
+		j++
+	}
+	return i + 1, j - 1
+}
+
+/*
+1.17 最长递增子序列的个数
 给定一个未排序的整数数组，找到最长递增子序列的个数。
 
 示例1:
@@ -1441,7 +1494,7 @@ func FindNumberOfLIS(nums []int) int {
 
 /*
 leetcode 413. 等差数列划分
-1.17 如果一个数列至少有三个元素，并且任意两个相邻元素之差相同，则称该数列为等差数列。
+1.18 如果一个数列至少有三个元素，并且任意两个相邻元素之差相同，则称该数列为等差数列。
 例如，[1,3,5,7,9]、[7,7,7,7] 和 [3,-1,-5,-9] 都是等差数列。
 给你一个整数数组nums ，返回数组nums中所有为等差数组的 子数组 个数。
 
@@ -1535,7 +1588,7 @@ func NumberOfArithmeticSlices(nums []int) int {
 
 /*
 leetcode 446. 等差数列划分II - 子序列
-1.18 给你一个整数数组nums ，返回nums中所有等差子序列的数目。
+1.19 给你一个整数数组nums ，返回nums中所有等差子序列的数目。
 如果一个序列中至少有三个元素 ，并且任意两个相邻元素之差相同，则称该序列为等差序列。
 例如，[1, 3, 5, 7, 9]、[7, 7, 7, 7] 和 [3, -1, -5, -9] 都是等差序列。
 再例如，[1, 1, 2, 5, 7] 不是等差序列。
@@ -1588,7 +1641,7 @@ func NumberOfArithmeticSlicesComplex(nums []int) int {
 
 /*
 leetcode 91. 解码方法
-1.19 一条包含字母A-Z 的消息通过以下映射进行了编码 ：
+1.20 一条包含字母A-Z 的消息通过以下映射进行了编码 ：
 'A' -> 1
 'B' -> 2
 ...
@@ -1648,7 +1701,7 @@ func NumDecoding(s string) int {
 
 /*
 leetcode 264. 丑数II
-1.20 给你一个整数n ，请你找出并返回第n个 丑数 。
+1.21 给你一个整数n ，请你找出并返回第n个丑数 。
 丑数就是只包含质因数2、3 或5的正整数。
 
 示例1：
