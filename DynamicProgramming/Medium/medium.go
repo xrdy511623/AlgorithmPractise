@@ -675,15 +675,12 @@ dp[0] = 0, 这个完全是为了递推公式，非0下标的值应该初始化�
 
 func NumSquares(n int) int {
 	dp := make([]int, n+1)
-	dp[0] = 0
 	for i := 1; i <= n; i++ {
 		dp[i] = math.MaxInt32
 	}
 	for i := 1; i*i <= n; i++ {
-		for j := 1; j <= n; j++ {
-			if j >= i*i {
-				dp[j] = Utils.Min(dp[j], dp[j-i*i]+1)
-			}
+		for j := i*i; j <= n; j++ {
+			dp[j] = Utils.Min(dp[j], dp[j-i*i]+1)
 		}
 	}
 	return dp[n]
