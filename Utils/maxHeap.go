@@ -13,7 +13,7 @@ func NewMaxHeap(capacity int) *MaxHeap {
 	return &MaxHeap{
 		Capacity: capacity,
 		Size:     0,
-		Elements: make([]int, capacity, capacity),
+		Elements: make([]int, capacity),
 	}
 }
 

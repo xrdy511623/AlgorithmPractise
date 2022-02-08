@@ -429,7 +429,7 @@ func MaxUncrossLines(nums1, nums2 []int) int {
 /*
 思路:动态规划
 1 确定dp数组及其下标含义
-dp[i]表示数组nums[:i]的最大子数组和
+dp[i]表示数组nums[:i+1]的最大子数组和
 
 2 确定递推公式
 显然，dp[i]的值取决于dp[i-1]和nums[i]。
@@ -452,6 +452,9 @@ dp[i]  -2  1 -2  4  3  5  6  1  5
 // MaxSubArray 时间复杂度O(N)，空间复杂度O(N)
 func MaxSubArray(nums []int) int {
 	n := len(nums)
+	if n == 0{
+		return 0
+	}
 	dp := make([]int, n)
 	dp[0] = nums[0]
 	max := nums[0]

@@ -1268,3 +1268,40 @@ func NextPermutation(nums []int) {
 	}
 	feature.ReverseArray(nums[i+1:])
 }
+
+/*
+leetcode 88. 合并两个有序数组
+1.16 给你两个按非递减顺序排列的整数数组nums1 和 nums2，另有两个整数m和n ，分别表示nums1和nums2中的元素数目。
+请你合并nums2到nums1中，使合并后的数组同样按非递减顺序排列。
+注意：最终，合并后数组不应由函数返回，而是存储在数组nums1 中。为了应对这种情况，nums1的初始长度为 m + n，
+其中前m个元素表示应合并的元素，后n个元素为0 ，应忽略。nums2的长度为n 。
+
+示例1：
+输入：nums1 = [1,2,3,0,0,0], m = 3, nums2 = [2,5,6], n = 3
+输出：[1,2,2,3,5,6]
+解释：需要合并 [1,2,3] 和 [2,5,6] 。
+合并结果是 [1,2,2,3,5,6]
+*/
+
+// merge 逆向双指针，时间复杂度O(M+N), 空间复杂度O(1)
+func merge(nums1 []int, m int, nums2 []int, n int) {
+	p1, p2, tail := m-1, n-1, m+n-1
+	for p1 >= 0 || p2 >= 0 {
+		cur := 0
+		if p1 == -1 {
+			cur = nums2[p2]
+			p2--
+		} else if p2 == -1 {
+			cur = nums1[p1]
+			p1--
+		} else if nums1[p1] > nums2[p2] {
+			cur = nums1[p1]
+			p1--
+		} else {
+			cur = nums2[p2]
+			p2--
+		}
+		nums1[tail] = cur
+		tail--
+	}
+}

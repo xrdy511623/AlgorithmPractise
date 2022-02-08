@@ -13,7 +13,7 @@ func NewMinHeap(capacity int) *MinHeap {
 	return &MinHeap{
 		Capacity: capacity,
 		Size:     0,
-		Elements: make([]int, capacity, capacity),
+		Elements: make([]int, capacity),
 	}
 }
 
@@ -33,7 +33,7 @@ func (mh *MinHeap) Add(value int) {
 }
 
 /*
-比较新添加的节点与其父亲节点的值,若父亲节点的值更小,则交换位置.
+比较新添加的节点与其父亲节点的值,若父亲节点的值更大,则交换位置.
 */
 
 func (mh *MinHeap) ShiftUp(ndx int) {
@@ -42,7 +42,7 @@ func (mh *MinHeap) ShiftUp(ndx int) {
 		// 新添加的节点值必须比其父节点的值更大
 		if mh.Elements[ndx] < mh.Elements[parent] {
 			mh.Elements[ndx], mh.Elements[parent] = mh.Elements[parent], mh.Elements[ndx]
-			// 递归直到父节点的值大于新添加节点值为止。
+			// 递归直到父节点的值小于新添加节点值为止。
 			mh.ShiftUp(parent)
 		}
 	}
@@ -77,7 +77,7 @@ func (mh *MinHeap) ShiftDown(ndx int) {
 	}
 	if smallest != ndx {
 		mh.Elements[ndx], mh.Elements[smallest] = mh.Elements[smallest], mh.Elements[ndx]
-		// 递归直到根节点值为最大值为止。
+		// 递归直到根节点值为最小值为止。
 		mh.ShiftDown(smallest)
 	}
 }
