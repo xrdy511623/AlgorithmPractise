@@ -1091,3 +1091,79 @@ func NthMagicalNumber(n int, a int, b int) int {
 	}
 	return left % mod
 }
+
+/*
+leetcode 54. 螺旋矩阵
+1.25 给你一个 m 行 n 列的矩阵matrix ，请按照顺时针螺旋顺序，返回矩阵中的所有元素。
+示例1:
+输入：matrix = [[1,2,3],[4,5,6],[7,8,9]]
+输出：[1,2,3,6,9,8,7,4,5]
+
+示例2:
+输入：matrix = [[1,2,3,4],[5,6,7,8],[9,10,11,12]]
+输出：[1,2,3,4,8,12,11,10,9,5,6,7]
+
+提示：
+m == matrix.length
+n == matrix[i].length
+1 <= m, n <= 10
+-100 <= matrix[i][j] <= 100
+*/
+
+/*
+思路：按层模拟
+可以将矩阵看成若干层，首先输出最外层的元素，其次输出次外层的元素，直到输出最内层的元素。
+定义矩阵的第k层是到最近边界距离为kk的所有顶点。例如，下图矩阵最外层元素都是第1层，次外层元素都是第22层，剩下
+的元素都是第3层。
+
+[[1, 1, 1, 1, 1, 1, 1],
+ [1, 2, 2, 2, 2, 2, 1],
+ [1, 2, 3, 3, 3, 2, 1],
+ [1, 2, 2, 2, 2, 2, 1],
+ [1, 1, 1, 1, 1, 1, 1]]
+
+对于每层，从左上方开始以顺时针的顺序遍历所有元素。假设当前层的左上角位于(top,left)，右下角位于(bottom,right)，
+按照如下顺序遍历当前层的元素。
+从左到右遍历上侧元素，依次为(top,left) 到 (top,right)。
+从上到下遍历右侧元素，依次为(top+1,right) 到(bottom,right)。
+如果left<right 且 top<bottom，则从右到左遍历下侧元素，依次为(bottom,right−1) 到 (bottom,left+1)，
+以及从下到上遍历左侧元素，依次为(bottom,left) 到 (top+1,left)。
+遍历完当前层的元素之后，将left和top分别增加1，将right和bottom分别减少1，进入下一层继续遍历，直到遍历完
+所有元素为止。
+*/
+
+// spiralOrder 时间复杂度O(MN), 空间复杂度O(1)
+func spiralOrder(matrix [][]int) []int {
+	if len(matrix) == 0 || len(matrix[0]) == 0 {
+		return []int{}
+	}
+	rows, columns := len(matrix), len(matrix[0])
+	order := make([]int, rows*columns)
+	index := 0
+	top, bottom, left, right := 0, rows-1, 0, columns-1
+	for top <= bottom && left <= right {
+		for column := left; column <= right; column++ {
+			order[index] = matrix[top][column]
+			index++
+		}
+		for row := top + 1; row <= bottom; row++ {
+			order[index] = matrix[row][right]
+			index++
+		}
+		if top < bottom && left < right {
+			for column := right - 1; column > left; column-- {
+				order[index] = matrix[bottom][column]
+				index++
+			}
+			for row := bottom; row > top; row-- {
+				order[index] = matrix[row][left]
+				index++
+			}
+		}
+		top++
+		bottom--
+		left++
+		right--
+	}
+	return order
+}
