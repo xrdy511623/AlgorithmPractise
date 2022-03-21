@@ -1,4 +1,8 @@
-package Medium
+package medium
+
+/*
+medium contains middle level problems
+*/
 
 import (
 	"AlgorithmPractise/Utils"
@@ -52,8 +56,8 @@ i从2开始遍历，下面嵌套一层j的遍历，从0开始
 dp[i]   1  1  2  5  14  42  132  429
 */
 
-// NumOfBST 时间复杂度O(n^2)，空间复杂度O(n)
-func NumOfBST(n int) int {
+// numOfBST 时间复杂度O(n^2)，空间复杂度O(n)
+func numOfBST(n int) int {
 	if n <= 1 {
 		return 1
 	}
@@ -118,8 +122,8 @@ dp[0][j]和dp[i][0] 都已经初始化了，那么其他下标应该初始化多
 参见01背包.png
 */
 
-// BagProblem 时间复杂度O(m*n)，空间复杂度O(m*n),m为weight数组长度，n为capacity
-func BagProblem(weight, value []int, capacity int) int {
+// bagProblem 时间复杂度O(m*n)，空间复杂度O(m*n),m为weight数组长度，n为capacity
+func bagProblem(weight, value []int, capacity int) int {
 	n := len(weight)
 	dp := make([][]int, n)
 	for i := 0; i < n; i++ {
@@ -140,8 +144,8 @@ func BagProblem(weight, value []int, capacity int) int {
 	return dp[n-1][capacity]
 }
 
-// BagProblemSimple 用一维数组空间复杂度还有优化空间，时间复杂度O(m*n)，空间复杂度O(n),m为weight数组长度，n为capacity
-func BagProblemSimple(weight, value []int, capacity int) int {
+// bagProblemSimple 用一维数组空间复杂度还有优化空间，时间复杂度O(m*n)，空间复杂度O(n),m为weight数组长度，n为capacity
+func bagProblemSimple(weight, value []int, capacity int) int {
 	n := len(weight)
 	dp := make([]int, capacity+1)
 	for i := 0; i < n; i++ {
@@ -203,8 +207,8 @@ target := sum(array) / 2 = 11
 dp[target] = target, 返回true
 */
 
-// CanPartition 时间复杂度O(n^2)，空间复杂度O(n)
-func CanPartition(nums []int) bool {
+// canPartition 时间复杂度O(n^2)，空间复杂度O(n)
+func canPartition(nums []int) bool {
 	sum := Utils.SumOfArray(nums)
 	// 如果数组nums元素之和sum为奇数则不可能平分为两个子集
 	if sum%2 == 1 {
@@ -267,8 +271,8 @@ dp数组的长度，最精确的做法是遍历stones数组，累加数组元素
 参见最后一块石头.png
 */
 
-// LastStoneWeight 时间复杂度O(sum/2 * n), 空间复杂度为O(n), n为stones数组长度，sum/2为stones数组之和的一半
-func LastStoneWeight(stones []int) int {
+// lastStoneWeight 时间复杂度O(sum/2 * n), 空间复杂度为O(n), n为stones数组长度，sum/2为stones数组之和的一半
+func lastStoneWeight(stones []int) int {
 	sum := Utils.SumOfArray(stones)
 	target := sum / 2
 	dp := make([]int, target+1)
@@ -340,8 +344,8 @@ nums: [1, 1, 1, 1, 1], target:3
 参见目标和.pn
 */
 
-// FindTargetSumWays 时间复杂度O(n * capacity)，空间复杂度：O(capacity)， n为nums数组长度，capacity为背包容量，
-func FindTargetSumWays(nums []int, target int) int {
+// findTargetSumWays 时间复杂度O(n * capacity)，空间复杂度：O(capacity)， n为nums数组长度，capacity为背包容量，
+func findTargetSumWays(nums []int, target int) int {
 	sum := Utils.SumOfArray(nums)
 	// target的绝对值比数组和还大，是不可能有结果的
 	if Utils.Abs(target) > sum {
@@ -417,8 +421,8 @@ dp[i][j]就可以是dp[i-zeroNum][j-oneNum]+1(加1就是子集长度要加上当
 空间复杂度：O(mn)，其中m和n分别是0和1的容量。使用空间优化的实现，需要创建m+1行n+1列的二维数组dp。
 */
 
-// FindMaxForm 本题较难，注意理解m和n都是背包容量，导致题目有多个背包维度
-func FindMaxForm(strs []string, m, n int) int {
+// findMaxForm 本题较难，注意理解m和n都是背包容量，导致题目有多个背包维度
+func findMaxForm(strs []string, m, n int) int {
 	dp := make([][]int, m+1)
 	for i := 0; i <= m; i++ {
 		dp[i] = make([]int, n+1)
@@ -444,7 +448,8 @@ func FindMaxForm(strs []string, m, n int) int {
 完全背包与01背包主要不同在于遍历顺序，注意完全背包的物品是可以添加多次的，所以内层遍历背包要从小到大去遍历(正序遍历)
 */
 
-func CompleteBagProblem(weight, value []int, capacity int) int {
+// completeBagProblem 时间复杂度O(M*N)，空间复杂度O(N)
+func completeBagProblem(weight, value []int, capacity int) int {
 	dp := make([]int, capacity+1)
 	for i := 0; i < len(weight); i++ {
 		for j := weight[i]; j <= capacity; j++ {
@@ -499,8 +504,8 @@ dp[0] = 1
 零钱兑换.png
 */
 
-// Change 时间复杂度O(amount*len(coins))，空间复杂度O(amount)
-func Change(amount int, coins []int) int {
+// change 时间复杂度O(amount*len(coins))，空间复杂度O(amount)
+func change(amount int, coins []int) int {
 	dp := make([]int, amount+1)
 	dp[0] = 1
 	for i := 0; i < len(coins); i++ {
@@ -527,7 +532,7 @@ nums = [1, 2, 3] target = 4
 在遍历顺序上必须先遍历背包，再遍历物品
 */
 
-func CombinationSum(nums []int, target int) int {
+func combinationSum(nums []int, target int) int {
 	dp := make([]int, target+1)
 	dp[0] = 1
 	// 在遍历顺序上必须先遍历背包，再遍历物品
@@ -550,8 +555,8 @@ func CombinationSum(nums []int, target int) int {
 的两种爬楼梯方法，所以本题是完全背包的求排列问题，因此遍历顺序就必须是先遍历背包，再遍历物品，且遍历背包时必须是正序遍历
 */
 
-// ClimbStairsComplex m表示一次最多可以爬m个台阶
-func ClimbStairsComplex(m, n int) int {
+// climbStairsComplex m表示一次最多可以爬m个台阶
+func climbStairsComplex(m, n int) int {
 	dp := make([]int, n+1)
 	dp[0] = 1
 	for j := 1; j <= n; j++ {
@@ -617,7 +622,7 @@ dp[j]明显可以由dp[j-coins[i]]推出，凑足金额为j-coins[i]的最少硬
 dp[j] 0  1  1  2   2  1
 */
 
-func LeastCoinChange(coins []int, amount int) int {
+func leastCoinChange(coins []int, amount int) int {
 	dp := make([]int, amount+1)
 	dp[0] = 0
 	for i := 1; i <= amount; i++ {
@@ -673,13 +678,13 @@ dp[0] = 0, 这个完全是为了递推公式，非0下标的值应该初始化�
 遍历背包必须是正序遍历
 */
 
-func NumSquares(n int) int {
+func numSquares(n int) int {
 	dp := make([]int, n+1)
 	for i := 1; i <= n; i++ {
 		dp[i] = math.MaxInt32
 	}
 	for i := 1; i*i <= n; i++ {
-		for j := i*i; j <= n; j++ {
+		for j := i * i; j <= n; j++ {
 			dp[j] = Utils.Min(dp[j], dp[j-i*i]+1)
 		}
 	}
@@ -737,8 +742,8 @@ dp[i]表示字符串长度为i的话，dp[i]为true，表示可以拆分为一�
 略
 */
 
-// WordBreak 时间复杂度O(N*N),空间复杂度O(N),N为字符串s的长度
-func WordBreak(s string, wordDict []string) bool {
+// wordBreak 时间复杂度O(N*N),空间复杂度O(N),N为字符串s的长度
+func wordBreak(s string, wordDict []string) bool {
 	n := len(s)
 	// 记录wordDict中出现的单词
 	hashTable := make(map[string]bool)
@@ -777,7 +782,7 @@ func WordBreak(s string, wordDict []string) bool {
 问背包能背的物品最大价值是多少？
 */
 
-func MultiBagProblem(weight, value, nums []int, capacity int) int {
+func multiBagProblem(weight, value, nums []int, capacity int) int {
 	dp := make([]int, capacity+1)
 	for i := 0; i < len(nums); i++ {
 		for nums[i] > 1 {
@@ -845,7 +850,7 @@ leetcode 120. 三角形最小路径和
 自顶向下的最小路径和为11（即，2+3+5+1= 11）。
 */
 
-func MinimumTotal(triangle [][]int) int {
+func minimumTotal(triangle [][]int) int {
 	n := len(triangle)
 	dp := make([][]int, n)
 	for i := 0; i < n; i++ {
@@ -916,7 +921,7 @@ dp[i][j] = min(dp[i,j-1], dp[i-1,j], dp[i-1,j-1]) + 1
 3 else dp[i][j] = min(dp[i,j-1], dp[i-1,j], dp[i-1,j-1]) + 1
 */
 
-func CountSquares(matrix [][]int) int {
+func countSquares(matrix [][]int) int {
 	m, n := len(matrix), len(matrix[0])
 	count := 0
 	dp := make([][]int, m)
@@ -952,7 +957,7 @@ n == matrix[i].length
 matrix[i][j] 为 '0' 或 '1'
 */
 
-func MaximalSquare(matrix [][]byte) int {
+func maximalSquare(matrix [][]byte) int {
 	maxSide := 0
 	dp := make([][]int, len(matrix))
 	for i := 0; i < len(matrix); i++ {

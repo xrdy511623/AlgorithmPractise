@@ -14,7 +14,7 @@ leetcode 46. 全排列
 func Permute(nums []int) [][]int {
 	var res [][]int
 	var path []int
-	visited := make(map[int]bool)
+	visited := make(map[int]bool, 0)
 	size := len(nums)
 	var backTrack func()
 	backTrack = func() {

@@ -1,4 +1,8 @@
-package Medium
+package medium
+
+/*
+medium contains middle level problems
+*/
 
 import (
 	"AlgorithmPractise/Utils"
@@ -45,8 +49,8 @@ j其实就是0到i-1，遍历i的循环在外层，遍历j则在内层，
 参见最长连续递增子序列.png
 */
 
-// LengthOfLTS 时间复杂度O(N^2),空间复杂度O(N)
-func LengthOfLTS(nums []int) int {
+// lengthOfLTS 时间复杂度O(N^2),空间复杂度O(N)
+func lengthOfLTS(nums []int) int {
 	n := len(nums)
 	if n <= 1 {
 		return n
@@ -94,8 +98,8 @@ func LengthOfLTS(nums []int) int {
 最终得到最大递增子序列长度为len(d)=3。
 */
 
-// LengthOfLTSSimple  时间复杂度O(NlogN),空间复杂度O(N)
-func LengthOfLTSSimple(nums []int) int {
+// lengthOfLTSSimple  时间复杂度O(NlogN),空间复杂度O(N)
+func lengthOfLTSSimple(nums []int) int {
 	n := len(nums)
 	if n <= 1 {
 		return n
@@ -121,9 +125,6 @@ func LengthOfLTSSimple(nums []int) int {
 // FindFirstLessNum 在连续递增的有序数组中寻找第一个小于target的元素的位置
 func FindFirstLessNum(nums []int, target int) int {
 	n := len(nums)
-	if n == 0 {
-		return -1
-	}
 	if target < nums[0] {
 		return -1
 	}
@@ -185,7 +186,7 @@ dp[i]：以下标i为结尾的数组的连续递增的子序列长度为dp[i]。
 所以dp[i]应该初始1;
 
 4 确定遍历顺序
-从递推公式上可以看出， dp[i]依赖dp[i-1]，所以一定是从前向后遍历。
+从递推公式上可以看出，dp[i]依赖dp[i-1]，所以一定是从前向后遍历。
 
 5 举例推导dp数组
 以输入nums = [1,3,5,4,7]为例，dp数组状态如下：
@@ -194,8 +195,8 @@ length  1 2 3 1 2
 所以返回3
 */
 
-// FindLengthOfLCIS 动态规划解决，时间复杂度O(N),空间复杂度O(N)
-func FindLengthOfLCIS(nums []int) int {
+// findLengthOfLCIS 动态规划解决，时间复杂度O(N),空间复杂度O(N)
+func findLengthOfLCIS(nums []int) int {
 	n := len(nums)
 	if n <= 1 {
 		return n
@@ -221,8 +222,8 @@ func FindLengthOfLCIS(nums []int) int {
 这道题目也可以用贪心来做，也就是遇到nums[i] > nums[i-1]的情况，count就++，否则count为1，记录count的最大值就可以了。
 */
 
-// FindLengthOfLCISSimple 贪心解决，时间复杂度O(N),空间复杂度O(1)
-func FindLengthOfLCISSimple(nums []int) int {
+// findLengthOfLCISSimple 贪心解决，时间复杂度O(N),空间复杂度O(1)
+func findLengthOfLCISSimple(nums []int) int {
 	n := len(nums)
 	if n <= 1 {
 		return n
@@ -276,8 +277,8 @@ dp[i][j]表示数组A[:i]和数组B[:j]的最长重复子数组的长度
 略
 */
 
-// FindLongestLengthOfCSS 时间复杂度O(M*N)，空间复杂度O(M*N)
-func FindLongestLengthOfCSS(nums1, nums2 []int) int {
+// findLongestLengthOfCSS 时间复杂度O(M*N)，空间复杂度O(M*N)
+func findLongestLengthOfCSS(nums1, nums2 []int) int {
 	m, n := len(nums1), len(nums2)
 	dp := make([][]int, m+1)
 	for i := 0; i <= m; i++ {
@@ -355,8 +356,8 @@ dp[i][0]是0，因为字符串A[:i]和空字符串的最长公共子序列的长
 略
 */
 
-// LongestCommonSubSequence 时间复杂度O(M*N)，空间复杂度O(M*N)
-func LongestCommonSubSequence(text1, text2 string) int {
+// longestCommonSubSequence 时间复杂度O(M*N)，空间复杂度O(M*N)
+func longestCommonSubSequence(text1, text2 string) int {
 	m, n := len(text1), len(text2)
 	dp := make([][]int, m+1)
 	for i := 0; i <= m; i++ {
@@ -400,8 +401,8 @@ func LongestCommonSubSequence(text1, text2 string) int {
 那么本题就和1.4 最长公共子序列实质上是一模一样的了。
 */
 
-// MaxUncrossLines 时间复杂度O(M*N)，空间复杂度O(M*N)
-func MaxUncrossLines(nums1, nums2 []int) int {
+// maxUncrossLines 时间复杂度O(M*N)，空间复杂度O(M*N)
+func maxUncrossLines(nums1, nums2 []int) int {
 	m, n := len(nums1), len(nums2)
 	dp := make([][]int, m+1)
 	for i := 0; i <= m; i++ {
@@ -449,10 +450,10 @@ dp[i]表示数组nums[:i+1]的最大子数组和
 dp[i]  -2  1 -2  4  3  5  6  1  5
 */
 
-// MaxSubArray 时间复杂度O(N)，空间复杂度O(N)
-func MaxSubArray(nums []int) int {
+// maxSubArray 时间复杂度O(N)，空间复杂度O(N)
+func maxSubArray(nums []int) int {
 	n := len(nums)
-	if n == 0{
+	if n == 0 {
 		return 0
 	}
 	dp := make([]int, n)
@@ -467,8 +468,8 @@ func MaxSubArray(nums []int) int {
 	return max
 }
 
-// MaxSubArraySimple 更简单的写法是下面这样 时间复杂度O(N)，空间复杂度O(1)
-func MaxSubArraySimple(nums []int) int {
+// maxSubArraySimple 更简单的写法是下面这样 时间复杂度O(N)，空间复杂度O(1)
+func maxSubArraySimple(nums []int) int {
 	max := nums[0]
 	for i := 1; i < len(nums); i++ {
 		if nums[i-1] > 0 {
@@ -508,7 +509,7 @@ i <= k1, k2 <= j其中k1 % A.length= k2 % A.length）
 以及sum-minSub两个值之间取较大值
 */
 
-func MaxSubarraySumCircular(nums []int) int {
+func maxSubarraySumCircular(nums []int) int {
 	n := len(nums)
 	// curMax, curMin分别表示包含当前元素nums[i]的最大子数组和，最小子数组和
 	// maxSub, minSub则分别表示数组nums的最大子数组和，最小子数组和
@@ -575,8 +576,8 @@ minDp 5  6 -90 -360 -12
 最后返回1080
 */
 
-// MaxProduct 时间复杂度O(3N)，空间复杂度O(2N)
-func MaxProduct(nums []int) int {
+// maxProduct 时间复杂度O(3N)，空间复杂度O(2N)
+func maxProduct(nums []int) int {
 	n := len(nums)
 	if n == 0 {
 		return 0
@@ -596,8 +597,8 @@ func MaxProduct(nums []int) int {
 	return max
 }
 
-// MaxProductSimple 更简单的写法 时间复杂度O(3N)，空间复杂度O(1)
-func MaxProductSimple(nums []int) int {
+// maxProductSimple 更简单的写法 时间复杂度O(3N)，空间复杂度O(1)
+func maxProductSimple(nums []int) int {
 	n := len(nums)
 	if n == 0 {
 		return 0
@@ -715,8 +716,8 @@ pos[0] = ng[0] = 0
 略
 */
 
-// GetMaxLen 时间复杂度O(N)，空间复杂度O(N)
-func GetMaxLen(nums []int) int {
+// getMaxLen 时间复杂度O(N)，空间复杂度O(N)
+func getMaxLen(nums []int) int {
 	n := len(nums)
 	if n == 0 {
 		return 0
@@ -756,8 +757,8 @@ func GetMaxLen(nums []int) int {
 最大状态变量就好了，这样可以将算法的空间复杂度降低到O(1),可以写成下面这样。
 */
 
-// GetMaxLenSimple 时间复杂度O(N)，空间复杂度O(1)
-func GetMaxLenSimple(nums []int) int {
+// getMaxLenSimple 时间复杂度O(N)，空间复杂度O(1)
+func getMaxLenSimple(nums []int) int {
 	n := len(nums)
 	if n == 0 {
 		return 0
@@ -771,9 +772,9 @@ func GetMaxLenSimple(nums []int) int {
 	maxLength := pos
 	for i := 1; i < n; i++ {
 		if nums[i] > 0 {
-			pos += 1
+			pos++
 			if ng > 0 {
-				ng += 1
+				ng++
 			} else {
 				ng = 0
 			}
@@ -809,7 +810,7 @@ first:第一个负数出现的位置，初始化为-1
 3.如果遍历的当前元素为0，则将所有变量重新初始化，因为0不可能包含在任何子数组中，而使得乘积为正。
 */
 
-func GetMaxLenTwo(nums []int) int {
+func getMaxLenTwo(nums []int) int {
 	n := len(nums)
 	if n == 0 {
 		return 0
@@ -881,8 +882,8 @@ t中找到了一个字符在s中也出现了，此时dp[i][j] = dp[i-1][j-1] + 1
 略
 */
 
-// IsSubSequence 时间复杂度O(M*N)，空间复杂度O(M*N)
-func IsSubSequence(s, t string) bool {
+// isSubSequence 时间复杂度O(M*N)，空间复杂度O(M*N)
+func isSubSequence(s, t string) bool {
 	m, n := len(s), len(t)
 	dp := make([][]int, m+1)
 	for i := 0; i <= m; i++ {
@@ -914,8 +915,8 @@ func IsSubSequence(s, t string) bool {
 最终如果i移动到s的末尾，就说明s是t的子序列。
 */
 
-// IsSubSequenceSimple 时间复杂度O(N)，空间复杂度O(1)
-func IsSubSequenceSimple(s, t string) bool {
+// isSubSequenceSimple 时间复杂度O(N)，空间复杂度O(1)
+func isSubSequenceSimple(s, t string) bool {
 	m, n := len(s), len(t)
 	i, j := 0, 0
 	for i < m && j < n {
@@ -980,8 +981,8 @@ dp[0][0]应该是1，空字符串s，可以删除0个元素，变成空字符串
 略
 */
 
-// NumDistinct 时间复杂度O(M*N)，空间复杂度O(M*N)
-func NumDistinct(s, t string) int {
+// numDistinct 时间复杂度O(M*N)，空间复杂度O(M*N)
+func numDistinct(s, t string) int {
 	m, n := len(s), len(t)
 	if m < n {
 		return 0
@@ -1044,8 +1045,8 @@ dp[i][j]的值取决于word1[i-1]与word1[j-1]是否相等
 略
 */
 
-// MinDistance 时间复杂度O((M+1)*(N+1))，空间复杂度O(M*N)
-func MinDistance(word1, word2 string) int {
+// minDistance 时间复杂度O((M+1)*(N+1))，空间复杂度O(M*N)
+func minDistance(word1, word2 string) int {
 	m, n := len(word1), len(word2)
 	dp := make([][]int, m+1)
 	for i := 0; i <= m; i++ {
@@ -1075,8 +1076,8 @@ func MinDistance(word1, word2 string) int {
 即为两个字符串分别需要删除的字符数，两个字符串各自需要删除的字符数之和即为最少的删除操作的总次数。
 */
 
-// MinDistanceSimple 时间复杂度O(M*N)，空间复杂度O(M*N)
-func MinDistanceSimple(word1, word2 string) int {
+// minDistanceSimple 时间复杂度O(M*N)，空间复杂度O(M*N)
+func minDistanceSimple(word1, word2 string) int {
 	m, n := len(word1), len(word2)
 	dp := make([][]int, m+1)
 	for i := 0; i <= m; i++ {
@@ -1146,8 +1147,8 @@ dp[i][j]的值取决于word1[i-1]与word1[j-1]是否相等
 略
 */
 
-// MinDistanceComplex 时间复杂度O(M*N)，空间复杂度O(M*N)
-func MinDistanceComplex(word1, word2 string) int {
+// minDistanceComplex 时间复杂度O(M*N)，空间复杂度O(M*N)
+func minDistanceComplex(word1, word2 string) int {
 	m, n := len(word1), len(word2)
 	dp := make([][]int, m+1)
 	for i := 0; i <= m; i++ {
@@ -1219,8 +1220,8 @@ dp[i+1][j-1]在dp[i][j]的左下角
 略
 */
 
-// CountSubStrings 时间复杂度O(N^2)，空间复杂度O(N^2)
-func CountSubStrings(s string) int {
+// countSubStrings 时间复杂度O(N^2)，空间复杂度O(N^2)
+func countSubStrings(s string) int {
 	n := len(s)
 	dp := make([][]bool, n)
 	for i := 0; i < n; i++ {
@@ -1256,8 +1257,8 @@ func CountSubStrings(s string) int {
 所以我们在计算的时候，要注意一个元素为中心点和两个元素为中心点的情况。
 */
 
-// CountSubStringsSimple 时间复杂度O(N^2)，空间复杂度O(1)
-func CountSubStringsSimple(s string) int {
+// countSubStringsSimple 时间复杂度O(N^2)，空间复杂度O(1)
+func countSubStringsSimple(s string) int {
 	sumNum := 0
 	for i := 0; i < len(s); i++ {
 		// 以i为中心
@@ -1268,6 +1269,7 @@ func CountSubStringsSimple(s string) int {
 	return sumNum
 }
 
+// Extend 计算字符串s中回文子串的数量
 func Extend(s string, i, j, n int) int {
 	num := 0
 	for i >= 0 && j < n && s[i] == s[j] {
@@ -1318,8 +1320,8 @@ dp[i+1][j-1]和dp[i+1][j]的，所以外层遍历i只能是逆序从大到小遍
 略
 */
 
-// LongestPalindromeSubSeq 时间复杂度O(N^2)，空间复杂度O(N^2)
-func LongestPalindromeSubSeq(s string) int {
+// longestPalindromeSubSeq 时间复杂度O(N^2)，空间复杂度O(N^2)
+func longestPalindromeSubSeq(s string) int {
 	n := len(s)
 	if n <= 1 {
 		return n
@@ -1376,11 +1378,11 @@ func longestPalindrome(s string) string {
 	}
 	start, end := 0, 0
 	for i := 0; i < n; i++ {
-		l1, r1 := ExpandAroundCenter(s, i, i, n)
+		l1, r1 := expandAroundCenter(s, i, i, n)
 		if r1-l1 > end-start {
 			start, end = l1, r1
 		}
-		l2, r2 := ExpandAroundCenter(s, i, i+1, n)
+		l2, r2 := expandAroundCenter(s, i, i+1, n)
 		if r2-l2 > end-start {
 			start, end = l2, r2
 		}
@@ -1388,7 +1390,7 @@ func longestPalindrome(s string) string {
 	return s[start : end+1]
 }
 
-func ExpandAroundCenter(s string, i, j, n int) (int, int) {
+func expandAroundCenter(s string, i, j, n int) (int, int) {
 	for i >= 0 && j < n && s[i] == s[j] {
 		i--
 		j++
@@ -1458,8 +1460,8 @@ j其实就是0到i-1，遍历i的循环里外层，遍历j则在内层。
 略
 */
 
-// FindNumberOfLIS 时间复杂度O(N^2)，空间复杂度O(N)
-func FindNumberOfLIS(nums []int) int {
+// findNumberOfLIS 时间复杂度O(N^2)，空间复杂度O(N)
+func findNumberOfLIS(nums []int) int {
 	n := len(nums)
 	if n <= 1 {
 		return n
@@ -1544,8 +1546,8 @@ l[19,20,21,22,23,24]的起点start, nums[9]=19正好是上一个等差数列的�
 
 */
 
-// NumberOfArithmeticSlices 时间复杂度O(N)，空间复杂度O(1)
-func NumberOfArithmeticSlices(nums []int) int {
+// numberOfArithmeticSlices 时间复杂度O(N)，空间复杂度O(1)
+func numberOfArithmeticSlices(nums []int) int {
 	n := len(nums)
 	// 处理特殊情况
 	if n < 3 {
@@ -1621,8 +1623,8 @@ leetcode 446. 等差数列划分II - 子序列
 -231 <= nums[i] <= 231 - 1
 */
 
-// NumberOfArithmeticSlicesComplex 时间复杂度O(N^2)，空间复杂度O(N^2)
-func NumberOfArithmeticSlicesComplex(nums []int) int {
+// numberOfArithmeticSlicesComplex 时间复杂度O(N^2)，空间复杂度O(N^2)
+func numberOfArithmeticSlicesComplex(nums []int) int {
 	dp := make([]map[int]int, len(nums))
 	count := 0
 	for i, x := range nums {
@@ -1684,7 +1686,7 @@ leetcode 91. 解码方法
 s 只包含数字，并且可能包含前导零。
 */
 
-func NumDecoding(s string) int {
+func numDecoding(s string) int {
 	if s[0] == '0' {
 		return 0
 	}
@@ -1721,7 +1723,7 @@ leetcode 264. 丑数II
 1 <= n <= 1690
 */
 
-func NthUglyNumber(n int) int {
+func nthUglyNumber(n int) int {
 	dp := make([]int, n+1)
 	dp[1] = 1
 	p2, p3, p5 := 1, 1, 1

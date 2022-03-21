@@ -1,8 +1,11 @@
-package Medium
+package medium
 
-import (
-	"AlgorithmPractise/Utils"
-)
+/*
+medium contains middle level problems
+*/
+
+import  "AlgorithmPractise/Utils"
+
 
 /*
 1.1 leetcode 121 买卖股票的最佳时机
@@ -65,7 +68,7 @@ dp[5][1]就是最终结果
 因为本题中不持有股票状态所得金钱一定比持有股票状态得到的多！
 */
 
-func MaxProfit(prices []int) int {
+func maxProfit(prices []int) int {
 	n := len(prices)
 	if n == 0 {
 		return 0
@@ -170,8 +173,8 @@ dp[0][1]表示第0天不持有股票，不持有股票那么现金就是0，所�
 5     3        7
 */
 
-// MaxProfitOne 时间复杂度O(N),空间复杂度O(2*N)
-func MaxProfitOne(prices []int) int {
+// maxProfitOne 时间复杂度O(N),空间复杂度O(2*N)
+func maxProfitOne(prices []int) int {
 	n := len(prices)
 	if n == 0 {
 		return 0
@@ -189,8 +192,8 @@ func MaxProfitOne(prices []int) int {
 	return dp[n-1][1]
 }
 
-// MaxProfitOneSimple 更简单的写法 时间复杂度O(N), 空间复杂度O(1)
-func MaxProfitOneSimple(prices []int) int {
+// maxProfitOneSimple 更简单的写法 时间复杂度O(N), 空间复杂度O(1)
+func maxProfitOneSimple(prices []int) int {
 	n := len(prices)
 	if n == 0 {
 		return 0
@@ -272,8 +275,8 @@ dp[0][4] = 0
 略
 */
 
-// MaxProfitTwo 时间复杂度O(N),空间复杂度O(5*N)
-func MaxProfitTwo(prices []int) int {
+// maxProfitTwo 时间复杂度O(N),空间复杂度O(5*N)
+func maxProfitTwo(prices []int) int {
 	n := len(prices)
 	if n == 0 {
 		return 0
@@ -296,8 +299,8 @@ func MaxProfitTwo(prices []int) int {
 	return dp[n-1][4]
 }
 
-// MaxProfitTwoSimple 更简单的写法 时间复杂度O(N),空间复杂度O(1)
-func MaxProfitTwoSimple(prices []int) int {
+// maxProfitTwoSimple 更简单的写法 时间复杂度O(N),空间复杂度O(1)
+func maxProfitTwoSimple(prices []int) int {
 	n := len(prices)
 	if n == 0 {
 		return 0
@@ -379,8 +382,8 @@ dp[i][j] = max(dp[i-1][j], dp[i-1][j-1]+prices[i])
 略
 */
 
-// MaxProfitK 时间复杂度O((2*K+1)*N+K+N)，空间复杂度O((2*K+1)*N)
-func MaxProfitK(prices []int, k int) int {
+// maxProfitK 时间复杂度O((2*K+1)*N+K+N)，空间复杂度O((2*K+1)*N)
+func maxProfitK(prices []int, k int) int {
 	n := len(prices)
 	if n == 0 {
 		return 0
@@ -459,7 +462,7 @@ dp[0][0] = 0
 略
 */
 
-func MaxProfitIncludeFreeze(prices []int) int {
+func maxProfitIncludeFreeze(prices []int) int {
 	n := len(prices)
 	if n == 0 {
 		return 0
@@ -517,7 +520,7 @@ dp[i][1]=max(dp[i-1][1], dp[i-1][3])
 略
 */
 
-func MaxProfitIncludeFreezePeriod(prices []int) int {
+func maxProfitIncludeFreezePeriod(prices []int) int {
 	n := len(prices)
 	if n == 0 {
 		return 0
@@ -561,7 +564,7 @@ func MaxProfitIncludeFreezePeriod(prices []int) int {
 本题跟1.2相比，没有任何变化，只是多了一个手续费，所以解决起来异常容易
 */
 
-func MaxProfitIncludeFee(prices []int, fee int) int {
+func maxProfitIncludeFee(prices []int, fee int) int {
 	n := len(prices)
 	if n == 0 {
 		return 0
@@ -578,7 +581,7 @@ func MaxProfitIncludeFee(prices []int, fee int) int {
 	return dp[n-1][1]
 }
 
-func MaxProfitIncludeFeeSimple(prices []int, fee int) int {
+func maxProfitIncludeFeeSimple(prices []int, fee int) int {
 	n := len(prices)
 	if n == 0 {
 		return 0

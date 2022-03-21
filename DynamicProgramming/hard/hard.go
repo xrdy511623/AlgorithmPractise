@@ -1,4 +1,9 @@
-package Hard
+package hard
+
+
+/*
+package hard contains complex dynamicProgramming problems
+ */
 
 import "AlgorithmPractise/Utils"
 
@@ -49,7 +54,7 @@ rightMax[i]表示下标i右边的位置中，height的最大高度。
 min(leftMax[i], rightMax[i])−height[i]。遍历每个下标位置即可得到能接的雨水总量。
 */
 
-func TrapUseDp(height []int) int {
+func trapUseDp(height []int) int {
 	sum := 0
 	n := len(height)
 	// 至少需要3根柱子才能积水
@@ -80,7 +85,7 @@ width = i - left - 1  i为当前柱子高度h所对应的下标, left为s[n-2]�
 height = min(s[n-2], h)
 */
 
-func TrapUseStack(height []int) int {
+func trapUseStack(height []int) int {
 	var stack []int
 	sum := 0
 	for i, h := range height {
@@ -125,7 +130,7 @@ rightMax是从右往左计算，因此可以使用双指针和两个变量代替
 当两个指针相遇时，即可得到能接的雨水总量。
 */
 
-func TrapSimple(height []int) int {
+func trapSimple(height []int) int {
 	sum := 0
 	left, right := 0, len(height)-1
 	leftMax, rightMax := 0, 0

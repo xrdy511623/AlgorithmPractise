@@ -1,4 +1,8 @@
-package Medium
+package medium
+
+/*
+medium contains middle level problems
+*/
 
 import (
 	"AlgorithmPractise/BinaryTree/Entity"
@@ -45,8 +49,8 @@ dp下标  0   1   2   3   4
 值      2  7   11  11  12
 */
 
-// Rob 时间复杂度O(N),空间复杂度O(N)
-func Rob(nums []int) int {
+// rob 时间复杂度O(N),空间复杂度O(N)
+func rob(nums []int) int {
 	maxValue := 0
 	n := len(nums)
 	switch n {
@@ -71,8 +75,8 @@ func Rob(nums []int) int {
 实际上我们只需要维护两个状态值，所以可以写成下面这样，大大降低算法的空间复杂度
 */
 
-// RobSimple 时间复杂度O(N),空间复杂度O(1)
-func RobSimple(nums []int) int {
+// robSimple 时间复杂度O(N),空间复杂度O(1)
+func robSimple(nums []int) int {
 	maxValue := 0
 	n := len(nums)
 	switch n {
@@ -126,8 +130,8 @@ c 不考虑首元素
 而b,c其实都包含了a这种情况，所以只需要考虑b,c这两种情况，最后比较两种情况下的最大值，取较大值即可
 */
 
-// RobRing 时间复杂度O(N),空间复杂度O(N)
-func RobRing(nums []int) int {
+// robRing 时间复杂度O(N),空间复杂度O(N)
+func robRing(nums []int) int {
 	maxValue := 0
 	n := len(nums)
 	switch n {
@@ -139,14 +143,14 @@ func RobRing(nums []int) int {
 		// 我觉得按照题意，此时应该返回0才对，但是这样操作AC不了
 		maxValue = Utils.Max(nums[0], nums[1])
 	default:
-		c1 := RobRange(nums, 0, n-2)
-		c2 := RobRange(nums, 1, n-1)
+		c1 := robRange(nums, 0, n-2)
+		c2 := robRange(nums, 1, n-1)
 		maxValue = Utils.Max(c1, c2)
 	}
 	return maxValue
 }
 
-func RobRange(nums []int, start, end int) int {
+func robRange(nums []int, start, end int) int {
 	if start == end {
 		return nums[start]
 	}
@@ -163,8 +167,8 @@ func RobRange(nums []int, start, end int) int {
 实际上我们只需要维护两个状态值，所以可以写成下面这样，将算法的空间复杂度降低为O(1)
 */
 
-// RobRangeSimple 时间复杂度O(N),空间复杂度O(1)
-func RobRangeSimple(nums []int, start, end int) int {
+// robRangeSimple 时间复杂度O(N),空间复杂度O(1)
+func robRangeSimple(nums []int, start, end int) int {
 	if start == end {
 		return nums[start]
 	}
@@ -239,18 +243,18 @@ val2 = max(left[0], left[1]) + max(right[0], right[1]);
 最后头结点就是取下标0和下标1的最大值就是偷得的最大金钱。
 */
 
-// RobBinaryTree 时间复杂度：O(N) 每个节点只遍历了一次; 空间复杂度：O(logN) 算上递推系统栈的空间
-func RobBinaryTree(root *Entity.TreeNode) int {
-	dp := RobTree(root)
+// robBinaryTree 时间复杂度：O(N) 每个节点只遍历了一次; 空间复杂度：O(logN) 算上递推系统栈的空间
+func robBinaryTree(root *Entity.TreeNode) int {
+	dp := robTree(root)
 	return Utils.Max(dp[0], dp[1])
 }
 
-func RobTree(node *Entity.TreeNode) []int {
+func robTree(node *Entity.TreeNode) []int {
 	if node == nil {
 		return []int{0, 0}
 	}
-	left := RobTree(node.Left)
-	right := RobTree(node.Right)
+	left := robTree(node.Left)
+	right := robTree(node.Right)
 	notRobCur := Utils.Max(left[0], left[1]) + Utils.Max(right[0], right[1])
 	robCur := node.Val + left[0] + right[0]
 	return []int{notRobCur, robCur}
@@ -283,8 +287,8 @@ func RobTree(node *Entity.TreeNode) []int {
 稍加分析便可发现本题跟1.1 打家劫舍I几乎是雷同，所以代码不用改就可以AC了，爽歪歪。
 */
 
-// MassageArrange 时间复杂度O(N),空间复杂度O(N)
-func MassageArrange(nums []int) int {
+// massageArrange 时间复杂度O(N),空间复杂度O(N)
+func massageArrange(nums []int) int {
 	maxValue := 0
 	n := len(nums)
 	switch n {
@@ -313,8 +317,8 @@ dp[i][1] = dp[i-1][0]+nums[i]
 最后返回max(dp[n-1][0], dp[n-1][1])即可
 */
 
-// MassageArrangement 时间复杂度O(2N),空间复杂度O(2N)
-func MassageArrangement(nums []int) int {
+// massageArrangement 时间复杂度O(2N),空间复杂度O(2N)
+func massageArrangement(nums []int) int {
 	maxValue := 0
 	n := len(nums)
 	switch n {
@@ -400,8 +404,8 @@ dp下标  0   1   2   3   4
 应该返回dp[maxValue]
 */
 
-// DeleteAndEarn 时间复杂度O(3N),空间复杂度O(2N)
-func DeleteAndEarn(nums []int) int {
+// deleteAndEarn 时间复杂度O(3N),空间复杂度O(2N)
+func deleteAndEarn(nums []int) int {
 	n := len(nums)
 	if n == 0 || nums == nil {
 		return 0
@@ -432,8 +436,8 @@ func DeleteAndEarn(nums []int) int {
 仔细观察上面的代码，其实我们只需要维护两个状态值，所以可以写成下面这样，将算法的空间复杂度降低O(N)
 */
 
-// DeleteAndEarnSimple 时间复杂度O(3N),空间复杂度O(N)
-func DeleteAndEarnSimple(nums []int) int {
+// deleteAndEarnSimple 时间复杂度O(3N),空间复杂度O(N)
+func deleteAndEarnSimple(nums []int) int {
 	n := len(nums)
 	if n == 0 || nums == nil {
 		return 0

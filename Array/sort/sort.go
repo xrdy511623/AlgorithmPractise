@@ -117,7 +117,7 @@ func MergeSort(array []int) []int {
 }
 
 func Merge(left, right []int) (res []int) {
-	l, r := 0, 0
+	l, r  := 0, 0
 	for l < len(left) && r < len(right) {
 		if left[l] < right[r] {
 			res = append(res, left[l])

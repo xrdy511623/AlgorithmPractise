@@ -1,4 +1,8 @@
-package Simple
+package simple
+
+/*
+simple package contains easy items
+ */
 
 import "AlgorithmPractise/Utils"
 
@@ -28,7 +32,7 @@ func Fib(n int) int {
 // 当然，上面的方法还有优化的空间，其实我们只需要维护两个数值就可以了，不需要记录整个序列
 // 时间复杂度O(N), 空间复杂度O(1)
 
-func FibSimple(n int) int {
+func fibSimple(n int) int {
 	if n <= 1 {
 		return n
 	}
@@ -370,7 +374,7 @@ m, n := len(grid), len(grid[0])
 按照二维数组正序遍历即可
 */
 
-func MinPathSum(grid [][]int) int {
+func minPathSum(grid [][]int) int {
 	if len(grid) == 0 || len(grid[0]) == 0 {
 		return 0
 	}
@@ -452,7 +456,7 @@ for (int i = 3; i <= n ; i++) {
 dp[i]   1  2  4  6  9  12 18 27 36
 */
 
-func IntegerBreak(n int) int {
+func integerBreak(n int) int {
 	dp := make([]int, n+1)
 	dp[2] = 1
 	for i := 3; i <= n; i++ {
@@ -473,7 +477,7 @@ Leetcode 118. 杨辉三角
 输出: [[1],[1,1],[1,2,1],[1,3,3,1],[1,4,6,4,1]]
 */
 
-func Generate(numRows int) [][]int {
+func generate(numRows int) [][]int {
 	dp := make([][]int, numRows)
 	for i := 0; i < numRows; i++ {
 		// 每一行数组的长度等于行数
@@ -496,7 +500,7 @@ leetcode 119. 杨辉三角II
 输出: [1,3,3,1]
 */
 
-func GetRow(rowIndex int) []int {
+func getRow(rowIndex int) []int {
 	row := make([]int, rowIndex+1)
 	row[0] = 1
 	for i := 1; i <= rowIndex; i++ {
@@ -507,7 +511,7 @@ func GetRow(rowIndex int) []int {
 	return row
 }
 
-func GetRowSimple(rowIndex int) []int {
+func getRowSimple(rowIndex int) []int {
 	row := make([]int, rowIndex+1)
 	row[0] = 1
 	for i := 1; i <= rowIndex; i++ {
