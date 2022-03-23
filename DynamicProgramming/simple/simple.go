@@ -2,7 +2,7 @@ package simple
 
 /*
 simple package contains easy items
- */
+*/
 
 import "AlgorithmPractise/Utils"
 
@@ -21,7 +21,6 @@ func Fib(n int) int {
 		return n
 	}
 	dp := make([]int, n+1)
-	dp[0] = 0
 	dp[1] = 1
 	for i := 2; i <= n; i++ {
 		dp[i] = dp[i-1] + dp[i-2]
@@ -37,7 +36,6 @@ func fibSimple(n int) int {
 		return n
 	}
 	dp := make([]int, 2)
-	dp[0] = 0
 	dp[1] = 1
 	for i := 2; i <= n; i++ {
 		sum := dp[0] + dp[1]
@@ -228,7 +226,7 @@ dp[i][j]:表示从（0,0）出发，到(i, j) 有dp[i][j]条不同的路径。
 2 确定递推公式
 想要求dp[i][j]，只能有两个方向来推导出来，即dp[i - 1][j] 和 dp[i][j - 1]。
 此时再回顾一下 dp[i - 1][j]表示啥，是从(0, 0)的位置到(i - 1, j)有几条路径，dp[i][j - 1]同理。
-那么很自然，dp[i][j] = dp[i - 1][j] + dp[i][j - 1]，因为dp[i][j]只有这两个方向过来。
+那么很自然，dp[i][j] = dp[i - 1][j] + dp[i][j - 1]，因为dp[i][j]只能从这两个方向过来。
 
 3 dp数组的初始化
 如何初始化呢，首先dp[i][0]一定都是1，因为从(0, 0)的位置到(i, 0)的路径只有一条，那么dp[0][j]也同理。

@@ -64,7 +64,7 @@ func numOfBST(n int) int {
 	dp := make([]int, n+1)
 	dp[0], dp[1] = 1, 1
 	// dp[0]和dp[1]都已经初始化好了，所以外层循环遍历从2开始
-	for i := 2; i < n+1; i++ {
+	for i := 2; i <= n; i++ {
 		for j := 0; j < i; j++ {
 			// 两个下标和为i-1
 			dp[i] += dp[j] * dp[i-j-1]
@@ -144,7 +144,7 @@ func bagProblem(weight, value []int, capacity int) int {
 	return dp[n-1][capacity]
 }
 
-// bagProblemSimple 用一维数组空间复杂度还有优化空间，时间复杂度O(m*n)，空间复杂度O(n),m为weight数组长度，n为capacity
+// bagProblemSimple 用一维数组空间复杂度可以优化空间复杂度，时间复杂度O(m*n)，空间复杂度O(n),m为weight数组长度，n为capacity
 func bagProblemSimple(weight, value []int, capacity int) int {
 	n := len(weight)
 	dp := make([]int, capacity+1)
@@ -600,7 +600,7 @@ func climbStairsComplex(m, n int) int {
 /*
 思路: 由于每种硬币的数量是无限的，所以这是一个完全背包问题
 1 确定dp数组以及下标含义
-dp[j]表示凑足总金额为所需的最少硬币数为dp[j]
+dp[j]表示凑足总金额为j所需的最少硬币数为dp[j]
 
 2 确定递推公式
 dp[j]明显可以由dp[j-coins[i]]推出，凑足金额为j-coins[i]的最少硬币数为[j-coins[i]]，那么只需要加上一个硬币coins[i]就可以
@@ -719,7 +719,7 @@ func numSquares(n int) int {
 动规五部曲分析如下：
 
 1 确定dp数组以及下标的含义
-dp[i]表示字符串长度为i的话，dp[i]为true，表示可以拆分为一个或多个在字典中出现的单词。
+dp[i]表示字符串s长度为i的话，dp[i]为true，表示可以拆分为一个或多个在字典中出现的单词。
 
 2 确定递推公式
 如果确定dp[j]是true，且 [j, i] 这个区间的子串出现在字典里，那么dp[i]一定是true。（j < i ）。
@@ -746,15 +746,15 @@ dp[i]表示字符串长度为i的话，dp[i]为true，表示可以拆分为一�
 func wordBreak(s string, wordDict []string) bool {
 	n := len(s)
 	// 记录wordDict中出现的单词
-	hashTable := make(map[string]bool)
+	seen := make(map[string]bool)
 	for _, word := range wordDict {
-		hashTable[word] = true
+		seen[word] = true
 	}
 	dp := make([]bool, n+1)
 	dp[0] = true
 	for i := 1; i <= n; i++ {
 		for j := 0; j < i; j++ {
-			if dp[j] && hashTable[s[j:i]] {
+			if dp[j] && seen[s[j:i]] {
 				dp[i] = true
 				break
 			}
@@ -791,7 +791,7 @@ func multiBagProblem(weight, value, nums []int, capacity int) int {
 			nums[i]--
 		}
 	}
-	for i := 0; i < len(weight); i++ {
+	for i := 0; i < len(nums); i++ {
 		for j := capacity; j >= weight[i]; j-- {
 			dp[j] = Utils.Max(dp[j], dp[j-weight[i]]+value[i])
 		}
