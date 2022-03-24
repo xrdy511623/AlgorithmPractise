@@ -28,7 +28,7 @@ func islandPerimeter(grid [][]int) int {
 	var dfs func(int, int) int
 	dfs = func(r, c int) int {
 		// 越界，代表一条网格边界的边
-		if !InArea(grid, r, c, rows, columns) {
+		if !InArea(r, c, rows, columns) {
 			return 1
 		}
 		// 遍历到海洋格子，代表一条挨着海洋的边
@@ -55,7 +55,7 @@ func islandPerimeter(grid [][]int) int {
 }
 
 // InArea 确定grid[r][c]是否越界
-func InArea(grid [][]int, r, c, rows, columns int) bool {
+func InArea(r, c, rows, columns int) bool {
 	return r >= 0 && r < rows && c >= 0 && c < columns
 }
 
@@ -140,7 +140,7 @@ func maxAreaOfIsland(grid [][]int) int {
 	var dfs func(int, int) int
 	dfs = func(r, c int) int {
 		// 判断base case, 此时grid[r][c]越界，返回的面积自然是0
-		if !InArea(grid, r, c, rows, columns) {
+		if !InArea(r, c, rows, columns) {
 			return 0
 		}
 		// 此时grid[r][c]不是未访问(遍历)的陆地，返回的面积自然也是0
@@ -197,7 +197,7 @@ func largestIsland(grid [][]int) int {
 	var dfs func(int, int, int) int
 	dfs = func(r, c, index int) int {
 		// 判断base case, 此时grid[r][c]越界，返回的面积自然是0
-		if !InArea(grid, r, c, rows, columns) {
+		if !InArea(r, c, rows, columns) {
 			return 0
 		}
 		// 此时grid[r][c]不是未访问(遍历)的陆地，返回的面积自然也是0
@@ -237,16 +237,16 @@ func getPlusArea(grid [][]int, r, c, rows, columns int, record map[int]int) int 
 	seen := make(map[int]int)
 	// 如果相邻节点是岛屿(第一轮DFS遍历后岛屿都标记了index,至少都是2)
 	// 将标记的索引index添加到去重的哈希表seen中
-	if InArea(grid, r, c-1, rows, columns) && grid[r][c-1] >= 2 {
+	if InArea(r, c-1, rows, columns) && grid[r][c-1] >= 2 {
 		seen[grid[r][c-1]]++
 	}
-	if InArea(grid, r, c+1, rows, columns) && grid[r][c+1] >= 2 {
+	if InArea(r, c+1, rows, columns) && grid[r][c+1] >= 2 {
 		seen[grid[r][c+1]]++
 	}
-	if InArea(grid, r-1, c, rows, columns) && grid[r-1][c] >= 2 {
+	if InArea(r-1, c, rows, columns) && grid[r-1][c] >= 2 {
 		seen[grid[r-1][c]]++
 	}
-	if InArea(grid, r+1, c, rows, columns) && grid[r+1][c] >= 2 {
+	if InArea(r+1, c, rows, columns) && grid[r+1][c] >= 2 {
 		seen[grid[r+1][c]]++
 	}
 	// 相邻岛屿的面积之和+填的海洋格子的面积(1)就是填海造陆后的面积
