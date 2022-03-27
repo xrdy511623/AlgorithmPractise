@@ -294,7 +294,7 @@ func RightSideView(root *Entity.TreeNode) []int {
 leetcode 110. 平衡二叉树
 1.6 给定一个二叉树，判断它是否是高度平衡的二叉树。
 本题中，一棵高度平衡二叉树定义为：
-一个二叉树每个节点的左右两个子树的高度差的绝对值不超过1 。
+一个二叉树每个节点的左右两个子树高度差的绝对值不超过1 。
 */
 
 /*
@@ -317,7 +317,7 @@ func IsBalanced(root *Entity.TreeNode) bool {
 	return Utils.Abs(GetHeightOfBinaryTree(root.Left)-GetHeightOfBinaryTree(root.Right)) <= 1 && IsBalanced(root.Left) && IsBalanced(root.Right)
 }
 
-// 计算以root为根节点的二叉树的高度
+// GetHeightOfBinaryTree 计算以root为根节点的二叉树的高度
 func GetHeightOfBinaryTree(root *Entity.TreeNode) int {
 	if root == nil {
 		return 0
@@ -438,17 +438,19 @@ func WidthOfBinaryTree(root *Entity.TreeNode) int {
 	// 根节点编号设置为1
 	queue := []Element{Element{root, 1}}
 	for len(queue) != 0 {
-		var temp []Element
-		for _, element := range queue {
-			if element.Node.Left != nil {
-				temp = append(temp, Element{element.Node.Left, element.Number * 2})
+		size := len(queue)
+		maxWidth = Utils.Max(maxWidth, queue[size-1].Number-queue[0].Number+1)
+		for i := 0; i < size; i++ {
+			node := queue[0].Node
+			num := queue[0].Number
+			queue = queue[1:]
+			if node.Left != nil {
+				queue = append(queue, Element{node.Left, 2 * num})
 			}
-			if element.Node.Right != nil {
-				temp = append(temp, Element{element.Node.Right, element.Number*2 + 1})
+			if node.Right != nil {
+				queue = append(queue, Element{node.Right, 2*num + 1})
 			}
 		}
-		maxWidth = Utils.Max(maxWidth, queue[len(queue)-1].Number-queue[0].Number+1)
-		queue = temp
 	}
 	return maxWidth
 }
@@ -817,7 +819,7 @@ func FindBottomLeftValueSimple(root *Entity.TreeNode) int {
 		if node.Left == nil && node.Right == nil {
 			if depth > maxDepth {
 				maxDepth = depth
-				res = root.Val
+				res = node.Val
 			}
 		}
 		if node.Left != nil {
@@ -1037,7 +1039,7 @@ leetcode 114. 二叉树展开为链表
 1.19 给你二叉树的根节点root ，请你将它展开为一个单链表：
 
 展开后的单链表应该同样使用TreeNode ，其中right子指针指向链表中下一个节点，而左子指针始终为null 。
-展开后的单链表应该与二叉树先序遍历 顺序相同。
+展开后的单链表应该与二叉树先序遍历顺序相同。
 
 示例:
 输入：root = [1,2,5,3,4,null,6]
@@ -1150,7 +1152,7 @@ func ConnectNextSimple(root *Node) *Node {
 }
 
 /*
-leetcode 117. 填充每个节点的下一个右侧节点指针 II
+leetcode 117. 填充每个节点的下一个右侧节点指针II
 1.21 给定一个二叉树
 
 struct Node {
@@ -1261,7 +1263,7 @@ func RemoveLeafNodes(root *Entity.TreeNode, target int) *Entity.TreeNode {
 
 /*
 leetcode 1302. 层数最深叶子节点的和
-1.24 给你一棵二叉树的根节点root ，请你返回 层数最深的叶子节点的和。
+1.24 给你一棵二叉树的根节点root ，请你返回层数最深的叶子节点的和。
 
 示例:
 输入：root = [1,2,3,4,5,null,6,7,null,null,null,null,8]
@@ -1501,7 +1503,6 @@ func LcaDeepestLeavesUseBFS(root *Entity.TreeNode) *Entity.TreeNode {
 	}
 	return nil
 }
-
 
 /*
 1.27 叶子相似的树

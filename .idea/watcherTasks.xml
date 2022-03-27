@@ -4,7 +4,6 @@
     <enabled-global>
       <option value="go fmt" />
       <option value="goimports" />
-      <option value="golangci-lint" />
     </enabled-global>
   </component>
 </project>

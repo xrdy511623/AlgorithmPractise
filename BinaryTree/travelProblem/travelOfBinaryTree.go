@@ -144,7 +144,7 @@ N叉树在输入中按层序遍历进行序列化表示，每组子节点由空�
 最后应返回[1,3,5,6,2,4]
 */
 
-//  PreorderNTrees 递归解法
+// PreorderNTrees 递归解法
 func PreorderNTrees(root *Entity.Node) []int {
 	var res []int
 	if root == nil {
@@ -163,7 +163,7 @@ func PreorderNTrees(root *Entity.Node) []int {
 	return res
 }
 
-// PreOrderOfnTress, node节点Children中的子节点逆序入栈，出栈时先进后出依次添加到结果集中
+// PreOrderOfnTress node节点Children中的子节点逆序入栈，出栈时先进后出依次添加到结果集中
 func PreOrderOfnTress(root *Entity.Node) []int {
 	var res []int
 	if root == nil {
@@ -172,8 +172,8 @@ func PreOrderOfnTress(root *Entity.Node) []int {
 	stack := []*Entity.Node{root}
 	for len(stack) != 0 {
 		node := stack[len(stack)-1]
-		stack = stack[:len(stack)-1]
 		res = append(res, node.Val)
+		stack = stack[:len(stack)-1]
 		if node.Children != nil {
 			for i := len(node.Children) - 1; i >= 0; i-- {
 				stack = append(stack, node.Children[i])
@@ -224,8 +224,8 @@ func PostOrderOfnTress(root *Entity.Node) []int {
 	stack := []*Entity.Node{root}
 	for len(stack) != 0 {
 		node := stack[len(stack)-1]
-		stack = stack[:len(stack)-1]
 		res = append(res, node.Val)
+		stack = stack[:len(stack)-1]
 		if len(node.Children) != 0 {
 			stack = append(stack, node.Children...)
 		}
@@ -353,7 +353,7 @@ func ReverseComplexArray(src [][]int) [][]int {
 根节点为第一层，根节点孩子节点为第二层... 以此类推。所以问题就转化为奇数层正序，偶数层逆序。
 */
 
-// ZigzagLevelOrder, 与2.2类似，所不同的是要加入层数(level)的判断，根据层数来确定是否要对该层的节点值进行逆序
+// ZigzagLevelOrder 与2.2类似，所不同的是要加入层数(level)的判断，根据层数来确定是否要对该层的节点值进行逆序
 func ZigzagLevelOrder(root *Entity.TreeNode) [][]int {
 	var res [][]int
 	if root == nil {
@@ -529,7 +529,7 @@ func BuildTreeFromPreAndInSimple(preorder []int, inorder []int) *Entity.TreeNode
 		root := &Entity.TreeNode{Val: val}
 		// 找到根节点值在中序遍历序列inorder中的位置index
 		index := hashTable[val]
-		// 则中序遍历序列inorder左子树范围为[:index-1]
+		// 则中序遍历序列inorder左子树范围为[:index]
 		root.Left = dfs(left, index-1)
 		// 中序遍历序列inorder右子树范围为[index+1:]
 		root.Right = dfs(index+1, right)
@@ -549,7 +549,7 @@ postorder和inorder均无重复元素
 右子节点，然后再设置左子节点。
 以题目中的二叉树为例，后序遍历序列postorder[9,15,7,20,3]末尾元素3一定是指向根节点的，在创建根节点后的
 后序遍历序列[9,15,7,20]末尾元素20一定是指向根节点的右子节点(右子树的根节点)的，如果设置成左子节点显然是错误的。
- */
+*/
 
 func BuildTreeFromPostAndIn(inorder []int, postorder []int) *Entity.TreeNode {
 	if len(postorder) <= 0 || len(inorder) <= 0 || len(postorder) != len(inorder) {
@@ -592,7 +592,7 @@ post:左右根
 */
 
 func ConstructFromPrePost(preorder []int, postorder []int) *Entity.TreeNode {
-	if len(preorder) == 0 {
+	if len(preorder) == 0 || len(postorder) == 0 || len(preorder) != len(postorder) {
 		return nil
 	}
 	root := &Entity.TreeNode{Val: preorder[0]}
@@ -617,29 +617,28 @@ func FindPosInArray(s []int, target int) int {
 	return -1
 }
 
-
 /*
 在后序遍历序列postorder中找左子树根节点的位置pos可以使用哈希表来优化，将时间复杂度降低至O(1)
- */
+*/
 
 func ConstructFromPrePostSimple(preorder []int, postorder []int) *Entity.TreeNode {
 	hashTable := make(map[int]int)
 	// 在后序遍历序列postorder中建立元素和位置的映射关系
-	for i, v := range postorder{
+	for i, v := range postorder {
 		hashTable[v] = i
 	}
 	// l1,r1,l2,r2分别代表前序遍历序列和后序遍历序列的首尾位置
-	var buildTree func(int, int, int, int)*Entity.TreeNode
-	buildTree = func(l1, r1, l2, r2 int)*Entity.TreeNode{
+	var buildTree func(int, int, int, int) *Entity.TreeNode
+	buildTree = func(l1, r1, l2, r2 int) *Entity.TreeNode {
 		// 递归终止条件
-		if l1 > r1 || l2 > r2{
+		if l1 > r1 || l2 > r2 {
 			return nil
 		}
-		if l1 == r1{
-			return &Entity.TreeNode{Val:preorder[l1]}
+		if l1 == r1 {
+			return &Entity.TreeNode{Val: preorder[l1]}
 		}
 		// l1初始值为0，那么preorder[l1]一定是对应根节点的。
-		root := &Entity.TreeNode{Val:preorder[l1]}
+		root := &Entity.TreeNode{Val: preorder[l1]}
 		// 先序遍历序列preorder是根左右，preorder[l1]对应根节点，那么preorder[l1+1]一定对应左子树根节点
 		// 确定左子树根节点在后序遍历序列postorder中的位置
 		pos := hashTable[preorder[l1+1]]
@@ -654,7 +653,6 @@ func ConstructFromPrePostSimple(preorder []int, postorder []int) *Entity.TreeNod
 	return buildTree(0, len(preorder)-1, 0, len(postorder)-1)
 }
 
-
 /*
 leetcode 654. 最大二叉树
 3.4 给定一个不含重复元素的整数数组nums 。一个以此数组直接递归构建的最大二叉树定义如下：
@@ -662,7 +660,7 @@ leetcode 654. 最大二叉树
 二叉树的根是数组nums中的最大元素。
 左子树是通过数组中最大值左边部分 递归构造出的最大二叉树。
 右子树是通过数组中最大值右边部分 递归构造出的最大二叉树。
-返回有给定数组nums构建的 最大二叉树 。
+返回有给定数组nums构建的最大二叉树 。
 
 示例:
 输入：nums = [3,2,1,6,0,5]
