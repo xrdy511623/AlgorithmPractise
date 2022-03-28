@@ -20,9 +20,9 @@ func TestRightSideView(t *testing.T) {
 func TestIsSymmetric(t *testing.T) {
 	got := IsSymmetric(Entity.Root1)
 	want := false
-	if got{
+	if got {
 		t.Errorf("excepted:%v, got:%v", want, got)
-	} else{
+	} else {
 		fmt.Println("test pass")
 	}
 }
@@ -30,9 +30,19 @@ func TestIsSymmetric(t *testing.T) {
 func TestIsSymmetricUseBFS(t *testing.T) {
 	got := IsSymmetricUseBFS(Entity.Root1)
 	want := false
-	if got{
+	if got {
 		t.Errorf("excepted:%v, got:%v", want, got)
-	} else{
+	} else {
+		fmt.Println("test pass")
+	}
+}
+
+func TestGetMostHappy(t *testing.T) {
+	got := GetMostHappy(Entity.Boss)
+	want := 409
+	if got != want {
+		t.Errorf("excepted:%v, got:%v", want, got)
+	} else {
 		fmt.Println("test pass")
 	}
 }
