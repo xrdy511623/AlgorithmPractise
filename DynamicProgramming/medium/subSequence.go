@@ -1755,3 +1755,33 @@ func nthUglyNumber(n int) int {
 	}
 	return dp[n]
 }
+
+/*
+Shopee 一面面试题
+1.22 找出给定字符串中所有长度大于k的回文子串。
+举例:给定字符串"abddba4567654abab", k=4
+输出:["abddba" "56765" "4567654"]
+*/
+
+func findKLengthPalindromeSubStr(s string, k int) []string {
+	res := []string{}
+	n := len(s)
+	if n == 0 || n < k {
+		return res
+	}
+	for i := 0; i < n; i++ {
+		extend(s, i, i, n, k, &res)
+		extend(s, i, i+1, n, k, &res)
+	}
+	return res
+}
+
+func extend(s string, i, j, n, k int, res *[]string) {
+	for i >= 0 && j < n && s[i] == s[j] {
+		if j-i >= k {
+			*res = append(*res, s[i:j+1])
+		}
+		i--
+		j++
+	}
+}

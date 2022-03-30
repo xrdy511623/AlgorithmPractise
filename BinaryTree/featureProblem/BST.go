@@ -726,7 +726,7 @@ leetcode 530. 二叉搜索树的最小绝对差
 0 <= Node.val <= 105
 */
 
-// 中序遍历得到升序数组，然后迭代取相邻元素差值的最小值即可
+// GetMinimumDifference 中序遍历得到升序数组，然后迭代取相邻元素差值的最小值即可
 func GetMinimumDifference(root *Entity.TreeNode) int {
 	var dfs func(*Entity.TreeNode) []int
 	dfs = func(node *Entity.TreeNode) (res []int) {
@@ -748,7 +748,7 @@ func GetMinimumDifference(root *Entity.TreeNode) int {
 	return min
 }
 
-// 也可以直接在dfs中序遍历中迭代这个最小差值
+// GetMinimumDifferenceSimple 也可以直接在dfs中序遍历中迭代这个最小差值
 func GetMinimumDifferenceSimple(root *Entity.TreeNode) int {
 	var prev *Entity.TreeNode
 	min := math.MaxInt32
