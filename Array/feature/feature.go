@@ -769,12 +769,12 @@ func reverseWords(s string) string {
 	}
 	// 反转整个字符串
 	reverse(ss)
-	i := 0
-	for i < len(ss) {
+	i, n := 0, len(ss)
+	for i < n {
 		// 反转单个单词
 		j := i
 		// 找到单词的结束位置
-		for j < len(ss) && ss[j] != ' ' {
+		for j < n && ss[j] != ' ' {
 			j++
 		}
 		// 反转
