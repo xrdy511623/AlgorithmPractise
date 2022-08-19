@@ -803,18 +803,14 @@ func reverseWords(s string) string {
 */
 
 /*
-思路一:将前n个元素添加到tmp集合中，然后在ss[n:length]集合后边依次添加tmp集合中的元素即可。
+思路一:在ss[k:length]集合后边依次添加ss中前k个元素即可。
 */
 
-//  ReverseLeftWords 时间复杂度O(N),空间复杂度O(k)
+// ReverseLeftWords 时间复杂度O(N),空间复杂度O(k)
 func ReverseLeftWords(s string, k int) string {
 	ss := []byte(s)
 	length := len(ss)
-	var tmp []byte
-	for i := 0; i < k; i++ {
-		tmp = append(tmp, ss[i])
-	}
-	ss = append(ss[k:length], tmp...)
+	ss = append(ss[k:length], ss[:k]...)
 	return string(ss)
 }
 
@@ -891,6 +887,18 @@ func strStrSimple(haystack string, needle string) int {
 	}
 	return -1
 }
+
+/*
+为什么使用前缀表
+因为找到了最长相等的前缀和后缀，匹配失败的位置是后缀子串的后面，那么我们找到与其相同的前缀的后面重新
+匹配就可以了。
+字符串的前缀是指不包含最后一个字符的所有以第一个字符开头的连续子串；后缀是指不包含第一个字符的所有以
+最后一个字符结尾的连续子串。
+为什么要找不匹配字符的前一个字符的前缀表数值？
+找到不匹配的位置，此时我们要看它的前一个字符的前缀表的数值是多少。
+为什么要前一个字符的前缀表的数值呢，因为要找前面字符串的最长相同的前缀和后缀。
+所以要看前一位的前缀表的数值。前一个字符的前缀表的数值是x，所有把下标移动到下标x的位置继续匹配。
+*/
 
 func GetNext(next []int, s string) {
 	// next[j]就是记录着j（包括j）之前的子串的相同前后缀的长度。
@@ -1007,7 +1015,7 @@ leetcode 263. 丑数I
 解释：1 通常被视为丑数。
 
 提示：
--231 <= n <= 231 - 1
+-2^31 <= n <= 2^31 - 1
 */
 
 /*
@@ -1037,7 +1045,7 @@ leetcode 1201. 丑数III
 丑数是可以被a或b或c整除的正整数 。
 */
 
-// NthUglyNumber，二分法+容斥原理
+// NthUglyNumber 二分法+容斥原理
 func NthUglyNumber(n int, a int, b int, c int) int {
 	ab, ac, bc := lcm(a, b), lcm(a, c), lcm(b, c)
 	abc := lcm(ab, c)
@@ -1104,7 +1112,7 @@ func NthMagicalNumber(n int, a int, b int) int {
 
 /*
 leetcode 54. 螺旋矩阵
-1.25 给你一个 m 行 n 列的矩阵matrix ，请按照顺时针螺旋顺序，返回矩阵中的所有元素。
+1.25 给你一个m行n列的矩阵matrix ，请按照顺时针螺旋顺序，返回矩阵中的所有元素。
 示例1:
 输入：matrix = [[1,2,3],[4,5,6],[7,8,9]]
 输出：[1,2,3,6,9,8,7,4,5]
@@ -1123,7 +1131,7 @@ n == matrix[i].length
 /*
 思路：按层模拟
 可以将矩阵看成若干层，首先输出最外层的元素，其次输出次外层的元素，直到输出最内层的元素。
-定义矩阵的第k层是到最近边界距离为kk的所有顶点。例如，下图矩阵最外层元素都是第1层，次外层元素都是第22层，剩下
+定义矩阵的第k层是到最近边界距离为k的所有顶点。例如，下图矩阵最外层元素都是第1层，次外层元素都是第2层，剩下
 的元素都是第3层。
 
 [[1, 1, 1, 1, 1, 1, 1],
@@ -1167,6 +1175,52 @@ func spiralOrder(matrix [][]int) []int {
 			}
 			for row := bottom; row > top; row-- {
 				order[index] = matrix[row][left]
+				index++
+			}
+		}
+		top++
+		bottom--
+		left++
+		right--
+	}
+	return order
+}
+
+/*
+变形题:逆时针螺旋矩阵
+给你一个m行n列的矩阵matrix，请按照逆时针螺旋顺序，返回矩阵中的所有元素。
+示例1:
+输入：matrix = [[1,2,3],[4,5,6],[7,8,9]]
+输出：[1, 4, 7, 8, 9, 6, 3, 2, 5]
+示例2:
+输入：matrix = [[1,2,3,4],[5,6,7,8],[9,10,11,12]]
+输出：[1, 5, 9, 10, 11, 12, 8, 4, 3, 2, 6, 7]
+*/
+
+func antiSpiralOrder(matrix [][]int) []int {
+	if len(matrix) == 0 || len(matrix[0]) == 0 {
+		return []int{}
+	}
+	rows, columns := len(matrix), len(matrix[0])
+	top, bottom, left, right := 0, rows-1, 0, columns-1
+	order := make([]int, rows*columns)
+	index := 0
+	for top <= bottom && left <= right {
+		for row := top; row <= bottom; row++ {
+			order[index] = matrix[row][left]
+			index++
+		}
+		for column := left + 1; column <= right; column++ {
+			order[index] = matrix[bottom][column]
+			index++
+		}
+		if top < bottom && left < right {
+			for row := bottom - 1; row > top; row-- {
+				order[index] = matrix[row][right]
+				index++
+			}
+			for column := right; column > left; column-- {
+				order[index] = matrix[top][column]
 				index++
 			}
 		}
