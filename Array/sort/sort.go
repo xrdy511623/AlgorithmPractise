@@ -683,7 +683,7 @@ func SearchRotateArray(arr []int, target int) int {
 leetcode 215. 数组中的第K个最大元素
 1.9 给定整数数组nums和整数k，请返回数组中第k个最大的元素。
 请注意，你需要找的是数组排序后的第k个最大的元素，而不是第k个不同的元素。
-
+你必须设计并实现时间复杂度为 O(n) 的算法解决此问题。
 示例 1:
 输入: [3,2,1,5,6,4] 和 k = 2
 输出: 5
@@ -717,8 +717,9 @@ func FindKthLargest(nums []int, k int) int {
 */
 
 func FindKthLargestElement(nums []int, k int) int {
-	TopkSplit(nums, len(nums)-k, 0, len(nums)-1)
-	return nums[len(nums)-k]
+	n := len(nums)
+	TopkSplit(nums, n-k, 0, n-1)
+	return nums[n-k]
 }
 
 func Partition(array []int, start, stop int) int {
@@ -727,14 +728,13 @@ func Partition(array []int, start, stop int) int {
 	}
 	pivot := array[start]
 	left, right := start, stop
-
 	for left < right {
 		for left < right && array[right] >= pivot {
-			right -= 1
+			right--
 		}
 		array[left] = array[right]
 		for left < right && array[left] < pivot {
-			left += 1
+			left++
 		}
 		array[right] = array[left]
 	}
