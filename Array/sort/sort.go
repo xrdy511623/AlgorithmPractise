@@ -797,8 +797,8 @@ func TopkLargestElement(nums []int, k int) int {
 }
 
 /*
-1.10 寻找两个有序数组的中位数
-给定两个大小分别为 m 和 n 的正序（从小到大）数组nums1和nums2。请你找出并返回这两个正序数组的中位数 。
+1.10 leetcode 4 寻找两个有序数组的中位数
+给定两个大小分别为m和n的正序（从小到大）数组nums1和nums2。请你找出并返回这两个正序数组的中位数 。
 算法的时间复杂度应该为O(log(m+n)) 。
 输入：nums1 = [1,3], nums2 = [2]
 输出：2.00000
@@ -873,13 +873,12 @@ B: [1 2 3] 4 5 6 7 8 9
 
 // FindMedianSortedArrays 二分法解决可以将时间复杂度降为O(log(m+n))，空间复杂度O(1)
 func FindMedianSortedArrays(nums1, nums2 []int) float64 {
-	totalLength := len(nums1) + len(nums2)
-	if totalLength%2 == 1 {
-		midIndex := totalLength/2 + 1
-		return float64(getKthElement(nums1, nums2, midIndex))
+	length := len(nums1) + len(nums2)
+	if length%2 == 1 {
+		return float64(getKthElement(nums1, nums2, length/2+1))
 	} else {
-		midIndex1, midIndex2 := totalLength/2, totalLength/2+1
-		return float64(getKthElement(nums1, nums2, midIndex1)+getKthElement(nums1, nums2, midIndex2)) / 2.0
+		m1, m2 := length/2, length/2+1
+		return float64(getKthElement(nums1, nums2, m1)+getKthElement(nums1, nums2, m2)) / 2.0
 	}
 }
 
@@ -919,24 +918,24 @@ func FindMidInSortedArrays(nums1, nums2 []int) float64 {
 	m, n := len(nums1), len(nums2)
 	totalLength := m + n
 	l1, l2 := 0, 0
-	left, right := 0, 0
+	front, target := 0, 0
 	// 如果totalLength为奇数，那问题转换为求第k小的数(k=totalLength/2+1)
 	// 所以循环k-1次，迭代right即可得到第k小的数
 	// 如果totalLength为偶数，那么问题转换为求第k-1小的数和第k小的数两个数的平均值
 	for i := 0; i <= totalLength/2; i++ {
-		left = right
+		front = target
 		if l1 < m && (l2 >= n || nums1[l1] < nums2[l2]) {
-			right = nums1[l1]
+			target = nums1[l1]
 			l1++
 		} else {
-			right = nums2[l2]
+			target = nums2[l2]
 			l2++
 		}
 	}
 	if totalLength%2 == 1 {
-		return float64(right)
+		return float64(target)
 	}
-	return float64(left+right) / 2.0
+	return float64(front+target) / 2.0
 }
 
 /*
