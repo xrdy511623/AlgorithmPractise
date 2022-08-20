@@ -1,6 +1,5 @@
 package Utils
 
-
 func Max(a, b int) int {
 	if a > b {
 		return a
@@ -51,32 +50,27 @@ func Abs(x int) int {
 	return x
 }
 
-func MinAbs(a, b int)int{
-	if Abs(a) < Abs(b){
+func MinAbs(a, b int) int {
+	if Abs(a) < Abs(b) {
 		return Abs(a)
 	}
 	return Abs(b)
 }
 
-
 // ReverseArray 原地反转数组
 func ReverseArray(nums []int) []int {
-	n := len(nums)
-	for i := 0; i < n/2; i++ {
-		temp := nums[n-1-i]
-		nums[n-1-i] = nums[i]
-		nums[i] = temp
+	for i, n := 0, len(nums); i < n/2; i++ {
+		nums[i], nums[n-1-i] = nums[n-1-i], nums[i]
 	}
 	return nums
 }
 
-
-func FindLargestElement(nums []int)(pos int){
-	if len(nums) == 0{
+func FindLargestElement(nums []int) (pos int) {
+	if len(nums) == 0 {
 		pos = -1
 	}
-	for i:=0;i<len(nums);i++{
-		if nums[i] > nums[pos]{
+	for i := 0; i < len(nums); i++ {
+		if nums[i] > nums[pos] {
 			pos = i
 		}
 	}

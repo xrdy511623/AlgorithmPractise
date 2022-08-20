@@ -302,8 +302,7 @@ leetcode 189. 轮转数组
 
 // Rotate 时间复杂度O(2N),空间复杂度O(1)
 func Rotate(nums []int, k int) {
-	n := len(nums)
-	k = k % n
+	k %= len(nums)
 	// k为0或者旋转次数为n的整数倍，那么数组会恢复原样
 	// 所以不做任何操作
 	if k == 0 {
