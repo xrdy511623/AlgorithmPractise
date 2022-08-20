@@ -117,7 +117,7 @@ func MergeSort(array []int) []int {
 }
 
 func Merge(left, right []int) (res []int) {
-	l, r  := 0, 0
+	l, r := 0, 0
 	for l < len(left) && r < len(right) {
 		if left[l] < right[r] {
 			res = append(res, left[l])
@@ -949,14 +949,14 @@ leetcode 15. 三数之和
 
 // ThreeSum 排序+双指针解决,难点是去重, 时间复杂度O(N^2),空间复杂度O(logN)
 func ThreeSum(nums []int) [][]int {
-	var res [][]int
+	res := [][]int{}
 	n := len(nums)
 	if n < 3 {
 		return res
 	}
 	// 对数组进行排序
 	sort.Ints(nums)
-	for i := 0; i < len(nums)-2; i++ {
+	for i := 0; i < n-2; i++ {
 		// 因为nums是升序数组，所以nums[i]之后的数都会大于0，三个正数之和不可能等于0，所以此时要break
 		if nums[i] > 0 {
 			break
@@ -964,6 +964,9 @@ func ThreeSum(nums []int) [][]int {
 		// nums[i] == nums[i-1], 去重
 		if i >= 1 && nums[i] == nums[i-1] {
 			continue
+		}
+		if nums[i]+nums[i+1]+nums[i+2] > 0 {
+			break
 		}
 		// 左右指针初始值分别为i+1,len(nums)-1
 		l, r := i+1, n-1
