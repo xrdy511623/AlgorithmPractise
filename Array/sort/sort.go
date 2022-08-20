@@ -60,11 +60,12 @@ func InsertSort(array []int) []int {
 
 /*
 快速排序步骤:
-1 从数列中挑出一个元素,称为基准
-2 重新排序数列,所有元素比基准值小的摆放在基准前面,所有元素比基准值大的摆在基准后面(相同的数
-可以放在任意一边).在这次分区结束后,该基准值就处于它在有序数列中的正确位置了.这个称为分区操作
+1 从数组中挑出一个元素,称为基准
+2 重新排序数组,所有元素比基准值小的摆放在基准前面,所有元素比基准值大的摆在基准后面(相同的数
+可以放在任意一边).在这次分区结束后,该基准值就处于它在有序数组中的正确位置了.这个称为分区操作
 3 递归地将小于基准值元素的子序列和大于基准值元素的子序列进行分区操作.
-时间复杂度O(nlogn),最坏时间复杂度O(n`2)
+时间复杂度O(NlogN),最坏时间复杂度O(n`2),空间复杂度O(1)
+相比归并排序，快排的优点在于它是原地排序，空间复杂度更低。
 */
 
 func QuickSort(nums []int, start, stop int) {
@@ -92,25 +93,25 @@ func QuickSort(nums []int, start, stop int) {
 
 /*
 分治法 (Divide and Conquer)
-很多有用的算法结构上是递归的，为了解决一个特定问题，算法一次或者多次递归调用其自身以解决
-若干子问题。
+很多有用的算法结构上是递归(递归的问题是递归过深可能导致堆栈溢出)的，为了解决一个特定问题，算法一次或者
+多次递归调用其自身以解决若干子问题。
 这些算法典型地遵循分治法的思想：将原问题分解为几个规模较小但是类似于原问题的子问题，
 递归求解这些子问题，
 然后再合并这些问题的解来建立原问题的解。
-
 分治法在每层递归时有三个步骤：
 - 分解原问题为若干子问题，这些子问题是原问题的规模最小的实例
 - 解决这些子问题，递归地求解这些子问题。当子问题的规模足够小，就可以直接求解
 - 合并这些子问题的解成原问题的解
-归并排序:最坏时间复杂度O(nlogn),最好时间复杂度O(nlogn) 稳定
+归并排序:最坏时间复杂度O(NlogN),最好时间复杂度O(NlogN) 稳定,空间复杂度O(N)
 */
 
 func MergeSort(array []int) []int {
 	// 递归终止条件
-	if len(array) <= 1 {
+	n := len(array)
+	if n <= 1 {
 		return array
 	}
-	mid := len(array) / 2
+	mid := n / 2
 	left := MergeSort(array[:mid])
 	right := MergeSort(array[mid:])
 	return Merge(left, right)
@@ -118,13 +119,14 @@ func MergeSort(array []int) []int {
 
 func Merge(left, right []int) (res []int) {
 	l, r := 0, 0
-	for l < len(left) && r < len(right) {
+	ll, rl := len(left), len(right)
+	for l < ll && r < rl {
 		if left[l] < right[r] {
 			res = append(res, left[l])
-			l += 1
+			l++
 		} else {
 			res = append(res, right[r])
-			r += 1
+			r++
 		}
 	}
 	res = append(res, left[l:]...)
