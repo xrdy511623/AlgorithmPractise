@@ -126,9 +126,6 @@ func (l *LRUCache) RemoveTail() *DoubleLinkedListNode {
 leetcode 23. 合并K个升序链表
 1.2 给你一个链表数组，每个链表都已经按升序排列。
 请你将所有链表合并到一个升序链表中，返回合并后的链表。
-给你一个链表数组，每个链表都已经按升序排列。
-
-请你将所有链表合并到一个升序链表中，返回合并后的链表。
 
 示例 1：
 输入：lists = [[1,4,5],[1,3,4],[2,6]]
@@ -209,7 +206,7 @@ leetcode 2. 两数相加
 解释：342 + 465 = 807.
 */
 
-// AddTwoNumbers 时间复杂度O(max(m,n)), m和n分别为两个链表的长度，空间复杂度O(1)
+// AddTwoNumbers 从低位也就是链表头开始相加,时间复杂度O(max(m,n)), m和n分别为两个链表的长度，空间复杂度O(1)
 func AddTwoNumbers(l1, l2 *Entity.ListNode) *Entity.ListNode {
 	dummy := new(Entity.ListNode)
 	cur := dummy
@@ -293,7 +290,7 @@ leetcode 61. 旋转链表
 思路:闭合为环
 记给定链表的长度为n，注意到当向右移动的次数k ≥n 时，我们仅需要向右移动k % n 次即可。因为每n次移动都会让
 链表变为原状。这样我们可以知道，新链表的最后一个节点为原链表的第 n - k % n 个节点（从1开始计数）。
-这样，我们可以先将给定的链表连接成环，然后将指定位置断开。
+这样，我们可以先将给定的链表连接成环，然后从指定位置断开。
 
 具体代码中，我们首先计算出链表的长度n，并找到该链表的尾节点，将其与头节点相连。这样就得到了闭合为环的链表。
 然后我们找到新链表的最后一个节点（即原链表的第 n - k % n 个节点），将当前闭合为环的链表断开，即可得到我们
@@ -458,6 +455,12 @@ func RemoveZeroSumSubLists(head *Entity.ListNode) *Entity.ListNode {
 	}
 	return dummy.Next
 }
+
+/*
+输入：head = [1,2,-3,3,1]
+输出：[3,1]
+提示：答案 [1,2,1] 也是正确的。
+*/
 
 // RemoveZeroSumSubListsSimple 更简单的写法是下面这样，时间复杂度为O(2N), 空间复杂度为O(N)
 func RemoveZeroSumSubListsSimple(head *Entity.ListNode) *Entity.ListNode {
