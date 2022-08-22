@@ -17,21 +17,19 @@ import "AlgorithmPractise/LinkedList/Entity"
 */
 
 // DeleteNode 思路:找到值等于val的目标节点target及其前驱节点pre，将pre.Next指向target的Next节点即可
-
 func DeleteNode(head *Entity.ListNode, val int) *Entity.ListNode {
 	if head == nil {
 		return nil
 	}
-	dummy := &Entity.ListNode{Next:head}
-	pre, cur := dummy, head
+	dummy := &Entity.ListNode{Next: head}
+	prev, cur := dummy, head
 	for cur.Val != val {
-		pre = pre.Next
+		prev = prev.Next
 		cur = cur.Next
 	}
-	pre.Next = cur.Next
+	prev.Next = cur.Next
 	return dummy.Next
 }
-
 
 /*
 leetcode 203. 移除链表元素
@@ -48,27 +46,26 @@ leetcode 203. 移除链表元素
 示例3：
 输入：head = [7,7,7,7], val = 7
 输出：[]
- */
+*/
 
 /*
 找到值等于val的目标节点target及其前驱节点pre，将pre.Next指向target的Next节点.
- */
+*/
 
 // RemoveElements 时间复杂度O(N),空间复杂度O(1)
 func RemoveElements(head *Entity.ListNode, val int) *Entity.ListNode {
-	dummy := &Entity.ListNode{Next:head}
+	dummy := &Entity.ListNode{Next: head}
 	prev, cur := dummy, head
-	for cur != nil{
-		if cur.Val == val{
+	for cur != nil {
+		if cur.Val == val {
 			prev.Next = cur.Next
-		}else{
+		} else {
 			prev = prev.Next
 		}
 		cur = cur.Next
 	}
 	return dummy.Next
 }
-
 
 /*
 leetcode 19. 删除链表的倒数第N个结点
@@ -88,16 +85,16 @@ leetcode 19. 删除链表的倒数第N个结点
 其实很简单，在head结点之前建立一个伪头结点dummy,令prev:=dummy,从prev开始遍历length-n次(prev=prev.Next)，
 此时prev指向的即为目标结点的前一个结点，我们只需要将prev.Next 指向它的Next.Next指向的结点即可删除
 目标结点了。
- */
+*/
 
 // RemoveNthFromEnd 思路与1.1大体类似，那就是找到该节点的前一个节点，将其Next指针指向该节点的Next节点即可
 func RemoveNthFromEnd(head *Entity.ListNode, n int) *Entity.ListNode {
 	length := GetLengthOfLinkedList(head)
 	// 若头结点为空或链表结点数小于n，则直接返回头结点
-	if length == 0 || length - n < 0{
+	if length == 0 || length-n < 0 {
 		return head
 	}
-	dummy := &Entity.ListNode{Next:head}
+	dummy := &Entity.ListNode{Next: head}
 	pre := dummy
 	for i := 0; i < length-n; i++ {
 		pre = pre.Next
@@ -149,7 +146,7 @@ leetcode 83. 删除排序链表中的重复元素
 /*
 从头结点开始遍历链表，遇有与其Next指针指向结点值相等的，则将该节点Next指针指向Next.Next，这样便跳过了重复
 结点。
- */
+*/
 
 func DeleteDuplicate(head *Entity.ListNode) *Entity.ListNode {
 	if head == nil || head.Next == nil {
@@ -179,14 +176,14 @@ leetcode 82. 删除排序链表中的重复元素II
 思路:只要当前节点cur与其Next节点值重复，就将当前节点cur向后移动，判断前驱节点prev的Next指针指向的节点
 是否是当前节点cur，如果是，证明cur没有向后移动，意味着没有重复节点，此时prev = prev.Next,否则
 prev.Next便指向当前节点cur的Next节点，这样就跳过了所有重复节点。
- */
+*/
 
 func DeleteDuplicates(head *Entity.ListNode) *Entity.ListNode {
 	if head == nil || head.Next == nil {
 		return head
 	}
 
-	dummy := &Entity.ListNode{Next:head}
+	dummy := &Entity.ListNode{Next: head}
 	prev, cur := dummy, head
 	for cur != nil {
 		for cur.Next != nil && cur.Val == cur.Next.Val {
@@ -207,21 +204,22 @@ func DeleteDuplicates(head *Entity.ListNode) *Entity.ListNode {
 1.6 进阶:移除未排序链表中的重复节点，只保留最开始出现的节点。
 譬如1-2-3-3-2-1
 返回1-2-3
-思路:哈希表去重,不能再使用1.3中的方法，因为这次是未排序链表，前面出现过的节点值在后面任意位置都可能再次出现
+思路:哈希表去重,不能再使用1.5中的方法，因为这次是未排序链表，前面出现过的节点值在后面任意位置都可能再次出现
 */
 
 func RemoveDuplicateNodes(head *Entity.ListNode) *Entity.ListNode {
 	if head == nil || head.Next == nil {
 		return head
 	}
-	cur := head
 	occurred := make(map[int]bool)
-	for cur.Next != nil{
+	cur := head
+	occurred[cur.Val] = true
+	for cur.Next != nil {
 		node := cur.Next
-		if !occurred[node.Val]{
+		if !occurred[node.Val] {
 			occurred[node.Val] = true
 			cur = cur.Next
-		}else{
+		} else {
 			cur.Next = cur.Next.Next
 		}
 	}

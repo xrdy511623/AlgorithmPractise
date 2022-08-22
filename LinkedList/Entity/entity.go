@@ -11,10 +11,9 @@ type TreeNode struct {
 	Right *TreeNode
 }
 
-
-var node6 = &ListNode{2, nil}
-var node5 = &ListNode{5, node6}
-var node4 = &ListNode{4, node5}
-var node3 = &ListNode{3, node4}
-var node2 = &ListNode{6, node3}
+var node6 = &ListNode{3, nil}
+var node5 = &ListNode{4, node6}
+var node4 = &ListNode{3, node5}
+var node3 = &ListNode{2, node4}
+var node2 = &ListNode{2, node3}
 var Node1 = &ListNode{1, node2}
