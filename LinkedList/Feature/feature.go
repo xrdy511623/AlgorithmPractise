@@ -58,7 +58,7 @@ func CheckRingUseHashTable(head *Entity.ListNode) bool {
 leetcode 142. 环形链表II
 1.2 进阶
 给定一个链表，返回链表开始入环的第一个节点。如果链表无环，则返回null。
-为了表示给定链表中的环，我们使用整数pos来表示链表尾连接到链表中的位置（索引从0开始）。 如果pos是 -1，
+为了表示给定链表中的环，我们使用整数pos来表示链表尾连接到链表中的位置（索引从0开始)。 如果pos是 -1，
 则在该链表中没有环。注意，pos仅仅是用于标识环的情况，并不会作为参数传递到函数中。
 说明：不允许修改给定的链表。
 */
@@ -93,6 +93,7 @@ func DetectCycle(head *Entity.ListNode) *Entity.ListNode {
 	for fast != nil && fast.Next != nil {
 		fast = fast.Next.Next
 		slow = slow.Next
+		// 快慢指针相遇后，慢指针和从头节点出发的p指针同时向后移动，相遇节点即为开始入环的第一个节点
 		if slow == fast {
 			p := head
 			for p != slow {
@@ -292,7 +293,7 @@ func PartitionLinkedList(head *Entity.ListNode, x int) *Entity.ListNode {
 leetcode 147. 对链表进行插入排序
 1.8 对链表进行插入排序。
 插入排序算法：
-插入排序是迭代的，每次只移动一个元素，直到所有元素可以形成一个有序的输出列表。
+插入排序是迭代的，每次只移动一个元素，直到所有元素可以形成一个有序地输出列表。
 每次迭代中，插入排序只从输入数据中移除一个待排序的元素，找到它在序列中适当的位置，并将其插入。
 重复直到所有输入数据插入完为止。
 
@@ -313,12 +314,12 @@ func insertionSortList(head *Entity.ListNode) *Entity.ListNode {
 			lastSorted = lastSorted.Next
 		} else {
 			// 否则，需要在有序链表部分找到待插入结点的位置
-			// 也就是小于等于待插入结点值的最大结点prev
+			// 也就是小于等于待插入结点值(cur)的最大结点prev
 			prev := dummy
 			for prev.Next.Val <= cur.Val {
 				prev = prev.Next
 			}
-			// 将待插入结点插入到prev和lastSorted之间
+			// 将待插入结点cur插入到prev和lastSorted之间
 			lastSorted.Next = cur.Next
 			cur.Next = prev.Next
 			prev.Next = cur

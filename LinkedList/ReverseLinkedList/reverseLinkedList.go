@@ -9,7 +9,7 @@ import "AlgorithmPractise/LinkedList/Entity"
 /*
 Leetcode 24. 两两交换链表中的节点
 1.1 给定一个链表，两两交换其中相邻的节点，并返回交换后的链表。
-你不能只是单纯的改变节点内部的值，而是需要实际的进行节点交换。
+你不能只是单纯地改变节点内部的值，而是需要实际的进行节点交换。
 譬如1-2-3-4-5-6
 应返回2-1-4-3-6-5
 */
@@ -74,13 +74,13 @@ func Reverse(head *Entity.ListNode) *Entity.ListNode {
 }
 
 /*
-leetcode 25. K 个一组翻转链表
+leetcode 25. K个一组翻转链表
 1.3 进阶 给你一个链表，每k个节点一组进行翻转，请你返回翻转后的链表。
 k是一个正整数，它的值小于或等于链表的长度。
 如果节点总数不是k的整数倍，那么请将最后剩余的节点保持原有顺序。
 进阶：
 你可以设计一个只使用常数额外空间的算法来解决此问题吗？
-你不能只是单纯的改变节点内部的值，而是需要实际进行节点交换。
+你不能只是单纯地改变节点内部的值，而是需要实际进行节点交换。
 */
 
 /*
@@ -150,23 +150,31 @@ left=2,right=4
 */
 
 func ReverseBetween(head *Entity.ListNode, left int, right int) *Entity.ListNode {
+	if left == right {
+		return head
+	}
 	k := right - left + 1
 	dummy := &Entity.ListNode{Next: head}
 	cur := dummy
 	for i := 0; i < left-1; i++ {
 		cur = cur.Next
+		if cur == nil {
+			return dummy.Next
+		}
 	}
-	pre := cur
+	prev := cur
 	start := cur.Next
 	for i := 0; i < k; i++ {
 		cur = cur.Next
+		if cur == nil {
+			return dummy.Next
+		}
 	}
-	end := cur
 	ndx := cur.Next
-	head, tail := reverse(start, end, k)
+	start, end := reverse(start, cur, k)
 	// 将反转后的子链表接入到原链表中
-	pre.Next = head
-	tail.Next = ndx
+	prev.Next = start
+	end.Next = ndx
 	return dummy.Next
 }
 
