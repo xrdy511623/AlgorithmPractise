@@ -31,7 +31,7 @@ func HasPathSum(root *Entity.TreeNode, targetSum int) bool {
 		return false
 	}
 	queue := []*Entity.TreeNode{root}
-	for len(queue) != 0 {
+	for len(queue) > 0 {
 		node := queue[0]
 		queue = queue[1:]
 		if node.Left == nil && node.Right == nil && node.Val == targetSum {
@@ -143,7 +143,7 @@ func sumOfArray(array []int) int {
 }
 
 /*
-
+leetcode 437 路径总和III
 1.2 路径和等于目标值的条数
 给定一个二叉树，它的每个结点都存放着一个整数值。
 找出路径和等于给定数值的路径总数。
@@ -282,7 +282,7 @@ func FindFrequentTreeSum(root *Entity.TreeNode) []int {
 	}
 
 	treeSum := make(map[int]int)
-	var subTreeSum func(node *Entity.TreeNode) int
+	var subTreeSum func(*Entity.TreeNode) int
 	subTreeSum = func(node *Entity.TreeNode) int {
 		if node == nil {
 			return 0
@@ -349,6 +349,16 @@ leetcode 124. 二叉树中的最大路径和
 走入左子树,最大收益：root.val + dfs(root.left)
 走入右子树,最大收益：root.val + dfs(root.right)
 当遍历到null节点时，返回0，代表此处收益为0。
+*/
+
+/*
+1 明确递归函数的参数和返回值
+参数为二叉树节点指针，返回值为如果从该节点走入一个子树,能从中捞取的最大收益
+2 确定递归终止条件
+当遇到空节点时，返回0，表明获得的最大收益为0
+3 确定单层递归逻辑
+获取当前节点左子树的最大收益与0相比取大值lp，获取当前节点右子树的最大收益与0相比取大值rp
+迭代最大路径和pathSum=Max(pathSum, lp+rp+node.Val)
 */
 
 func MaxPathSum(root *Entity.TreeNode) int {
