@@ -323,14 +323,11 @@ func LevelOrderBottom(root *Entity.TreeNode) [][]int {
 	return ReverseComplexArray(res)
 }
 
-func ReverseComplexArray(src [][]int) [][]int {
-	length := len(src)
-	for i := 0; i < length/2; i++ {
-		temp := src[length-1-i]
-		src[length-1-i] = src[i]
-		src[i] = temp
+func ReverseComplexArray(nums [][]int) [][]int {
+	for i, n := 0, len(nums); i < n/2; i++ {
+		nums[i], nums[n-1-i] = nums[n-1-i], nums[i]
 	}
-	return src
+	return nums
 }
 
 /*
@@ -397,11 +394,11 @@ func AverageOfBinaryTree(root *Entity.TreeNode) []float64 {
 	queue := []*Entity.TreeNode{root}
 	for len(queue) != 0 {
 		levelSize := len(queue)
-		var curLevel []int
+		sum := 0
 		for i := 0; i < levelSize; i++ {
 			node := queue[0]
 			queue = queue[1:]
-			curLevel = append(curLevel, node.Val)
+			sum += node.Val
 			if node.Left != nil {
 				queue = append(queue, node.Left)
 			}
@@ -409,17 +406,9 @@ func AverageOfBinaryTree(root *Entity.TreeNode) []float64 {
 				queue = append(queue, node.Right)
 			}
 		}
-		res = append(res, GetAverageOfArray(curLevel))
+		res = append(res, float64(sum)/float64(levelSize))
 	}
 	return res
-}
-
-func GetAverageOfArray(s []int) float64 {
-	var sum int
-	for _, v := range s {
-		sum += v
-	}
-	return float64(sum) / float64(len(s))
 }
 
 /*
@@ -448,11 +437,7 @@ func LevelOrderOfNTress(root *Entity.Node) [][]int {
 			node := queue[0]
 			queue = queue[1:]
 			curLevel = append(curLevel, node.Val)
-			if node.Children != nil {
-				for _, child := range node.Children {
-					queue = append(queue, child)
-				}
-			}
+			queue = append(queue, node.Children...)
 		}
 		res = append(res, curLevel)
 	}
