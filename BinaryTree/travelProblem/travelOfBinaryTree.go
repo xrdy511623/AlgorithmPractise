@@ -85,7 +85,6 @@ func InOrderTravelUseIteration(root *Entity.TreeNode) []int {
 			root = root.Right
 		}
 	}
-
 	return res
 }
 
@@ -122,11 +121,8 @@ func PostOrderTravelUseIteration(root *Entity.TreeNode) []int {
 }
 
 func ReverseArray(array []int) []int {
-	length := len(array)
-	for i := 0; i < length/2; i++ {
-		temp := array[i]
-		array[i] = array[length-1-i]
-		array[length-1-i] = temp
+	for i, n := 0, len(array); i < n/2; i++ {
+		array[i], array[n-1-i] = array[n-1-i], array[i]
 	}
 	return array
 }
@@ -170,14 +166,12 @@ func PreOrderOfnTress(root *Entity.Node) []int {
 		return res
 	}
 	stack := []*Entity.Node{root}
-	for len(stack) != 0 {
+	for len(stack) > 0 {
 		node := stack[len(stack)-1]
 		res = append(res, node.Val)
 		stack = stack[:len(stack)-1]
-		if node.Children != nil {
-			for i := len(node.Children) - 1; i >= 0; i-- {
-				stack = append(stack, node.Children[i])
-			}
+		for i := len(node.Children) - 1; i >= 0; i-- {
+			stack = append(stack, node.Children[i])
 		}
 	}
 	return res
@@ -222,13 +216,11 @@ func PostOrderOfnTress(root *Entity.Node) []int {
 		return res
 	}
 	stack := []*Entity.Node{root}
-	for len(stack) != 0 {
+	for len(stack) > 0 {
 		node := stack[len(stack)-1]
 		res = append(res, node.Val)
 		stack = stack[:len(stack)-1]
-		if len(node.Children) != 0 {
-			stack = append(stack, node.Children...)
-		}
+		stack = append(stack, node.Children...)
 	}
 	return ReverseArray(res)
 }
