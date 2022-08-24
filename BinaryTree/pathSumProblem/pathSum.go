@@ -515,8 +515,9 @@ func SumNumbersSimple(root *Entity.TreeNode) int {
 }
 
 /*
+leetcode 257
 1.7 二叉树的所有路径
-给你一个二叉树的根节点root，按任意顺序 ，返回所有从根节点到叶子节点的路径。
+给你一个二叉树的根节点root，按任意顺序，返回所有从根节点到叶子节点的路径。
 叶子节点是指没有子节点的节点。
 示例1：
 输入：root = [1,2,3,null,5]
@@ -560,14 +561,13 @@ func BinaryTreePathsUseDFS(root *Entity.TreeNode) []string {
 	var dfs func(*Entity.TreeNode, string)
 	dfs = func(root *Entity.TreeNode, path string) {
 		if root != nil {
-			curPath := path
-			curPath += strconv.Itoa(root.Val)
+			path += strconv.Itoa(root.Val)
 			if root.Left == nil && root.Right == nil {
-				paths = append(paths, curPath)
+				paths = append(paths, path)
 			} else {
-				curPath += "->"
-				dfs(root.Left, curPath)
-				dfs(root.Right, curPath)
+				path += "->"
+				dfs(root.Left, path)
+				dfs(root.Right, path)
 			}
 		}
 	}
@@ -743,6 +743,7 @@ func MaxAncestorDiffSimple(root *Entity.TreeNode) int {
 }
 
 /*
+leetcode 863
 1.10 二叉树中所有距离为K的节点
 给定一个二叉树（具有根节点root），一个目标节点target，和一个整数值K 。
 返回到目标结点target距离为K的所有结点的值的列表。 答案可以以任何顺序返回。
@@ -751,8 +752,7 @@ func MaxAncestorDiffSimple(root *Entity.TreeNode) int {
 输入：root = [3,5,1,6,2,0,8,null,null,7,4], target = 5, K = 2
 输出：[7,4,1]
 解释：
-所求结点为与目标结点（值为5）距离为2的节点，
-值分别为7，4，以及1
+所求结点为与目标结点（值为5）距离为2的节点，值分别为7，4，以及1
 
 		   3
          /  \
@@ -780,7 +780,7 @@ func MaxAncestorDiffSimple(root *Entity.TreeNode) int {
 它也不应被添加到队列中。
 */
 
-// 结构体Element由两部分组成，Node记录二叉树当前节点指针，Distance表示当前节点与target的距离
+// Element 结构体Element由两部分组成，Node记录二叉树当前节点指针，Distance表示当前节点与target的距离
 type Element struct {
 	Node     *Entity.TreeNode
 	Distance int
