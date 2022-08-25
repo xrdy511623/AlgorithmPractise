@@ -54,7 +54,7 @@ func InvertTreeUseIteration(root *Entity.TreeNode) *Entity.TreeNode {
 		return nil
 	}
 	stack := []*Entity.TreeNode{root}
-	for len(stack) != 0 {
+	for len(stack) > 0 {
 		node := stack[len(stack)-1]
 		stack = stack[:len(stack)-1]
 		node.Left, node.Right = node.Right, node.Left
@@ -74,7 +74,7 @@ func InvertTreeUseBFS(root *Entity.TreeNode) *Entity.TreeNode {
 		return nil
 	}
 	queue := []*Entity.TreeNode{root}
-	for len(queue) != 0 {
+	for len(queue) > 0 {
 		node := queue[0]
 		node.Left, node.Right = node.Right, node.Left
 		queue = queue[1:]
@@ -90,6 +90,7 @@ func InvertTreeUseBFS(root *Entity.TreeNode) *Entity.TreeNode {
 }
 
 /*
+leetcode 104
 1.2 二叉树的最大深度
 给定一个二叉树，找出其最大深度。
 二叉树的深度为根节点到最远叶子节点的最长路径上的节点数。
@@ -117,7 +118,7 @@ func MaxDepth(root *Entity.TreeNode) int {
 		return maxDepth
 	}
 	queue := []*Entity.TreeNode{root}
-	for len(queue) != 0 {
+	for len(queue) > 0 {
 		levelSize := len(queue)
 		for i := 0; i < levelSize; i++ {
 			node := queue[0]
@@ -243,7 +244,7 @@ leetcode 543. 二叉树的直径
 
 func DiameterOfBinaryTree(root *Entity.TreeNode) int {
 	maxDia := 0
-	var dfs func(node *Entity.TreeNode) int
+	var dfs func(*Entity.TreeNode) int
 	dfs = func(node *Entity.TreeNode) int {
 		if node == nil {
 			return 0
@@ -299,12 +300,12 @@ leetcode 110. 平衡二叉树
 
 /*
 思路:自顶向下的递归
-利用二叉树的前序遍历，即对于当前遍历到的节点，首先计算左右子树的高度，如果左右子树的高度差不超过1，再分别
+利用二叉树的前序遍历，即对于当前遍历到的节点，首先计算左右子树的高度，如果左右子树高度差不超过1，再分别
 递归地遍历左右子节点，并判断左子树和右子树是否平衡。这是一个自顶向下的递归的过程。
 时间复杂度：O(n^2)，其中n是二叉树中的节点个数。
 最坏情况下，二叉树是满二叉树，需要遍历二叉树中的所有节点，时间复杂度是 O(n)。
 对于节点p，如果它的高度是d，则height(p)最多会被调用d次（即遍历到它的每一个祖先节点时）。对于平均的情况，
-一棵树的高度h满足O(h)=O(logn)，因为d≤h，所以总时间复杂度为O(nlogn)。对于最坏的情况，二叉树形成
+一棵树的高度h满足O(h)=O(logN)，因为d≤h，所以总时间复杂度为O(NlogN)。对于最坏的情况，二叉树形成
 链式结构，高度为O(n)，此时总时间复杂度为O(n^2)
 空间复杂度：O(n)，其中n是二叉树中的节点个数。空间复杂度主要取决于递归调用的层数，递归调用的层数不会超过n。
 */
@@ -370,7 +371,7 @@ func IsCompleteTree(root *Entity.TreeNode) bool {
 	}
 	queue := []Element{{root, 1}}
 	seq, count := 0, 0
-	for len(queue) != 0 {
+	for len(queue) > 0 {
 		node := queue[0].Node
 		seq = queue[0].Number
 		count++
@@ -437,7 +438,7 @@ func WidthOfBinaryTree(root *Entity.TreeNode) int {
 	}
 	// 根节点编号设置为1
 	queue := []Element{Element{root, 1}}
-	for len(queue) != 0 {
+	for len(queue) > 0 {
 		size := len(queue)
 		maxWidth = Utils.Max(maxWidth, queue[size-1].Number-queue[0].Number+1)
 		for i := 0; i < size; i++ {
@@ -1036,7 +1037,7 @@ func help(head *Entity2.ListNode, root *Entity.TreeNode) bool {
 
 /*
 leetcode 114. 二叉树展开为链表
-1.19 给你二叉树的根节点root ，请你将它展开为一个单链表：
+1.19 给你二叉树的根节点root，请你将它展开为一个单链表：
 
 展开后的单链表应该同样使用TreeNode ，其中right子指针指向链表中下一个节点，而左子指针始终为null 。
 展开后的单链表应该与二叉树先序遍历顺序相同。
@@ -1048,9 +1049,12 @@ leetcode 114. 二叉树展开为链表
 
 // Flatten dfs先序遍历解决
 func Flatten(root *Entity.TreeNode) {
+	if root == nil {
+		return
+	}
 	var dfs func(*Entity.TreeNode) []*Entity.TreeNode
 	dfs = func(node *Entity.TreeNode) []*Entity.TreeNode {
-		var res []*Entity.TreeNode
+		res := []*Entity.TreeNode{}
 		if node == nil {
 			return res
 		}
@@ -1060,10 +1064,56 @@ func Flatten(root *Entity.TreeNode) {
 		return res
 	}
 	nodesList := dfs(root)
-	for i := 1; i < len(nodesList); i++ {
+	if len(nodesList) == 1 {
+		return
+	}
+	for i, n := 1, len(nodesList); i < n; i++ {
 		prev, cur := nodesList[i-1], nodesList[i]
 		prev.Left = nil
 		prev.Right = cur
+	}
+}
+
+// 迭代法解决, 前序遍历和展开同步进行
+func flattenUseIteration(root *Entity.TreeNode) {
+	if root == nil {
+		return
+	}
+	var prev *Entity.TreeNode
+	stack := []*Entity.TreeNode{root}
+	for len(stack) > 0 {
+		cur := stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
+		if prev != nil {
+			prev.Left, prev.Right = nil, cur
+		}
+		if cur.Right != nil {
+			stack = append(stack, cur.Right)
+		}
+		if cur.Left != nil {
+			stack = append(stack, cur.Left)
+		}
+		prev = cur
+	}
+}
+
+// 寻找前驱结点
+func findPredecessor(root *Entity.TreeNode) {
+	if root == nil {
+		return
+	}
+	cur := root
+	for cur != nil {
+		if cur.Left != nil {
+			next := cur.Left
+			pre := next
+			for pre.Right != nil {
+				pre = pre.Right
+			}
+			pre.Right = cur.Right
+			cur.Left, cur.Right = nil, next
+		}
+		cur = cur.Right
 	}
 }
 
