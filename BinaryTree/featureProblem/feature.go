@@ -1385,7 +1385,7 @@ func DeepestLeavesSumSimple(root *Entity.TreeNode) int {
 }
 
 /*
-563. 二叉树的坡度
+leetcode 563. 二叉树的坡度
 1.25 给你一个二叉树的根节点root，计算并返回整个树的坡度 。
 一个树的节点的坡度定义即为，该节点左子树的节点之和和右子树节点之和的差的绝对值 。如果没有左子树的话，
 左子树的节点之和为0 ；没有右子树的话也是一样。空节点的坡度是0 。
@@ -1462,10 +1462,10 @@ leetcode 1123. 最深叶节点的最近公共祖先
 */
 
 /*
-思路:dfs递归解决
+思路:DFS递归解决
 由于最深的叶子节点可能有多个（如果只有一个最深的叶节点，那么它的最近公共祖先就是它自己),
 我们观察它们最近公共祖先的性质.首先,我们可以看出最近公共祖先的两个子树是等高的,如果不等高,
-那么高度较小的那个子树叶节点必然不是最深。所以我们可以设计这样的深度优先搜索算法,每一层返回
+那么高度较小的子树叶节点必然不是最深。所以我们可以设计这样的深度优先搜索算法,每一层返回
 值有两部分组成：一部分是以该节点为根的子树中，最深叶子节点的公共祖先，另一部分是该层的高度
 （也就是该节点到其最深叶子节点的深度）.然后我们可以递归比较：
 如果一个节点的左子树和右子树高度相等，那么其左子树的最深节点和右子树的最深节点,都是以
@@ -1504,37 +1504,39 @@ func LcaDeepestLeavesUseBFS(root *Entity.TreeNode) *Entity.TreeNode {
 	if root == nil {
 		return nil
 	}
-	parentDict := make(map[*Entity.TreeNode]*Entity.TreeNode)
-	var leafSet [][]*Entity.TreeNode
+	parentMap := make(map[*Entity.TreeNode]*Entity.TreeNode)
 	queue := []*Entity.TreeNode{root}
+	// 最大深度和当前深度初始值分别设置为0，1(root不为nil,所以当前深度depth至少是1)
+	maxDepth, depth := 0, 1
+	// 最深层叶子节点集合
+	leaves := []*Entity.TreeNode{}
 	for len(queue) > 0 {
 		size := len(queue)
-		var curLevel []*Entity.TreeNode
 		for i := 0; i < size; i++ {
-			node := queue[0]
-			queue = queue[1:]
-			// 收集每一层的叶子节点
+			node := queue[i]
 			if node.Left == nil && node.Right == nil {
-				curLevel = append(curLevel, node)
+				// 如果最大深度小于当前深度，则重置最大深度和最深层叶子节点集合
+				if maxDepth < depth {
+					maxDepth, leaves = depth, []*Entity.TreeNode{node}
+				} else if maxDepth == depth {
+					leaves = append(leaves, node)
+				}
 			}
 			if node.Left != nil {
 				queue = append(queue, node.Left)
 				// 记录子节点的父节点
-				parentDict[node.Left] = node
+				parentMap[node.Left] = node
 			}
 			if node.Right != nil {
 				queue = append(queue, node.Right)
 				// 记录子节点的父节点
-				parentDict[node.Right] = node
+				parentMap[node.Right] = node
 			}
 
 		}
-		if len(curLevel) > 0 {
-			leafSet = append(leafSet, curLevel)
-		}
+		depth++
+		queue = queue[size:]
 	}
-	// 获取最深层叶子节点集合
-	leaves := leafSet[len(leafSet)-1]
 	// 如果只有一个叶子节点，返回它自己
 	if len(leaves) == 1 {
 		return leaves[0]
@@ -1543,17 +1545,17 @@ func LcaDeepestLeavesUseBFS(root *Entity.TreeNode) *Entity.TreeNode {
 	// 最左侧叶子节点与最右侧叶子节点的最近公共祖先即可。
 	p, q := leaves[0], leaves[len(leaves)-1]
 	visited := make(map[int]bool)
-	pAns := parentDict[p]
+	pAns := parentMap[p]
 	for pAns != nil {
 		visited[pAns.Val] = true
-		pAns = parentDict[pAns]
+		pAns = parentMap[pAns]
 	}
-	qAns := parentDict[q]
+	qAns := parentMap[q]
 	for qAns != nil {
 		if visited[qAns.Val] {
 			return qAns
 		}
-		qAns = parentDict[qAns]
+		qAns = parentMap[qAns]
 	}
 	return nil
 }
