@@ -1104,6 +1104,8 @@ func findPredecessor(root *Entity.TreeNode) {
 	}
 	cur := root
 	for cur != nil {
+		// 如果当前节点cur有左子树，则寻找左子树最右边的节点作为前驱节点pre
+		// 将前驱节点pre的Right指针指向当前节点cur的右子节点
 		if cur.Left != nil {
 			next := cur.Left
 			pre := next
@@ -1272,7 +1274,7 @@ func ListOfDepth(root *Entity.TreeNode) []*Entity2.ListNode {
 	queue := []*Entity.TreeNode{root}
 	for len(queue) != 0 {
 		size := len(queue)
-		dummy := &Entity2.ListNode{}
+		dummy := new(Entity2.ListNode)
 		cur := dummy
 		for i := 0; i < size; i++ {
 			node := queue[i]
@@ -1368,10 +1370,12 @@ func DeepestLeavesSumSimple(root *Entity.TreeNode) int {
 		if node == nil {
 			return
 		}
-		if maxDepth < depth {
-			maxDepth, sum = depth, node.Val
-		} else if maxDepth == depth {
-			sum += node.Val
+		if node.Left == nil && node.Right == nil {
+			if maxDepth < depth {
+				maxDepth, sum = depth, node.Val
+			} else if maxDepth == depth {
+				sum += node.Val
+			}
 		}
 		dfs(node.Left, depth+1)
 		dfs(node.Right, depth+1)
