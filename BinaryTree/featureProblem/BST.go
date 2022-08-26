@@ -947,7 +947,7 @@ leetcode 669. 修剪二叉搜索树
 
 func TrimBST(root *Entity.TreeNode, low, high int) *Entity.TreeNode {
 	if root == nil {
-		return root
+		return nil
 	}
 	if root.Val < low {
 		// 去右子树修剪
@@ -965,7 +965,7 @@ func TrimBST(root *Entity.TreeNode, low, high int) *Entity.TreeNode {
 
 /*
 leetcode 1305. 两棵二叉搜索树中的所有元素
-1.18 给你root1和root2这两棵二叉搜索树。
+1.19 给你root1和root2这两棵二叉搜索树。
 请你返回一个列表，其中包含两棵树中的所有整数并按升序排序。
 
 示例1:
@@ -986,31 +986,43 @@ func GetAllElements(root1, root2 *Entity.TreeNode) []int {
 		return res
 	}
 	l1, l2 := dfs(root1), dfs(root2)
-	if len(l1) == 0 {
+	m, n := len(l1), len(l2)
+	if m == 0 {
 		return l2
 	}
-	if len(l2) == 0 {
+	if n == 0 {
 		return l1
 	}
-	var ret []int
-	s1, s2 := 0, 0
+	ret := make([]int, m+n)
+	s1, s2, index := 0, 0, 0
 	for s1 < len(l1) && s2 < len(l2) {
 		if l1[s1] < l2[s2] {
-			ret = append(ret, l1[s1])
+			ret[index] = l1[s1]
 			s1++
 		} else {
-			ret = append(ret, l2[s2])
+			ret[index] = l2[s2]
 			s2++
 		}
+		index++
 	}
-	ret = append(ret, l1[s1:]...)
-	ret = append(ret, l2[s2:]...)
+	if len(l1[s1:]) > 0 {
+		for _, num := range l1[s1:] {
+			ret[index] = num
+			index++
+		}
+	}
+	if len(l2[s2:]) > 0 {
+		for _, num := range l1[s1:] {
+			ret[index] = num
+			index++
+		}
+	}
 	return ret
 }
 
 /*
 1008. 前序遍历构造二叉搜索树
-1.19 返回与给定前序遍历preorder相匹配的二叉搜索树（binary search tree）的根结点。
+1.20 返回与给定前序遍历preorder相匹配的二叉搜索树（binary search tree）的根结点。
 题目保证，对于给定的测试用例，总能找到满足要求的二叉搜索树。
 
 示例：
@@ -1037,7 +1049,7 @@ func BstFromPreorder(preorder []int) *Entity.TreeNode {
 }
 
 /*
-1.20 拓展: 后序遍历构造二叉搜索树
+1.21 拓展: 后序遍历构造二叉搜索树
 */
 
 func BstFromPostorder(postorder []int) *Entity.TreeNode {
@@ -1060,7 +1072,7 @@ func BstFromPostorder(postorder []int) *Entity.TreeNode {
 
 /*
 剑指 Offer II 056. 二叉搜索树中两个节点之和
-1.21 给定一个二叉搜索树的 根节点 root 和一个整数 k , 请判断该二叉搜索树中是否存在两个节点它们的值之和等于 k 。
+1.22 给定一个二叉搜索树的 根节点 root 和一个整数 k , 请判断该二叉搜索树中是否存在两个节点它们的值之和等于 k 。
 假设二叉搜索树中节点的值均唯一。
 
 示例1：
