@@ -7,6 +7,7 @@ simple package contains easy items
 import "AlgorithmPractise/Utils"
 
 /*
+leetcode 509
 1.0 斐波拉契数
 斐波那契数，通常用F(n) 表示，形成的序列称为斐波那契数列 。该数列由0和1开始，后面的每一项数字都是前面两项数字的和。也就是：
 
@@ -72,6 +73,7 @@ func FibUseRecursionAndCache(n int) int {
 }
 
 /*
+leetcode 70
 1.1 爬楼梯
 假设你正在爬楼梯。需要n阶你才能到达楼顶。
 每次你可以爬1或2个台阶。你有多少种不同的方法可以爬到楼顶呢？
@@ -133,6 +135,7 @@ func ClimbStairsSimple(n int) int {
 }
 
 /*
+leetcode 746
 1.2 使用最小花费爬楼梯
 给你一个整数数组cost，其中cost[i]是从楼梯第i个台阶向上爬需要支付的费用。一旦你支付此费用，即可选择向上爬一个
 或者两个台阶。
@@ -198,6 +201,7 @@ func MinCostClimbingStairsSimple(cost []int) int {
 }
 
 /*
+leetcode 62
 1.3 不同路径
 一个机器人位于一个mxn网格的左上角（起始点在下图中标记为 “Start” ）。
 机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为 “Finish” ）。
@@ -221,7 +225,7 @@ func MinCostClimbingStairsSimple(cost []int) int {
 机器人从(0, 0) 位置出发，到(m - 1, n - 1)终点。
 按照动规五部曲来分析：
 1 确定dp数组以及下标的含义
-dp[i][j]:表示从（0,0）出发，到(i, j) 有dp[i][j]条不同的路径。
+dp[i][j]表示从（0,0）出发，到(i, j) 有dp[i][j]条不同的路径。
 
 2 确定递推公式
 想要求dp[i][j]，只能有两个方向来推导出来，即dp[i - 1][j] 和 dp[i][j - 1]。
@@ -275,6 +279,7 @@ func UniquePathSimple(m, n int) int {
 }
 
 /*
+leetcode 63
 进阶 1.4 有障碍的不同路径
 一个机器人位于一个m x n 网格的左上角 （起始点在下图中标记为“Start” ）。
 机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为“Finish”）。
@@ -335,6 +340,7 @@ func UniquePathsWithObstacles(obstacleGrid [][]int) int {
 }
 
 /*
+leetcode 64
 进阶 1.5 最小路径和
 给定一个包含非负整数的m x n网格grid ，请找出一条从左上角到右下角的路径，使得路径上的数字总和为最小。
 说明：每次只能向下或者向右移动一步。
@@ -397,6 +403,7 @@ func minPathSum(grid [][]int) int {
 }
 
 /*
+leetcode 343
 1.6 整数拆分
 给定一个正整数n，将其拆分为至少两个正整数的和，并使这些整数的乘积最大化。 返回你可以获得的最大乘积。
 
@@ -497,6 +504,19 @@ leetcode 119. 杨辉三角II
 输入: rowIndex = 3
 输出: [1,3,3,1]
 */
+
+func getRowComplex(rowIndex int) []int {
+	var pre, cur []int
+	for i := 0; i <= rowIndex; i++ {
+		cur = make([]int, i+1)
+		cur[0], cur[i] = 1, 1
+		for j := 1; j < i; j++ {
+			cur[j] = pre[j-1] + pre[j]
+		}
+		pre = cur
+	}
+	return pre
+}
 
 func getRow(rowIndex int) []int {
 	row := make([]int, rowIndex+1)
