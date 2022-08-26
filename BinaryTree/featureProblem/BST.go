@@ -3,6 +3,7 @@ package featureProblem
 import (
 	"AlgorithmPractise/BinaryTree/Entity"
 	Entity2 "AlgorithmPractise/LinkedList/Entity"
+	"AlgorithmPractise/Utils"
 	"math"
 )
 
@@ -674,7 +675,7 @@ func IncreasingSimpleBST(root *Entity.TreeNode) *Entity.TreeNode {
 
 /*
 leetcode 173. 二叉搜索树迭代器
-1.13 实现一个二叉搜索树迭代器类BSTIterator，表示一个按中序遍历二叉搜索树（BST）的迭代器：
+1.14 实现一个二叉搜索树迭代器类BSTIterator，表示一个按中序遍历二叉搜索树（BST）的迭代器：
 BSTIterator(TreeNode root) 初始化BSTIterator类的一个对象。BST的根节点root会作为构造函数的一部分给出。
 指针应初始化为一个不存在于BST中的数字，且该数字小于BST中的任何元素。
 boolean hasNext() 如果向指针右侧遍历存在数字，则返回true ；否则返回false 。
@@ -697,14 +698,14 @@ func Constructor(root *Entity.TreeNode) BSTIterator {
 	}
 }
 
-func (this *BSTIterator) Next() int {
-	val := this.Nums[0]
-	this.Nums = this.Nums[1:]
+func (bst *BSTIterator) Next() int {
+	val := bst.Nums[0]
+	bst.Nums = bst.Nums[1:]
 	return val
 }
 
-func (this *BSTIterator) HasNext() bool {
-	return len(this.Nums) > 0
+func (bst *BSTIterator) HasNext() bool {
+	return len(bst.Nums) > 0
 }
 
 func Inorder(node *Entity.TreeNode, nums *[]int) {
@@ -718,7 +719,7 @@ func Inorder(node *Entity.TreeNode, nums *[]int) {
 
 /*
 leetcode 95. 不同的二叉搜索树
-1.14 给你一个整数n，请你生成并返回所有由n个节点组成且节点值从1到n互不相同的不同二叉搜索树。
+1.15 给你一个整数n，请你生成并返回所有由n个节点组成且节点值从1到n互不相同的不同二叉搜索树。
 可以按任意顺序返回答案。
 输入：n = 3
 输出：[[1,null,2,null,3],[1,null,3,2],[2,1,3],[3,1,null,null,2],[3,2,null,1]]
@@ -745,7 +746,7 @@ func Helper(start, end int) []*Entity.TreeNode {
 		// 从左子树集合中选出一棵左子树，从右子树集合中选出一棵右子树，拼接到根节点上
 		for _, left := range leftTrees {
 			for _, right := range rightTrees {
-				curTree := &Entity.TreeNode{Val: i, Left: nil, Right: nil}
+				curTree := &Entity.TreeNode{Val: i}
 				curTree.Left = left
 				curTree.Right = right
 				allTrees = append(allTrees, curTree)
@@ -757,7 +758,7 @@ func Helper(start, end int) []*Entity.TreeNode {
 
 /*
 leetcode 530. 二叉搜索树的最小绝对差
-1.15 给你一个二叉搜索树的根节点root ，返回树中任意两不同节点值之间的最小差值。
+1.16 给你一个二叉搜索树的根节点root ，返回树中任意两不同节点值之间的最小差值。
 差值是一个正数，其数值等于两值之差的绝对值。
 
 示例:
@@ -809,6 +810,30 @@ func GetMinimumDifferenceSimple(root *Entity.TreeNode) int {
 	}
 	dfs(root)
 	return min
+}
+
+func GetMinDiffSimple(root *Entity.TreeNode) int {
+	if root == nil {
+		return 0
+	}
+	minDiff := math.MaxInt32
+	stack := []*Entity.TreeNode{}
+	var cur *Entity.TreeNode
+	for len(stack) > 0 || root != nil {
+		if root != nil {
+			stack = append(stack, root)
+			root = root.Left
+		} else {
+			root = stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
+			if cur != nil {
+				minDiff = Utils.Min(minDiff, root.Val-cur.Val)
+			}
+			cur = root
+			root = root.Right
+		}
+	}
+	return minDiff
 }
 
 /*
