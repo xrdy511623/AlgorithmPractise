@@ -333,7 +333,7 @@ func InorderPredecessor(root, p *Entity.TreeNode) *Entity.TreeNode {
 
 /*
 leetcode 938. 二叉搜索树的范围和
-1.6 给定二叉搜索树的根结点root，返回值位于范围[low, high] 之间的所有结点的值的和。
+1.7 给定二叉搜索树的根结点root，返回值位于范围[low, high] 之间的所有结点的值的和。
 
 示例:
 输入：root = [10,5,15,3,7,null,18], low = 7, high = 15
@@ -381,7 +381,7 @@ func RangeSumBSTSimple(root *Entity.TreeNode, low int, high int) int {
 
 /*
 leetcode 538. 把二叉搜索树转换为累加树
-1.7 给出二叉搜索树的根节点，该树的节点值各不相同，请你将其转换为累加树（Greater Sum Tree），使每个节点
+1.8 给出二叉搜索树的根节点，该树的节点值各不相同，请你将其转换为累加树（Greater Sum Tree），使每个节点
 node的新值等于原树中大于或等于node.val的值之和。
 
 提醒一下，二叉搜索树满足下列约束条件：
@@ -422,19 +422,21 @@ func ConvertBST(root *Entity.TreeNode) *Entity.TreeNode {
 	sum := 0
 	var dfs func(*Entity.TreeNode)
 	dfs = func(node *Entity.TreeNode) {
-		if node != nil {
-			dfs(node.Right)
-			sum += node.Val
-			node.Val = sum
-			dfs(node.Left)
+		if node == nil {
+			return
 		}
+		dfs(node.Right)
+		sum += node.Val
+		node.Val = sum
+		dfs(node.Left)
 	}
 	dfs(root)
 	return root
 }
 
 /*
-1.8 将有序数组转换为二叉搜索树
+leetcode 108
+1.9 将有序数组转换为二叉搜索树
 给你一个整数数组nums ，其中元素已经按升序排列，请你将其转换为一棵高度平衡二叉搜索树。
 高度平衡二叉树是一棵满足「每个节点的左右两个子树的高度差的绝对值不超过1的二叉树。
 
@@ -466,7 +468,7 @@ func SortedArrayToBST(nums []int) *Entity.TreeNode {
 
 /*
 leetcode 109. 有序链表转换二叉搜索树
-1.9 给定一个单链表，其中的元素按升序排序，将其转换为高度平衡的二叉搜索树。
+1.10 给定一个单链表，其中的元素按升序排序，将其转换为高度平衡的二叉搜索树。
 本题中，一个高度平衡二叉树是指一个二叉树每个节点的左右两个子树的高度差的绝对值不超过1。
 
 示例:
@@ -510,7 +512,7 @@ func sortedListToBST(head *Entity2.ListNode) *Entity.TreeNode {
 
 /*
 剑指Offer 33. 二叉搜索树的后序遍历序列
-1.10 输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历结果。如果是则返回true，否则返回false。假设输入
+1.11 输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历结果。如果是则返回true，否则返回false。假设输入
 的数组的任意两个数字都互不相同。
 输入: [1,6,3,2,5]
 输出: false
@@ -566,7 +568,7 @@ func VerifyPostOrder(postOrder []int) bool {
 }
 
 /*
-1.10.1 拓展 验证二叉搜索树的前序遍历序列
+1.11.1 拓展 验证二叉搜索树的前序遍历序列
 输入一个整数数组，判断该数组是不是某二叉搜索树的前序遍历结果。如果是则返回true，否则返回false。假设输入
 的数组的任意两个数字都互不相同。
 输入: [8，5，1，7，10，12]
@@ -594,7 +596,7 @@ func VerifyPreOrder(preOrder []int) bool {
 
 /*
 leetcode 235. 二叉搜索树的最近公共祖先
-1.11 给定一个二叉搜索树, 找到该树中两个指定节点的最近公共祖先。
+1.12 给定一个二叉搜索树, 找到该树中两个指定节点的最近公共祖先。
 */
 
 // LowestCommonAncestor 迭代法解决
@@ -624,7 +626,7 @@ func LowestCommonAncestorUseRecursion(root, p, q *Entity.TreeNode) *Entity.TreeN
 
 /*
 剑指Offer II 052. 展平二叉搜索树
-1.12 给你一棵二叉搜索树，请按中序遍历 将其重新排列为一棵递增顺序搜索树，使树中最左边的节点成为树的根节点，
+1.13 给你一棵二叉搜索树，请按中序遍历 将其重新排列为一棵递增顺序搜索树，使树中最左边的节点成为树的根节点，
 并且每个节点没有左子节点，只有一个右子节点。
 */
 
@@ -640,20 +642,20 @@ func IncreasingBST(root *Entity.TreeNode) *Entity.TreeNode {
 		}
 	}
 	dfs(root)
-	dummyNode := new(Entity.TreeNode)
-	cur := dummyNode
+	dummy := new(Entity.TreeNode)
+	cur := dummy
 	for _, node := range res {
 		cur.Right = node
 		node.Left, node.Right = nil, nil
 		cur = cur.Right
 	}
-	return dummyNode.Right
+	return dummy.Right
 }
 
 // IncreasingSimpleBST 更好的做法是在中序遍历的过程中直接改变节点指向，时间复杂度下降为O(N)
 func IncreasingSimpleBST(root *Entity.TreeNode) *Entity.TreeNode {
-	dummyNode := new(Entity.TreeNode)
-	cur := dummyNode
+	dummy := new(Entity.TreeNode)
+	cur := dummy
 	var helper func(*Entity.TreeNode)
 	helper = func(node *Entity.TreeNode) {
 		if node == nil {
@@ -663,12 +665,11 @@ func IncreasingSimpleBST(root *Entity.TreeNode) *Entity.TreeNode {
 		helper(node.Left)
 		cur.Right = node
 		node.Left = nil
-		node.Right = nil
 		cur = node
 		helper(node.Right)
 	}
 	helper(root)
-	return dummyNode.Right
+	return dummy.Right
 }
 
 /*
