@@ -838,7 +838,7 @@ func GetMinDiffSimple(root *Entity.TreeNode) int {
 
 /*
 leetcode 501. 二叉搜索树中的众数
-1.16 给定一个有相同值的二叉搜索树（BST），找出BST中的所有众数（出现频率最高的元素）。
+1.17 给定一个有相同值的二叉搜索树（BST），找出BST中的所有众数（出现频率最高的元素）。
 
 假定BST有如下定义：
 结点左子树中所含结点的值小于等于当前结点的值
@@ -855,12 +855,12 @@ leetcode 501. 二叉搜索树中的众数
 
 /*
 BST(二叉搜索树)统计节点值出现频率，那就通过中序遍历形成有序数组，然后相邻两个元素作比较，
-就把出现频率最高的元素输出就可以了。
+把出现频率最高的元素输出就可以了。
 */
 
 // FindMode  时间复杂度O(N)，空间复杂度O(N)
 func FindMode(root *Entity.TreeNode) []int {
-	var res []int
+	res := []int{}
 	var prev *Entity.TreeNode
 	count, maxCount := 1, 1
 	var dfs func(*Entity.TreeNode)
@@ -885,8 +885,7 @@ func FindMode(root *Entity.TreeNode) []int {
 		// 清空原来存储众数的数组(之前存储的都不对，因为出现频次不够大)，将当前节点值存到数组中
 		if count > maxCount {
 			maxCount = count
-			res = []int{}
-			res = append(res, node.Val)
+			res = []int{node.Val}
 		}
 		dfs(node.Right)
 	}
@@ -894,9 +893,43 @@ func FindMode(root *Entity.TreeNode) []int {
 	return res
 }
 
+func findMode(root *Entity.TreeNode) []int {
+	res := []int{}
+	if root == nil {
+		return res
+	}
+	var prev *Entity.TreeNode
+	maxFreq, freq := 1, 1
+	s := []*Entity.TreeNode{}
+	for len(s) > 0 || root != nil {
+		if root != nil {
+			s = append(s, root)
+			root = root.Left
+		} else {
+			root = s[len(s)-1]
+			s = s[:len(s)-1]
+			if prev != nil && prev.Val == root.Val {
+				freq++
+			} else {
+				freq = 1
+			}
+			prev = root
+			if maxFreq == freq {
+				res = append(res, root.Val)
+			}
+			if maxFreq < freq {
+				maxFreq = freq
+				res = []int{root.Val}
+			}
+			root = root.Right
+		}
+	}
+	return res
+}
+
 /*
 leetcode 669. 修剪二叉搜索树
-1.17 给你二叉搜索树的根节点root ，同时给定最小边界low和最大边界high。通过修剪二叉搜索树，使得所有节点的值
+1.18 给你二叉搜索树的根节点root ，同时给定最小边界low和最大边界high。通过修剪二叉搜索树，使得所有节点的值
 在[low, high]中。修剪树不应该改变保留在树中的元素的相对结构（即，如果没有被移除，原有的父代子代关系
 都应当保留）。 可以证明，存在唯一的答案。
 
