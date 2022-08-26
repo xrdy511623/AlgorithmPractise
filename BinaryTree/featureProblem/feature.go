@@ -1561,6 +1561,7 @@ func LcaDeepestLeavesUseBFS(root *Entity.TreeNode) *Entity.TreeNode {
 }
 
 /*
+leetcode 872
 1.27 叶子相似的树
 请考虑一颗二叉树上所有的叶子,这些叶子的值按从左到右的顺序排列形成一个叶值序列.
 如果有两颗二叉树的叶值序列是相同,那么我们就认为它们是叶相似的.

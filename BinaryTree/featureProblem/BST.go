@@ -149,7 +149,7 @@ leetcode 98. 验证二叉搜索树
 // CheckIsValidBST 一个很容易想到的思路是中序遍历二叉树，如果它是BST，就会得到一个升序序列，否则就不是BST
 func CheckIsValidBST(root *Entity.TreeNode) bool {
 	minValue := math.MinInt64
-	var stack []*Entity.TreeNode
+	stack := []*Entity.TreeNode{}
 	for len(stack) > 0 || root != nil {
 		if root != nil {
 			stack = append(stack, root)
@@ -198,11 +198,9 @@ func SearchBST(root *Entity.TreeNode, val int) *Entity.TreeNode {
 	}
 	if root.Val < val {
 		return SearchBST(root.Right, val)
-	}
-	if root.Val > val {
+	} else {
 		return SearchBST(root.Left, val)
 	}
-	return nil
 }
 
 // SearchBSTSimple 迭代法
@@ -213,7 +211,7 @@ func SearchBSTSimple(root *Entity.TreeNode, val int) *Entity.TreeNode {
 		} else if root.Val > val {
 			root = root.Left
 		} else {
-			break
+			return root
 		}
 	}
 	return root
@@ -236,7 +234,7 @@ func SearchBSTSimple(root *Entity.TreeNode, val int) *Entity.TreeNode {
 func InorderSuccessor(root, p *Entity.TreeNode) *Entity.TreeNode {
 	var travel func(node *Entity.TreeNode) []*Entity.TreeNode
 	travel = func(node *Entity.TreeNode) []*Entity.TreeNode {
-		var res []*Entity.TreeNode
+		res := []*Entity.TreeNode{}
 		if node == nil {
 			return res
 		}
@@ -263,8 +261,23 @@ func InorderSuccessor(root, p *Entity.TreeNode) *Entity.TreeNode {
 	}
 }
 
+/*
+在二叉搜索树BST中寻找p的中序后继节点无非三种情形，一是p有右子树，那么大于p的最小节点一定是它的
+右子树中最左边的节点，如图bst1.jpg所示；
+第二种情况是p没有右子树，此时我们需要从p的父亲节点往上寻找，若p是其父亲节点的左子节点，此时p的
+后继节点显然就是其父节点，如图bst1.jpg所示;若p是其父亲节点的右子节点，此时p的后继节点显然就是
+其祖父节点,如图bst3.jpg所示
+最后一种情况就是p没有右子树，且p是其父亲节点的左子节点的右子节点，也就是p是该BST中最大的一个节点，
+此时p是没有中序后继节点的。
+所以，针对情形一，我们需要在p的右子树中寻找最左边的节点；针对情形二，我们需要找到p的父亲节点
+第三种情形，直接返回null
+*/
+
 // InorderSuccessorUseIteration 迭代法解决，时间复杂度降低为O(pos),空间复杂度降低为O(1)
 func InorderSuccessorUseIteration(root, p *Entity.TreeNode) *Entity.TreeNode {
+	if root == nil {
+		return nil
+	}
 	var prev *Entity.TreeNode
 	for root.Val != p.Val {
 		if root.Val < p.Val {
@@ -287,6 +300,35 @@ func InorderSuccessorUseIteration(root, p *Entity.TreeNode) *Entity.TreeNode {
 		}
 		return post
 	}
+}
+
+/*
+同类题，二叉搜索树中的中序前驱
+1.6 设计一个算法，找出二叉搜索树中指定节点的“上一个”节点（也即中序前驱）。
+如果指定节点没有对应的“上一个”节点，则返回null。
+*/
+
+func InorderPredecessor(root, p *Entity.TreeNode) *Entity.TreeNode {
+	if root == nil {
+		return nil
+	}
+	var prev *Entity.TreeNode
+	for root.Val != p.Val {
+		if p.Val > root.Val {
+			prev = root
+			root = root.Right
+		} else {
+			root = root.Left
+		}
+	}
+	if p.Left == nil {
+		return prev
+	}
+	pre := p.Left
+	for pre.Right != nil {
+		pre = pre.Right
+	}
+	return pre
 }
 
 /*
