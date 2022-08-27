@@ -1,9 +1,5 @@
 package Utils
 
-import (
-	"errors"
-)
-
 type MaxHeap struct {
 	Size, Capacity int
 	Elements       []int
@@ -49,10 +45,9 @@ func (mh *MaxHeap) ShiftUp(ndx int) {
 }
 
 // Extract 弹出并删除最大根节点
-func (mh *MaxHeap) Extract() (int, error) {
+func (mh *MaxHeap) Extract() int {
 	if mh.Capacity <= 0 {
-		err := errors.New("empty heap")
-		return -1, err
+		return -1
 	}
 	// 保存根节点值
 	value := mh.Elements[0]
@@ -61,7 +56,7 @@ func (mh *MaxHeap) Extract() (int, error) {
 	mh.Elements[0] = mh.Elements[mh.Size]
 	// 维持堆的特性
 	mh.ShiftDown(0)
-	return value, nil
+	return value
 }
 
 /*
