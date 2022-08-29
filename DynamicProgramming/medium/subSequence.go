@@ -9,8 +9,9 @@ import (
 )
 
 /*
+leetcode 300
 1.1 最长递增子序列
-给你一个整数数组nums ，找到其中最长严格递增子序列的长度。
+给你一个整数数组nums，找到其中最长严格递增子序列的长度。
 子序列是由数组派生而来的序列，删除（或不删除）数组中的元素而不改变其余元素的顺序。例如，[3,6,2,7] 是数组 [0,3,1,6,2,2,7]
 的子序列。
 
@@ -153,6 +154,7 @@ func FindFirstLessNum(nums []int, target int) int {
 }
 
 /*
+leetcode 674
 1.2 最长连续递增序列
 给定一个未经排序的整数数组，找到最长且连续递增的子序列，并返回该序列的长度。
 连续递增的子序列 可以由两个下标 l 和 r（l < r）确定，如果对于每个l <= i < r，都有nums[i] < nums[i + 1] ，那么子序列
@@ -174,7 +176,7 @@ func FindFirstLessNum(nums []int, target int) int {
 思路:动态规划
 
 1 确定dp数组（dp table）以及下标的含义
-dp[i]：以下标i为结尾的数组的连续递增的子序列长度为dp[i]。
+dp[i]表示以下标i为结尾的数组的连续递增的子序列长度为dp[i]。
 注意这里的定义，一定是以下标i为结尾，并不是说一定以下标0为起始位置。
 
 2 确定递推公式
@@ -243,6 +245,7 @@ func findLengthOfLCISSimple(nums []int) int {
 }
 
 /*
+leetcode 718
 1.3 最长重复子数组
 给两个整数数组A和B ，返回两个数组中公共的、长度最长的子数组的长度。
 
@@ -299,6 +302,7 @@ func findLongestLengthOfCSS(nums1, nums2 []int) int {
 }
 
 /*
+leetcode 1143
 1.4 最长公共子序列
 给定两个字符串text1和text2，返回这两个字符串的最长公共子序列的长度。
 一个字符串的子序列是指这样一个新的字符串：它是由原字符串在不改变字符的相对顺序的情况下删除某些字符
@@ -376,7 +380,8 @@ func longestCommonSubSequence(text1, text2 string) int {
 }
 
 /*
-1.5 leetcode 1035 不相交的线
+leetcode 1035
+1.5  不相交的线
 我们在两条独立的水平线上按给定的顺序写下A和B中的整数。
 现在，我们可以绘制一些连接两个数字A[i]和B[j]的直线，只要A[i] == B[j]，且我们绘制的直线不与任何其他连线（非水平线）相交。
 以这种方法绘制线条，并返回我们可以绘制的最大连线数。
@@ -391,7 +396,7 @@ func longestCommonSubSequence(text1, text2 string) int {
 /*
 思路:本题与1.4 最长公共子序列实质上是一模一样的。
 绘制一些连接两个数字 A[i] 和 B[j] 的直线，只要 A[i] == B[j]，且直线不能相交！
-直线不能相交，这就是说明在数组A中 找到一个与数组B相同的子序列，且这个子序列不能改变相对顺序，只要相对顺序不改变，
+直线不能相交，这就是说明在数组A中找到一个与数组B相同的子序列，且这个子序列不能改变相对顺序，只要相对顺序不改变，
 链接相同数字的直线就不会相交。
 
 其实也就是说A和B的最长公共子序列是[1,4]，长度为2。 这个公共子序列指的是相对顺序不变（即数字4在数组A中数字1的后面，
@@ -421,6 +426,7 @@ func maxUncrossLines(nums1, nums2 []int) int {
 }
 
 /*
+leetcode 53
 1.6 最大子序和
 给定一个整数数组nums ，找到一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。
 示例:
@@ -495,11 +501,11 @@ func maxSubArraySimple(nums []int) int {
 /*
 leetcode 918. 环形子数组的最大和
 1.7 给定一个由整数数组A表示的环形数组C，求C的非空子数组的最大可能和。
-在此处，环形数组意味着数组的末端将会与开头相连呈环状。（形式上，当0 <= i < A.length时C[i] = A[i]，
+在此处，环形数组意味着数组的末端将会与开头相连呈环状。（形式上，当0 <= i < A.length 时C[i] = A[i]，
 且当i >= 0时C[i+A.length] = C[i]）
 
 此外，子数组最多只能包含固定缓冲区A中的每个元素一次。（形式上，对于子数组C[i], C[i+1], ..., C[j]，不存在
-i <= k1, k2 <= j其中k1 % A.length= k2 % A.length）
+i <= k1, k2 <= j 其中k1 % A.length= k2 % A.length）
 
 示例1：
 输入：[1,-2,3,-2]
@@ -522,7 +528,7 @@ i <= k1, k2 <= j其中k1 % A.length= k2 % A.length）
 func maxSubarraySumCircular(nums []int) int {
 	n := len(nums)
 	// curMax, curMin分别表示包含当前元素nums[i]的最大子数组和，最小子数组和
-	// maxSub, minSub则分别表示数组nums的最大子数组和，最小子数组和
+	// maxSub, minSub则分别表示数组nums的最大子数组和，最小子数组和(可能不包含当前元素nums[i])
 	// sum表示数组nums的元素之和
 	curMax, curMin, maxSub, minSub, sum := nums[0], nums[0], nums[0], nums[0], nums[0]
 	for i := 1; i < n; i++ {
@@ -539,6 +545,7 @@ func maxSubarraySumCircular(nums []int) int {
 }
 
 /*
+leetcode 152
 1.8  乘积最大子数组
 给你一个整数数组nums，请你找出数组中乘积最大的连续子数组（该子数组中至少包含一个数字），并返回该子数组所
 对应的乘积。
@@ -809,14 +816,14 @@ func getMaxLenSimple(nums []int) int {
 思路:贪心
 子数组乘积为正数，即要求该段子数组中没有0且负数的个数为偶数，这样我们可以用三个变量：
 pos:该段正数个数，初始化为0
-ng:该段负数个数，初始化为0
+neg:该段负数个数，初始化为0
 first:第一个负数出现的位置，初始化为-1
 来记录需要的数量，然后对数组进行遍历：
 1.如果当前neg % 2 = 0，说明有偶数个数字为负数,则该段组数组的所有元素相乘为正，
 那么maxLength = max(maxLength, pos + neg)。
-2.如果当前neg % 2 != 0，我们可以贪心的进行选取组数组，只要去掉该段字数组的一个负数便可以使负数个数为偶数，
+2.如果当前neg % 2 != 0，我们可以贪心的选取子数组，只要去掉该段子数组的一个负数便可以使负数个数为偶数，
 即乘积为正，这时，即从第一个负数开始，后面的位置到当前位置所有数的乘积可以为正，
-此时:maxLength = max(ans, 当前位置下标i- first).
+此时:maxLength = max(maxLength, 当前位置下标i- first).
 3.如果遍历的当前元素为0，则将所有变量重新初始化，因为0不可能包含在任何子数组中，而使得乘积为正。
 */
 
@@ -829,11 +836,9 @@ func getMaxLenTwo(nums []int) int {
 	for i := 0; i < n; i++ {
 		if nums[i] == 0 {
 			pos, ng, first = 0, 0, -1
-		}
-		if nums[i] > 0 {
+		} else if nums[i] > 0 {
 			pos++
-		}
-		if nums[i] < 0 {
+		} else {
 			if first == -1 {
 				first = i
 			}
@@ -849,6 +854,7 @@ func getMaxLenTwo(nums []int) int {
 }
 
 /*
+leetcode 392
 1.10 判断子序列
 给定字符串s和t ，判断s是否为t的子序列。
 字符串的一个子序列是原始字符串删除一些（也可以不删除）字符而不改变剩余字符相对位置形成的新字符串(例如,"ace"是"abcde"的一个子序列，而"aec"不是）
@@ -895,6 +901,9 @@ t中找到了一个字符在s中也出现了，此时dp[i][j] = dp[i-1][j-1] + 1
 // isSubSequence 时间复杂度O(M*N)，空间复杂度O(M*N)
 func isSubSequence(s, t string) bool {
 	m, n := len(s), len(t)
+	if m > n {
+		return false
+	}
 	dp := make([][]int, m+1)
 	for i := 0; i <= m; i++ {
 		dp[i] = make([]int, n+1)
@@ -909,7 +918,7 @@ func isSubSequence(s, t string) bool {
 			}
 		}
 	}
-	return dp[m][n] == len(s)
+	return dp[m][n] == m
 }
 
 /*
@@ -939,6 +948,7 @@ func isSubSequenceSimple(s, t string) bool {
 }
 
 /*
+leetcode 115
 1.11 不同的子序列
 给定一个字符串s和一个字符串t，计算在s的子序列中t出现的个数。
 字符串的一个子序列是指，通过删除一些（也可以不删除）字符且不干扰剩余字符相对位置所组成的新字符串。
@@ -1002,9 +1012,6 @@ func numDistinct(s, t string) int {
 		dp[i] = make([]int, n+1)
 		dp[i][0] = 1
 	}
-	for j := 1; j <= n; j++ {
-		dp[0][j] = 0
-	}
 	for i := 1; i <= m; i++ {
 		for j := 1; j <= n; j++ {
 			if s[i-1] == t[j-1] {
@@ -1018,6 +1025,7 @@ func numDistinct(s, t string) int {
 }
 
 /*
+leetcode 583
 1.12 两个字符串的删除操作
 给定两个单词word1和word2，找到使得word1和word2相同所需的最小步数，每步可以删除任意一个字符串中的一个字符。
 
@@ -1063,7 +1071,7 @@ func minDistance(word1, word2 string) int {
 		dp[i] = make([]int, n+1)
 		dp[i][0] = i
 	}
-	for j := 0; j <= n; j++ {
+	for j := 1; j <= n; j++ {
 		dp[0][j] = j
 	}
 	for i := 1; i <= m; i++ {
@@ -1107,6 +1115,7 @@ func minDistanceSimple(word1, word2 string) int {
 }
 
 /*
+leetcode 72
 1.13 编辑距离
 给你两个单词word1和word2，请你计算出将word1转换成word2所使用的最少操作数。
 
@@ -1165,7 +1174,7 @@ func minDistanceComplex(word1, word2 string) int {
 		dp[i] = make([]int, n+1)
 		dp[i][0] = i
 	}
-	for j := 0; j <= n; j++ {
+	for j := 1; j <= n; j++ {
 		dp[0][j] = j
 	}
 	for i := 1; i <= m; i++ {
@@ -1181,6 +1190,7 @@ func minDistanceComplex(word1, word2 string) int {
 }
 
 /*
+leetcode 647
 1.14 回文子串
 给定一个字符串，你的任务是计算这个字符串中有多少个回文子串。
 具有不同开始位置或结束位置的子串，即使是由相同的字符组成，也会被视作不同的子串。
@@ -1269,12 +1279,12 @@ func countSubStrings(s string) int {
 
 // countSubStringsSimple 时间复杂度O(N^2)，空间复杂度O(1)
 func countSubStringsSimple(s string) int {
-	sumNum := 0
-	for i := 0; i < len(s); i++ {
+	sumNum, n := 0, len(s)
+	for i := 0; i < n; i++ {
 		// 以i为中心
-		sumNum += Extend(s, i, i, len(s))
+		sumNum += Extend(s, i, i, n)
 		// 以和i+1为中心
-		sumNum += Extend(s, i, i+1, len(s))
+		sumNum += Extend(s, i, i+1, n)
 	}
 	return sumNum
 }
@@ -1291,8 +1301,39 @@ func Extend(s string, i, j, n int) int {
 }
 
 /*
-1.15 最长回文子序列
-给定一个字符串s，找到其中最长地回文子序列，并返回该序列的长度。可以假设s的最大长度为1000 。
+1.15 最长回文子序列I
+给定一个字符串s，找到其中最长的回文子序列，并返回该序列的长度。可以假设s的最大长度为1000 。
+示例 1: 输入: "bbbab" 输出: 3 一个最长回文子序列为 "bbb"。
+示例 2: 输入:"cbbd" 输出: 2  一个最长回文子序列为 "bb"。
+注意:这里的子序列必须是连续的
+提示：
+1 <= s.length <= 1000
+s 只包含小写英文字母
+*/
+
+func longestPalindromeSubSeqSimple(s string) int {
+	maxLength, n := 0, len(s)
+	for i := 0; i < n; i++ {
+		l1, r1 := getStartAndStop(s, i, i, n)
+		l2, r2 := getStartAndStop(s, i, i+1, n)
+		maxLength = Utils.Max(maxLength, Utils.Max(r1-l1+1, r2-l2+1))
+	}
+	return maxLength
+}
+
+func getStartAndStop(s string, i, j, n int) (int, int) {
+	for i >= 0 && j < n && s[i] == s[j] {
+		i--
+		j++
+	}
+	// 通过中心扩展法返回最长回文子序列的左右边界下标
+	return i + 1, j - 1
+}
+
+/*
+leetcode 516
+1.16 最长回文子序列II
+给定一个字符串s，找到其中最长的回文子序列，并返回该序列的长度。可以假设s的最大长度为1000 。
 示例 1: 输入: "bbbab" 输出: 4 一个可能的最长回文子序列为 "bbbb"。
 示例 2: 输入:"cbbd" 输出: 2 一个可能的最长回文子序列为 "bb"。
 注意:这里的子序列不要求是连续的
@@ -1357,7 +1398,7 @@ func longestPalindromeSubSeq(s string) int {
 
 /*
 leetcode 5. 最长回文子串
-1.16 给你一个字符串s，找到s中最长的回文子串。
+1.17 给你一个字符串s，找到s中最长的回文子串。
 
 示例1：
 输入：s = "babad"
@@ -1386,18 +1427,18 @@ func longestPalindrome(s string) string {
 	if n == 0 {
 		return ""
 	}
-	start, end := 0, 0
+	l, r := 0, 0
 	for i := 0; i < n; i++ {
 		l1, r1 := expandAroundCenter(s, i, i, n)
-		if r1-l1 > end-start {
-			start, end = l1, r1
+		l2, r2 := expandAroundCenter(s, i, i, n)
+		if r1-l1 > r-l {
+			l, r = l1, r1
 		}
-		l2, r2 := expandAroundCenter(s, i, i+1, n)
-		if r2-l2 > end-start {
-			start, end = l2, r2
+		if r2-l2 > r-l {
+			l, r = l2, r2
 		}
 	}
-	return s[start : end+1]
+	return s[l : r+1]
 }
 
 func expandAroundCenter(s string, i, j, n int) (int, int) {
@@ -1409,7 +1450,7 @@ func expandAroundCenter(s string, i, j, n int) (int, int) {
 }
 
 /*
-1.17 最长递增子序列的个数
+1.18 最长递增子序列的个数
 给定一个未排序的整数数组，找到最长递增子序列的个数。
 
 示例1:
@@ -1429,12 +1470,12 @@ func expandAroundCenter(s string, i, j, n int) (int, int) {
 本题可谓是1.1 最长递增子序列的进阶题目
 思路:动态规划
 1 确定dp数组以及下标的含义
-这道题目我们要维护两个动规数组。
+这道题我们要维护两个动规数组。
 dp[i]表示以nums[i]为结尾的数组最长递增子序列的长度为dp[i]
 count[i]表示以nums[i]为结尾的数组，最长递增子序列的个数为count[i]
 
 2 确定递推公式
-在1.1最长上升子序列 中，我们给出的状态转移方程是：
+在1.1最长上升子序列中，我们给出的状态转移方程是：
 if (nums[i] > nums[j]) dp[i] = max(dp[i], dp[j] + 1);
 即：位置i的最长递增子序列长度等于j从0到i-1各个位置的最长升序子序列+1的最大值。
 
@@ -1509,7 +1550,7 @@ func findNumberOfLIS(nums []int) int {
 
 /*
 leetcode 413. 等差数列划分
-1.18 如果一个数列至少有三个元素，并且任意两个相邻元素之差相同，则称该数列为等差数列。
+1.19 如果一个数列至少有三个元素，并且任意两个相邻元素之差相同，则称该数列为等差数列。
 例如，[1,3,5,7,9]、[7,7,7,7] 和 [3,-1,-5,-9] 都是等差数列。
 给你一个整数数组nums，返回数组nums中所有为等差数组的子数组个数。
 
@@ -1532,8 +1573,8 @@ leetcode 413. 等差数列划分
 /*
 思路: 从左到右遍历数组，找到尽可能长的等差数列l，然后统计l中符合要求的连续等差子数组的个数，而后更新下一个等差数列的起始位置以及等差，直到遍历到数组末尾位置。
 我们以数组nums := []int{1, 3, 5, 7, 9, 10, 13, 15, 17, 19, 20, 21, 22, 23, 24}为例。
-等差df初始值为nums[0]-nums[1]=2, 第一个等差数列l的起始位置start为0，从下标2开始遍历，待遍历到下标5时，
-发现nums[5]-nums[4]=1, 1!=df(2), 所以第一个尽可能长的等差数列l结束位置end就是i-1=4, 其长度length为
+等差df初始值为nums[1]-nums[0]=2, 第一个等差数列l的起始位置start为0，从下标2开始遍历，待遍历到下标5时，
+发现nums[5]-nums[4]=1, 1 != df(df=2), 所以第一个尽可能长的等差数列l结束位置end就是i-1=4, 其长度length为
 end-start+1=5，很明显5 > 3(最短等差子数组长度为3)，如果长度小于3，那就更新下一个等差数列l的起始位置
 start和等差df就好了。
 
@@ -1553,7 +1594,6 @@ sum(l) = (length-1)X(length-2)/2 = 4 X 3 / 2 = 6 个
 三个数会形成一个等差数列。以这个数组为例，下一个等差数列l明显是[13,15,17,19], 接下来的等差数列
 l[19,20,21,22,23,24]的起点start, nums[9]=19正好是上一个等差数列的终点end, nums[9]=19。需要注意的是
 连续等差数组的长度至少为3，所以如果i+1>=n,也就是下标越界，就可以退出循环了(i-1,i,i+1三个元素)。
-
 */
 
 // numberOfArithmeticSlices 时间复杂度O(N)，空间复杂度O(1)
@@ -1585,15 +1625,14 @@ func numberOfArithmeticSlices(nums []int) int {
 			if length >= 3 {
 				count += (length - 1) * (length - 2) / 2
 			}
-			// 更新下一个等差子数组的起点start=i-1
-			start = i - 1
 			// 因为等差子数组长度至少得是3，所以如果i+1越界，就退出循环
 			if i+1 >= n {
 				break
 			}
+			// 更新下一个等差子数组的起点start=i-1
+			start = i - 1
 			// 更新下一个等差子数组的等差df
 			df = nums[i] - nums[i-1]
-			continue
 		} else {
 			continue
 		}
