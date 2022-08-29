@@ -1674,7 +1674,11 @@ leetcode 446. 等差数列划分II - 子序列
 
 // numberOfArithmeticSlicesComplex 时间复杂度O(N^2)，空间复杂度O(N^2)
 func numberOfArithmeticSlicesComplex(nums []int) int {
-	dp := make([]map[int]int, len(nums))
+	n := len(nums)
+	if n < 3 {
+		return 0
+	}
+	dp := make([]map[int]int, n)
 	count := 0
 	for i, x := range nums {
 		dp[i] = make(map[int]int)
@@ -1735,12 +1739,30 @@ leetcode 91. 解码方法
 s 只包含数字，并且可能包含前导零。
 */
 
+/*
+思路: 动态规划
+对于给定的字符串s，设它的长度为n，其中的字符从左到右依次为s[1],s[2],⋯,s[n]。我们可以使用动态规划的方法计算出字符串
+s的解码方法数。
+具体地，设dp[i]表示字符串s的前i个字符s[1..i] 的解码方法数。在进行状态转移时，我们可以考虑最后一次解码使用了s中的哪些
+字符，那么会有下面的两种情况：
+第一种情况是我们使用了一个字符，即s[i] 进行解码，那么只要 s[i] !=0，它就可以被解码成 A∼I 中的某个字母。
+由于剩余的前i−1 个字符的解码方法数为dp[i-1]因此我们可以写出状态转移方程：
+dp[i]=dp[i-1], 其中s[i] != 0
+第二种情况是我们使用了两个字符，即s[i-1]和s[i]进行编码。与第一种情况类似，s[i−1] 不能等于0，并且s[i-1]和s[i]组成
+的整数必须小于等于26，这样它们就可以被解码成J∼Z中的某个字母。由于剩余的前i−2个字符的解码方法数为dp[i-2],因此我们
+可以写出状态转移方程：
+dp[i]=dp[i-2], 其中s[i-1] != 0 && 10 *s[i-1]+s[i]<=26
+需要注意的是，只有当i>1 时才能进行转移，否则s[i−1]不存在。
+将上面的两种状态转移方程在对应的条件满足时进行累加，即可得到dp[i]的值。在动态规划完成后，最终的答案即为dp[n]
+*/
+
 func numDecoding(s string) int {
 	if s[0] == '0' {
 		return 0
 	}
 	n := len(s)
 	dp := make([]int, n+1)
+	// 即空字符串可以有1种解码方法，解码出一个空字符串。
 	dp[0] = 1
 	for i := 1; i <= n; i++ {
 		if s[i-1] != '0' {
