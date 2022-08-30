@@ -10,6 +10,7 @@ import (
 )
 
 /*
+leetcode 198
 1.1 打家劫舍I
 你是一个专业的小偷，计划偷窃沿街的房屋。每间房内都藏有一定的现金，影响你偷窃的唯一制约因素就是相邻的房屋装有相互连通的防盗系统，如果两间相邻的
 房屋在同一晚上被小偷闯入，系统会自动报警。
@@ -99,8 +100,9 @@ func robSimple(nums []int) int {
 }
 
 /*
+leetcode 213
 1.2 打家劫舍II
-你是一个专业的小偷，计划偷窃沿街的房屋，每间房内都藏有一定的现金。这个地方所有的房屋都围成一圈 ，这意味着第一个房屋和最后一个房屋是紧挨着的。
+你是一个专业的小偷，计划偷窃沿街的房屋，每间房内都藏有一定的现金。这个地方所有的房屋都围成一圈，这意味着第一个房屋和最后一个房屋是紧挨着的。
 同时，相邻的房屋装有相互连通的防盗系统，如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警 。
 
 给定一个代表每个房屋存放金额的非负整数数组，计算你在不触动警报装置的情况下 ，能够偷窃到的最高金额。
@@ -243,22 +245,26 @@ val2 = max(left[0], left[1]) + max(right[0], right[1]);
 
 // robBinaryTree 时间复杂度：O(N) 每个节点只遍历了一次; 空间复杂度：O(logN) 算上递推系统栈的空间
 func robBinaryTree(root *Entity.TreeNode) int {
-	dp := robTree(root)
-	return Utils.Max(dp[0], dp[1])
-}
-
-func robTree(node *Entity.TreeNode) []int {
-	if node == nil {
-		return []int{0, 0}
+	if root == nil {
+		return 0
 	}
-	left := robTree(node.Left)
-	right := robTree(node.Right)
-	notRobCur := Utils.Max(left[0], left[1]) + Utils.Max(right[0], right[1])
-	robCur := node.Val + left[0] + right[0]
-	return []int{notRobCur, robCur}
+	var dfs func(*Entity.TreeNode) []int
+	dfs = func(node *Entity.TreeNode) []int {
+		if node == nil {
+			return []int{0, 0}
+		}
+		l := dfs(node.Left)
+		r := dfs(node.Right)
+		ng := Utils.Max(l[0], l[1]) + Utils.Max(r[0], r[1])
+		pos := node.Val + l[0] + r[0]
+		return []int{ng, pos}
+	}
+	res := dfs(root)
+	return Utils.Max(res[0], res[1])
 }
 
 /*
+面试题 17.16. 按摩师
 1.4 按摩师预约
 一个有名的按摩师会收到源源不断的预约请求，每个预约都可以选择接或不接。在每次预约服务之间要有休息时间，因此她
 不能接受相邻的预约。给定一个预约请求序列，替按摩师找到最优的预约集合（总预约时间最长），返回总的分钟数。
@@ -297,12 +303,14 @@ func massageArrange(nums []int) int {
 	case 2:
 		maxValue = Utils.Max(nums[0], nums[1])
 	default:
-		dp := make([]int, n)
+		dp := make([]int, 2)
 		dp[0], dp[1] = nums[0], Utils.Max(nums[0], nums[1])
 		for i := 2; i < n; i++ {
-			dp[i] = Utils.Max(dp[i-1], dp[i-2]+nums[i])
+			newMax := Utils.Max(dp[1], dp[0]+nums[i])
+			dp[0] = dp[1]
+			dp[1] = newMax
 		}
-		maxValue = dp[n-1]
+		maxValue = dp[1]
 	}
 	return maxValue
 }
@@ -377,14 +385,15 @@ leetcode 740. 删除并获得点数
 递推公式也就呼之欲出了。下面我们展开讲一下:
 
 1 确定dp数组及其下标含义
-dp[i]表示删除数组nums中的元素i(nums[i])所获得的最大点数为dp[i]。注意，此时你操作的数组元素范围是[0, i]。
+注意dp数组删除元素时，nums数组中的元素按照从小到大升序排序从0开始直到nums数组中的最大值maxValue
+dp[i]表示删除数组nums中的元素i所获得的最大点数为dp[i]。注意，此时你操作的数组元素范围是[0, i]。
 这里说一下dp数组长度，根据dp数组下标含义，dp数组最后一位应该是数组nums中的最大元素maxValue，表示删除
 maxValue所获最大点数，因此dp数组长度应为maxValue+1，同理sum数组的长度也应该是maxValue+1。
 2 确定递归公式
 sum数组中所有元素都是从0开始到数组nums中最大元素按升序排列的(nums[i]之和)，那么删除nums[i]所得到的的最大点数
 可以由以下两种情况推出:
 a 不删除元素i,所获得的点数就是dp[i-1]
-b 删除元素i,所获得的点数就是dp[i-2]+sum[i]。根据题意，值为i-1(nums[i]-1)的元素都会被删去，所以可供我们操作的
+b 删除元素i,所获得的点数就是dp[i-2]+sum[i]。根据题意，值为i-1的元素都会被删去，所以可供我们操作的
 元素范围就是[0,i-2]，所获得的最大点数就是dp[i-2]，删除元素i所获得的点数根据题意就是sum[i](如果不清楚就再看一下
 sum数组的定义)
 所以递推公式就是dp[i] = max(dp[i-1], dp[i-2]+sum[i])
@@ -411,20 +420,14 @@ func deleteAndEarn(nums []int) int {
 	if n == 1 {
 		return nums[0]
 	}
-	maxValue := nums[0]
-	for i := 1; i < n; i++ {
-		if maxValue < nums[i] {
-			maxValue = nums[i]
-		}
-	}
+	maxValue := Utils.MaxValueOfArray(nums)
 	sum := make([]int, maxValue+1)
 	for _, num := range nums {
 		sum[num] += num
 	}
 	dp := make([]int, maxValue+1)
 	dp[1] = sum[1]
-	dp[2] = Utils.Max(dp[1], dp[0]+sum[2])
-	for i := 3; i <= maxValue; i++ {
+	for i := 2; i <= maxValue; i++ {
 		dp[i] = Utils.Max(dp[i-1], dp[i-2]+sum[i])
 	}
 	return dp[maxValue]
@@ -443,20 +446,14 @@ func deleteAndEarnSimple(nums []int) int {
 	if n == 1 {
 		return nums[0]
 	}
-	maxValue := nums[0]
-	for i := 1; i < n; i++ {
-		if maxValue < nums[i] {
-			maxValue = nums[i]
-		}
-	}
+	maxValue := Utils.MaxValueOfArray(nums)
 	sum := make([]int, maxValue+1)
 	for _, num := range nums {
 		sum[num] += num
 	}
 	dp := make([]int, 2)
-	dp[0] = sum[1]
-	dp[1] = Utils.Max(dp[0], sum[2])
-	for i := 3; i <= maxValue; i++ {
+	dp[1] = sum[1]
+	for i := 2; i <= maxValue; i++ {
 		newMax := Utils.Max(dp[1], dp[0]+sum[i])
 		dp[0] = dp[1]
 		dp[1] = newMax
