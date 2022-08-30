@@ -4,8 +4,7 @@ package medium
 medium contains middle level problems
 */
 
-import  "AlgorithmPractise/Utils"
-
+import "AlgorithmPractise/Utils"
 
 /*
 1.1 leetcode 121 买卖股票的最佳时机
@@ -104,7 +103,7 @@ func MaxProfitSimple(prices []int) int {
 }
 
 /*
-1.2 leetcode 122 买卖股票的最佳时机
+1.2 leetcode 122 买卖股票的最佳时机II
 给定一个数组，它的第i个元素是一支给定股票第i天的价格。
 设计一个算法来计算你所能获取的最大利润。你可以尽可能地完成更多的交易（多次买卖一支股票）。
 注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。
@@ -285,7 +284,6 @@ func maxProfitTwo(prices []int) int {
 	for i := 0; i < n; i++ {
 		dp[i] = make([]int, 5)
 	}
-	dp[0][0] = 0
 	dp[0][1] = -prices[0]
 	dp[0][2] = 0
 	dp[0][3] = -prices[0]
@@ -319,7 +317,6 @@ func maxProfitTwoSimple(prices []int) int {
 /*
 1.4 leetcode 188 买卖股票的最佳时机IV
 给定一个整数数组 prices ，它的第i个元素 prices[i] 是一支给定的股票在第i天的价格。
-
 设计一个算法来计算你所能获取的最大利润。你最多可以完成k笔交易。
 注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。
 
@@ -359,6 +356,11 @@ j的状态表示为：
 当j为奇数，也就是此时为买入状态时，dp[i][j]可以由以下两种情况推出
 第i-1天买入股票，第i天不操作，维持买入状态，此时所得现金为dp[i-1][j]
 第i-1天卖出状态，第i天买入股票，此时所得现金为dp[i-1][j-1]-prices[i]
+注意:j为奇数是买入，那么j-1一定是偶数，为卖出状态
+有人可能会说如果j=1，也就是此时是第一次买入怎么办？没关系，如果此时是第一次买入，也就是j=1,
+那么dp[i-1][j-1]=dp[i-1][0], 0表示第i-1天是不操作的状态，而dp[i-1][0]=0
+那么第i天第一次买入股票所得现金就是-prices[i] = dp[i-1][0]-prices[i] = 0 - prices[i]
+所以公式也是成立的哈。
 
 所以当j%2==1时,递推公式为:
 dp[i][j] = max(dp[i-1][j], dp[i-1][j-1]-prices[i])
@@ -366,7 +368,7 @@ dp[i][j] = max(dp[i-1][j], dp[i-1][j-1]-prices[i])
 当j为偶数，也就是此时为卖出状态时，dp[i][j]可以由以下两种情况推出
 第i-1天卖出股票，第i天不操作，维持卖出状态，此时所得现金为dp[i-1][j]
 第i-1天买入状态，第i天卖出股票，此时所得现金为dp[i-1][j-1]+prices[i]
-
+注意:j为偶数是卖出，那么j-1一定是奇数，为买入状态
 所以当j%2==0时,递推公式为:
 dp[i][j] = max(dp[i-1][j], dp[i-1][j-1]+prices[i])
 

@@ -1,9 +1,8 @@
 package hard
 
-
 /*
 package hard contains complex dynamicProgramming problems
- */
+*/
 
 import "AlgorithmPractise/Utils"
 
@@ -24,8 +23,8 @@ import "AlgorithmPractise/Utils"
 // TrapBrutal 暴力 时间复杂度O(N^2),空间复杂度O(N)
 func TrapBrutal(height []int) int {
 	sum := 0
-	leftMax, rightMax := 0, 0
-	for i := 1; i < len(height)-1; i++ {
+	leftMax, rightMax, n := 0, 0, len(height)
+	for i := 1; i < n-1; i++ {
 		leftMax = Utils.MaxValueOfArray(height[:i])
 		rightMax = Utils.MaxValueOfArray(height[i+1:])
 		if leftMax > height[i] && rightMax > height[i] {
@@ -132,16 +131,24 @@ rightMax是从右往左计算，因此可以使用双指针和两个变量代替
 
 func trapSimple(height []int) int {
 	sum := 0
-	left, right := 0, len(height)-1
-	leftMax, rightMax := 0, 0
-	for left < right {
-		leftMax = Utils.Max(leftMax, height[left])
-		rightMax = Utils.Max(rightMax, height[right])
-		if height[left] < height[right] {
-			sum += leftMax - height[left]
+	n := len(height)
+	if n < 3 {
+		return sum
+	}
+	leftMax, rightMax := height[0], height[n-1]
+	left, right := 1, n-2
+	for i := 1; i < n-1; i++ {
+		if height[left-1] < height[right+1] {
+			leftMax = Utils.Max(leftMax, height[left-1])
+			if leftMax > height[left] {
+				sum += leftMax - height[left]
+			}
 			left++
 		} else {
-			sum += rightMax - height[right]
+			rightMax = Utils.Max(rightMax, height[right+1])
+			if rightMax > height[right] {
+				sum += rightMax - height[right]
+			}
 			right--
 		}
 	}
