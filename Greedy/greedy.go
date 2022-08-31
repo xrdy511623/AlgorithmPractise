@@ -9,21 +9,24 @@ import (
 )
 
 /*
+leetcode 455
 1.1 发放饼干
 假设你是一位很棒的家长，想要给你的孩子们一些小饼干。但是，每个孩子最多只能给一块饼干。
 
-对每个孩子 i，都有一个胃口值 g[i]，这是能让孩子们满足胃口的饼干的最小尺寸；并且每块饼干 j，都有一个尺寸 s[j] 。如果 s[j] >= g[i]，我们可以将
-这个饼干 j 分配给孩子 i ，这个孩子会得到满足。你的目标是尽可能满足越多数量的孩子，并输出这个最大数值。
+对每个孩子 i，都有一个胃口值 g[i]，这是能让孩子们满足胃口的饼干的最小尺寸；并且每块饼干 j，都有一个尺寸 s[j]。
+如果 s[j] >= g[i]，我们可以将这个饼干j分配给孩子i ，这个孩子会得到满足。你的目标是尽可能满足越多数量的孩子，
+并输出这个最大数值。
 
 示例1:
 输入: g = [1,2,3], s = [1,1]
-输出: 1 解释:你有三个孩子和两块小饼干，3个孩子的胃口值分别是：1,2,3。虽然你有两块小饼干，由于他们的尺寸都是1，你只能让胃口值是1的孩子满足。所以你
-应该输出1。
+输出: 1 解释:你有三个孩子和两块小饼干，3个孩子的胃口值分别是：1,2,3。虽然你有两块小饼干，由于他们的尺寸都是1，
+你只能让胃口值是1的孩子满足。所以你应该输出1。
 
 示例2:
 输入: g = [1,2], s = [1,2,3]
 输出: 2
-解释:你有两个孩子和三块小饼干，2个孩子的胃口值分别是1,2。你拥有的饼干数量和尺寸都足以让所有孩子满足。所以你应该输出2.
+解释:你有两个孩子和三块小饼干，2个孩子的胃口值分别是1,2。你拥有的饼干数量和尺寸都足以让所有孩子满足。所以你应该
+输出2.
 
 提示：
 1 <= g.length <= 3 * 10^4
@@ -44,11 +47,11 @@ import (
 func FindContentChildren(g []int, s []int) int {
 	sort.Ints(g)
 	sort.Ints(s)
-	index, count := len(s)-1, 0
-	for i := len(g) - 1; i >= 0; i-- {
-		if index >= 0 && g[i] <= s[index] {
+	j, count := len(s)-1, 0
+	for i := len(g) - 1; i >= 0 && j >= 0; i-- {
+		if g[i] <= s[j] {
 			count++
-			index--
+			j--
 		}
 	}
 	return count
@@ -69,13 +72,15 @@ func FindContentChildrenTwo(g []int, s []int) int {
 }
 
 /*
+leetcode 376
 1.2 摆动序列
-如果连续数字之间的差严格地在正数和负数之间交替，则数字序列称为摆动序列。第一个差（如果存在的话）可能是正数或负数。少于两个元素的序列也是摆动序列。
+如果连续数字之间的差严格地在正数和负数之间交替，则数字序列称为摆动序列。第一个差（如果存在的话）可能是正数或负数。
+少于两个元素的序列也是摆动序列。
+例如， [1,7,4,9,2,5] 是一个摆动序列，因为差值 (6,-3,5,-7,3) 是正负交替出现的。相反, [1,4,7,2,5]
+和 [1,7,4,5,5] 不是摆动序列，第一个序列是因为它的前两个差值都是正数，第二个序列是因为它的最后一个差值为零。
 
-例如， [1,7,4,9,2,5] 是一个摆动序列，因为差值 (6,-3,5,-7,3) 是正负交替出现的。相反, [1,4,7,2,5] 和 [1,7,4,5,5] 不是摆动序列，第一个序列是
-因为它的前两个差值都是正数，第二个序列是因为它的最后一个差值为零。
-
-给定一个整数序列，返回作为摆动序列的最长子序列的长度。 通过从原始序列中删除一些（也可以不删除）元素来获得子序列，剩下的元素保持其原始顺序。
+给定一个整数序列，返回作为摆动序列的最长子序列的长度。通过从原始序列中删除一些（也可以不删除）元素来获得子序列，
+剩下的元素保持其原始顺序。
 
 示例1:
 输入: [1,7,4,9,2,5]
@@ -85,7 +90,7 @@ func FindContentChildrenTwo(g []int, s []int) int {
 示例2:
 输入: [1,17,5,10,13,15,10,5,16,8]
 输出: 7
-解释: 这个序列包含几个长度为 7 摆动序列，其中一个可为[1,17,10,13,10,16,8]。
+解释: 这个序列包含几个长度为7的摆动序列，其中一个可为[1,17,10,13,10,16,8]。
 
 示例3:
 输入: [1,2,3,4,5,6,7,8,9]
@@ -120,6 +125,7 @@ func WiggleMaxLength(nums []int) int {
 }
 
 /*
+leetcode 剑指 Offer 42. 连续子数组的最大和
 1.3 最大子序和
 给定一个整数数组nums ，找到一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。
 示例:
@@ -193,6 +199,7 @@ func MaxProfit(prices []int) int {
 }
 
 /*
+leetcode 55
 1.5 跳跃游戏
 给定一个非负整数数组，你最初位于数组的第一个位置。数组中的每个元素代表你在该位置可以跳跃的最大长度。判断
 你是否能够到达最后一个位置。
@@ -216,16 +223,17 @@ func CanJump(nums []int) bool {
 		// i <= rightMost证明i这个位置可达，然后更新rightMost
 		if i <= rightMost {
 			rightMost = Utils.Max(i+nums[i], rightMost)
-			// 如果rightMost能延伸到数组末尾位置，证明可以跳到末尾
-			if rightMost >= n-1 {
-				return true
-			}
+		}
+		// 如果rightMost能延伸到数组末尾位置，证明可以跳到末尾
+		if rightMost >= n-1 {
+			return true
 		}
 	}
 	return false
 }
 
 /*
+leetcode 45
 1.6 跳跃游戏II
 给定一个非负整数数组，你最初位于数组的第一个位置。
 数组中的每个元素代表你在该位置可以跳跃的最大长度。
@@ -241,8 +249,8 @@ func CanJump(nums []int) bool {
 /*
 思路:反向查找出发位置
 我们的目标是到达数组的最后一个位置，因此我们可以考虑最后一步跳跃前所在的位置，该位置通过跳跃能够到达最后一个位置。
-如果有多个位置通过跳跃都能够到达最后一个位置，那么我们应该如何进行选择呢？直观上来看，我们可以「贪心」地选择距离最后一个位置最远的那个位置，
-也就是对应下标最小的那个位置。因此，我们可以从左到右遍历数组，选择第一个满足要求的位置。
+如果有多个位置通过跳跃都能够到达最后一个位置，那么我们应该如何进行选择呢？直观上来看，我们可以「贪心」地选择距离
+最后一个位置最远的那个位置，也就是对应下标最小的那个位置。因此，我们可以从左到右遍历数组，选择第一个满足要求的位置。
 找到最后一步跳跃前所在的位置之后，我们继续贪心地寻找倒数第二步跳跃前所在的位置，以此类推，直到找到数组的开始位置。
 */
 
@@ -285,7 +293,8 @@ func JumpSimple(nums []int) int {
 }
 
 /*
-1.7 跳跃游戏
+leetcode 1306
+1.7 跳跃游戏III
 这里有一个非负整数数组arr，你最开始位于该数组的起始下标start处。当你位于下标i处时，你可以跳到i + arr[i]
 或者 i - arr[i]。
 
@@ -323,7 +332,7 @@ func CanReach(arr []int, start int) bool {
 	used := make(map[int]bool)
 	used[start] = true
 	queue := []int{start}
-	for len(queue) != 0 {
+	for len(queue) > 0 {
 		pos := queue[0]
 		queue = queue[1:]
 		// 记录下一个可能的位置(有两个，pos+arr[pos], pos-arr[pos])
@@ -346,9 +355,10 @@ func CanReach(arr []int, start int) bool {
 }
 
 /*
+leetcode 1005
 1.8 K次取反后最大化的数组和
-给定一个整数数组 A，我们只能用以下方法修改该数组：我们选择某个索引i并将A[i]替换为-A[i]，然后总共重复这个过程K次。（我们可以多次选择同一个索引i。）
-以这种方式修改数组后，返回数组可能的最大和。
+给定一个整数数组 A，我们只能用以下方法修改该数组：我们选择某个索引i并将A[i]替换为-A[i]，然后总共重复这个过程K次。
+（我们可以多次选择同一个索引i。）以这种方式修改数组后，返回数组可能的最大和。
 
 示例1：
 输入：A = [4,2,3], K = 1
@@ -373,9 +383,9 @@ func CanReach(arr []int, start int) bool {
 
 /*
 思路:
-由于我们必须反转k次，那么有不止k个负数的话，我们要反转里面最小的k个，这样数组和sum最大。有不到k个负数的话（数组会变为全部为正），
-剩下的次数就反复反转所有数里面绝对值最小的那个(如果剩下偶数次负负得正所以sum不变，奇数次相当于只反转一次最小的那个）
-[-8,-5,-5,-3,-2,3]
+由于我们必须反转k次，那么有不止k个负数的话，我们要反转里面最小的k个，这样数组和sum最大。有不到k个负数的话
+(数组会变为全部为正)，剩下的次数就反复反转所有数里面绝对值最小的那个(如果剩下偶数次负负得正所以sum不变，奇数次
+相当于只反转一次最小的那个）[-8,-5,-5,-3,-2,3]
 */
 
 // LargestSumAfterKNegations 时间复杂度O(N),空间复杂度O(1)
@@ -395,7 +405,7 @@ func LargestSumAfterKNegations(nums []int, k int) int {
 			sum += num
 		}
 	}
-	// 如果k为正数，而且是偶数，那么此时任选一个正数j取反k次得到的值还是j本身, 之前遍历数组时累加的值
+	// 如果此时k为正数，而且是偶数，那么此时任选一个正数j取反k次得到的值还是j本身, 之前遍历数组时累加的值
 	// 也是j，所以可以直接返回sum
 	if k > 0 && k%2 == 1 {
 		return sum - 2*minAbs
@@ -487,8 +497,8 @@ sum(0,i)+sum(i+1,j)+sum(j+1, k-1)+sum(k,n-1)>=0
 
 // CanCompleteCircuit 时间复杂度O(N),空间复杂度O(1)
 func CanCompleteCircuit(gas []int, cost []int) int {
-	start, totalSum, curSum := 0, 0, 0
-	for i := 0; i < len(gas); i++ {
+	start, totalSum, curSum, n := 0, 0, 0, len(gas)
+	for i := 0; i < n; i++ {
 		totalSum += gas[i] - cost[i]
 		curSum += gas[i] - cost[i]
 		if curSum < 0 {
@@ -503,12 +513,13 @@ func CanCompleteCircuit(gas []int, cost []int) int {
 }
 
 /*
+leetcode 135
 1.10 分发糖果
 老师想给孩子们分发糖果，有N个孩子站成了一条直线，老师会根据每个孩子的表现，预先给他们评分。
 
 你需要按照以下要求，帮助老师给这些孩子分发糖果：
 
-每个孩子至少分配到 1 个糖果。
+每个孩子至少分配到1个糖果。
 相邻的孩子中，评分高的孩子必须获得更多的糖果。
 那么这样下来，老师至少需要准备多少颗糖果呢？
 
@@ -533,7 +544,7 @@ func CanCompleteCircuit(gas []int, cost []int) int {
 
 局部最优可以推出全局最优。
 
-如果ratings[i]>ratings[i-1] 那么[i]的糖 一定要比[i-1]的糖多一个，所以贪心：candyVec[i]=candyVec[i-1]+1
+如果ratings[i]>ratings[i-1] 那么[i]的糖一定要比[i-1]的糖多一个，所以贪心：candyVec[i]=candyVec[i-1]+1
 
 再确定左孩子大于右孩子的情况（从后向前遍历）
 
@@ -580,6 +591,7 @@ func DistributeCandy(ratings []int) int {
 }
 
 /*
+leetcode 860
 1.11 柠檬水找零
 在柠檬水摊上，每一杯柠檬水的售价为 5 美元。
 
@@ -625,7 +637,7 @@ bills[i] 不是 5 就是 10 或是 20
 */
 
 /*
-只需要维护两种金额的数量，5，10。
+只需要维护两种金额的数量，5和10。
 
 有如下三种情况：
 情况一：账单是5，直接收下。
@@ -678,6 +690,7 @@ func LemonadeChange(bills []int) bool {
 }
 
 /*
+leetcode 406
 1.12 根据身高重建队列
 假设有打乱顺序的一群人站成一个队列，数组people表示队列中一些人的属性（不一定按顺序）。每个people[i]=[hi, ki]
 表示第i个人的身高为hi ，前面正好有ki个身高大于或等于hi的人。
@@ -731,6 +744,7 @@ func ReconstructQueue(people [][]int) [][]int {
 }
 
 /*
+leetcode 452
 1.13 用最少数量的箭引爆气球
 在二维空间中有许多球形的气球。对于每个气球，提供的输入是水平方向上，气球直径的开始和结束坐标。由于它是水平的，
 所以纵坐标并不重要，因此只要知道开始和结束的横坐标就足够了。开始坐标总是小于结束坐标。
@@ -791,6 +805,7 @@ func FindMinArrowShots(points [][]int) int {
 }
 
 /*
+leetcode 435 无重叠区间
 1.14 给定一个区间的集合，找到需要移除区间的最小数量，使剩余区间互不重叠。
 注意: 可以认为区间的终点总是大于它的起点。 区间[1,2]和[2,3] 的边界相互“接触”，但没有相互重叠。
 
@@ -897,8 +912,9 @@ func EraseOverlapIntervals(intervals [][]int) int {
 }
 
 /*
+leetcode 763
 1.15 划分字母区间
-字符串 S 由小写字母组成。我们要把这个字符串划分为尽可能多的片段，同一字母最多出现在一个片段中。返回一个表示
+字符串S由小写字母组成。我们要把这个字符串划分为尽可能多的片段，同一字母最多出现在一个片段中。返回一个表示
 每个字符串片段的长度的列表。
 
 示例： 输入：S = "ababcbacadefegdehijhklij" 输出：[9,7,8] 解释： 划分结果为 "ababcbaca", "defegde",
@@ -923,7 +939,7 @@ S只包含小写字母'a' 到 'z' 。
 
 // PartitionLabels 时间复杂度O(N), 空间复杂度O(1)
 func PartitionLabels(s string) []int {
-	var res []int
+	res := []int{}
 	positionMap := make(map[byte]int)
 	left, right, size := 0, 0, len(s)
 	for i := 0; i < size; i++ {
@@ -939,10 +955,10 @@ func PartitionLabels(s string) []int {
 	return res
 }
 
-// 用数组替代map来存储每个字符出现的最远位置，更节省空间一些，可以写成下面这样
+// PartitionLabelsTwo 用数组替代map来存储每个字符出现的最远位置，更节省空间一些，可以写成下面这样
 func PartitionLabelsTwo(s string) []int {
-	var res []int
-	marks := make([]int, 26)
+	res := []int{}
+	marks := [26]int{}
 	size := len(s)
 	for i := 0; i < size; i++ {
 		marks[s[i]-'a'] = i
@@ -959,6 +975,7 @@ func PartitionLabelsTwo(s string) []int {
 }
 
 /*
+leetcode 56
 1.16 合并区间
 给出一个区间的集合，请合并所有重叠的区间。
 
@@ -991,21 +1008,22 @@ func Merge(intervals [][]int) [][]int {
 	sort.Slice(intervals, func(i, j int) bool {
 		return intervals[i][0] < intervals[j][0]
 	})
-	var merged [][]int
-	for i := 0; i < n; i++ {
+	merged := [][]int{intervals[0]}
+	for i := 1; i < n; i++ {
 		size := len(merged)
-		// 若merged为空或merged数组末尾元素不与intervals[i]重叠，则将intervals[i]添加到merged中
-		if size == 0 || merged[size-1][1] < intervals[i][0] {
-			merged = append(merged, intervals[i])
-		} else {
-			// 否则将merged数组末尾元素与intervals[i]合并
+		// 如果有重叠，则将merged末尾元素的右端点更新为较大值
+		if intervals[i][0] <= merged[size-1][1] {
 			merged[size-1][1] = Utils.Max(merged[size-1][1], intervals[i][1])
+		} else {
+			// 若不重叠，则直接追加到merged里面
+			merged = append(merged, intervals[i])
 		}
 	}
 	return merged
 }
 
 /*
+leetcode 1288
 1.17 删除被覆盖区间
 给你一个区间列表，请你删除列表中被其他区间所覆盖的区间。
 只有c <= a且b <= d时，我们才认为区间[a,b)被区间[c,d) 覆盖。
@@ -1080,6 +1098,7 @@ func removeCoveredIntervals(intervals [][]int) int {
 }
 
 /*
+leetcode 738
 1.18 单调递增的数字
 给定一个非负整数N，找出小于或等于N的最大的整数，同时这个整数需要满足其各个位数上的数字是单调递增。
 （当且仅当每个相邻位数上的数字 x 和 y 满足 x <= y 时，我们称这个整数是单调递增的。）
@@ -1099,7 +1118,7 @@ func removeCoveredIntervals(intervals [][]int) int {
 /*
 思路:
 题目要求小于等于N的最大单调递增的整数，那么拿一个两位的数字来举例。
-例如：98，一旦出现strNum[i - 1] > strNum[i]的情况（非单调递增），首先想让strNum[i - 1]--，然后
+例如：98，一旦出现strNum[i - 1] > strNum[i]的情况（非单调递增），首先先让strNum[i - 1]--，然后
 strNum[i]给为9，这样这个整数就是89，即小于98的最大的单调递增整数。
 
 这一点如果想清楚了，这道题就好办了。
@@ -1144,6 +1163,7 @@ func MonotoneIncreasingDigits(n int) int {
 }
 
 /*
+leetcode 714
 1.19 买卖股票的最佳时机含手续费
 给定一个整数数组prices，其中第i个元素代表了第i天的股票价格 ；非负整数fee代表了交易股票的手续费用。
 你可以无限次地完成交易，但是你每笔交易都需要付手续费。如果你已经购买了一个股票，在卖出它之前你就不能再继续
@@ -1202,6 +1222,7 @@ func MaxProfitIncludeFee(prices []int, fee int) int {
 }
 
 /*
+leetcode 968
 1.20 监控二叉树
 给定一个二叉树，我们在树的节点上安装摄像头。
 节点上的每个摄影头都可以监视其父对象、自身及其直接子对象。
