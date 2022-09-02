@@ -37,9 +37,9 @@ leetcode 77. 组合
 */
 
 /*
-回溯算法其实是暴力搜索，要降低算法时间复杂度，必须尽可能的剪枝，也就是尽可能的避免不必要的遍历
+回溯算法其实是暴力搜索，要降低算法时间复杂度，必须尽可能的剪枝，也就是尽可能避免不必要的遍历
 本题剪枝的关键是探讨搜索起点start的最大值，也就是上限。
-例如：n = 6 ，k = 4。
+例如：n = 6，k = 4。
 path.size() == 1 时，接下来要选择3个数，搜索起点最大是4，最后一个被选的组合是 [4, 5, 6]；
 path.size() == 2 时，接下来要选择2个数，搜索起点最大是5，最后一个被选的组合是 [5, 6]；
 path.size() == 3 时，接下来要选择1个数，搜索起点最大是6，最后一个被选的组合是 [6]；
@@ -235,7 +235,7 @@ candidates中的数字可以无限制重复被选取。
 func CombinationSum(candidates []int, target int) [][]int {
 	var res [][]int
 	var path []int
-	sum := 0
+	sum, n := 0, len(candidates)
 	var backTrack func(int)
 	backTrack = func(start int) {
 		// 递归终止条件
@@ -250,7 +250,7 @@ func CombinationSum(candidates []int, target int) [][]int {
 		if sum > target {
 			return
 		}
-		for i := start; i < len(candidates) && sum+candidates[i] <= target; i++ {
+		for i := start; i < n; i++ {
 			sum += candidates[i]
 			path = append(path, candidates[i])
 			// 因为candidates中的元素可以无限制重复选取，所以这里不再是i+1了
@@ -324,7 +324,7 @@ func CombinationSumTwo(candidates []int, target int) [][]int {
 			res = append(res, temp)
 		}
 		// 剪枝:sum+candidates[i]<=target
-		for i := start; i < len(candidates) && sum+candidates[i] <= target; i++ {
+		for i := start; i < len(candidates); i++ {
 			// 同一树层去重
 			if i > start && candidates[i] == candidates[i-1] {
 				continue
