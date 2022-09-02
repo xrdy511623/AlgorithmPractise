@@ -52,15 +52,14 @@ func PartitionSubString(s string) [][]string {
 	return res
 }
 
-// IsPalindrome,双指针法判断s[start:end+1]是否是回文字符串
+// IsPalindrome 双指针法判断s[start:end+1]是否是回文字符串
 func IsPalindrome(s string, start, end int) bool {
-	i, j := start, end
-	for i < j {
-		if s[i] != s[j] {
+	for start < end {
+		if s[start] != s[end] {
 			return false
 		}
-		i++
-		j--
+		start++
+		end--
 	}
 	return true
 }
@@ -101,6 +100,9 @@ func RestoreIpAddresses(s string) []string {
 	var res []string
 	var path []string
 	size := len(s)
+	if size < 4 {
+		return res
+	}
 	var backTrack func(int)
 	backTrack = func(start int) {
 		// 剪枝，若path长度为4段但start未移动到s的末尾位置或者path长度大于4
@@ -111,6 +113,7 @@ func RestoreIpAddresses(s string) []string {
 		if len(path) == 4 {
 			ip := path[0] + "." + path[1] + "." + path[2] + "." + path[3]
 			res = append(res, ip)
+			return
 		}
 		for i := start; i < size; i++ {
 			// 剪枝，path中的每一个子串长度都不能超过3，而且当前path的长度必须小于4
