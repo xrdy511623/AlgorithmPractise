@@ -21,10 +21,11 @@ leetcode 78. 子集
 func Subsets(nums []int) [][]int {
 	var res [][]int
 	var path []int
+	n := len(nums)
 	var backTrack func(int)
 	backTrack = func(start int) {
 		// 递归终止条件，当start移动到数组nums末尾元素后
-		if start > len(nums) {
+		if start > n {
 			return
 		}
 		// 收集树中所有节点的结果
@@ -32,7 +33,7 @@ func Subsets(nums []int) [][]int {
 		copy(temp, path)
 		// 此处不能return，因为子集要收集所有树节点的结果
 		res = append(res, temp)
-		for i := start; i < len(nums); i++ {
+		for i := start; i < n; i++ {
 			// 处理每一个元素
 			path = append(path, nums[i])
 			// 递归
@@ -105,43 +106,43 @@ leetcode 491. 递增子序列
 给定数组的长度不会超过15。
 数组中的整数范围是 [-100,100]。
 给定数组中可能包含重复数字，相等的数字应该被视为递增的一种情况。
- */
+*/
 
 /*
 本题要求取得所有的升序子序列，所以不能像组合问题 1.5组合总和II那样，对数组先排序然后去重。
 极端情况下，如果数组是降序序列，那么符合要求的子序列为0，如果先排序会得到很多不满足题意的解。
 只能是同一层循环遍历时跳过已经选取过的重复元素以及无法作为升序子序列path最大值的元素。
- */
+*/
 
 func FindSubsequences(nums []int) [][]int {
 	var res [][]int
 	var path []int
 	size := len(nums)
 	var backTrack func(int)
-	backTrack = func(start int){
+	backTrack = func(start int) {
 		// 剪枝，当start移动到数组nums末尾位置后
-		if start > size{
+		if start > size {
 			return
 		}
 		// 递归终止条件
-		if len(path) >= 2{
+		if len(path) >= 2 {
 			temp := make([]int, len(path))
 			copy(temp, path)
 			res = append(res, temp)
 		}
 		// 每层都新建一个哈希表用于去重
 		used := make(map[int]bool)
-		for i:=start;i<size;i++{
+		for i := start; i < size; i++ {
 			// 剪枝，如果待加入path的元素nums[i]小于path中最大的数，那么nums[i]加入后便无法
 			// 成为升序序列，所以此种情况要跳过；或者nums[i]在同一层已经使用过也需要跳过
-			if (len(path) > 0 && nums[i] < path[len(path)-1]) || used[nums[i]]{
+			if (len(path) > 0 && nums[i] < path[len(path)-1]) || used[nums[i]] {
 				continue
 			}
 			used[nums[i]] = true
 			// 处理每一个元素
 			path = append(path, nums[i])
 			// 递归
-			backTrack(i+1)
+			backTrack(i + 1)
 			// 回溯
 			path = path[:len(path)-1]
 		}
