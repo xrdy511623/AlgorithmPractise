@@ -145,6 +145,7 @@ func FindSubsequences(nums []int) [][]int {
 			backTrack(i + 1)
 			// 回溯
 			path = path[:len(path)-1]
+			// 注意用于去重的哈希表used不需要再回溯，因为每一层的哈希表会清空后重建
 		}
 	}
 	backTrack(0)

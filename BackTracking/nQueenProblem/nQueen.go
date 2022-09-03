@@ -96,7 +96,7 @@ func IsValid(row, column, n int, board [][]string) bool {
 }
 
 /*
-leetcode 52. N皇后 II
+leetcode 52. N皇后II
 1.2 n皇后问题研究的是如何将n个皇后放置在n × n的棋盘上，并且使皇后彼此之间不能相互攻击。
 给你一个整数n，返回n皇后问题不同的解决方案的数量。
 */
