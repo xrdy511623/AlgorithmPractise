@@ -532,10 +532,10 @@ func MinSubArrayLen(target int, nums []int) int {
 	// 和大于target的连续子数组的最小长度，初始值设为最大的int，便于后续迭代
 	minLength := math.MaxInt32
 	// 连续子数组之和，初始值为0
-	sum := 0
+	sum, n := 0, len(nums)
 	// 滑动窗口的起始位置,初始值0
 	start := 0
-	for end := 0; end < len(nums); end++ {
+	for end := 0; end < n; end++ {
 		sum += nums[end]
 		for sum >= target {
 			// 计算窗口大小，即满足和大于等于target的子数组长度

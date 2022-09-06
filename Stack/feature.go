@@ -103,12 +103,12 @@ func (q *MyQueue) Push(x int) {
 // Pop Removes the element from in front of queue and returns that element.
 func (q *MyQueue) Pop() int {
 	if len(q.OutputStack) == 0 {
-		for len(q.InputStack) != 0 {
+		for len(q.InputStack) > 0 {
 			q.OutputStack = append(q.OutputStack, q.InputStack[0])
 			q.InputStack = q.InputStack[1:]
 		}
 	} else {
-		if len(q.InputStack) != 0 {
+		if len(q.InputStack) > 0 {
 			q.OutputStack = append(q.OutputStack, q.InputStack[0])
 		}
 	}
@@ -120,12 +120,12 @@ func (q *MyQueue) Pop() int {
 // Peek Get the front element.
 func (q *MyQueue) Peek() int {
 	if len(q.OutputStack) == 0 {
-		for len(q.InputStack) != 0 {
+		for len(q.InputStack) > 0 {
 			q.OutputStack = append(q.OutputStack, q.InputStack[0])
 			q.InputStack = q.InputStack[1:]
 		}
 	} else {
-		if len(q.InputStack) != 0 {
+		if len(q.InputStack) > 0 {
 			q.OutputStack = append(q.OutputStack, q.InputStack[0])
 		}
 	}
@@ -200,7 +200,8 @@ leetcode 1047. 删除字符串中的所有相邻重复项
 
 func RemoveDuplicates(s string) string {
 	var stack []byte
-	for i := 0; i < len(s); i++ {
+	n := len(s)
+	for i := 0; i < n; i++ {
 		if len(stack) > 0 && stack[len(stack)-1] == s[i] {
 			stack = stack[:len(stack)-1]
 		} else {
@@ -243,14 +244,11 @@ s中只含有小写英文字母。
 
 /*
 思路:栈+双指针
-初始慢指针j等于 0。
-使用快指针i遍历字符串：
-进入循环后第一个操作是
-令s[i] = s[j]。
-如果j > 0 && s[j] = s[j - 1]，则栈顶元素加 1。
-否则，栈中压入 1。
+初始慢指针j等于0。使用快指针i遍历字符串：
+进入循环后第一个操作是令s[i] = s[j]。
+如果j > 0 && s[j] = s[j - 1]，则栈顶元素加1。否则，栈中压入1。
 如果计数器等于k，j = j - k，并弹出栈顶元素。
-返回字符串的前j个字符。
+返回字符串前j个字符。
 */
 
 func RemoveDuplicatesComplex(s string, k int) string {
@@ -266,12 +264,13 @@ func RemoveDuplicatesComplex(s string, k int) string {
 		if j == 0 || ss[j] != ss[j-1] {
 			stack = append(stack, 1)
 		} else {
-			increment := stack[len(stack)-1] + 1
+			length := len(stack)
+			increment := stack[length-1] + 1
 			if increment == k {
 				j -= k
-				stack = stack[:len(stack)-1]
+				stack = stack[:length-1]
 			} else {
-				stack[len(stack)-1] = increment
+				stack[length-1] = increment
 			}
 		}
 		j++
@@ -398,9 +397,9 @@ s[i] 为 '(' 或 ')'
 
 // LongestValidParentheses 时间复杂度O(N), 空间复杂度O(N)
 func LongestValidParentheses(s string) int {
-	maxLength := 0
+	maxLength, n := 0, len(s)
 	stack := []int{-1}
-	for i := 0; i < len(s); i++ {
+	for i := 0; i < n; i++ {
 		if s[i] == '(' {
 			stack = append(stack, i)
 		} else {
@@ -433,8 +432,8 @@ func LongestValidParentheses(s string) int {
 
 // LongestValidParenthesesSimple 时间复杂度O(N), 空间复杂度O(1)
 func LongestValidParenthesesSimple(s string) int {
-	left, right, maxLength := 0, 0, 0
-	for i := 0; i < len(s); i++ {
+	left, right, maxLength, n := 0, 0, 0, len(s)
+	for i := 0; i < n; i++ {
 		if s[i] == '(' {
 			left++
 		} else {
@@ -447,7 +446,7 @@ func LongestValidParenthesesSimple(s string) int {
 		}
 	}
 	left, right = 0, 0
-	for i := len(s) - 1; i >= 0; i-- {
+	for i := n - 1; i >= 0; i-- {
 		if s[i] == '(' {
 			left++
 		} else {

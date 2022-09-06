@@ -38,12 +38,12 @@ func (s *MyStack) Push(x int) {
 
 func (s *MyStack) Pop() int {
 	if len(s.OutputQueue) == 0 {
-		for len(s.InputQueue) != 0 {
+		for len(s.InputQueue) > 0 {
 			s.OutputQueue = append(s.OutputQueue, s.InputQueue[0])
 			s.InputQueue = s.InputQueue[1:]
 		}
 	} else {
-		if len(s.InputQueue) != 0 {
+		if len(s.InputQueue) > 0 {
 			s.OutputQueue = append(s.OutputQueue, s.InputQueue[0])
 		}
 	}
@@ -54,12 +54,12 @@ func (s *MyStack) Pop() int {
 
 func (s *MyStack) Top() int {
 	if len(s.OutputQueue) == 0 {
-		for len(s.InputQueue) != 0 {
+		for len(s.InputQueue) > 0 {
 			s.OutputQueue = append(s.OutputQueue, s.InputQueue[0])
 			s.InputQueue = s.InputQueue[1:]
 		}
 	} else {
-		if len(s.InputQueue) != 0 {
+		if len(s.InputQueue) > 0 {
 			s.OutputQueue = append(s.OutputQueue, s.InputQueue[0])
 		}
 	}
@@ -161,8 +161,9 @@ func (sq *StrictQueue) Size() int {
 // MaxSlidingWindow 时间复杂度O(N), 空间复杂度O(N)
 func MaxSlidingWindow(nums []int, k int) []int {
 	var res []int
+	n := len(nums)
 	// 处理特殊情况
-	if len(nums) == 0 {
+	if k > n {
 		return res
 	}
 	sq := NewStrictQueue()
@@ -172,7 +173,7 @@ func MaxSlidingWindow(nums []int, k int) []int {
 	}
 	// 将前k个元素中的最大值添加到结果集合中
 	res = append(res, sq.Peek())
-	for i := k; i < len(nums); i++ {
+	for i := k; i < n; i++ {
 		// 队列移除最前面元素
 		sq.Pop(nums[i-k])
 		// 向队列添加新元素，也就是当前元素nums[i]

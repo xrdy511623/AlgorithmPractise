@@ -69,7 +69,7 @@ func FindIntersection(nums1 []int, nums2 []int) []int {
 		if visited[num] {
 			res = append(res, num)
 			// 去重
-			visited[num] = false
+			delete(visited, num)
 		}
 	}
 	return res
@@ -253,10 +253,11 @@ func TwoSum(nums []int, target int) []int {
 		}
 		hashMap[v] = i
 	}
-	return nil
+	return []int{}
 }
 
 /*
+leetcode 454
 1.6 四数相加II
 给你四个整数数组nums1、nums2、nums3 和 nums4 ，数组长度都是n ，请你计算有多少个元组 (i, j, k, l)
 能满足：
@@ -510,7 +511,7 @@ func SubarraySumSimple(nums []int, k int) int {
 
 /*
 思路二:前缀和+哈希表优化
-我们可以基于方法一利用数据结构进行进一步的优化，我们知道方法一的瓶颈在于对每个i，我们需要枚举所有的j来判断是否符合
+我们可以基于方法一利用数据结构进行进一步优化，我们知道方法一的瓶颈在于对每个i，我们需要枚举所有的j来判断是否符合
 条件，这一步是否可以优化呢？答案是可以的。
 
 我们定义pre[i]为[0..i]里所有数的和，则pre[i]可以由pre[i−1]递推而来，即：
@@ -532,10 +533,10 @@ mp[pre[i]−k]即可在O(1) 时间内得到。最后的答案即为所有下标�
 
 // SubarraySum 时间复杂度O(N)，空间复杂度O(N)
 func SubarraySum(nums []int, k int) int {
-	pre, count := 0, 0
+	pre, count, n := 0, 0, len(nums)
 	preSumMap := make(map[int]int)
 	preSumMap[0] = 1
-	for i := 0; i < len(nums); i++ {
+	for i := 0; i < n; i++ {
 		pre += nums[i]
 		if v, ok := preSumMap[pre-k]; ok {
 			count += v
