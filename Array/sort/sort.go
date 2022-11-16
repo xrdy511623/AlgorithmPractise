@@ -701,7 +701,7 @@ func FindKthLargest(nums []int, k int) int {
 	}
 	var sortedArray []int
 	for i := 0; i < n; i++ {
-		value, _ := mh.Extract()
+		value := mh.Extract()
 		sortedArray = append(sortedArray, value)
 	}
 	return sortedArray[k-1]
@@ -1302,4 +1302,55 @@ func merge(nums1 []int, m int, nums2 []int, n int) {
 		nums1[tail] = cur
 		tail--
 	}
+}
+
+/*
+如果数组是单调递增或单调递减的，那么它是单调的。
+
+如果对于所有 i <= j，nums[i] <= nums[j]，那么数组nums是单调递增的。
+如果对于所有 i <= j，nums[i]> = nums[j]，那么数组nums是单调递减的。
+
+当给定的数组nums是单调数组时返回true，否则返回false。
+
+示例1：
+输入：nums = [1,2,2,3]
+输出：true
+
+示例2：
+输入：nums = [6,5,4,4]
+输出：true
+
+示例3：
+输入：nums = [1,3,2]
+输出：false
+*/
+
+func isMonotonic(nums []int) bool {
+	if checkAscend(nums) || checkDescend(nums) {
+		return true
+	} else {
+		return false
+	}
+}
+
+func checkAscend(nums []int) bool {
+	flag := true
+	for i, n := 0, len(nums)-1; i < n; i++ {
+		if nums[i] > nums[i+1] {
+			flag = false
+			break
+		}
+	}
+	return flag
+}
+
+func checkDescend(nums []int) bool {
+	flag := true
+	for i, n := 0, len(nums)-2; i < n; i++ {
+		if nums[i] < nums[i+1] {
+			flag = false
+			break
+		}
+	}
+	return flag
 }
