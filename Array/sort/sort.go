@@ -1354,3 +1354,16 @@ func checkDescend(nums []int) bool {
 	}
 	return flag
 }
+
+func isMonotonicSimple(nums []int) bool {
+	asc, desc := true, true
+	for i, n := 0, len(nums)-1; i < n; i++ {
+		if nums[i] > nums[i+1] {
+			asc = false
+		}
+		if nums[i] < nums[i+1] {
+			desc = false
+		}
+	}
+	return asc || desc
+}
