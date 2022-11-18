@@ -3,7 +3,9 @@ package feature
 import (
 	"AlgorithmPractise/Utils"
 	"math"
+	"math/rand"
 	"strings"
+	"time"
 )
 
 /*
@@ -1228,4 +1230,86 @@ func antiSpiralOrder(matrix [][]int) []int {
 		right--
 	}
 	return order
+}
+
+/*
+公司有n个组，每组人数相同(至少有一个人)，现在需要进行随机地组队吃饭。
+要求:
+1 两两一队，不能落单，落单则三人一队
+2 一个人在所有队伍中只出现一次
+3 队伍中至少包含两个组的成员
+4 随机组队，重复执行程序得到的结果不一样
+*/
+
+var GroupList = [][]string{
+	{"小名", "小红", "小马", "小丽", "小强"},
+	{"大壮", "大力", "大1", "大2", "大3"},
+	{"阿花", "阿朵", "阿蓝", "阿紫", "阿红"},
+	{"A", "B", "C", "D", "E"},
+	{"一", "二", "三", "四", "五"},
+	{"建国", "建军", "建民", "建超", "建跃"},
+	{"爱民", "爱军", "爱国", "爱辉", "爱月"},
+}
+
+/*
+解题思路：
+1、首先从二维数组中随机选择一个数组，从选择的数组中随机选择一个元素。
+2、题目要求两两一对，而且不能是同一组，所以必须记住上一个一维数组的key，也就是last_index
+3、循环的结束的条件，则是所有一维数组的元素都取出来了，用empty_num记录空数组个数
+4、把满足条件的元素记录到result中
+*/
+
+func constructGroup() [][]string {
+	res := [][]string{[]string{}}
+	// 记录二维数组及其一维数组的长度
+	m, n := len(GroupList), len(GroupList[0])
+	// 记录上一个一维数组的位置，初始值为-1；记录空数组个数，初始值为0
+	lastIndex, emptyNum := -1, 0
+	// 初始化随机种子
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	for emptyNum < m {
+		// 从二维数组随机选一个一维数组
+		rand_m := r.Intn(m)
+		// 避开上一次选中的一维数组
+		if lastIndex == rand_m {
+			continue
+		}
+		// 记录随机元素在选中的随机一维数组的下标
+		rand_n := r.Intn(n)
+		// 如果被随机选中的一维数组为空或其长度已经小于等于此次的随机下标，则跳过，避免索引越界
+		if len(GroupList[rand_m]) == 0 || len(GroupList[rand_m]) <= rand_n {
+			continue
+		}
+		// 记录随机元素val
+		val := GroupList[rand_m][rand_n]
+		// 从选中的一维数组中去掉刚刚随机选中的元素val,也就是GroupList[rand_m][rand_n]，以满足条件二
+		GroupList[rand_m] = append(GroupList[rand_m][:rand_n], GroupList[rand_m][rand_n+1:]...)
+		// 记录上一次选中的一维数组的索引下标
+		lastIndex = rand_m
+		// 将选中的随机元素val添加到结果集res的最后一个队伍中
+		res[len(res)-1] = append(res[len(res)-1], val)
+		// 如果队伍人数达标(大于等于2)
+		if len(res[len(res)-1]) >= 2 {
+			// 则重置last_index为-1，因为下一次循环是另组一支队伍，可以再从上次选择的组里选人了
+			lastIndex = -1
+			// 同时在结果集中再添加一个队伍，意味着下一次循环是另组一支新队伍了
+			res = append(res, []string{})
+		}
+		// 如果选中的一维数组空了，则累加空数组empty_num个数
+		if len(GroupList[rand_m]) == 0 {
+			emptyNum++
+		}
+	}
+	// 如果循环结束，发现最后一支队伍只有一个人
+	if len(res[len(res)-1]) == 1 {
+		tmp := res[len(res)-1][0]
+		res = res[:len(res)-1]
+		// 则将其加到倒数第二支队伍里，避免落单
+		res[len(res)-1] = append(res[len(res)-1], tmp)
+	}
+	// 如果最后一支队伍没人，则砍掉这一支队伍
+	if len(res[len(res)-1]) == 0 {
+		res = res[:len(res)-1]
+	}
+	return res
 }
