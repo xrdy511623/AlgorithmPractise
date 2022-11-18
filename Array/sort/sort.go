@@ -1305,6 +1305,7 @@ func merge(nums1 []int, m int, nums2 []int, n int) {
 }
 
 /*
+leetcode 896 单调数列
 如果数组是单调递增或单调递减的，那么它是单调的。
 
 如果对于所有 i <= j，nums[i] <= nums[j]，那么数组nums是单调递增的。
