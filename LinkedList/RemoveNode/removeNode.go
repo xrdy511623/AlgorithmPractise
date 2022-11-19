@@ -125,6 +125,9 @@ func RemoveNthNodeFromEnd(head *Entity.ListNode, n int) *Entity.ListNode {
 	dummy := &Entity.ListNode{Next: head}
 	slow, fast := dummy, head
 	for i := 0; i < n; i++ {
+		if fast == nil {
+			return dummy.Next
+		}
 		fast = fast.Next
 	}
 	for fast != nil {

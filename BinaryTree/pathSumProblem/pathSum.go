@@ -366,7 +366,7 @@ func MaxPathSum(root *Entity.TreeNode) int {
 		return 0
 	}
 	maxSum := math.MinInt32
-	var dfs func(node *Entity.TreeNode) int
+	var dfs func(*Entity.TreeNode) int
 	dfs = func(node *Entity.TreeNode) int {
 		if node == nil {
 			return 0

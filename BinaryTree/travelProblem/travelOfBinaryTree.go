@@ -43,7 +43,7 @@ func PreOrderTravelUseIteration(root *Entity.TreeNode) []int {
 		return res
 	}
 	stack := []*Entity.TreeNode{root}
-	for len(stack) != 0 {
+	for len(stack) > 0 {
 		node := stack[len(stack)-1]
 		res = append(res, node.Val)
 		stack = stack[:len(stack)-1]

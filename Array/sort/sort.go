@@ -919,7 +919,7 @@ func FindMidInSortedArrays(nums1, nums2 []int) float64 {
 	l1, l2 := 0, 0
 	front, target := 0, 0
 	// 如果totalLength为奇数，那问题转换为求第k小的数(k=totalLength/2+1)
-	// 所以循环k-1次，迭代right即可得到第k小的数
+	// 所以循环k-1次，迭代target即可得到第k小的数
 	// 如果totalLength为偶数，那么问题转换为求第k-1小的数和第k小的数两个数的平均值
 	for i := 0; i <= totalLength/2; i++ {
 		front = target

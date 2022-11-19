@@ -12,8 +12,8 @@ leetcode 46. 全排列
 */
 
 func Permute(nums []int) [][]int {
-	var res [][]int
-	var path []int
+	res := [][]int{}
+	path := []int{}
 	visited := make(map[int]bool)
 	size := len(nums)
 	var backTrack func()
@@ -61,8 +61,8 @@ Leetcode 47. 全排列 II
 */
 
 func PermuteUnique(nums []int) [][]int {
-	var res [][]int
-	var path []int
+	res := [][]int{}
+	path := []int{}
 	// 排序后方便去重
 	sort.Ints(nums)
 	size := len(nums)
