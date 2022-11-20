@@ -6,7 +6,9 @@ medium contains middle level problems
 
 import (
 	"AlgorithmPractise/Utils"
+	"container/heap"
 	"math"
+	"sort"
 	"strings"
 )
 
@@ -218,7 +220,8 @@ func canPartition(nums []int) bool {
 	}
 	target := sum / 2
 	dp := make([]int, target+1)
-	for i, n := 0, len(nums); i < n; i++ {
+	n := len(nums)
+	for i := 0; i < n; i++ {
 		// 必须逆序遍历背包, 确保元素不会被重复放入
 		for j := target; j >= nums[i]; j-- {
 			// 递推公式 dp[j] = max(dp[j], dp[j-nums[i]]+nums[i])
@@ -262,6 +265,44 @@ leetcode 1046
 最终可能剩下1块石头，该石头的重量即为最大堆中剩下的元素，返回该元素；也可能没有石头剩下，此时最大堆为空，
 返回0。
 */
+
+type hp struct {
+	sort.IntSlice
+}
+
+func (h hp) Less(i, j int) bool {
+	return h.IntSlice[i] > h.IntSlice[j]
+}
+func (h *hp) Push(v interface{}) {
+	h.IntSlice = append(h.IntSlice, v.(int))
+}
+func (h *hp) Pop() interface{} {
+	a := h.IntSlice
+	v := a[len(a)-1]
+	h.IntSlice = a[:len(a)-1]
+	return v
+}
+func (h *hp) push(v int) {
+	heap.Push(h, v)
+}
+func (h *hp) pop() int {
+	return heap.Pop(h).(int)
+}
+
+func LastStoneWeight(stones []int) int {
+	q := &hp{stones}
+	heap.Init(q)
+	for q.Len() > 1 {
+		x, y := q.pop(), q.pop()
+		if x > y {
+			q.push(x - y)
+		}
+	}
+	if q.Len() > 0 {
+		return q.IntSlice[0]
+	}
+	return 0
+}
 
 func lastStoneWeightSimple(stones []int) int {
 	n := len(stones)

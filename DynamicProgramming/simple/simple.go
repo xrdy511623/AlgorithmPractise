@@ -108,7 +108,7 @@ dp[1]=1,dp[2]=2
 
 // ClimbStairs 时间复杂度O(N), 空间复杂度O(N)
 func ClimbStairs(n int) int {
-	if n <= 1 {
+	if n <= 2 {
 		return n
 	}
 	dp := make([]int, n+1)
@@ -121,7 +121,7 @@ func ClimbStairs(n int) int {
 
 // ClimbStairsSimple 同样的，可以优化一下空间复杂度.时间复杂度O(N), 空间复杂度O(1)
 func ClimbStairsSimple(n int) int {
-	if n <= 1 {
+	if n <= 2 {
 		return n
 	}
 	dp := make([]int, 2)
