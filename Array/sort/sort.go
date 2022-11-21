@@ -1368,3 +1368,32 @@ func isMonotonicSimple(nums []int) bool {
 	}
 	return asc || desc
 }
+
+/*
+leetcode 69 x的平方根
+给你一个非负整数x ，计算并返回x的算术平方根 。
+由于返回类型是整数，结果只保留整数部分 ，小数部分将被舍去 。
+注意：不允许使用任何内置指数函数和算符，例如 pow(x, 0.5) 或者 x ** 0.5 。
+*/
+
+func mySqrt(x int) int {
+	if x < 0 {
+		return -1
+	} else if x == 0 || x == 1 {
+		return x
+	} else {
+		l, r := 0, x
+		for l <= r {
+			mid := (l + r) / 2
+			value := x / mid
+			if mid == value {
+				return mid
+			} else if mid > value {
+				r = mid - 1
+			} else {
+				l = mid + 1
+			}
+		}
+		return r
+	}
+}

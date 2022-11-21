@@ -185,7 +185,6 @@ func DeleteDuplicates(head *Entity.ListNode) *Entity.ListNode {
 	if head == nil || head.Next == nil {
 		return head
 	}
-
 	dummy := &Entity.ListNode{Next: head}
 	prev, cur := dummy, head
 	for cur != nil {
