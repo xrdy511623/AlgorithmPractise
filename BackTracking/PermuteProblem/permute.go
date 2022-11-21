@@ -1,6 +1,8 @@
 package PermuteProblem
 
-import "sort"
+import (
+	"sort"
+)
 
 /*
 leetcode 46. 全排列
@@ -93,5 +95,40 @@ func PermuteUnique(nums []int) [][]int {
 		}
 	}
 	backTrack()
+	return res
+}
+
+/*
+leetcode 22 括号生成
+数字n代表生成括号的对数，请你设计一个函数，用于能够生成所有可能的并且有效的括号组合。
+
+示例 1：
+输入：n = 3
+输出：["((()))","(()())","(())()","()(())","()()()"]
+
+示例 2：
+输入：n = 1
+输出：["()"]
+
+提示：
+1 <= n <= 8
+*/
+
+func generateParenthesis(n int) []string {
+	res := []string{}
+	var dfs func(int, int, string)
+	dfs = func(l, r int, path string) {
+		if len(path) == 2*n {
+			res = append(res, path)
+			return
+		}
+		if l < n {
+			dfs(l+1, r, path+"(")
+		}
+		if r < l {
+			dfs(l, r+1, path+")")
+		}
+	}
+	dfs(0, 0, "")
 	return res
 }
