@@ -1397,3 +1397,45 @@ func mySqrt(x int) int {
 		return r
 	}
 }
+
+/*
+leetcode 240 搜索二维矩阵 II
+编写一个高效的算法来搜索 m x n 矩阵 matrix 中的一个目标值 target 。该矩阵具有以下特性：
+每行的元素从左到右升序排列。
+每列的元素从上到下升序排列。
+
+示例1:
+输入：matrix = [[1,4,7,11,15],[2,5,8,12,19],[3,6,9,16,22],[10,13,14,17,24],[18,21,23,26,30]], target = 5
+输出：true
+
+示例2：
+输入：matrix = [[1,4,7,11,15],[2,5,8,12,19],[3,6,9,16,22],[10,13,14,17,24],[18,21,23,26,30]], target = 20
+输出：false
+*/
+
+/*
+思路: Z字形查找，从右上角(x=0,y=n-1)处开始查找，如果matrix[x][y]==target,返回true;
+如果大于target,意味着要减小数字，由于此时是在第一层，不能减少行数，只能减少列数，于是y-1
+如果小于target,意味着需要增大数字，由于此时已经是最右边的一列，无法增大列数，只能增大行数，所以x+1
+如果搜索结束都无法找到target, 就返回false。
+
+时间复杂度：O(m + n)。在搜索的过程中，如果我们没有找到target，那么我们要么将y减少1，要么将xx增加1。
+由于(x, y) 的初始值分别为(0, n-1)，因此y最多能被减少n次，x最多能被增加m次，总搜索次数为m+n。
+在这之后，x和y就会超出矩阵的边界。
+空间复杂度：O(1)。
+*/
+
+func searchMatrix(matrix [][]int, target int) bool {
+	m, n := len(matrix), len(matrix[0])
+	x, y := 0, n-1
+	for x < m && y >= 0 {
+		if matrix[x][y] == target {
+			return true
+		} else if matrix[x][y] > target {
+			y--
+		} else {
+			x++
+		}
+	}
+	return false
+}
