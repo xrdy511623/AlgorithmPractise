@@ -194,7 +194,7 @@ func BinarySearchFirstEqualTarget(array []int, target int) int {
 	}
 	low, high := 0, n-1
 	for low <= high {
-		mid := low + (high-low)/2
+		mid := (low + high) / 2
 		if array[mid] > target {
 			high = mid - 1
 		} else if array[mid] < target {
@@ -220,7 +220,7 @@ func BinarySearchLastEqualTarget(array []int, target int) int {
 	}
 	low, high := 0, n-1
 	for low <= high {
-		mid := low + (high-low)/2
+		mid := (low + high) / 2
 		if array[mid] > target {
 			high = mid - 1
 		} else if array[mid] < target {
@@ -322,7 +322,7 @@ leetcode 153. 寻找旋转排序数组中的最小值
 若旋转4次，则可以得到 [4,5,6,7,0,1,2]
 若旋转7次，则可以得到 [0,1,2,4,5,6,7]
 注意，数组 [a[0], a[1], a[2], ..., a[n-1]]旋转一次的结果为数组[a[n-1], a[0], a[1], a[2], ..., a[n-2]] 。
-给你一个元素值互不相同的数组nums ，它原来是一个升序排列的数组，并按上述情形进行了多次旋转。请你找出并返回数组中的
+给你一个元素值互不相同的数组nums，它原来是一个升序排列的数组，并按上述情形进行了多次旋转。请你找出并返回数组中的
 最小元素。
 
 示例 1：
@@ -430,7 +430,7 @@ leetcode 154. 寻找旋转排序数组中的最小值II
 若旋转 4 次，则可以得到 [4,5,6,7,0,1,4]
 若旋转 7 次，则可以得到 [0,1,4,4,5,6,7]
 注意，数组 [a[0], a[1], a[2], ..., a[n-1]] 旋转一次的结果为数组 [a[n-1], a[0], a[1], a[2], ..., a[n-2]] 。
-给你一个可能存在重复元素值的数组nums ，它原来是一个升序排列的数组，并按上述情形进行了多次旋转。请你找出并返回数组
+给你一个可能存在重复元素值的数组nums，它原来是一个升序排列的数组，并按上述情形进行了多次旋转。请你找出并返回数组
 中的最小元素 。
 
 示例1：
