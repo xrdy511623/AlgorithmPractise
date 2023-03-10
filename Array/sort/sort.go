@@ -895,7 +895,7 @@ func getKthElement(nums1, nums2 []int, k int) int {
 		if k == 1 {
 			return Utils.Min(nums1[index1], nums2[index2])
 		}
-		// 正常情况
+		// 正常情况,取index1+k/2-1与数组最后一位元素下标m-1的较小值，避免下标越界
 		newIndex1 := Utils.Min(index1+k/2-1, m-1)
 		newIndex2 := Utils.Min(index2+k/2-1, n-1)
 		pivot1, pivot2 := nums1[newIndex1], nums2[newIndex2]
@@ -911,6 +911,7 @@ func getKthElement(nums1, nums2 []int, k int) int {
 
 /*
 直观的解法是归并排序，将这两个有序数组合并后找中位数。实际上也可以不用合并数组，用双指针也行。
+时间复杂度O(N/2), 空间复杂度O(1)
 */
 
 func FindMidInSortedArrays(nums1, nums2 []int) float64 {
@@ -1182,11 +1183,11 @@ nums已按非递减顺序 排序
 */
 
 /*
-双指针法，创建一个result数组，长度与nums数组相等，令i=0, j, k=len(nums)-1。
+双指针法，创建一个result数组，长度与nums数组相等，令l=0, r, index=len(nums)-1。
 由于是平方数，那么绝对值越大的平方数肯定就越大，而nums数组是有序的，所以平方数最大的要么是数组
 的起始元素，要么是末尾元素。由于新数组也需要是升序排列，所以我们从尾到头填充新数组result.
-在for循环遍历中(i<=j)如果nums[i]的平方数大于nums[j]的平方数，那么nums[k]=nums[i]的平方数，i++
-否则，nums[k]=nums[j]的平方数，j--, 同时无论何种情况，k均向前移动一位，也就是k--。这样遍历结束，
+在for循环遍历中(l<=r)如果nums[l]的平方数大于nums[r]的平方数，那么res[index]=nums[l]的平方数，l++
+否则，res[index]=nums[r]的平方数，r--, 同时无论何种情况，index均向前移动一位，也就是index--。这样遍历结束，
 新数组result便填充完毕了。
 */
 
