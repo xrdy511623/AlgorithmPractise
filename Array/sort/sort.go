@@ -29,7 +29,6 @@ func BubbleSort(array []int) []int {
 			}
 		}
 	}
-
 	return array
 }
 
@@ -92,7 +91,7 @@ func QuickSort(nums []int, start, stop int) {
 
 /*
 分治法 (Divide and Conquer)
-很多有用的算法结构上是递归(递归的问题是递归过深可能导致堆栈溢出)的，为了解决一个特定问题，算法一次或者
+很多有用的算法结构上是递归的(递归的问题是递归过深可能会导致堆栈溢出)，为了解决一个特定问题，算法一次或者
 多次递归调用其自身以解决若干子问题。
 这些算法典型地遵循分治法的思想：将原问题分解为几个规模较小但是类似于原问题的子问题，
 递归求解这些子问题，
@@ -182,9 +181,9 @@ Leetcode 34. 在排序数组中查找元素的第一个和最后一个位置
 
 // SearchRange 将问题分解为在有序数组中查找第一个等于目标值的元素以及查找最后一个等于目标值的元素
 func SearchRange(nums []int, target int) []int {
-	left := BinarySearchFirstEqualTarget(nums, target)
-	right := BinarySearchLastEqualTarget(nums, target)
-	return []int{left, right}
+	first := BinarySearchFirstEqualTarget(nums, target)
+	last := BinarySearchLastEqualTarget(nums, target)
+	return []int{first, last}
 }
 
 func BinarySearchFirstEqualTarget(array []int, target int) int {
@@ -237,6 +236,22 @@ func BinarySearchLastEqualTarget(array []int, target int) int {
 		}
 	}
 	return -1
+}
+
+/*
+SearchRangeSimple 用二分法找到有序数组nums中第一个等于target的元素的位置first，然后从此处开始向后遍历，
+直到遍历到的元素不等于target为止，如此便可找到最后一个等于target的元素的位置last
+*/
+func SearchRangeSimple(nums []int, target int) []int {
+	first := BinarySearchFirstEqualTarget(nums, target)
+	if first == -1 {
+		return []int{-1, -1}
+	}
+	last, n := first, len(nums)
+	for i := first; i < n && nums[i] == target; i++ {
+		last = i
+	}
+	return []int{first, last}
 }
 
 /*
