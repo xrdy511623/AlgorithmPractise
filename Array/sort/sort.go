@@ -987,16 +987,16 @@ func ThreeSum(nums []int) [][]int {
 			// 判断三数之和是否等于0
 			sum := nums[i] + nums[l] + nums[r]
 			if sum == 0 {
-				res = append(res, []int{nums[i], nums[l], nums[r]})
-				// 只要nums[l] == nums[l+1]，左指针向右移动一位
+				// 只要nums[l] == nums[l+1]，左指针向右移动一位以去重
 				for l < r && nums[l] == nums[l+1] {
 					l++
 				}
-				// nums[r] == nums[r-1]，右指针向左移动一位
+				// nums[r] == nums[r-1]，右指针向左移动一位以去重
 				for l < r && nums[r] == nums[r-1] {
 					r--
 				}
-				// 如果sum == 0, l, r分别+1，-1
+				res = append(res, []int{nums[i], nums[l], nums[r]})
+				// l, r分别+1，-1以尝试寻找下一个满足条件的组合
 				l++
 				r--
 			} else if sum > 0 {
@@ -1105,6 +1105,7 @@ func MyPowSimple(x float64, n int) float64 {
 }
 
 /*
+leetcode 240 搜索二维矩阵 II
 剑指Offer 04. 二维数组中的查找
 1.13 在一个 n * m 的二维数组中，每一行都按照从左到右递增的顺序排序，每一列都按照从上到下递增的顺序排序。
 请完成一个高效的函数，输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。
@@ -1224,6 +1225,7 @@ func SortedSquares(nums []int) []int {
 }
 
 /*
+leetcode 31
 1.15 下一个排列
 实现获取下一个排列的函数，算法需要将给定数字序列重新排列成字典序中下一个更大的排列（即，组合出下一个更大的整数）。
 如果不存在下一个更大的排列，则将数字重新排列成最小的排列（即升序排列）。
@@ -1390,28 +1392,26 @@ leetcode 69 x的平方根
 给你一个非负整数x ，计算并返回x的算术平方根 。
 由于返回类型是整数，结果只保留整数部分 ，小数部分将被舍去 。
 注意：不允许使用任何内置指数函数和算符，例如 pow(x, 0.5) 或者 x ** 0.5 。
+0 <= x <= 2^31 - 1
 */
 
 func mySqrt(x int) int {
-	if x < 0 {
-		return -1
-	} else if x == 0 || x == 1 {
+	if x == 0 || x == 1 {
 		return x
-	} else {
-		l, r := 0, x
-		for l <= r {
-			mid := (l + r) / 2
-			value := x / mid
-			if mid == value {
-				return mid
-			} else if mid > value {
-				r = mid - 1
-			} else {
-				l = mid + 1
-			}
-		}
-		return r
 	}
+	l, r := 0, x
+	for l <= r {
+		mid := (l + r) / 2
+		value := x / mid
+		if mid == value {
+			return mid
+		} else if mid > value {
+			r = mid - 1
+		} else {
+			l = mid + 1
+		}
+	}
+	return r
 }
 
 /*
@@ -1449,48 +1449,6 @@ func searchMatrix(matrix [][]int, target int) bool {
 			r = mid - 1
 		} else {
 			l = mid + 1
-		}
-	}
-	return false
-}
-
-/*
-leetcode 240 搜索二维矩阵 II
-编写一个高效的算法来搜索 m x n 矩阵 matrix 中的一个目标值 target 。该矩阵具有以下特性：
-每行的元素从左到右升序排列。
-每列的元素从上到下升序排列。
-
-示例1:
-输入：matrix = [[1,4,7,11,15],[2,5,8,12,19],[3,6,9,16,22],[10,13,14,17,24],[18,21,23,26,30]], target = 5
-输出：true
-
-示例2：
-输入：matrix = [[1,4,7,11,15],[2,5,8,12,19],[3,6,9,16,22],[10,13,14,17,24],[18,21,23,26,30]], target = 20
-输出：false
-*/
-
-/*
-思路: Z字形查找，从右上角(x=0,y=n-1)处开始查找，如果matrix[x][y]==target,返回true;
-如果大于target,意味着要减小数字，由于此时是在第一层，不能减少行数，只能减少列数，于是y-1
-如果小于target,意味着需要增大数字，由于此时已经是最右边的一列，无法增大列数，只能增大行数，所以x+1
-如果搜索结束都无法找到target, 就返回false。
-
-时间复杂度：O(m + n)。在搜索的过程中，如果我们没有找到target，那么我们要么将y减少1，要么将xx增加1。
-由于(x, y) 的初始值分别为(0, n-1)，因此y最多能被减少n次，x最多能被增加m次，总搜索次数为m+n。
-在这之后，x和y就会超出矩阵的边界。
-空间复杂度：O(1)。
-*/
-
-func searchMatrixSec(matrix [][]int, target int) bool {
-	m, n := len(matrix), len(matrix[0])
-	x, y := 0, n-1
-	for x < m && y >= 0 {
-		if matrix[x][y] == target {
-			return true
-		} else if matrix[x][y] > target {
-			y--
-		} else {
-			x++
 		}
 	}
 	return false
