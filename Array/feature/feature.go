@@ -354,6 +354,7 @@ func RemoveElementsTwo(nums []int, val int) int {
 		}
 		fast++
 	}
+	nums = nums[:slow]
 	return slow
 }
 
@@ -372,11 +373,8 @@ leetcode 283. 移动零
 
 /*
 思路:先处理非0元素，最后处理0
-index指针指向非0元素，count统计数组中零的个数，index的位置和count的数量初始值均为0，
-在for循环遍历过程中，如果遇到非0元素，则将其赋值给nums[index]，同时index指针向右移动一位。
-若遇到0，则count累加1。遍历结束后，index即指向所有非0元素最后一位的右边。意味着
-nums[index:index+count]区间内的元素都应该是0，那就循环count次，将0赋值给nums[index]就可以了，
-当然，每次赋值后index还得向后移动一位。
+index指针指向非0元素，初始值为0.在for循环遍历过程中，如果遇到非0元素，则将其赋值给nums[index]，同时index指针
+向右移动一位。遍历结束后，index即指向所有非0元素最后一位的右边,这就意味着nums[index:]范围内的元素都应该是0。
 */
 
 func MoveZeroes(nums []int) {
@@ -406,6 +404,10 @@ leetcode 14. 最长公共前缀
 输入：strs = ["dog","racecar","car"]
 输出：""
 解释：输入不存在公共前缀。
+
+1 <= strs.length <= 200
+0 <= strs[i].length <= 200
+strs[i] 仅由小写英文字母组成
 */
 
 /*
@@ -421,9 +423,6 @@ leetcode 14. 最长公共前缀
 
 func LongestCommonPrefix(strs []string) string {
 	count := len(strs)
-	if count == 0 {
-		return ""
-	}
 	prefix := strs[0]
 	for i := 1; i < count; i++ {
 		prefix = lcp(prefix, strs[i])
@@ -494,8 +493,8 @@ leetcode 53. 最大子数组和
 */
 
 func MaxSubArray(nums []int) int {
-	max := nums[0]
-	for i := 1; i < len(nums); i++ {
+	max, n := nums[0], len(nums)
+	for i := 1; i < n; i++ {
 		if nums[i-1] > 0 {
 			nums[i] += nums[i-1]
 		}
@@ -591,6 +590,12 @@ func ReverseWords(s string) string {
 随后，根据单词的起止位置，可以将该单词逆序放到新字符串当中。如此循环多次，直到遍历完原字符串，就能得到翻转
 后的结果。
 */
+
+func Reverse(s []byte) {
+	for i, n := 0, len(s); i < n/2; i++ {
+		s[i], s[n-1-i] = s[n-1-i], s[i]
+	}
+}
 
 func ReverseWordsTwo(s string) string {
 	n := len(s)
@@ -748,7 +753,7 @@ func reverseWords(s string) string {
 	length := len(ss)
 	slow, fast := 0, 0
 	// 去掉字符串最左边的冗余空格
-	for length > 0 && fast < length && ss[fast] == ' ' {
+	for fast < length && ss[fast] == ' ' {
 		fast++
 	}
 	// 去掉单词之间的冗余空格
@@ -858,11 +863,83 @@ func strStr(haystack string, needle string) int {
 	return -1
 }
 
+/*
+KMP算法的核心为前缀函数，记作π(i)，其定义如下：
+
+对于长度为m的字符串s，其前缀函数 π(i)(0≤i<m)表示s的子串s[0:i]的最长的相等的真前缀与真后缀的长度。特别地，
+如果不存在符合条件的前后缀，那么π(i)=0。其中真前缀与真后缀的定义为不等于自身的的前缀与后缀。
+
+字符串的前缀是指不包含最后一个字符的所有以第一个字符开头的连续子串；后缀是指不包含第一个字符的所有以
+最后一个字符结尾的连续子串。
+
+我们举个例子说明：字符串aabaaab的前缀函数值依次为 0,1,0,1,2,2,3
+
+π(0)=0，因为a没有真前缀和真后缀，根据规定为0（可以发现对于任意字符串π(0)=0必定成立）；
+
+π(1)=1，因为aa最长的一对相等的真前后缀为a，长度为1；
+
+π(2)=0，因为aab没有对应的真前缀和真后缀，根据规定为0；
+
+π(3)=1，因为aaba最长的一对相等的真前后缀为a，长度为1；
+
+π(4)=2，因为aabaa最长的一对相等的真前后缀为aa，长度为2；
+
+π(5)=2，因为aabaaa最长的一对相等的真前后缀为aa，长度为2；
+
+π(6)=3，因为aabaaab 最长的一对相等的真前后缀为aab，长度为3。
+
+而有了前缀函数，我们就可以快速地计算出模式串在主串中的每一次出现。
+
+如何求解前缀函数
+
+长度为m的字符串s的所有前缀函数的求解算法的总时间复杂度是严格O(m)的，且该求解算法是增量算法，即我们可以一边
+读入字符串，一边求解当前读入位的前缀函数。
+
+为了叙述方便，我们接下来将说明几个前缀函数的性质：
+
+π(i)≤π(i−1)+1
+依据 π(i)定义得：s[0:π(i)−1]=s[i−π(i)+1:i]
+将两区间的右端点同时左移，可得：s[0:π(i)−2]=s[i−π(i)+1:i−1]
+依据 π(i−1)定义得：π(i−1)≥π(i)−1 即 π(i)≤π(i−1)+1
+
+如果 s[i]=s[π(i−1)]，那么 π(i)=π(i−1)+1
+依据 π(i−1)定义得：s[0:π(i−1)−1]=s[i−π(i−1):i−1]
+因为 s[π(i−1)]=s[i]，可得 s[0:π(i−1)]=s[i−π(i−1):i]
+依据 π(i) 定义得：π(i)≥π(i−1)+1，结合第一个性质可得 π(i)=π(i−1)+1。
+这样我们可以依据这两个性质提出求解 π(i)的方案：找到最大的j，满足 s[0:j−1]=s[i−j:i−1]，且 s[i]=s[j]
+（这样就有 s[0:j]=s[i−j:i]，即 π(i)=j+1）。
+
+注意这里提出了两个要求：
+
+j要求尽可能大，且满足 s[0:j−1]=s[i−j:i−1]
+j要求满足 s[i]=s[j]
+由 π(i−1)定义可知：
+
+(1) s[0:π(i−1)−1]=s[i−π(i−1):i−1]
+那么 j=π(i−1)符合第一个要求。如果 s[i]=s[π(i−1)]，我们就可以确定 π(i)。
+
+否则如果 s[i]≠s[π(i−1)]，那么 π(i)≤π(i−1)，因为j=π(i)−1，所以j<π(i−1)，于是可以取(1)式两子串的长度
+为j的后缀，它们依然是相等的：s[π(i−1)−j:π(i−1)−1]=s[i−j:i−1]。
+
+当s[i]≠s[π(i−1)]时，我们可以修改我们的方案为：找到最大的j，满足 s[0:j−1]=s[π(i−1)−j:π(i−1)−1]，
+且 s[i]=s[π(i−1)]（这样就有s[0:j]=s[π(i−1)−j:π(i−1)]，即 π(i)=π(i−1)+1。
+
+注意这里提出了两个要求：
+
+j要求尽可能大，且满足 s[0:j−1]=s[π(i−1)−j:π(i−1)−1];
+j要求满足 s[i]=s[j]。
+由 π(π(i−1)−1)定义可知 j=π(π(i−1)−1)符合第一个要求。如果 s[i]=s[π(π(i−1)−1)]，我们就可以确定π(i)。
+
+此时，我们可以发现j的取值总是被描述为 π(π(π(…)−1)−1)的结构（初始为 π(i−1)）。于是我们可以描述我们的算法：
+设定 π(i)=j+1，j的初始值为 π(i−1)。我们只需要不断迭代j（令j 变为 π(j−1)）直到 s[i]=s[j] 或 j=0 即可，如果
+最终匹配成功（找到了j使得 s[i]=s[j]，那么 π(i)=j+1，否则 π(i)=0。
+*/
+
 // strStrSimple KMP算法 时间复杂度O(N+M),空间复杂度O(M)
 func strStrSimple(haystack string, needle string) int {
 	n, m := len(haystack), len(needle)
-	if m == 0 {
-		return 0
+	if m == 0 || m > n {
+		return -1
 	}
 	next := make([]int, m)
 	GetNext(next, needle)
