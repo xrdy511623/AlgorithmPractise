@@ -33,7 +33,7 @@ func DeleteNode(head *Entity.ListNode, val int) *Entity.ListNode {
 
 /*
 leetcode 203. 移除链表元素
-1.2 给你一个链表的头节点head和一个整数val ，请你删除链表中所有满足Node.val == val的节点，并返回新的头节点。
+1.2 给你一个链表的头节点head和一个整数val，请你删除链表中所有满足Node.val == val的节点，并返回新的头节点。
 
 示例1：
 输入：head = [1,2,6,3,4,5,6], val = 6
@@ -206,7 +206,7 @@ func DeleteDuplicates(head *Entity.ListNode) *Entity.ListNode {
 1.6 进阶:移除未排序链表中的重复节点，只保留最开始出现的节点。
 譬如1-2-3-3-2-1
 返回1-2-3
-思路:哈希表去重,不能再使用1.5中的方法，因为这次是未排序链表，前面出现过的节点值在后面任意位置都可能再次出现
+思路:哈希表去重,不能再使用1.4中的方法，因为这次是未排序链表，前面出现过的节点值在后面任意位置都可能再次出现
 */
 
 func RemoveDuplicateNodes(head *Entity.ListNode) *Entity.ListNode {

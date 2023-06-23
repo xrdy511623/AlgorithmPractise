@@ -272,9 +272,9 @@ func AddTwoNumbersComplex(l1, l2 *Entity.ListNode) (head *Entity.ListNode) {
 			s2 = s2[:len(s2)-1]
 		}
 		sum += carry
-		node := &Entity.ListNode{Val: sum % 10}
-		node.Next = head
-		head = node
+		cur := &Entity.ListNode{Val: sum % 10}
+		cur.Next = head
+		head = cur
 		carry = sum / 10
 	}
 	return
@@ -289,7 +289,7 @@ leetcode 61. 旋转链表
 
 /*
 思路:闭合为环
-记给定链表的长度为n，注意到当向右移动的次数k ≥n 时，我们仅需要向右移动k % n 次即可。因为每n次移动都会让
+记给定链表的长度为n，注意到当向右移动的次数k≥n 时，我们仅需要向右移动k%n 次即可。因为每n次移动都会让
 链表变为原状。这样我们可以知道，新链表的最后一个节点为原链表的第 n - k % n 个节点（从1开始计数）。
 这样，我们可以先将给定的链表连接成环，然后从指定位置断开。
 
@@ -316,14 +316,12 @@ func RotateRight(head *Entity.ListNode, k int) *Entity.ListNode {
 	if k == 0 {
 		return head
 	}
-	step := n - k
 	// 链表成环，将原链表的尾结点的Next指向头结点即成为首尾相连的新链表
 	cur.Next = head
 	// 新链表的尾结点end是原链表的第n-k个结点，那么从头结点移动到end，需要移动n-k-1步
 	// 那么从原链表的尾结点移动到end，就需要多移动一步，即为n-k步。
-	for step > 0 {
+	for i := 0; i < n-k; i++ {
 		cur = cur.Next
-		step--
 	}
 	// 因为是有环的链表，那么新链表的尾结点的Next指向的结点即为所求的头结点
 	ret := cur.Next
@@ -341,7 +339,7 @@ leetcode 328. 奇偶链表
 
 /*
 思路:分离奇偶结点后再合并
-更简单的做法是在从头遍历链表过程中，逐个完成奇数结点链表和偶数结点链表的构建，最后将奇数结点链表尾部结点的
+最简单的做法是在从头遍历链表过程中，逐个完成奇数结点链表和偶数结点链表的构建，最后将奇数结点链表尾部结点的
 Next指向偶数结点链表的头结点即可。
 */
 

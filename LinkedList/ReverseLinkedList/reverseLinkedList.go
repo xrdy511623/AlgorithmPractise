@@ -155,26 +155,30 @@ func ReverseBetween(head *Entity.ListNode, left int, right int) *Entity.ListNode
 	}
 	k := right - left + 1
 	dummy := &Entity.ListNode{Next: head}
-	cur := dummy
+	prev := dummy
 	for i := 0; i < left-1; i++ {
-		cur = cur.Next
-		if cur == nil {
+		prev = prev.Next
+		if prev == nil {
 			return dummy.Next
 		}
 	}
-	prev := cur
-	start := cur.Next
+	tail := prev
+	// s标记left位置结点，也是需要反转的left-right位置子链表部分的头结点
+	s := prev.Next
+	// tail初始位置是prev, 标记left位置前一个结点，向后移动k次后，便指向right位置结点
 	for i := 0; i < k; i++ {
-		cur = cur.Next
-		if cur == nil {
+		tail = tail.Next
+		if tail == nil {
 			return dummy.Next
 		}
 	}
-	ndx := cur.Next
-	start, end := reverse(start, cur, k)
+	// ndx标记right位置结点的下一个结点
+	ndx := tail.Next
+	// 将left-right位置子链表部分翻转
+	s, tail = reverse(s, tail, k)
 	// 将反转后的子链表接入到原链表中
-	prev.Next = start
-	end.Next = ndx
+	prev.Next = s
+	tail.Next = ndx
 	return dummy.Next
 }
 
@@ -235,19 +239,18 @@ func ReOrderLinkedList(head *Entity.ListNode) {
 */
 
 func ReOrderLinkedListSimple(head *Entity.ListNode) {
-	if head == nil {
+	if head == nil || head.Next == nil {
 		return
 	}
 	// 找到链表中间节点，确定链表右半部分
 	mid := GetMiddleNode(head)
-	l1 := head
-	l2 := mid.Next
+	r := mid.Next
 	// 将原链表从mid结点截断
 	mid.Next = nil
 	// 将链表右半部分反转
-	l2 = Reverse(l2)
+	r = Reverse(r)
 	// 将链表左半部分与右半部分依次合并
-	MergeLists(l1, l2)
+	MergeLists(head, r)
 }
 
 // GetMiddleNode 寻找链表中间节点

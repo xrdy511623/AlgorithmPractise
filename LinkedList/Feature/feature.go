@@ -270,23 +270,26 @@ leetcode 86. 分隔链表
 */
 
 func PartitionLinkedList(head *Entity.ListNode, x int) *Entity.ListNode {
-	beforeHead, afterHead := new(Entity.ListNode), new(Entity.ListNode)
-	before, after := beforeHead, afterHead
+	if head == nil || head.Next == nil {
+		return head
+	}
+	p, q := new(Entity.ListNode), new(Entity.ListNode)
+	c1, c2 := p, q
 	for head != nil {
 		if head.Val < x {
-			before.Next = head
-			before = before.Next
+			c1.Next = head
+			c1 = c1.Next
 		} else {
-			after.Next = head
-			after = after.Next
+			c2.Next = head
+			c2 = c2.Next
 		}
 		head = head.Next
 	}
 	// 拼接两个链表
-	// 将after的Next指针指向nil，这一点一定要记住
-	after.Next = nil
-	before.Next = afterHead.Next
-	return beforeHead.Next
+	// 将c2的Next指针指向nil，这一点一定要记住
+	c2.Next = nil
+	c1.Next = q.Next
+	return p.Next
 }
 
 /*
