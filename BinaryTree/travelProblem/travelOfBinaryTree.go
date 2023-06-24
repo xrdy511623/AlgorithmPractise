@@ -142,20 +142,14 @@ N叉树在输入中按层序遍历进行序列化表示，每组子节点由空�
 
 // PreorderNTrees 递归解法
 func PreorderNTrees(root *Entity.Node) []int {
-	var res []int
+	res := []int{}
 	if root == nil {
 		return res
 	}
-	var dfs func(*Entity.Node)
-	dfs = func(root *Entity.Node) {
-		if root != nil {
-			res = append(res, root.Val)
-			for _, node := range root.Children {
-				dfs(node)
-			}
-		}
+	res = append(res, root.Val)
+	for _, node := range root.Children {
+		res = append(res, PreorderNTrees(node)...)
 	}
-	dfs(root)
 	return res
 }
 
@@ -192,20 +186,14 @@ N叉树在输入中按层序遍历进行序列化表示，每组子节点由空�
 
 // PostorderOfNTrees 递归
 func PostorderOfNTrees(root *Entity.Node) []int {
-	var res []int
+	res := []int{}
 	if root == nil {
 		return res
 	}
-	var dfs func(*Entity.Node)
-	dfs = func(root *Entity.Node) {
-		if root != nil {
-			for _, node := range root.Children {
-				dfs(node)
-			}
-			res = append(res, root.Val)
-		}
+	for _, node := range root.Children {
+		res = append(res, PostorderOfNTrees(node)...)
 	}
-	dfs(root)
+	res = append(res, root.Val)
 	return res
 }
 
@@ -568,7 +556,7 @@ post:左右根
 如此递归构建即可.
 */
 
-func ConstructFromPrePost(preorder []int, postorder []int) *Entity.TreeNode {
+func ConstructFromPrePost(preorder, postorder []int) *Entity.TreeNode {
 	if len(preorder) == 0 || len(postorder) == 0 || len(preorder) != len(postorder) {
 		return nil
 	}
@@ -576,22 +564,17 @@ func ConstructFromPrePost(preorder []int, postorder []int) *Entity.TreeNode {
 	if len(preorder) == 1 {
 		return root
 	}
+	mark := make(map[int]int)
+	for i, v := range postorder {
+		mark[v] = i
+	}
 	// 在postorder中找到左子树根节点的位置pos
-	pos := FindPosInArray(postorder, preorder[1])
+	pos := mark[preorder[1]]
 	// 根据pos确定左子树的范围
 	root.Left = ConstructFromPrePost(preorder[1:pos+2], postorder[:pos+1])
 	// 根据pos确定右子树的范围
 	root.Right = ConstructFromPrePost(preorder[pos+2:], postorder[pos+1:len(postorder)-1])
 	return root
-}
-
-func FindPosInArray(s []int, target int) int {
-	for index, value := range s {
-		if value == target {
-			return index
-		}
-	}
-	return -1
 }
 
 /*
@@ -656,6 +639,7 @@ leetcode 654. 最大二叉树
 
 // ConstructMaximumBinaryTree DFS解决
 func ConstructMaximumBinaryTree(nums []int) *Entity.TreeNode {
+	// 递归终止条件
 	if len(nums) == 0 {
 		return nil
 	}

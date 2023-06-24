@@ -65,14 +65,12 @@ func ReverseArray(nums []int) []int {
 	return nums
 }
 
-func FindLargestElement(nums []int) (pos int) {
-	if len(nums) == 0 {
-		pos = -1
-	}
-	for i := 0; i < len(nums); i++ {
+func FindLargestElement(nums []int) int {
+	pos := 0
+	for i, n := 0, len(nums); i < n; i++ {
 		if nums[i] > nums[pos] {
 			pos = i
 		}
 	}
-	return
+	return pos
 }
