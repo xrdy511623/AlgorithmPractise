@@ -202,6 +202,9 @@ func NearestCommonAncestorUseIteration(root, p, q *Entity.TreeNode) *Entity.Tree
 	visited := make(map[int]bool)
 	var dfs func(node *Entity.TreeNode)
 	dfs = func(node *Entity.TreeNode) {
+		if node == nil {
+			return
+		}
 		if node.Left != nil {
 			parentDict[node.Left.Val] = node
 			dfs(node.Left)
@@ -384,6 +387,28 @@ func IsCompleteTree(root *Entity.TreeNode) bool {
 		}
 	}
 	return seq == count
+}
+
+func IsCompleteTreeTwo(root *Entity.TreeNode) bool {
+	// 标记层序遍历时是否有遇到空节点，初始值为false
+	empty := false
+	q := []*Entity.TreeNode{root}
+	for len(q) > 0 {
+		node := q[0]
+		q = q[1:]
+		// 如果遍历时遇到空节点，将empty置为false
+		if node == nil {
+			empty = true
+		} else {
+			// 此时遍历的为非空节点，若之前已经遍历过空节点，则这棵树绝不是完全二叉树，返回false
+			if empty == true {
+				return false
+			}
+			q = append(q, node.Left)
+			q = append(q, node.Right)
+		}
+	}
+	return true
 }
 
 /*
@@ -570,7 +595,7 @@ true；否则，返回false 。
 */
 
 /*
-思路一:本题与1.18 对称二叉树其实很类似，我们只需要广度优先遍历的比较两棵树就好了
+思路一:本题与1.8 相同地树其实很类似，我们只需要广度优先遍历的比较两棵树就好了
 */
 
 // IsSubTree BFS解决
@@ -699,13 +724,13 @@ func MinDepth(root *Entity.TreeNode) int {
 	if root == nil {
 		return 0
 	}
-	if root.Left != nil && root.Right == nil {
-		return 1 + MinDepth(root.Left)
-	}
-	if root.Right != nil && root.Left == nil {
+	if root.Left == nil && root.Right != nil {
 		return 1 + MinDepth(root.Right)
+	} else if root.Right == nil && root.Left != nil {
+		return 1 + MinDepth(root.Left)
+	} else {
+		return Utils.Min(MinDepth(root.Left), MinDepth(root.Right)) + 1
 	}
-	return 1 + Utils.Min(MinDepth(root.Left), MinDepth(root.Right))
 }
 
 func MinDepthUseBFS(root *Entity.TreeNode) int {
@@ -804,6 +829,31 @@ func FindBottomLeftValue(root *Entity.TreeNode) int {
 		}
 	}
 	return res[len(res)-1]
+}
+
+func FindBottomLeftValueTwo(root *Entity.TreeNode) int {
+	if root.Left == nil && root.Right == nil {
+		return root.Val
+	}
+	q := []*Entity.TreeNode{root}
+	target := root.Val
+	for len(q) > 0 {
+		size := len(q)
+		for i := 0; i < size; i++ {
+			node := q[i]
+			if i == 0 {
+				target = node.Val
+			}
+			if node.Left != nil {
+				q = append(q, node.Left)
+			}
+			if node.Right != nil {
+				q = append(q, node.Right)
+			}
+		}
+		q = q[size:]
+	}
+	return target
 }
 
 /*
@@ -1013,6 +1063,10 @@ leetcode 1367. 二叉树中的列表
 输出：true
 */
 
+/*
+本题与1.11 另一棵树的子树很类似，可以用相同的逻辑解决
+*/
+
 // IsSubPath 递归解决
 func IsSubPath(head *Entity2.ListNode, root *Entity.TreeNode) bool {
 	if root == nil {
@@ -1067,10 +1121,8 @@ func Flatten(root *Entity.TreeNode) {
 	if len(nodesList) == 1 {
 		return
 	}
-	for i, n := 1, len(nodesList); i < n; i++ {
-		prev, cur := nodesList[i-1], nodesList[i]
-		prev.Left = nil
-		prev.Right = cur
+	for i, n := 0, len(nodesList); i < n-1; i++ {
+		nodesList[i].Left, nodesList[i].Right = nil, nodesList[i+1]
 	}
 }
 
@@ -1307,6 +1359,7 @@ func RemoveLeafNodes(root *Entity.TreeNode, target int) *Entity.TreeNode {
 	}
 	root.Left = RemoveLeafNodes(root.Left, target)
 	root.Right = RemoveLeafNodes(root.Right, target)
+	// 若root为叶子节点，且root的值与target相等，则删去此节点
 	if root.Left == nil && root.Right == nil && root.Val == target {
 		return nil
 	}
@@ -1342,7 +1395,7 @@ func DeepestLeavesSum(root *Entity.TreeNode) int {
 			if node.Left == nil && node.Right == nil {
 				if maxDepth < depth {
 					maxDepth, sum = depth, node.Val
-				} else if maxDepth == depth {
+				} else {
 					sum += node.Val
 				}
 			}
@@ -1544,18 +1597,16 @@ func LcaDeepestLeavesUseBFS(root *Entity.TreeNode) *Entity.TreeNode {
 	// 最深叶子节点一定是从左到右排列，不一定都是属于同一个父亲节点的子节点，那么按最糟糕的情况算，找出集合
 	// 最左侧叶子节点与最右侧叶子节点的最近公共祖先即可。
 	p, q := leaves[0], leaves[len(leaves)-1]
-	visited := make(map[int]bool)
-	pAns := parentMap[p]
-	for pAns != nil {
-		visited[pAns.Val] = true
-		pAns = parentMap[pAns]
+	visited := make(map[*Entity.TreeNode]bool)
+	for p != nil {
+		visited[p] = true
+		p = parentMap[p]
 	}
-	qAns := parentMap[q]
-	for qAns != nil {
-		if visited[qAns.Val] {
-			return qAns
+	for q != nil {
+		if visited[q] {
+			return q
 		}
-		qAns = parentMap[qAns]
+		q = parentMap[q]
 	}
 	return nil
 }
@@ -1630,11 +1681,10 @@ func isInvited(e *Entity.Employee) int {
 	if len(e.Sub) == 0 {
 		return e.Happy
 	}
-	res := 0
+	res := e.Happy
 	for _, sub := range e.Sub {
 		res += notInvited(sub)
 	}
-	res += e.Happy
 	return res
 }
 

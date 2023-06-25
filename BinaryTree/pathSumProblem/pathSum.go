@@ -229,6 +229,7 @@ func pathSum(root *Entity.TreeNode, targetSum int) int {
 			count += v
 		}
 		preMap[preSum]++
+		// 递归
 		dfs(node.Left, preSum)
 		dfs(node.Right, preSum)
 		// 回溯
@@ -423,6 +424,9 @@ func SumOfLeftLeavesSimple(root *Entity.TreeNode) int {
 	sum := 0
 	var findLeftLeaves func(*Entity.TreeNode)
 	findLeftLeaves = func(node *Entity.TreeNode) {
+		if node == nil {
+			return
+		}
 		if node.Left != nil && node.Left.Left == nil && node.Left.Right == nil {
 			sum += node.Left.Val
 		}
@@ -432,6 +436,7 @@ func SumOfLeftLeavesSimple(root *Entity.TreeNode) int {
 		if node.Right != nil {
 			findLeftLeaves(node.Right)
 		}
+		return
 	}
 	findLeftLeaves(root)
 	return sum
