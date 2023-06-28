@@ -59,10 +59,9 @@ func TestMultiBagProblem(t *testing.T) {
 	fmt.Println("pass")
 }
 
-
 func TestMassageArrangement(t *testing.T) {
 	//nums := []int{2,1,4,5,3,1,1,3}
-	nums := []int{2,7,9,3,1}
+	nums := []int{2, 7, 9, 3, 1}
 	got := massageArrangement(nums)
 	want := 12
 	if got != want {

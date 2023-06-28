@@ -72,7 +72,7 @@ func rob(nums []int) int {
 }
 
 /*
-实际上我们只需要维护两个状态值，所以可以写成下面这样，大大降低算法的空间复杂度
+实际上我们只需要维护两个状态值，所以可以写成下面这样，将算法的空间复杂度降低至O(1)
 */
 
 // robSimple 时间复杂度O(N),空间复杂度O(1)
@@ -155,6 +155,7 @@ func robRange(nums []int, start, end int) int {
 		return nums[start]
 	}
 	dp := make([]int, len(nums))
+	// 注意dp数组初始化
 	dp[start] = nums[start]
 	dp[start+1] = Utils.Max(nums[start], nums[start+1])
 	for i := start + 2; i <= end; i++ {
@@ -184,6 +185,7 @@ func robRangeSimple(nums []int, start, end int) int {
 }
 
 /*
+leetcode 337
 1.3 打家劫舍III
 在上次打劫完一条街道之后和一圈房屋后，小偷又发现了一个新的可行窃的地区。这个地区只有一个入口，我们称之为“根”。
 除了“根”之外，每栋房子有且只有一个“父“房子与之相连。一番侦察之后，聪明的小偷意识到“这个地方的所有房屋的排列
@@ -226,7 +228,7 @@ func robRangeSimple(nums []int, start, end int) int {
 在遍历的过程中，如果遇到空节点的话，很明显，无论偷还是不偷都是0，所以就返回
 
 3 确定遍历顺序
-首先明确的是使用后序遍历。 因为通过递归函数的返回值来做下一步计算。
+首先明确的是使用后序遍历。 因为需要通过递归函数的返回值来做下一步计算。
 通过递归左节点，得到左节点偷与不偷的金钱。
 通过递归右节点，得到右节点偷与不偷的金钱。
 

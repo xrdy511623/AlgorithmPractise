@@ -1652,7 +1652,39 @@ func LeafSimilar(root1, root2 *Entity.TreeNode) bool {
 }
 
 /*
-1.28 派对最大快乐值
+leetcode 1448
+1.28 统计二叉树中好节点的数目
+给你一棵根为 root 的二叉树，请你返回二叉树中好节点的数目。
+好节点X 定义为：从根到该节点 X 所经过的节点中，没有任何节点的值大于 X 的值。
+*/
+
+func goodNodes(root *Entity.TreeNode) int {
+	if root == nil {
+		return 0
+	}
+	cnt := 0
+	var dfs func(*Entity.TreeNode, int)
+	dfs = func(node *Entity.TreeNode, max int) {
+		if node == nil {
+			return
+		}
+		if node.Val >= max {
+			cnt++
+		}
+		if node.Left != nil {
+			dfs(node.Left, Utils.Max(max, node.Left.Val))
+		}
+		if node.Right != nil {
+			dfs(node.Right, Utils.Max(max, node.Right.Val))
+		}
+		return
+	}
+	dfs(root, root.Val)
+	return cnt
+}
+
+/*
+1.29 派对最大快乐值
 整个公司的人员结构可以看作是一棵标准的多叉树。树的头节点是公司唯一的老板，除老板外，每个员工都有唯一的
 直接上级，叶节点是没有任何下属的基层员工，除基层员工外，每个员工都有一个或多个直接下级，另外每个员工
 都有一个快乐值。

@@ -92,7 +92,7 @@ func MaxProfitSimple(prices []int) int {
 		return 0
 	}
 	minPrice, maxProfit := prices[0], 0
-	for i := 1; i < len(prices); i++ {
+	for i := 1; i < n; i++ {
 		profit := prices[i] - minPrice
 		if profit > 0 {
 			maxProfit = Utils.Max(maxProfit, profit)
@@ -424,7 +424,6 @@ func maxProfitK(prices []int, k int) int {
 
 /*
 思路:
-
 1 确定dp数组及其下标含义
 dp[i][j]表示第i天结束之后的累计最大收益，根据题意，由于我们最多只能同时买入(持有)一支股票，并且卖出股票后有冷冻期的限制，
 因此我们会有三种不同的状态(j的取值范围为[0,2]):

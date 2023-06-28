@@ -3,7 +3,6 @@ package featureProblem
 import (
 	"AlgorithmPractise/BinaryTree/Entity"
 	Entity2 "AlgorithmPractise/LinkedList/Entity"
-	"AlgorithmPractise/Utils"
 	"math"
 )
 
@@ -86,7 +85,7 @@ leetcode 450. 删除二叉搜索树中的节点
 a 要删除的节点是叶子节点，那很简单，直接将当前节点删除，置为nil即可;
 b 要删除的节点有右子节点，那么为了维持BST的特性，我们需要找到该节点的后继节点post(BST中大于它的最小节点)，
 将该节点的值更新为后继节点post的值，然后递归的在当前节点的右子树中删除该后继节点post;
-c 要删除的节点有左子节点，那么为了维持BST的特性，我们需要找到该节点的前驱节点pre(BST中小于于它的最大节点)，
+c 要删除的节点有左子节点，那么为了维持BST的特性，我们需要找到该节点的前驱节点pre(BST中小于它的最大节点)，
 将该节点的值更新为前驱节点pre的值，然后递归的在当前节点的左子树中删除该前驱节点pre;
 最后返回当前节点的引用即可。
 */
@@ -266,9 +265,9 @@ func InorderSuccessor(root, p *Entity.TreeNode) *Entity.TreeNode {
 在二叉搜索树BST中寻找p的中序后继节点无非三种情形，一是p有右子树，那么大于p的最小节点一定是它的
 右子树中最左边的节点，如图bst1.jpg所示；
 第二种情况是p没有右子树，此时我们需要从p的父亲节点往上寻找，若p是其父亲节点的左子节点，此时p的
-后继节点显然就是其父节点，如图bst1.jpg所示;若p是其父亲节点的右子节点，此时p的后继节点显然就是
+后继节点显然就是其父节点，如图bst2.jpg所示;若p是其父亲节点的右子节点，此时p的后继节点显然就是
 其祖父节点,如图bst3.jpg所示
-最后一种情况就是p没有右子树，且p是其父亲节点的左子节点的右子节点，也就是p是该BST中最大的一个节点，
+最后一种情况就是p没有右子树，也就是p是该BST中最大的一个节点，
 此时p是没有中序后继节点的。
 所以，针对情形一，我们需要在p的右子树中寻找最左边的节点；针对情形二，我们需要找到p的父亲节点
 第三种情形，直接返回null
@@ -627,7 +626,7 @@ func LowestCommonAncestorUseRecursion(root, p, q *Entity.TreeNode) *Entity.TreeN
 
 /*
 剑指Offer II 052. 展平二叉搜索树
-1.13 给你一棵二叉搜索树，请按中序遍历 将其重新排列为一棵递增顺序搜索树，使树中最左边的节点成为树的根节点，
+1.13 给你一棵二叉搜索树，请按中序遍历将其重新排列为一棵递增顺序搜索树，使树中最左边的节点成为树的根节点，
 并且每个节点没有左子节点，只有一个右子节点。
 */
 
@@ -739,6 +738,7 @@ func Helper(start, end int) []*Entity.TreeNode {
 	var allTrees []*Entity.TreeNode
 	// 枚举可行根节点
 	for i := start; i <= end; i++ {
+		// 若根节点值为i,则左子树根节点取值范围为[1,i-1], 右子树根节点取值范围为[i+1,n]
 		// 获得所有可行的左子树集合
 		leftTrees := Helper(start, i-1)
 		// 获得所有可行的右子树集合
@@ -818,7 +818,7 @@ func GetMinDiffSimple(root *Entity.TreeNode) int {
 	}
 	minDiff := math.MaxInt32
 	stack := []*Entity.TreeNode{}
-	var cur *Entity.TreeNode
+	var prev *Entity.TreeNode
 	for len(stack) > 0 || root != nil {
 		if root != nil {
 			stack = append(stack, root)
@@ -826,10 +826,10 @@ func GetMinDiffSimple(root *Entity.TreeNode) int {
 		} else {
 			root = stack[len(stack)-1]
 			stack = stack[:len(stack)-1]
-			if cur != nil {
-				minDiff = Utils.Min(minDiff, root.Val-cur.Val)
+			if prev != nil && root.Val-prev.Val < minDiff {
+				minDiff = root.Val - prev.Val
 			}
-			cur = root
+			prev = root
 			root = root.Right
 		}
 	}

@@ -995,11 +995,7 @@ func minimumTotal(triangle [][]int) int {
 	}
 	for i := n - 2; i >= 0; i-- {
 		for j := 0; j < i+1; j++ {
-			dp[i][j] = dp[i+1][j]
-			if j <= i {
-				dp[i][j] = Utils.Min(dp[i+1][j+1], dp[i][j])
-			}
-			dp[i][j] += triangle[i][j]
+			dp[i][j] = Utils.Min(dp[i+1][j], dp[i+1][j+1]) + triangle[i][j]
 		}
 	}
 	return dp[0][0]
@@ -1045,7 +1041,7 @@ dp[i][j] <= min(dp[i,j-1], dp[i-1,j], dp[i-1,j-1]) + 1
 的值，得到另外的限制条件。
 
 若dp[i,j-1], dp[i-1,j], dp[i-1,j-1]中最小值为3, 也就是说(i,j-1),(i-1,j),(i-1,j-1)均可作为一个边长
-至少为3的正方形的右下角，那么如果位置(i,j)的元素为1(matrix[i][j]=1)，那么位置(i,j)可以作为一个边长为4的
+至少为3的正方形的右下角，那么如果位置(i,j)的元素为1(即matrix[i][j]=1)，那么位置(i,j)可以作为一个边长为4的
 正方形的右下角，即dp[i][j]>=4, 即:
 dp[i][j] >= min(dp[i,j-1], dp[i-1,j], dp[i-1,j-1]) + 1
 将其与上一个不等式联立，可得:

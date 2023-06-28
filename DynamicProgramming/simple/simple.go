@@ -119,7 +119,7 @@ func ClimbStairs(n int) int {
 	return dp[n]
 }
 
-// ClimbStairsSimple 同样的，可以优化一下空间复杂度.时间复杂度O(N), 空间复杂度O(1)
+// ClimbStairsSimple 同样的，可以优化一下空间复杂度。时间复杂度O(N), 空间复杂度降低到O(1)
 func ClimbStairsSimple(n int) int {
 	if n <= 2 {
 		return n
@@ -379,10 +379,10 @@ m, n := len(grid), len(grid[0])
 */
 
 func minPathSum(grid [][]int) int {
-	if len(grid) == 0 || len(grid[0]) == 0 {
+	m, n := len(grid), len(grid[0])
+	if m == 0 || n == 0 {
 		return 0
 	}
-	m, n := len(grid), len(grid[0])
 	dp := make([][]int, m)
 	for i := 0; i < m; i++ {
 		dp[i] = make([]int, n)
@@ -449,8 +449,8 @@ dp[0] dp[1]应该初始化多少呢？
 dp[i]是依靠dp[i - j]的状态，所以遍历i一定是从前向后遍历，先有dp[i - j]再有dp[i]。
 枚举j的时候，是从1开始的。i是从3开始，这样dp[i - j]就是dp[2]正好可以通过我们初始化的数值求出来。
 所以遍历顺序为：
-for (int i = 3; i <= n ; i++) {
-    for (int j = 1; j < i - 1; j++) {
+for (i：= 3; i <= n ; i++) {
+    for (j := 1; j < i - 1; j++) {
         dp[i] = max(dp[i], max((i - j) * j, dp[i - j] * j));
     }
 }
@@ -465,6 +465,7 @@ func integerBreak(n int) int {
 	dp := make([]int, n+1)
 	dp[2] = 1
 	for i := 3; i <= n; i++ {
+		// 因为初始化dp[2] = 1, 所以j的取值最大不能超过i-2,这样i-j才会>=2
 		for j := 1; j < i-1; j++ {
 			dp[i] = Utils.Max(dp[i], Utils.Max((i-j)*j, dp[i-j]*j))
 		}
@@ -487,8 +488,7 @@ func generate(numRows int) [][]int {
 	for i := 0; i < numRows; i++ {
 		// 每一行数组的长度等于行数
 		dp[i] = make([]int, i+1)
-		dp[i][0] = 1
-		dp[i][i] = 1
+		dp[i][0], dp[i][i] = 1, 1
 		for j := 1; j < i; j++ {
 			dp[i][j] = dp[i-1][j-1] + dp[i-1][j]
 		}
