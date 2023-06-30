@@ -125,7 +125,8 @@ func WiggleMaxLength(nums []int) int {
 }
 
 /*
-leetcode 剑指 Offer 42. 连续子数组的最大和
+leetcode 53
+剑指 Offer 42. 连续子数组的最大和
 1.3 最大子序和
 给定一个整数数组nums ，找到一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。
 示例:
@@ -157,6 +158,7 @@ func MaxSubArray(nums []int) int {
 }
 
 /*
+leetcode 122
 1.4 买卖股票的最佳时机II
 给定一个数组，它的第 i 个元素是一支给定股票第 i 天的价格。
 
@@ -278,12 +280,12 @@ func Jump(nums []int) int {
 // JumpSimple 时间复杂度O(N),空间复杂度O(1)
 func JumpSimple(nums []int) int {
 	n := len(nums)
-	// 初始化右边界end，当前所能到达的最大位置maxPosition，以及跳跃次数count为0
+	// 初始化右边界end，当前所能到达的最右边位置rightMost，以及跳跃次数count为0
 	end, rightMost, steps := 0, 0, 0
 	for i := 0; i < n-1; i++ {
 		// 更新当前所能到达的最大位置rightMost
 		rightMost = Utils.Max(i+nums[i], rightMost)
-		// 当下标移动到右边界时，跳跃次数需要加1，同时更新右边界为maxPosition
+		// 当下标移动到右边界时，跳跃次数需要加1，同时更新右边界为rightMost
 		if i == end {
 			end = rightMost
 			steps++
@@ -383,7 +385,7 @@ leetcode 1005
 
 /*
 思路:
-由于我们必须反转k次，那么有不止k个负数的话，我们要反转里面最小的k个，这样数组和sum最大。有不到k个负数的话
+由于我们必须取反k次，那么有不止k个负数的话，我们要反转里面最小的k个，这样数组和sum最大。有不到k个负数的话
 (数组会变为全部为正)，剩下的次数就反复反转所有数里面绝对值最小的那个(如果剩下偶数次负负得正所以sum不变，奇数次
 相当于只反转一次最小的那个）[-8,-5,-5,-3,-2,3]
 */
@@ -407,6 +409,8 @@ func LargestSumAfterKNegations(nums []int, k int) int {
 	}
 	// 如果此时k为正数，而且是偶数，那么此时任选一个正数j取反k次得到的值还是j本身, 之前遍历数组时累加的值
 	// 也是j，所以可以直接返回sum
+	// 否则，应该返回sum-2*minAbs，因为在之前的for循环遍历累加sum时，累加的最小绝对值x是正数，现在要对这个数
+	// 进行奇数次取反，那这个元素最后应该是负数，sum应该累加一个负数，这一正一负之间要回到正常，就应该减去2*minAbs
 	if k > 0 && k%2 == 1 {
 		return sum - 2*minAbs
 	}
@@ -666,10 +670,10 @@ func LemonadeChange(bills []int) bool {
 			five++
 		} else if bill == 10 {
 			// 收到10元，消耗一张5元钞票找零，如果没有5元钞票可以消耗，返回false
-			if five <= 0 {
+			if five < 1 {
 				return false
 			}
-			// 5元钞票数-1，10元超票数+1
+			// 5元钞票数-1，10元钞票数+1
 			five--
 			ten++
 		} else {
@@ -797,7 +801,7 @@ func FindMinArrowShots(points [][]int) int {
 		if points[i][0] > points[i-1][1] {
 			num++
 		} else {
-			// 两个气球重叠，则更新右边气球的最小右边界
+			// 两个气球重叠，则更新右边气球的最小右边界以便尽可能地与下一个气球重叠
 			points[i][1] = Utils.Min(points[i-1][1], points[i][1])
 		}
 	}
@@ -916,6 +920,7 @@ leetcode 763
 1.15 划分字母区间
 字符串S由小写字母组成。我们要把这个字符串划分为尽可能多的片段，同一字母最多出现在一个片段中。返回一个表示
 每个字符串片段的长度的列表。
+注意，划分结果需要满足：将所有划分结果按顺序连接，得到的字符串仍然是 s 。
 
 示例： 输入：S = "ababcbacadefegdehijhklij" 输出：[9,7,8] 解释： 划分结果为 "ababcbaca", "defegde",
 "hijhklij"。 每个字母最多出现在一个片段中。 像 "ababcbacadefegde", "hijhklij" 的划分是错误的，因为划分
@@ -1261,26 +1266,28 @@ func MinCameraCover(root *Entity.TreeNode) int {
 	parentMap := make(map[*Entity.TreeNode]*Entity.TreeNode)
 	// 需要的摄像头数量，初始值为0
 	camera := 0
-	var dfs func(*Entity.TreeNode, *Entity.TreeNode)
-	dfs = func(node, parent *Entity.TreeNode) {
-		if node != nil {
-			// 记录当前节点的父节点
-			parentMap[node] = parent
-			// 递归遍历当前节点的左子树
-			dfs(node.Left, node)
-			// 递归遍历当前节点的右子树
-			dfs(node.Right, node)
-			// 如果是必须要放置摄像头的情况，那么所有相关节点都要记录为已被监控
-			if (parentMap[node] == nil && !covered[node]) || !covered[node.Left] || !covered[node.Right] {
-				camera++
-				covered[node] = true
-				covered[parentMap[node]] = true
-				covered[node.Left] = true
-				covered[node.Right] = true
-			}
+	var dfs func(*Entity.TreeNode)
+	dfs = func(node *Entity.TreeNode) {
+		if node == nil {
+			return
+		}
+		if node.Left != nil {
+			parentMap[node.Left] = node
+			dfs(node.Left)
+		}
+		if node.Right != nil {
+			parentMap[node.Right] = node
+			dfs(node.Right)
+		}
+		if (parentMap[node] == nil && !covered[node]) || !covered[node.Left] || !covered[node.Right] {
+			camera++
+			covered[node] = true
+			covered[parentMap[node]] = true
+			covered[node.Left] = true
+			covered[node.Right] = true
 		}
 	}
-	dfs(root, nil)
+	dfs(root)
 	return camera
 }
 
