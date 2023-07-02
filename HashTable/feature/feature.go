@@ -460,7 +460,7 @@ func MinWindow(s, t string) string {
 			if r-l < window[1]-window[0] {
 				window = []int{l, r}
 			}
-			// 此时我们将左边界右移，尝试寻找新的能覆盖t的子串(滑动窗口)
+			// 此时我们将左边界右移，尝试寻找新地能覆盖t的子串(滑动窗口)
 			// 当前左边界l指向的字符是覆盖t的子串所必须包含的，现在要将它从窗口移除，那么
 			// 我们所需要的字符数就要累加一了。
 			count++
@@ -521,7 +521,7 @@ pre[i]=pre[i−1]+nums[i]
 pre[i]−pre[j−1]=k
 
 简单移项可得符合条件的下标j需要满足
-pre[j−1]==pre[i]−k
+pre[j−1]=pre[i]−k
 
 所以我们考虑以i结尾的和为k的连续子数组个数时只要统计有多少个前缀和为pre[i]−k的pre[j]即可。我们建立哈希表
 mp，以和为键，出现次数为对应的值，记录pre[i]出现的次数，从左往右边更新mp边计算答案，那么以i结尾的答案
@@ -569,11 +569,7 @@ func TopKFrequent(nums []int, k int) []int {
 	freqMap := make(map[int]int)
 	maxFreq := 0
 	for _, v := range nums {
-		if _, ok := freqMap[v]; ok {
-			freqMap[v]++
-		} else {
-			freqMap[v] = 1
-		}
+		freqMap[v]++
 		if freqMap[v] > maxFreq {
 			maxFreq = freqMap[v]
 		}
@@ -632,6 +628,7 @@ func topKFrequent(words []string, k int) []string {
 }
 
 /*
+leetcode 460
 1.13 LFU 缓存
 请你为最不经常使用（LFU）缓存算法设计并实现数据结构。
 

@@ -49,14 +49,14 @@ func SolveSudoku(board [][]byte) {
 
 func IsValidNumber(board [][]byte, row, column int, value byte) bool {
 	// 检查同一行有无重复
-	for i := 0; i < 9; i++ {
-		if board[row][i] == value {
+	for col := 0; col < 9; col++ {
+		if board[row][col] == value {
 			return false
 		}
 	}
 	// 检查同一列有无重复
-	for j := 0; j < 9; j++ {
-		if board[j][column] == value {
+	for r := 0; r < 9; r++ {
+		if board[r][column] == value {
 			return false
 		}
 	}

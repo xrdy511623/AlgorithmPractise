@@ -96,7 +96,7 @@ func numIslands(grid [][]byte) int {
 		}
 		// 将grid[r][c]标记为已经访问过，去重
 		grid[r][c] = '2'
-		// 遍历上下左右四个相邻节点
+		// 遍历上下左右四个相邻节点,若为陆地，则是同一岛屿
 		dfs(r, c-1)
 		dfs(r, c+1)
 		dfs(r-1, c)
@@ -184,7 +184,7 @@ grid[i][j] 为 0 或 1
 */
 
 /*
-两遍 DFS：第一遍DFS遍历陆地格子，计算每个岛屿的面积并标记岛屿索引index(根据索引index可以在map中找到对应的岛屿面积)；
+两遍DFS：第一遍DFS遍历陆地格子，计算每个岛屿的面积并标记岛屿索引index(根据索引index可以在map中找到对应的岛屿面积)；
 第二遍DFS遍历海洋格子，观察每个海洋格子相邻的陆地格子，得出填海后相邻两个岛屿的面积之和。
 
 */
@@ -236,7 +236,7 @@ func getPlusArea(grid [][]int, r, c, rows, columns int, record map[int]int) int 
 	size := 0
 	seen := make(map[int]int)
 	// 如果相邻节点是岛屿(第一轮DFS遍历后岛屿都标记了index,至少都是2)
-	// 将标记的索引index添加到去重的哈希表seen中
+	// 将标记的索引index添加到去重的哈希表seen中,因为相同索引意味着是同一个岛，不能重复累加海洋格子旁边的岛屿
 	if InArea(r, c-1, rows, columns) && grid[r][c-1] >= 2 {
 		seen[grid[r][c-1]]++
 	}

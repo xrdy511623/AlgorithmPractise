@@ -6,16 +6,17 @@ import (
 	"testing"
 )
 
-func TestCombinationSum(t *testing.T){
+func TestCombinationSum(t *testing.T) {
 	candidates := []int{2, 3, 4}
 	target := 12
 	res := CombinationSum(candidates, target)
 	want := len(res)
 	got := CompletePack(candidates, target)
 	fmt.Println(want, got)
-	if !reflect.DeepEqual(want, got){
+	fmt.Println(res)
+	if !reflect.DeepEqual(want, got) {
 		t.Errorf("excepted:%v, got:%v", want, got)
-	} else{
+	} else {
 		fmt.Println("test pass")
 	}
 }

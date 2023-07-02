@@ -109,13 +109,16 @@ leetcode 216. 组合总和III
 
 // CombinationSumThird 回溯法解决
 func CombinationSumThird(k int, n int) [][]int {
+	if k >= n {
+		return [][]int{}
+	}
 	var res [][]int
 	var path []int
 	sum := 0
 	var backTrack func(int)
 	backTrack = func(start int) {
-		// 剪枝，如果当前路径和已经大于n,后续遍历就没有意义了
-		if sum > n {
+		// 剪枝，如果当前路径长度已经超过k或当前路径和已经大于n,后续遍历就没有意义了
+		if len(path) > k || sum > n {
 			return
 		}
 		// 递归终止条件
@@ -186,24 +189,26 @@ func LetterCombinations(digits string) []string {
 	m['8'] = "tuv"
 	m['9'] = "wxyz"
 	var res []string
-	temp := ""
+	path := []byte{}
 	var backTrack func(int)
 	backTrack = func(index int) {
 		// 递归终止条件
 		// 当拼接的临时字符串temp长度等于digits长度时，表明已经找到了一个符合条件的字符串
-		if len(temp) == length {
-			res = append(res, temp)
+		if len(path) == length {
+			temp := make([]byte, length)
+			copy(temp, path)
+			res = append(res, string(temp))
 			return
 		}
 		// 找到digits[index]对应数字所代表的字符串
-		letters := m[digits[index]]
-		for i := 0; i < len(letters); i++ {
+		letter := m[digits[index]]
+		for i := 0; i < len(letter); i++ {
 			// for循环遍历letters，拼接temp字符串
-			temp += string(letters[i])
+			path = append(path, letter[i])
 			// 递归，从index+1下标继续拼接
 			backTrack(index + 1)
 			// 回溯
-			temp = temp[:len(temp)-1]
+			path = path[:len(path)-1]
 		}
 	}
 	// 从digits的0下标开始处理
@@ -281,6 +286,7 @@ func CompletePack(candidates []int, target int) int {
 leetcode 40. 组合总和 II
 1.5 给定一个数组candidates和一个目标数target，找出candidates中所有可以使数字和为target的组合。
 candidates中的每个数字在每个组合中只能使用一次。
+数组candidates中的元素可能有重复。
 
 注意：解集不能包含重复的组合。
 
