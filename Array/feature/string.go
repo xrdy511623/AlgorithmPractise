@@ -44,14 +44,20 @@ func IsAnagram(s, t string) bool {
 }
 
 func IsIsAnagramSimple(s, t string) bool {
-	var c1, c2 [26]int
-	for _, ch := range s {
-		c1[ch-'a']++
+	if len(s) != len(t) {
+		return false
 	}
-	for _, ch := range t {
-		c2[ch-'a']++
+	need := [26]int{}
+	for _, v := range s {
+		need[v-'a']++
 	}
-	return c1 == c2
+	for _, v := range t {
+		need[v-'a']--
+		if need[v-'a'] < 0 {
+			return false
+		}
+	}
+	return true
 }
 
 /*

@@ -151,7 +151,7 @@ func (sq *StrictQueue) Peek() int {
 }
 
 func (sq *StrictQueue) IsEmpty() bool {
-	return len(sq.Queue) == 0
+	return sq.Size() == 0
 }
 
 func (sq *StrictQueue) Size() int {
