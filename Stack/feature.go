@@ -619,7 +619,7 @@ func CheckValidStringSimple(s string) bool {
 
 /*
 leetcode 84 柱状图中最大的矩形
-给定 n 个非负整数，用来表示柱状图中各个柱子的高度。每个柱子彼此相邻，且宽度为 1 。
+1.9 给定 n 个非负整数，用来表示柱状图中各个柱子的高度。每个柱子彼此相邻，且宽度为 1 。
 求在该柱状图中，能够勾勒出来的矩形的最大面积。
 
 示例1:
@@ -629,38 +629,131 @@ leetcode 84 柱状图中最大的矩形
 解释：最大的矩形为图中红色区域，面积为 10
 */
 
+/*
+思路1:暴力解法,时间复杂度O(N^2)
+我们需要在柱状图中找出最大的矩形，因此我们可以考虑枚举矩形的宽和高，其中「宽」表示矩形贴着柱状图底边的宽度，「高」
+表示矩形在柱状图上的高度。
+如果我们枚举「宽」，我们可以使用两重循环枚举矩形的左右边界以固定宽度w，此时矩形的高度h，就是所有包含在内的柱子的
+最小高度，对应的面积为 w×h
+*/
+
+func largestRectangleAreaBrutal(heights []int) int {
+	n := len(heights)
+	res := 0
+	// 枚举矩形的左边界
+	for l := 0; l < n; l++ {
+		minHeight := math.MaxInt32
+		// 枚举矩形的右边界
+		for r := l; r < n; r++ {
+			// 确定矩形最小高度
+			minHeight = Utils.Min(minHeight, heights[r])
+			// 计算矩形面积，迭代最大面积
+			res = Utils.Max(res, minHeight*(r-l+1))
+		}
+	}
+	return res
+}
+
+/*
+或者我们也可以枚举「高」，我们可以使用一重循环枚举某一根柱子，将其固定为矩形的高度h。随后我们从这跟柱子开始向两侧延伸，
+直到遇到高度小于h的柱子，就确定了矩形的左右边界。如果左右边界之间的宽度为w，那么对应的面积为 w×h
+*/
+func largestRectangleAreaBrutalTwo(heights []int) int {
+	n := len(heights)
+	res := 0
+	for i := 0; i < n; i++ {
+		h := heights[i]
+		l, r := i, i
+		for l-1 >= 0 && heights[l-1] >= h {
+			l--
+		}
+		for r+1 < n && heights[r+1] >= h {
+			r++
+		}
+		res = Utils.Max(res, h*(r-l+1))
+	}
+	return res
+}
+
+/*
+思路2：单调栈
+我们用一个具体的例子 [6,7,5,2,4,5,9,3]来帮助理解单调栈。我们需要求出每一根柱子的左侧且最近的小于其高度的柱子。
+初始时的栈为空。
+
+我们枚举6，因为栈为空，所以6左侧的柱子是「哨兵」，位置为 -1。随后我们将6入栈。
+
+栈：[6(0)]。（这里括号内的数字表示柱子在原数组中的位置）
+我们枚举7，由于6<7，因此不会移除栈顶元素，所以7左侧的柱子是6，位置为0。随后我们将7入栈。
+
+栈：[6(0), 7(1)]
+我们枚举5，由于7≥5，因此移除栈顶元素7。同样地，6≥5，再移除栈顶元素6。此时栈为空，所以5左侧的柱子是「哨兵」，
+位置为−1。随后我们将5入栈。
+
+栈：[5(2)]
+接下来的枚举过程也大同小异。我们枚举2，移除栈顶元素5，得到2左侧的柱子是「哨兵」，位置为−1。将2入栈。
+
+栈：[2(3)]
+我们枚举4，5 和9，都不会移除任何栈顶元素，得到它们左侧的柱子分别是2，4 和5，位置分别为3，4 和5。将它们入栈。
+
+栈：[2(3), 4(4), 5(5), 9(6)]
+我们枚举3，依次移除栈顶元素9，5 和4，得到3左侧的柱子是2，位置为3。将3入栈。
+
+栈：[2(3), 3(7)]
+这样一来，我们得到它们左侧的柱子编号分别为 [−1,0,−1,−1,3,4,5,3]
+用相同的方法，我们从右向左进行遍历，也可以得到它们右侧的柱子编号分别为 [2,2,3,8,7,7,7,8]
+这里我们将位置8看作「哨兵」。
+
+在得到了柱子左右两侧最近的且小于其高度的柱子之后，我们就可以计算出每根柱子对应的左右边界，并求出答案了。
+
+*/
+
+// largestRectangleArea 时间复杂度和空间复杂度都是O(N)
 func largestRectangleArea(heights []int) int {
 	n := len(heights)
 	left, right := make([]int, n), make([]int, n)
 	s := []int{}
+	// 首先从左向右遍历，寻找每根柱子左侧最近的小于其高度的柱子位置
 	for i := 0; i < n; i++ {
+		// 如果栈不为空，且栈顶柱子高度大于等于当前柱子高度，说明它不是我们想要的左边界，将栈顶元素弹出
 		for len(s) > 0 && heights[s[len(s)-1]] >= heights[i] {
 			s = s[:len(s)-1]
 		}
+		// 如果栈长度为空，说明该柱子左侧没有比当前柱子更高的柱子，我们将哨兵-1入栈
 		if len(s) == 0 {
 			left[i] = -1
 		} else {
+			// 否则，栈顶元素即为左边界，即当前柱子左侧最近的且高度小于自己的柱子
 			left[i] = s[len(s)-1]
 		}
+		// 将当前柱子位置入栈
 		s = append(s, i)
 	}
 
+	// 左边界确定后，重置栈s为空，以备下一次遍历确定右边界
 	s = []int{}
+	// 然后从右向左遍历，寻找每根柱子右侧最近的小于其高度的柱子位置
 	for i := n - 1; i >= 0; i-- {
+		// 如果栈不为空，且栈顶柱子高度大于等于当前柱子高度，说明它不是我们想要的右边界，将栈顶元素弹出
 		for len(s) > 0 && heights[s[len(s)-1]] >= heights[i] {
 			s = s[:len(s)-1]
 		}
+		// 如果栈长度为空，说明该柱子左侧没有比当前柱子更高的柱子，我们将哨兵n入栈
 		if len(s) == 0 {
 			right[i] = n
 		} else {
+			// 否则，栈顶元素即为左边界，即当前柱子右侧最近的且高度小于自己的柱子
 			right[i] = s[len(s)-1]
 		}
-
+		// 将当前柱子位置入栈
 		s = append(s, i)
 	}
 
 	res := 0
+	// 最后从左到右遍历，确定以每个柱子的高度为高的矩形的面积
 	for i := 0; i < n; i++ {
+		// 面积即为当前柱子的高度*宽度(也就是右边界-左边界-1)
+		// 减一是因为左右边界的柱子高度都是低于当前柱子高度的，所以左右边界都不包含
+		// 迭代最大矩形面积
 		res = Utils.Max(res, heights[i]*(right[i]-left[i]-1))
 	}
 	return res
@@ -688,6 +781,68 @@ func largestRectangleAreaSimple(heights []int) int {
 	res := 0
 	for i := 0; i < n; i++ {
 		res = Utils.Max(res, heights[i]*(right[i]-left[i]-1))
+	}
+	return res
+}
+
+/*
+leetcode 85 最大矩形
+1.10 给定一个仅包含 0 和 1 、大小为 rows x cols 的二维二进制矩阵，找出只包含 1 的最大矩形，并返回其面积。
+
+输入：matrix = [["1","0","1","0","0"],["1","0","1","1","1"],["1","1","1","1","1"],["1","0","0","1","0"]]
+输出：6
+解释：最大矩形如(images目录下的最大矩形.jpeg)所示。
+*/
+
+func maximalRectangle(matrix [][]byte) int {
+	m, n := len(matrix), len(matrix[0])
+	left := make([][]int, m)
+	for i := 0; i < m; i++ {
+		left[i] = make([]int, n)
+		for j := 0; j < n; j++ {
+			if matrix[i][j] == '0' {
+				continue
+			}
+			if j == 0 {
+				left[i][j] = 1
+			} else {
+				left[i][j] = left[i][j-1] + 1
+			}
+		}
+	}
+	res := 0
+	for j := 0; j < n; j++ {
+		up, down := make([]int, m), make([]int, m)
+		s := []int{}
+		for i := 0; i < m; i++ {
+			for len(s) > 0 && left[s[len(s)-1]][j] >= left[i][j] {
+				s = s[:len(s)-1]
+			}
+			if len(s) == 0 {
+				up[i] = -1
+			} else {
+				up[i] = s[len(s)-1]
+			}
+			s = append(s, i)
+		}
+
+		s = []int{}
+		for i := m - 1; i >= 0; i-- {
+			for len(s) > 0 && left[s[len(s)-1]][j] >= left[i][j] {
+				s = s[:len(s)-1]
+			}
+			if len(s) == 0 {
+				down[i] = m
+			} else {
+				down[i] = s[len(s)-1]
+			}
+			s = append(s, i)
+		}
+
+		for i := 0; i < m; i++ {
+			h := down[i] - up[i] - 1
+			res = Utils.Max(res, h*(left[i][j]))
+		}
 	}
 	return res
 }
