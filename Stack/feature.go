@@ -616,3 +616,78 @@ func CheckValidStringSimple(s string) bool {
 	}
 	return minCount == 0
 }
+
+/*
+leetcode 84 柱状图中最大的矩形
+给定 n 个非负整数，用来表示柱状图中各个柱子的高度。每个柱子彼此相邻，且宽度为 1 。
+求在该柱状图中，能够勾勒出来的矩形的最大面积。
+
+示例1:
+参见images目录下的 柱状图.jpeg
+输入：heights = [2,1,5,6,2,3]
+输出：10
+解释：最大的矩形为图中红色区域，面积为 10
+*/
+
+func largestRectangleArea(heights []int) int {
+	n := len(heights)
+	left, right := make([]int, n), make([]int, n)
+	s := []int{}
+	for i := 0; i < n; i++ {
+		for len(s) > 0 && heights[s[len(s)-1]] >= heights[i] {
+			s = s[:len(s)-1]
+		}
+		if len(s) == 0 {
+			left[i] = -1
+		} else {
+			left[i] = s[len(s)-1]
+		}
+		s = append(s, i)
+	}
+
+	s = []int{}
+	for i := n - 1; i >= 0; i-- {
+		for len(s) > 0 && heights[s[len(s)-1]] >= heights[i] {
+			s = s[:len(s)-1]
+		}
+		if len(s) == 0 {
+			right[i] = n
+		} else {
+			right[i] = s[len(s)-1]
+		}
+
+		s = append(s, i)
+	}
+
+	res := 0
+	for i := 0; i < n; i++ {
+		res = Utils.Max(res, heights[i]*(right[i]-left[i]-1))
+	}
+	return res
+}
+
+func largestRectangleAreaSimple(heights []int) int {
+	n := len(heights)
+	left, right := make([]int, n), make([]int, n)
+	for i := 0; i < n; i++ {
+		right[i] = n
+	}
+	s := []int{}
+	for i := 0; i < n; i++ {
+		for len(s) > 0 && heights[s[len(s)-1]] >= heights[i] {
+			right[s[len(s)-1]] = i
+			s = s[:len(s)-1]
+		}
+		if len(s) == 0 {
+			left[i] = -1
+		} else {
+			left[i] = s[len(s)-1]
+		}
+		s = append(s, i)
+	}
+	res := 0
+	for i := 0; i < n; i++ {
+		res = Utils.Max(res, heights[i]*(right[i]-left[i]-1))
+	}
+	return res
+}

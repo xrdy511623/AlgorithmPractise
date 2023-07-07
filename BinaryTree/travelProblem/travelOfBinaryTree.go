@@ -438,6 +438,7 @@ func LevelOrderOfNTress(root *Entity.Node) [][]int {
 */
 
 /*
+剑指 Offer 07. 重建二叉树
 leetcode 105. 从前序与中序遍历序列构造二叉树
 3.1 给定一棵二叉树的前序遍历preorder与中序遍历inorder结果集。请构造二叉树并返回其根节点。
 preorder和inorder均无重复元素.
