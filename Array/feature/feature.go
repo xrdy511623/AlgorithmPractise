@@ -2,6 +2,7 @@ package feature
 
 import (
 	"AlgorithmPractise/Utils"
+	"fmt"
 	"math"
 	"math/rand"
 	"strings"
@@ -1308,83 +1309,86 @@ func antiSpiralOrder(matrix [][]int) []int {
 }
 
 /*
-公司有n个组，每组人数相同(至少有一个人)，现在需要进行随机地组队吃饭。
+一群朋友组队玩游戏，至少有5组人，一组至少2人
 要求:
-1 两两一队，不能落单，落单则三人一队
-2 一个人在所有队伍中只出现一次
-3 队伍中至少包含两个组的成员
-4 随机组队，重复执行程序得到的结果不一样
+1 每2个人组一队或者3人组一队，每个人只能加到一个队伍里，不能落单
+2 2人队和3人队各自的队伍数均不得少于1，队伍中的人不能来自相同组
+3 随机组队，重复执行程序得到的结果不一样，总队伍数也不能一样
+4 必须有注释
+注:要同时满足条件1-4
 */
 
 var GroupList = [][]string{
-	{"小名", "小红", "小马", "小丽", "小强"},
+	{"少华", "少平", "少军", "少安", "少康"},
+	{"福军", "福堂", "福民", "福平", "福心"},
+	{"小明", "小红", "小花", "小丽", "小强"},
 	{"大壮", "大力", "大1", "大2", "大3"},
 	{"阿花", "阿朵", "阿蓝", "阿紫", "阿红"},
 	{"A", "B", "C", "D", "E"},
 	{"一", "二", "三", "四", "五"},
-	{"建国", "建军", "建民", "建超", "建跃"},
-	{"爱民", "爱军", "爱国", "爱辉", "爱月"},
 }
 
-/*
-解题思路：
-1、首先从二维数组中随机选择一个数组，从选择的数组中随机选择一个元素。
-2、题目要求两两一对，而且不能是同一组，所以必须记住上一个一维数组的key，也就是last_index
-3、循环的结束的条件，则是所有一维数组的元素都取出来了，用empty_num记录空数组个数
-4、把满足条件的元素记录到result中
-*/
+// Combination 结构体标记2人队和3人队队伍数的组合
+type Combination struct {
+	Two   int
+	Three int
+}
+
+var r = rand.New(rand.NewSource(time.Now().UnixNano()))
+
+// 计算出两人队和三人队的所有可能解，a*2+b*3=sum，即a和b的组合
+func calCombination(sum int) Combination {
+	result := make([]Combination, 0)
+	// 2人一队或3人一队，不能落单
+	// 2人队、3人队各自的队伍数均不得少于1
+	// tow标记2人队队伍数量
+	for two := 1; two*2 <= sum-3*1; two++ {
+		num := sum - 2*two
+		// 减去两人队剩余人数后，如果剩下的人还能组成至少一组3人队，则我们找到一个组队方案
+		if num%3 == 0 && num/3 >= 1 {
+			result = append(result, Combination{two, num / 3})
+		}
+	}
+	// 没有符合题意的组队方式
+	if len(result) == 0 {
+		return Combination{}
+	}
+	n := len(result)
+	// 随机组队，重复执行程序得到的结果不一样，总队伍数也不能一样
+	return result[r.Intn(n)%n]
+}
 
 func constructGroup() [][]string {
-	res := [][]string{[]string{}}
-	// 记录二维数组及其一维数组的长度
-	m, n := len(GroupList), len(GroupList[0])
-	// 记录上一个一维数组的位置，初始值为-1；记录空数组个数，初始值为0
-	lastIndex, emptyNum := -1, 0
-	// 初始化随机种子
-	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	for emptyNum < m {
-		// 从二维数组随机选一个一维数组
-		rand_m := r.Intn(m)
-		// 避开上一次选中的一维数组
-		if lastIndex == rand_m {
-			continue
-		}
-		// 记录随机元素在选中的随机一维数组的下标
-		rand_n := r.Intn(n)
-		// 如果被随机选中的一维数组为空或其长度已经小于等于此次的随机下标，则跳过，避免索引越界
-		if len(GroupList[rand_m]) == 0 || len(GroupList[rand_m]) <= rand_n {
-			continue
-		}
-		// 记录随机元素val
-		val := GroupList[rand_m][rand_n]
-		// 从选中的一维数组中去掉刚刚随机选中的元素val,也就是GroupList[rand_m][rand_n]，以满足条件二
-		GroupList[rand_m] = append(GroupList[rand_m][:rand_n], GroupList[rand_m][rand_n+1:]...)
-		// 记录上一次选中的一维数组的索引下标
-		lastIndex = rand_m
-		// 将选中的随机元素val添加到结果集res的最后一个队伍中
-		res[len(res)-1] = append(res[len(res)-1], val)
-		// 如果队伍人数达标(大于等于2)
-		if len(res[len(res)-1]) >= 2 {
-			// 则重置last_index为-1，因为下一次循环是另组一支队伍，可以再从上次选择的组里选人了
-			lastIndex = -1
-			// 同时在结果集中再添加一个队伍，意味着下一次循环是另组一支新队伍了
-			res = append(res, []string{})
-		}
-		// 如果选中的一维数组空了，则累加空数组empty_num个数
-		if len(GroupList[rand_m]) == 0 {
-			emptyNum++
-		}
+	// sum为GroupList总人数
+	sum := len(GroupList) * len(GroupList[0])
+	// 根据总人数，得到一个随机组队方案cr
+	cr := calCombination(sum)
+	fmt.Println(cr)
+	// 2人队队伍数不能少于1
+	if cr.Two == 0 {
+		fmt.Println("没有满足条件的组合")
+		return [][]string{}
 	}
-	// 如果循环结束，发现最后一支队伍只有一个人
-	if len(res[len(res)-1]) == 1 {
-		tmp := res[len(res)-1][0]
-		res = res[:len(res)-1]
-		// 则将其加到倒数第二支队伍里，避免落单
-		res[len(res)-1] = append(res[len(res)-1], tmp)
+	// 将GroupList每一组成员随机打乱，避免后续从二维数组左上角开始，从上到下，从左到右固定取数据的影响
+	for _, group := range GroupList {
+		r.Shuffle(len(group), func(i, j int) {
+			group[i], group[j] = group[j], group[i]
+		})
 	}
-	// 如果最后一支队伍没人，则砍掉这一支队伍
-	if len(res[len(res)-1]) == 0 {
-		res = res[:len(res)-1]
+	//  res为最后的组队结果集，其长度为随机组队方案cr的2人队和3人队队伍数之和
+	res := make([][]string, cr.Two+cr.Three)
+	// index为组队结果集res的下标索引，初始值为0
+	index := 0
+	groups := len(GroupList)
+	for i := 0; i < sum; i++ {
+		// 要求队伍中的人不能来自相同组，所以每次填充队伍都选不同的组
+		res[index] = append(res[index], GroupList[i%groups][i/groups])
+		// 先尝试排2人队队伍，然后再尝试排3人队队伍
+		if i < cr.Two*2 && len(res[index]) == 2 {
+			index++
+		} else if i >= cr.Two*2 && len(res[index]) == 3 {
+			index++
+		}
 	}
 	return res
 }

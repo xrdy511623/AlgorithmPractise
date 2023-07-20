@@ -111,7 +111,7 @@ func ReverseKGroup(head *Entity.ListNode, k int) *Entity.ListNode {
 		prev.Next = head
 		tail.Next = ndx
 
-		// 更新pre和head指针，此时分别指向反转后的k个结点组成的链表的尾结点和反转前k个结点组成的链表尾结点的下一个结点
+		// 更新prev和head指针，此时分别指向反转后的k个结点组成的链表的尾结点和反转前k个结点组成的链表尾结点的下一个结点
 		prev = tail
 		head = ndx
 	}
@@ -119,10 +119,10 @@ func ReverseKGroup(head *Entity.ListNode, k int) *Entity.ListNode {
 }
 
 func reverse(head, tail *Entity.ListNode, k int) (*Entity.ListNode, *Entity.ListNode) {
-	var pre *Entity.ListNode
+	var prev *Entity.ListNode
 	cur := head
 	for i := 0; i < k; i++ {
-		cur.Next, pre, cur = pre, cur, cur.Next
+		cur.Next, prev, cur = prev, cur, cur.Next
 	}
 	return tail, head
 }

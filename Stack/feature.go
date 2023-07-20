@@ -334,7 +334,7 @@ func EvalRPN(tokens []string) int {
 			// 遇到数字入栈
 			stack = append(stack, num)
 		} else {
-			// 遇到运算符，取出顶两个数字进行计算，并将结果压入栈中
+			// 遇到运算符，取出栈顶的两个数字进行计算，并将结果压入栈中
 			n := len(stack)
 			n1, n2 := stack[n-2], stack[n-1]
 			stack = stack[:n-2]

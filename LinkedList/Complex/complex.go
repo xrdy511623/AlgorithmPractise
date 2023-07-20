@@ -190,8 +190,7 @@ func MergeTwoLists(l1, l2 *Entity.ListNode) *Entity.ListNode {
 	}
 	if l1 != nil {
 		cur.Next = l1
-	}
-	if l2 != nil {
+	} else {
 		cur.Next = l2
 	}
 	return dummy.Next

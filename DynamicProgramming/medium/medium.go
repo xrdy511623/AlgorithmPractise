@@ -949,15 +949,13 @@ func minFallingPathSum(matrix [][]int) int {
 	}
 	for i := n - 2; i >= 0; i-- {
 		for j := 0; j < n; j++ {
-			dp[i][j] = dp[i+1][j]
 			if j == 0 {
-				dp[i][j] = Utils.Min(dp[i+1][j+1], dp[i][j])
+				dp[i][j] = Utils.Min(dp[i+1][j], dp[i+1][j+1]) + matrix[i][j]
 			} else if j == n-1 {
-				dp[i][j] = Utils.Min(dp[i+1][j-1], dp[i][j])
+				dp[i][j] = Utils.Min(dp[i+1][j], dp[i+1][j-1]) + matrix[i][j]
 			} else {
-				dp[i][j] = Utils.Min(dp[i][j], Utils.Min(dp[i+1][j-1], dp[i+1][j+1]))
+				dp[i][j] = Utils.Min(dp[i+1][j], Utils.Min(dp[i+1][j-1], dp[i+1][j+1])) + matrix[i][j]
 			}
-			dp[i][j] += matrix[i][j]
 		}
 	}
 	return Utils.MinValueOfArray(dp[0])
@@ -967,7 +965,7 @@ func minFallingPathSum(matrix [][]int) int {
 leetcode 120. 三角形最小路径和
 1.17 给定一个三角形triangle，找出自顶向下的最小路径和。
 每一步只能移动到下一行中相邻的结点上。相邻的结点在这里指的是下标与上一层结点下标相同或者等于上一层结点下标+1
-的两个结点。也就是说，如果正位于当前行的下标i ，那么下一步可以移动到下一行的下标i或i+1 。
+的两个结点。也就是说，如果正位于当前行的下标i，那么下一步可以移动到下一行的下标i或i+1 。
 
 示例1：
 输入：triangle = [[2],[3,4],[6,5,7],[4,1,8,3]]
