@@ -331,3 +331,36 @@ func insertionSortList(head *Entity.ListNode) *Entity.ListNode {
 	}
 	return dummy.Next
 }
+
+/*
+剑指 Offer 35. 复杂链表的复制
+1.9 请实现 copyRandomList 函数，复制一个复杂链表。在复杂链表中，每个节点除了有一个 next 指针指向下一个节点，还有一个
+random 指针指向链表中的任意节点或者 null。
+输入：head = [[7,null],[13,0],[11,4],[10,2],[1,0]]
+输出：[[7,null],[13,0],[11,4],[10,2],[1,0]]
+*/
+
+type Node struct {
+	Val    int
+	Next   *Node
+	Random *Node
+}
+
+func copyRandomList(head *Node) *Node {
+	cache := make(map[*Node]*Node)
+	var deepCopy func(*Node) *Node
+	deepCopy = func(node *Node) *Node {
+		if node == nil {
+			return nil
+		}
+		if Node, done := cache[node]; done {
+			return Node
+		}
+		newNode := &Node{Val: node.Val}
+		cache[node] = newNode
+		newNode.Next = deepCopy(node.Next)
+		newNode.Random = deepCopy(node.Random)
+		return newNode
+	}
+	return deepCopy(head)
+}
