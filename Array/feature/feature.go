@@ -1309,6 +1309,7 @@ func antiSpiralOrder(matrix [][]int) []int {
 }
 
 /*
+1.26 随机组队
 一群朋友组队玩游戏，至少有5组人，一组至少2人
 要求:
 1 每2个人组一队或者3人组一队，每个人只能加到一个队伍里，不能落单
@@ -1391,4 +1392,34 @@ func constructGroup() [][]string {
 		}
 	}
 	return res
+}
+
+/*
+剑指 Offer 57. 和为s的两个数字
+1.27 输入一个递增排序的数组和一个数字s，在数组中查找两个数，使得它们的和正好是s。如果有多对数字的和等于s，
+则输出任意一对即可。
+
+示例 1：
+输入：nums = [2,7,11,15], target = 9
+输出：[2,7] 或者 [7,2]
+
+示例 2：
+输入：nums = [10,26,30,31,47,60], target = 40
+输出：[10,30] 或者 [30,10]
+*/
+
+// twoSum 因为是升序数组，采用双指针的思路时间复杂度O(N)，空间复杂度O(1)
+func twoSum(nums []int, target int) []int {
+	i, j := 0, len(nums)-1
+	for i < j {
+		sum := nums[i] + nums[j]
+		if sum > target {
+			j--
+		} else if sum < target {
+			i++
+		} else {
+			return []int{nums[i], nums[j]}
+		}
+	}
+	return []int{}
 }
