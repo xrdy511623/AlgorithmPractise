@@ -1423,3 +1423,108 @@ func twoSum(nums []int, target int) []int {
 	}
 	return []int{}
 }
+
+/*
+leetcode 11 盛最多水的容器
+1.28 给定一个长度为n的整数数组 height 。有n条垂线，第i条线的两个端点是 (i, 0) 和 (i, height[i]) 。
+
+找出其中的两条线，使得它们与x轴共同构成的容器可以容纳最多的水。
+
+返回容器可以储存的最大水量。
+
+说明：你不能倾斜容器。
+
+示例 1：
+输入：[1,8,6,2,5,4,8,3,7]
+输出：49
+
+提示：
+n == height.length
+2 <= n <= 105
+0 <= height[i] <= 104
+*/
+
+func MaxArea(height []int) int {
+	l, r := 0, len(height)-1
+	maxArea := 0
+	for l < r {
+		maxArea = Utils.Max(maxArea, Utils.Min(height[l], height[r])*(r-l))
+		if height[l] <= height[r] {
+			l++
+		} else {
+			r--
+		}
+	}
+	return maxArea
+}
+
+/*
+leetcode 498 对角线遍历
+1.29 给你一个大小为 m x n 的矩阵 mat ，请以对角线遍历的顺序，用一个数组返回这个矩阵中的所有元素。
+
+示例1:
+输入：mat = [[1,2,3],[4,5,6],[7,8,9]]
+输出：[1,2,4,7,5,3,6,8,9]
+
+示例2:
+输入：mat = [[1,2],[3,4]]
+输出：[1,2,3,4]
+
+示：
+
+m == mat.length
+n == mat[i].length
+1 <= m, n <= 104
+1 <= m * n <= 104
+-105 <= mat[i][j] <= 105
+*/
+
+/*
+方法一：直接模拟
+思路与算法
+
+根据题目要求，矩阵按照对角线进行遍历。设矩阵的行数为m, 矩阵的列数为n, 我们仔细观察对角线遍历的规律可以得到如下信息:
+一共有 m+n−1条对角线，相邻的对角线的遍历方向不同，当前遍历方向为从左下到右上，则紧挨着的下一条对角线遍历方向为从右上
+到左下；
+
+设对角线从上到下的编号为 i∈[0,m+n−2]：
+当i为偶数时，则第i条对角线的走向是从下往上遍历；
+当i为奇数时，则第i条对角线的走向是从上往下遍历；
+当第i条对角线从下往上遍历时，每次行索引减1，列索引加1，直到矩阵的边缘为止：
+当 i<m 时，则此时对角线遍历的起点位置为 (i,0)；
+当 i≥m 时，则此时对角线遍历的起点位置为 (m−1,i−m+1)；
+
+当第i条对角线从上往下遍历时，每次行索引加1，列索引减1，直到矩阵的边缘为止：
+
+当 i<n 时，则此时对角线遍历的起点位置为 (0,i)；
+当 i≥n 时，则此时对角线遍历的起点位置为 (i−n+1,n−1)；
+根据以上观察得出的结论，我们直接模拟遍历所有的对角线即可。
+*/
+
+func findDiagonalOrder(mat [][]int) []int {
+	m, n := len(mat), len(mat[0])
+	res := make([]int, m*n)
+	index := 0
+	for i := 0; i < m+n-1; i++ {
+		if i%2 == 0 {
+			x := Utils.Min(i, m-1)
+			y := Utils.Max(i-m+1, 0)
+			for x >= 0 && y < n {
+				res[index] = mat[x][y]
+				index++
+				x--
+				y++
+			}
+		} else {
+			x := Utils.Max(i-n+1, 0)
+			y := Utils.Min(i, n-1)
+			for x < m && y >= 0 {
+				res[index] = mat[x][y]
+				index++
+				x++
+				y--
+			}
+		}
+	}
+	return res
+}
