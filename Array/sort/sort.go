@@ -568,8 +568,8 @@ nums[0]。
 特别的，如果数组长度为1，那么我们直接返回nums[0]
 */
 
-// FindMin 时间复杂度为O(N)，空间复杂度O(1)
-func FindMin(nums []int) int {
+// FindMinComplex 时间复杂度为O(N)，空间复杂度O(1)
+func FindMinComplex(nums []int) int {
 	n := len(nums)
 	// 特殊情况处理
 	if n == 1 {
@@ -613,17 +613,20 @@ func FindMin(nums []int) int {
 当二分查找结束时，我们就得到了最小值所在的位置。
 */
 
-// FindMinSimple 时间复杂度为O(logN)，空间复杂度O(1)
-func FindMinSimple(nums []int) int {
+// FindMin 时间复杂度为O(logN)，空间复杂度O(1)
+func FindMin(nums []int) int {
 	low, high := 0, len(nums)-1
 	for low < high {
 		mid := (low + high) / 2
-		if nums[mid] < nums[high] {
+		// 如果中间值小于或等于右边界值，说明最小值可能是mid，也可能在左半部分
+		if nums[mid] <= nums[high] {
 			high = mid
 		} else {
+			// 如果中间值大于右边界值，说明最小值一定在右半部分
 			low = mid + 1
 		}
 	}
+	// 最后low和high会重合，指向最小值
 	return nums[low]
 }
 
@@ -831,7 +834,7 @@ func SearchTarget(nums []int, target int) bool {
 /*
 leetcode 面试题 10.03. 搜索旋转数组
 1.9 搜索旋转数组。给定一个排序后的数组，包含n个整数，但这个数组已被旋转过很多次了，次数不详。请编写代码找出数组
-中的某个元素，假设数组元素原先是按升序排列的。若有多个相同元素，返回索引值最小的一个。
+中的某个元素的位置，假设数组元素原先是按升序排列的。若有多个相同元素，返回索引值最小的一个。
 
 示例1:
 输入: arr = [15, 16, 19, 20, 25, 1, 3, 4, 5, 7, 10, 14], target = 5
@@ -846,40 +849,32 @@ arr 长度范围在[1, 1000000]之间
 */
 
 func SearchRotateArray(arr []int, target int) int {
-	n := len(arr)
-	if n == 0 {
-		return -1
-	}
-	l, r := 0, n-1
-	for l <= r {
-		// 当左边界l对应元素为target时直接返回l,因为题目要求返回最小索引
-		if arr[l] == target {
-			return l
-		}
-		mid := (l + r) / 2
-		// 当中间值等于target时，将右边界r左移到mid，因为mid左边可能还有等于target的元素
+	low, high := 0, len(arr)-1
+	result := -1
+
+	for low <= high {
+		mid := (low + high) / 2
 		if arr[mid] == target {
-			r = mid
-		} else if arr[l] < arr[mid] {
-			if arr[l] <= target && target < arr[mid] {
-				r = mid - 1
+			// 找到一个候选解，继续向左查找
+			result = mid
+			high = mid - 1
+		} else if arr[mid] >= arr[low] {
+			// 左半部分有序
+			if arr[low] <= target && target < arr[mid] {
+				high = mid - 1
 			} else {
-				l = mid + 1
-			}
-		} else if arr[l] > arr[mid] {
-			if arr[mid] < target && target <= arr[r] {
-				l = mid + 1
-			} else {
-				r = mid - 1
+				low = mid + 1
 			}
 		} else {
-			// 当中间值与左边界l对应的元素相等时，将左边界l右移
-			// 因为此时arr[l]==arr[mid]但是arr[mid] != target,即arr[l] != target
-			// 所以target一定落在[l+1:r]区间内
-			l++
+			// 右半部分有序
+			if arr[mid] < target && target <= arr[high] {
+				low = mid + 1
+			} else {
+				high = mid - 1
+			}
 		}
 	}
-	return -1
+	return result
 }
 
 /*

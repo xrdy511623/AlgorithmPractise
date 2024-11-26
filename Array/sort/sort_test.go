@@ -108,8 +108,19 @@ func TestRotate(t *testing.T) {
 
 func TestFindMinSimple(t *testing.T) {
 	nums := []int{3, 4, 5, 1, 2}
-	got := FindMinSimple(nums)
+	got := FindMin(nums)
 	want := 1
+	if got != want {
+		t.Errorf("got:%v, expected:%v", got, want)
+	} else {
+		fmt.Println("test pass")
+	}
+}
+
+func TestSearchRotateArray(t *testing.T) {
+	array := []int{15, 16, 19, 20, 25, 1, 3, 4, 5, 7, 10, 14}
+	got := SearchRotateArray(array, 7)
+	want := 10
 	if got != want {
 		t.Errorf("got:%v, expected:%v", got, want)
 	} else {
