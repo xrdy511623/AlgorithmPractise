@@ -274,7 +274,7 @@ func Merge(left, right []int) (res []int) {
 }
 
 /*
-1.1 二分查找实现，递归版与非递归版,返回要查找元素在数组中的索引下标，若数组中不存在该元素，返回-1
+1.1 二分查找实现，递归版与非递归版,返回要查找元素在有序数组中的索引下标，若数组中不存在该元素，返回-1
 */
 
 // BinarySearch 二分查找非递归版
@@ -384,15 +384,39 @@ SearchRangeSimple 用二分法找到有序数组nums中第一个等于target的�
 直到遍历到的元素不等于target为止，如此便可找到最后一个等于target的元素的位置last
 */
 func SearchRangeSimple(nums []int, target int) []int {
-	first := BinarySearchFirstEqualTarget(nums, target)
-	if first == -1 {
+	// // 查找左边界
+	left := findBoundary(nums, target, true)
+	if left == -1 {
+		// 如果左边界不存在，直接返回 [-1, -1]
 		return []int{-1, -1}
 	}
-	last, n := first, len(nums)
-	for i := first; i < n && nums[i] == target; i++ {
-		last = i
+	// 查找右边界
+	right := findBoundary(nums, target, false)
+	return []int{left, right}
+}
+
+func findBoundary(nums []int, target int, isLeft bool) int {
+	low, high := 0, len(nums)-1
+	boundary := -1
+	for low <= high {
+		mid := (low + high) / 2
+		if nums[mid] > target {
+			high = mid - 1
+		} else if nums[mid] < target {
+			low = mid + 1
+		} else {
+			// 找到目标值时，更新边界
+			boundary = mid
+			if isLeft {
+				// 向左继续寻找
+				high = mid - 1
+			} else {
+				// 向右继续寻找
+				low = mid + 1
+			}
+		}
 	}
-	return []int{first, last}
+	return boundary
 }
 
 /*
@@ -418,8 +442,8 @@ func FindSpecialInteger(arr []int) int {
 	n := len(arr)
 	span := n/4 + 1
 	for i := 0; i < n; i += span {
-		l := BinarySearchFirstEqualTarget(arr, arr[i])
-		r := BinarySearchLastEqualTarget(arr, arr[i])
+		l := findBoundary(arr, arr[i], true)
+		r := findBoundary(arr, arr[i], false)
 		if r-l+1 >= span {
 			return arr[i]
 		}
@@ -437,25 +461,17 @@ func FindSpecialInteger(arr []int) int {
 输入: nums = [5,7,7,8,8,10], target = 6
 输出: 0
 
-思路: 在排序数组中找出等于目标值target的起始位置index，如果index为-1,证明数组中无此元素，返回0，
-否则从数组index位置开始向后遍历数组元素，只要数组元素等于target，则将其出现次数count累加1,如果遇到不等于
-target的元素，说明后面的元素都大于target，此时退出循环，最后返回count即可
+思路: 在排序数组中找出等于目标值target的起始位置l，如果l为-1,证明数组中无此元素，返回0，
+在排序数组中找出等于目标值target的结束位置r，出现次数即为r-l+1
 */
 
 func Search(nums []int, target int) int {
-	index := BinarySearchFirstEqualTarget(nums, target)
-	if index == -1 {
+	l := findBoundary(nums, target, true)
+	if l == -1 {
 		return 0
 	}
-	count := 0
-	for _, num := range nums[index:] {
-		if num == target {
-			count++
-		} else {
-			break
-		}
-	}
-	return count
+	r := findBoundary(nums, target, false)
+	return r - l + 1
 }
 
 /*
