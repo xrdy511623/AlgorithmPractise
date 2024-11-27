@@ -916,7 +916,7 @@ func FindKthLargest(nums []int, k int) int {
 
 func FindKthLargestElement(nums []int, k int) int {
 	n := len(nums)
-	TopkSplit(nums, n-k, 0, n-1)
+	TopKSplit(nums, n-k, 0, n-1)
 	return nums[n-k]
 }
 
@@ -942,16 +942,16 @@ func Partition(array []int, start, stop int) int {
 	return right
 }
 
-// TopkSplit topK切分
-func TopkSplit(nums []int, k, left, right int) {
+// TopKSplit topK切分
+func TopKSplit(nums []int, k, left, right int) {
 	if left < right {
 		index := Partition(nums, left, right)
 		if index == k {
 			return
 		} else if index < k {
-			TopkSplit(nums, k, index+1, right)
+			TopKSplit(nums, k, index+1, right)
 		} else {
-			TopkSplit(nums, k, left, index-1)
+			TopKSplit(nums, k, left, index-1)
 		}
 	}
 }
@@ -962,8 +962,8 @@ func TopkSplit(nums []int, k, left, right int) {
 1.9.1 获得前k小的数
 */
 
-func TopkSmallest(nums []int, k int) []int {
-	TopkSplit(nums, k, 0, len(nums)-1)
+func TopKSmallest(nums []int, k int) []int {
+	TopKSplit(nums, k, 0, len(nums)-1)
 	return nums[:k]
 }
 
@@ -971,8 +971,8 @@ func TopkSmallest(nums []int, k int) []int {
 1.9.2 获得前k大的数
 */
 
-func TopkLargest(nums []int, k int) []int {
-	TopkSplit(nums, len(nums)-k, 0, len(nums)-1)
+func TopKLargest(nums []int, k int) []int {
+	TopKSplit(nums, len(nums)-k, 0, len(nums)-1)
 	return nums[len(nums)-k:]
 }
 
@@ -980,8 +980,8 @@ func TopkLargest(nums []int, k int) []int {
 1.9.3 获取第k小的数
 */
 
-func TopkSmallestElement(nums []int, k int) int {
-	TopkSplit(nums, k, 0, len(nums)-1)
+func TopKSmallestElement(nums []int, k int) int {
+	TopKSplit(nums, k, 0, len(nums)-1)
 	return nums[k-1]
 }
 
@@ -989,8 +989,8 @@ func TopkSmallestElement(nums []int, k int) int {
 1.9.4 获取第k大的数
 */
 
-func TopkLargestElement(nums []int, k int) int {
-	TopkSplit(nums, len(nums)-k, 0, len(nums)-1)
+func TopKLargestElement(nums []int, k int) int {
+	TopKSplit(nums, len(nums)-k, 0, len(nums)-1)
 	return nums[len(nums)-k]
 }
 
@@ -1084,24 +1084,30 @@ func getKthElement(nums1, nums2 []int, k int) int {
 	index1, index2 := 0, 0
 	m, n := len(nums1), len(nums2)
 	for {
-		// 特殊情形
+		// 边界情况
+		// nums1为空，直接返回nums2中的第k小元素
 		if index1 == m {
 			return nums2[index2+k-1]
 		}
+		// nums2为空，直接返回nums1中的第k小元素
 		if index2 == n {
 			return nums1[index1+k-1]
 		}
+		// k=1，直接返回nums1[index1]或者nums2[index2]中较小值
 		if k == 1 {
 			return Utils.Min(nums1[index1], nums2[index2])
 		}
-		// 正常情况,取index1+k/2-1与数组最后一位元素下标m-1的较小值，避免下标越界
-		newIndex1 := Utils.Min(index1+k/2-1, m-1)
-		newIndex2 := Utils.Min(index2+k/2-1, n-1)
+		// 正常情况：比较两个数组的第 k/2 个元素
+		half := k / 2
+		newIndex1 := Utils.Min(index1+half-1, m-1)
+		newIndex2 := Utils.Min(index2+half-1, n-1)
 		pivot1, pivot2 := nums1[newIndex1], nums2[newIndex2]
 		if pivot1 <= pivot2 {
+			// 排除nums1的前half个元素，并更新 k 的值和起始索引。
 			k -= newIndex1 - index1 + 1
 			index1 = newIndex1 + 1
 		} else {
+			// 排除nums2的前half个元素，并更新 k 的值和起始索引。
 			k -= newIndex2 - index2 + 1
 			index2 = newIndex2 + 1
 		}
