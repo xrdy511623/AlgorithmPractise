@@ -1555,7 +1555,7 @@ func checkAscend(nums []int) bool {
 
 func checkDescend(nums []int) bool {
 	flag := true
-	for i, n := 0, len(nums)-2; i < n; i++ {
+	for i, n := 0, len(nums)-1; i < n; i++ {
 		if nums[i] < nums[i+1] {
 			flag = false
 			break

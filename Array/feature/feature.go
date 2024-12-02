@@ -144,6 +144,8 @@ func majorityElement(nums []int) []int {
 	// 计票阶段，确定两个候选人得票数是否超过n/3次
 	count1, count2 = 0, 0
 	for _, num := range nums {
+		// 如果数组中只有一个元素或者数组中有多个元素，但这些元素值相等，那么经过第一轮投票后,c1和c2会相等
+		// 譬如数组[1]和数组[3,3,3]，所以此时第二轮计票时，既不能使用两个独立的if判断，否则会出现结果重复的情况
 		if num == cand1 {
 			count1++
 		} else if num == cand2 {
