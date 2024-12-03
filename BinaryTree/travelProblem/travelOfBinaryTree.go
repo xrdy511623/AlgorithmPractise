@@ -257,15 +257,10 @@ func LevelOrderComplex(root *Entity.TreeNode) [][]int {
 	queue := []*Entity.TreeNode{root}
 	for len(queue) != 0 {
 		levelSize := len(queue)
-		// 每一层都新建一个slice来存储该层所有节点值
-		var curLevel []int
-		// 队列queue始终存储同一层节点，循环levelSize次，意味着该层节点遍历完毕
-		for i := 0; i < levelSize; i++ {
-			// 满足队列先进先出特性
-			node := queue[0]
-			// 将该层节点值依次添加到curLevel中
-			curLevel = append(curLevel, node.Val)
-			queue = queue[1:]
+		curLevel := make([]int, levelSize)
+		for i := range queue {
+			node := queue[i]
+			curLevel[i] = node.Val
 			if node.Left != nil {
 				queue = append(queue, node.Left)
 			}
@@ -273,7 +268,7 @@ func LevelOrderComplex(root *Entity.TreeNode) [][]int {
 				queue = append(queue, node.Right)
 			}
 		}
-		// 循环levelSize次后，意味着该层节点遍历完毕，将存储该层节点值的curLevel添加到结果集中
+		queue = queue[levelSize:]
 		res = append(res, curLevel)
 	}
 	return res
@@ -337,16 +332,16 @@ func ZigzagLevelOrder(root *Entity.TreeNode) [][]int {
 		return res
 	}
 	queue := []*Entity.TreeNode{root}
-	level := 1
+	level := 0
 	for len(queue) != 0 {
 		levelSize := len(queue)
 		// 每一层都新建一个slice来存储该层所有节点值
-		var curLevel []int
+		curLevel := make([]int, levelSize)
 		// 队列queue始终存储同一层节点，循环levelSize次，意味着该层节点遍历完毕
 		for i := 0; i < levelSize; i++ {
 			// 满足队列先进先出特性
-			node := queue[0]
-			queue = queue[1:]
+			node := queue[i]
+			curLevel[i] = node.Val
 			// 将该层节点值依次添加到curLevel中
 			curLevel = append(curLevel, node.Val)
 			if node.Left != nil {
@@ -356,6 +351,9 @@ func ZigzagLevelOrder(root *Entity.TreeNode) [][]int {
 				queue = append(queue, node.Right)
 			}
 		}
+		// 循环levelSize次后，意味着该层节点遍历完毕，剩下的节点属于下一层，level累加1
+		level++
+		queue = queue[levelSize:]
 		// 奇数层将curLevel原样添加到结果集合中
 		if level%2 == 1 {
 			res = append(res, curLevel)
@@ -363,8 +361,6 @@ func ZigzagLevelOrder(root *Entity.TreeNode) [][]int {
 			// 偶数层将curLevel反转后添加到结果集合中
 			res = append(res, Utils.ReverseArray(curLevel))
 		}
-		// 循环levelSize次后，意味着该层节点遍历完毕，剩下的节点属于下一层，level累加1
-		level++
 	}
 	return res
 }

@@ -88,7 +88,7 @@ func maxProfit(prices []int) int {
 // MaxProfitSimple 贪心的解法
 func MaxProfitSimple(prices []int) int {
 	n := len(prices)
-	if n == 0 {
+	if n <= 1 {
 		return 0
 	}
 	minPrice, maxProfit := prices[0], 0
