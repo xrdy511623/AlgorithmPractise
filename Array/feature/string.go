@@ -3,6 +3,7 @@ package feature
 import (
 	"AlgorithmPractise/Utils"
 	"strconv"
+	"strings"
 )
 
 /*
@@ -392,4 +393,79 @@ func multiply(num1 string, num2 string) string {
 		res += strconv.Itoa(v)
 	}
 	return res
+}
+
+/*
+leetcode 165. 比较版本号
+给你两个版本号字符串 version1 和 version2 ，请你比较它们。版本号由被点 '.' 分开的修订号组成。修订号的值是它转换
+为整数并忽略前导零。
+
+比较版本号时，请按从左到右的顺序依次比较它们的修订号。如果其中一个版本字符串的修订号较少，则将缺失的修订号视为0。
+
+返回规则如下：
+如果 version1 < version2 返回 -1，
+如果 version1 > version2 返回 1，
+除此之外返回 0。
+
+示例 1：
+
+输入：version1 = "1.2", version2 = "1.10"
+
+输出：-1
+
+解释：
+
+version1 的第二个修订号为 "2"，version2 的第二个修订号为 "10"：2 < 10，所以 version1 < version2。
+
+示例 2：
+
+输入：version1 = "1.01", version2 = "1.001"
+
+输出：0
+
+解释：
+
+忽略前导零，"01" 和 "001" 都代表相同的整数 "1"。
+
+示例 3：
+
+输入：version1 = "1.0", version2 = "1.0.0.0"
+
+输出：0
+
+解释：
+
+version1 有更少的修订号，每个缺失的修订号按 "0" 处理。
+
+提示：
+1 <= version1.length, version2.length <= 500
+version1 和 version2 仅包含数字和 '.'
+version1 和 version2 都是 有效版本号
+version1 和 version2 的所有修订号都可以存储在 32 位整数 中
+*/
+
+/*
+思路：字符串分割
+我们可以将版本号按照点号分割成修订号，然后从左到右比较两个版本号的相同下标的修订号。在比较修订号时，需要将字符串转换
+成整数进行比较。注意根据题目要求，如果版本号不存在某个下标处的修订号，则该修订号视为0。
+*/
+
+func compareVersion(version1 string, version2 string) int {
+	v1, v2 := strings.Split(version1, "."), strings.Split(version2, ".")
+	for i := 0; i < len(v1) || i < len(v2); i++ {
+		x, y := 0, 0
+		if i < len(v1) {
+			x, _ = strconv.Atoi(v1[i])
+		}
+		if i < len(v2) {
+			y, _ = strconv.Atoi(v2[i])
+		}
+		if x > y {
+			return 1
+		}
+		if x < y {
+			return -1
+		}
+	}
+	return 0
 }

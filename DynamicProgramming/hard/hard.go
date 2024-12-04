@@ -7,7 +7,7 @@ package hard contains complex dynamicProgramming problems
 import "AlgorithmPractise/Utils"
 
 /*
-1.1 接雨水
+1.1 leetcode 42 接雨水
 给定n个非负整数表示每个宽度为1的柱子的高度图，计算按此排列的柱子，下雨之后能接多少雨水。
 输入：height = [0,1,0,2,1,0,1,3,2,1,2,1]
 输出：6

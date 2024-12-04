@@ -196,7 +196,6 @@ func DeleteDuplicates(head *Entity.ListNode) *Entity.ListNode {
 		} else {
 			prev.Next = cur.Next
 		}
-
 		cur = cur.Next
 	}
 	return dummy.Next
