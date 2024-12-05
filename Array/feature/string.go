@@ -469,3 +469,76 @@ func compareVersion(version1 string, version2 string) int {
 	}
 	return 0
 }
+
+/*
+leetcode 394 字符串解码
+给定一个经过编码的字符串，返回它解码后的字符串。
+编码规则为: k[encoded_string]，表示其中方括号内部的 encoded_string 正好重复 k 次。注意 k 保证为正整数。
+你可以认为输入字符串总是有效的；输入字符串中没有额外的空格，且输入的方括号总是符合格式要求的。
+此外，你可以认为原始数据不包含数字，所有的数字只表示重复的次数 k ，例如不会出现像 3a 或 2[4] 的输入。
+
+示例 1：
+输入：s = "3[a]2[bc]"
+输出："aaabcbc"
+
+示例 2：
+输入：s = "3[a2[c]]"
+输出："accaccacc"
+
+示例 3：
+输入：s = "2[abc]3[cd]ef"
+输出："abcabccdcdcdef"
+
+示例 4：
+输入：s = "abc3[cd]xyz"
+输出："abccdcdcdxyz"
+
+
+提示：
+1 <= s.length <= 30
+s 由小写英文字母、数字和方括号 '[]' 组成
+s 保证是一个 有效 的输入。
+s 中所有整数的取值范围为 [1, 300]
+*/
+
+func decodeString(s string) string {
+	// 保存重复次数的栈
+	countStack := []int{}
+	// 保存当前字符串的栈
+	stringStack := []string{}
+	// 当前构建的字符串
+	currentString := ""
+	// 当前解析的数字
+	currentNum := 0
+	for i := range s {
+		// 遇到数字,累计数字，多位数处理
+		if s[i] >= '0' && s[i] <= '9' {
+			currentNum = currentNum*10 + int(s[i]-'0')
+		} else if s[i] == '[' {
+			// 遇到左括号时，保存当前构建的字符串和解析的数字到对应栈中并重置它们
+			countStack = append(countStack, currentNum)
+			stringStack = append(stringStack, currentString)
+			currentNum = 0
+			currentString = ""
+		} else if s[i] == ']' {
+			// 遇到右括号,处理当前重复字符串并拼接之前构建的字符串
+			count := countStack[len(countStack)-1]
+			countStack = countStack[:len(countStack)-1]
+			previousString := stringStack[len(stringStack)-1]
+			stringStack = stringStack[:len(stringStack)-1]
+			currentString = previousString + repeat(currentString, count)
+		} else {
+			// 遇到字母, 加入到当前构建的字符串中
+			currentString += string(s[i])
+		}
+	}
+	return currentString
+}
+
+func repeat(s string, count int) string {
+	res := strings.Builder{}
+	for i := 0; i < count; i++ {
+		res.WriteString(s)
+	}
+	return res.String()
+}
