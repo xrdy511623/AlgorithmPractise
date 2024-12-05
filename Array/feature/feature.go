@@ -1597,3 +1597,125 @@ func firstMissingPositive(nums []int) int {
 	// 如果满足x=x-1+1，说明1-n的正整数都在数组nums中出现了，返回n+1
 	return n + 1
 }
+
+/*
+旋转图像专题
+leetcode 48 旋转图像
+给定一个 n × n 的二维矩阵 matrix 表示一个图像。请你将图像顺时针旋转 90 度。
+你必须在 原地 旋转图像，这意味着你需要直接修改输入的二维矩阵。请不要 使用另一个矩阵来旋转图像。
+
+参见images目录下的 matrix_one.jpg
+输入：matrix = [[1,2,3],[4,5,6],[7,8,9]]
+输出：[[7,4,1],[8,5,2],[9,6,3]]
+
+参见images目录下的 matrix_two.jpg
+输入：matrix = [[5,1,9,11],[2,4,8,10],[13,3,6,7],[15,14,12,16]]
+输出：[[15,13,2,5],[14,3,4,1],[12,6,8,9],[16,7,10,11]]
+
+提示：
+n == matrix.length == matrix[i].length
+1 <= n <= 20
+-1000 <= matrix[i][j] <= 1000
+*/
+
+func rotate(matrix [][]int) {
+	n := len(matrix)
+	// 先水平翻转
+	for i := 0; i < n/2; i++ {
+		matrix[i], matrix[n-1-i] = matrix[n-1-i], matrix[i]
+	}
+	// 再做主对角线翻转
+	for i := 1; i < n; i++ {
+		for j := 0; j < i; j++ {
+			matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
+		}
+	}
+}
+
+// 顺时针旋转135度
+func rotate135(matrix [][]int) {
+	n := len(matrix)
+	// 上下翻转
+	for i := 0; i < n/2; i++ {
+		matrix[i], matrix[n-1-i] = matrix[n-1-i], matrix[i]
+	}
+	// 反对角线翻转
+	for i := 0; i < n; i++ {
+		for j := 0; j < n-i-1; j++ {
+			matrix[i][j], matrix[n-1-j][n-1-i] = matrix[n-1-j][n-1-i], matrix[i][j]
+		}
+	}
+}
+
+// 顺(逆)时针旋转180度
+func rotate180(matrix [][]int) {
+	n := len(matrix)
+	// 上下翻转
+	for i := 0; i < n/2; i++ {
+		matrix[i], matrix[n-1-i] = matrix[n-1-i], matrix[i]
+	}
+	// 左右翻转
+	for i := 0; i < n; i++ {
+		for j := 0; j < n/2; j++ {
+			matrix[i][j], matrix[i][n-1-j] = matrix[i][n-1-j], matrix[i][j]
+		}
+	}
+}
+
+// 顺时针旋转270度
+func rotate270(matrix [][]int) {
+	n := len(matrix)
+	// 左右翻转
+	for i := 0; i < n; i++ {
+		for j := 0; j < n/2; j++ {
+			matrix[i][j], matrix[i][n-1-j] = matrix[i][n-1-j], matrix[i][j]
+		}
+	}
+	// 主对角线翻转
+	for i := 1; i < n; i++ {
+		for j := 0; j < i; j++ {
+			matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
+		}
+	}
+}
+
+// 逆时针旋转90度
+func rotateCounter90(matrix [][]int) {
+	n := len(matrix)
+	// 左右翻转
+	for i := 0; i < n; i++ {
+		for j := 0; j < n/2; j++ {
+			matrix[i][j], matrix[i][n-1-j] = matrix[i][n-1-j], matrix[i][j]
+		}
+	}
+	// 反对角线翻转
+	for i := 0; i < n; i++ {
+		for j := 0; j < n-i-1; j++ {
+			matrix[i][j], matrix[n-1-j][n-1-i] = matrix[n-1-j][n-1-i], matrix[i][j]
+		}
+	}
+}
+
+// 逆时针旋转135度
+func rotateCounter135(matrix [][]int) {
+	n := len(matrix)
+	// 左右翻转
+	for i := 0; i < n; i++ {
+		for j := 0; j < n/2; j++ {
+			matrix[i][j], matrix[i][n-1-j] = matrix[i][n-1-j], matrix[i][j]
+		}
+	}
+	// 主对角线翻转
+	for i := 1; i < n; i++ {
+		for j := 0; j < i; j++ {
+			matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
+		}
+	}
+}
+
+/*
+逆时针旋转 180°
+等价于顺时针旋转 180°，直接复用 rotate180(matrix)。
+逆时针旋转 270°
+等价于顺时针旋转 90°，直接复用 rotate(matrix)。
+*/
