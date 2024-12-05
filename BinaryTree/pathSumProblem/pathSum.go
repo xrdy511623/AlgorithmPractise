@@ -87,14 +87,16 @@ func PathSum(root *Entity.TreeNode, target int) [][]int {
 		if node.Left == nil && node.Right == nil && sumOfArray(path) == target {
 			res = append(res, path)
 		}
-		temp := make([]int, len(path))
-		copy(temp, path)
 		if node.Left != nil {
-			leftPath := append(temp, node.Left.Val)
+			leftPath := make([]int, len(path))
+			copy(leftPath, path)
+			leftPath = append(leftPath, node.Left.Val)
 			queue = append(queue, Group{node.Right, leftPath})
 		}
 		if node.Right != nil {
-			rightPath := append(temp, node.Right.Val)
+			rightPath := make([]int, len(path))
+			copy(rightPath, path)
+			rightPath = append(rightPath, node.Right.Val)
 			queue = append(queue, Group{node.Right, rightPath})
 		}
 
@@ -113,14 +115,16 @@ func PathSumUseDfs(root *Entity.TreeNode, target int) [][]int {
 		if node.Left == nil && node.Right == nil && sumOfArray(path) == target {
 			res = append(res, path)
 		}
-		temp := make([]int, len(path))
-		copy(temp, path)
 		if node.Left != nil {
-			leftPath := append(temp, node.Left.Val)
+			leftPath := make([]int, len(path))
+			copy(leftPath, path)
+			leftPath = append(leftPath, node.Left.Val)
 			dfs(node.Left, leftPath)
 		}
 		if node.Right != nil {
-			rightPath := append(temp, node.Right.Val)
+			rightPath := make([]int, len(path))
+			copy(rightPath, path)
+			rightPath = append(rightPath, node.Right.Val)
 			dfs(node.Right, rightPath)
 		}
 	}

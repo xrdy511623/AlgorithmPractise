@@ -425,9 +425,12 @@ strs[i] 仅由小写英文字母组成
 */
 
 func LongestCommonPrefix(strs []string) string {
-	count := len(strs)
+	n := len(strs)
+	if n == 0 {
+		return ""
+	}
 	prefix := strs[0]
-	for i := 1; i < count; i++ {
+	for i := 1; i < n; i++ {
 		prefix = lcp(prefix, strs[i])
 		if len(prefix) == 0 {
 			break

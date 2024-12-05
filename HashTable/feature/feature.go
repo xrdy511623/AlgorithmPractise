@@ -341,6 +341,7 @@ func LongestConsecutive(nums []int) int {
 		occurred[num] = true
 	}
 	maxLength := 0
+	// 这里选择遍历哈希表而不是原数组nums，因为nums可能会有重复元素，导致重复判断以及后续连续子序列长度length的重复计算
 	for num := range occurred {
 		// 跳过num-1，否则会重复做无用功
 		if !occurred[num-1] {
