@@ -1,6 +1,8 @@
 package Feature
 
-import "AlgorithmPractise/LinkedList/Entity"
+import (
+	"AlgorithmPractise/LinkedList/Entity"
+)
 
 /*
 leetcode 141. 环形链表
@@ -363,4 +365,70 @@ func copyRandomList(head *Node) *Node {
 		return newNode
 	}
 	return deepCopy(head)
+}
+
+/*
+leetcode 234 回文链表
+给你一个单链表的头节点 head ，请你判断该链表是否为回文链表，如果是，返回 true ；否则，返回 false 。
+
+输入：head = [1,2,2,1]
+输出：true
+
+输入：head = [1,2]
+输出：false
+
+提示：
+链表中节点数目在范围[1, 105] 内
+0 <= Node.val <= 9
+进阶：你能否用 O(n) 时间复杂度和 O(1) 空间复杂度解决此题？
+*/
+
+func isPalindrome(head *Entity.ListNode) bool {
+	l := []int{}
+	for head != nil {
+		l = append(l, head.Val)
+		head = head.Next
+	}
+	for i, n := 0, len(l); i < n/2; i++ {
+		if l[i] != l[n-1-i] {
+			return false
+		}
+	}
+	return true
+}
+
+func isPalindromeAdvanced(head *Entity.ListNode) bool {
+	tail := getMid(head)
+	mid := tail.Next
+	tail.Next = nil
+	l1 := head
+	l2 := reverse(mid)
+	res := true
+	for res && l2 != nil {
+		if l1.Val != l2.Val {
+			res = false
+			break
+		}
+		l1 = l1.Next
+		l2 = l2.Next
+	}
+	return res
+}
+
+func getMid(head *Entity.ListNode) *Entity.ListNode {
+	fast, slow := head, head
+	for fast.Next != nil && fast.Next.Next != nil {
+		fast = fast.Next.Next
+		slow = slow.Next
+	}
+	return slow
+}
+
+func reverse(head *Entity.ListNode) *Entity.ListNode {
+	var prev *Entity.ListNode
+	cur := head
+	for cur != nil {
+		cur.Next, prev, cur = prev, cur, cur.Next
+	}
+	return prev
 }
