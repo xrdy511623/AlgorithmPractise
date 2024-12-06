@@ -846,3 +846,72 @@ func maximalRectangle(matrix [][]byte) int {
 	}
 	return res
 }
+
+/*
+leetcode 227 基本计算器II
+
+给你一个字符串表达式s ，请你实现一个基本计算器来计算并返回它的值。
+整数除法仅保留整数部分。
+
+你可以假设给定的表达式总是有效的。所有中间结果将在 [-231, 231 - 1] 的范围内。
+注意：不允许使用任何将字符串作为数学表达式计算的内置函数，比如 eval() 。
+
+示例 1：
+输入：s = "3+2*2"
+输出：7
+
+示例 2：
+输入：s = " 3/2 "
+输出：1
+
+示例 3：
+输入：s = " 3+5 / 2 "
+输出：5
+
+提示：
+1 <= s.length <= 3 * 105
+s 由整数和算符 ('+', '-', '*', '/') 组成，中间由一些空格隔开
+s 表示一个 有效表达式
+表达式中的所有整数都是非负整数，且在范围 [0, 231 - 1] 内
+题目数据保证答案是一个 32-bit 整数
+*/
+
+func calculate(s string) int {
+	stack := []int{}
+	operator := '+'
+	num := 0
+	for i, v := range s {
+		isDigit := '0' <= v && v <= '9'
+		// 如果是数字，连续构造完整的数字
+		if isDigit {
+			num = num*10 + int(v-'0')
+		}
+		// 如果是操作符或最后一个字符，处理当前数字和操作符
+		if !isDigit && v != ' ' || i == len(s)-1 {
+			switch operator {
+			case '+':
+				// 直接压入栈
+				stack = append(stack, num)
+			case '-':
+				// 压入负值
+				stack = append(stack, -num)
+			case '*':
+				// 栈顶与当前数字相乘
+				stack[len(stack)-1] *= num
+			case '/':
+				// 栈顶与当前数字相除
+				stack[len(stack)-1] /= num
+			}
+			// 更新操作符
+			operator = v
+			// 重置当前数字
+			num = 0
+		}
+	}
+	// 计算最终结果
+	res := 0
+	for _, v := range stack {
+		res += v
+	}
+	return res
+}

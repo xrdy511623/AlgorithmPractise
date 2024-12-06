@@ -3,6 +3,7 @@ package sort
 import (
 	"AlgorithmPractise/Utils"
 	"sort"
+	"strconv"
 )
 
 /*
@@ -1642,4 +1643,50 @@ func searchMatrix(matrix [][]int, target int) bool {
 		}
 	}
 	return false
+}
+
+/*
+leetcode 179 最大数
+给定一组非负整数 nums，重新排列每个数的顺序（每个数不可拆分）使之组成一个最大的整数。
+注意：输出结果可能非常大，所以你需要返回一个字符串而不是整数。
+
+示例 1：
+输入：nums = [10,2]
+输出："210"
+
+示例 2：
+输入：nums = [3,30,34,5,9]
+输出："9534330"
+
+提示：
+1 <= nums.length <= 100
+0 <= nums[i] <= 109
+*/
+
+func largestNumber(nums []int) string {
+	n := len(nums)
+	// 将整数数组转换为字符串数组
+	numStrs := make([]string, n)
+	for i, num := range nums {
+		numStrs[i] = strconv.Itoa(num)
+	}
+	// 自定义排序规则
+	sort.Slice(numStrs, func(i, j int) bool {
+		return compare(numStrs[i], numStrs[j])
+	})
+	// 处理特殊情况：如果结果全是 "0"
+	if numStrs[0] == "0" {
+		return "0"
+	}
+	// 拼接排序后的字符串数组
+	res := ""
+	for _, v := range numStrs {
+		res += v
+	}
+	return res
+}
+
+// compare 自定义排序规则
+func compare(x, y string) bool {
+	return x+y > y+x
 }
