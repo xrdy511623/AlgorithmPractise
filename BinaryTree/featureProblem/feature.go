@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"math"
 	"reflect"
+	"strconv"
+	"strings"
 )
 
 /*
@@ -1733,4 +1735,64 @@ func notInvited(e *Entity.Employee) int {
 
 func GetMostHappy(e *Entity.Employee) int {
 	return Utils.Max(isInvited(e), notInvited(e))
+}
+
+/*
+leetcode 297 二叉树的序列化与反序列化
+序列化是将一个数据结构或者对象转换为连续的比特位的操作，进而可以将转换后的数据存储在一个文件或者内存中，同时也可以
+通过网络传输到另一个计算机环境，采取相反方式重构得到原数据。
+
+请设计一个算法来实现二叉树的序列化与反序列化。这里不限定你的序列 / 反序列化算法执行逻辑，你只需要保证一个二叉树可以
+被序列化为一个字符串并且将这个字符串反序列化为原始的树结构。
+
+输入：root = [1,2,3,null,null,4,5]
+输出：[1,2,3,null,null,4,5]
+
+输入：root = [1,2]
+输出：[1,2]
+*/
+
+type Codec struct {
+}
+
+func Construct() Codec {
+	return Codec{}
+}
+
+// Serializes a tree to a single string.
+func (c *Codec) serialize(root *Entity.TreeNode) string {
+	sp := strings.Builder{}
+	var dfs func(*Entity.TreeNode)
+	dfs = func(node *Entity.TreeNode) {
+		if node == nil {
+			sp.WriteString("null,")
+			return
+		}
+		val := strconv.Itoa(node.Val)
+		sp.WriteString(val)
+		sp.WriteString(",")
+		dfs(node.Left)
+		dfs(node.Right)
+	}
+	dfs(root)
+	return sp.String()
+}
+
+// Deserializes your encoded data to tree.
+func (c *Codec) deserialize(data string) *Entity.TreeNode {
+	sp := strings.Split(data, ",")
+	var build func() *Entity.TreeNode
+	build = func() *Entity.TreeNode {
+		if sp[0] == "null" {
+			sp = sp[1:]
+			return nil
+		}
+		val, _ := strconv.Atoi(sp[0])
+		sp = sp[1:]
+		node := &Entity.TreeNode{Val: val}
+		node.Left = build()
+		node.Right = build()
+		return node
+	}
+	return build()
 }
