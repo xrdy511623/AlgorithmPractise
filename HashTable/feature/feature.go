@@ -639,21 +639,47 @@ int get(int key)- 如果键key存在于缓存中，则获取键的值，否则�
 void put(int key, int value)- 如果键key已存在，则变更其值；如果键不存在，请插入键值对。当缓存达到其容量
 capacity时，则应该在插入新项之前，移除最不经常使用的项。在此问题中，当存在平局（即两个或更多个键具有相同使用频率）
 时，应该去除最近最久未使用的键。
-为了确定最不常使用的键，可以为缓存中的每个键维护一个使用计数器 。使用计数最小的键是最久未使用的键。
+为了确定最不常使用的键，可以为缓存中的每个键维护一个使用计数器。使用计数最小的键是最久未使用的键。
 当一个键首次插入到缓存中时，它的使用计数器被设置为 1 (由于 put 操作)。对缓存中的键执行 get 或 put 操作，
 使用计数器的值将会递增。
 
 函数get和put必须以 O(1) 的平均时间复杂度运行。
 */
 
+/*
+数据结构设计：
+
+LFUCache 结构体包含了两个双向链表：freqList 和 cacheList，以及两个映射：freqMap 和 cacheMap。
+freqList 用于维护所有频率桶的顺序，频率桶由 freqNode 表示。每个 freqNode 都包含一个 cacheList，
+用于管理对应频率下的缓存项。
+cacheMap 存储所有缓存项（cacheNode），以键值对的形式存储，便于快速查找和更新缓存项。
+
+Get 方法：
+查找缓存项时，首先检查缓存项是否存在。
+如果缓存项存在，则将其从当前频率桶中移除，并更新其频率。然后将其插入到新频率桶中。
+更新缓存项频率后，如果原来的频率桶为空，则删除该频率桶。
+
+Put 方法：
+如果缓存项已存在，更新其值并调用 Get 方法来更新频率。
+如果缓存项不存在且缓存已满，移除最不常使用的缓存项。
+*/
+
+// LFUCache 结构体定义
 type LFUCache struct {
-	freqList  *freqList
-	freqMap   map[int]*freqNode // freq - node
+	// 频率链表，维护所有频率的桶，每个 freqNode 通过 prev 和 next 指针与其他频率桶连接，
+	// 形成一个频率链表（freqList）。这个链表的作用是帮助快速查找最小频率桶，并便于进行频率的更新。
+	freqList *freqList
+	// 频率 -> 频率节点映射
+	freqMap map[int]*freqNode
+	// 缓存链表，维护所有缓存项的插入顺序
 	cacheList *cacheList
-	cacheMap  map[int]*cacheNode // key - node
-	capacity  int
+	// 缓存项 key -> 缓存节点映射
+	cacheMap map[int]*cacheNode
+	// 缓存容量
+	capacity int
 }
 
+// Constructor LFUCache 构造函数，初始化缓存结构
 func Constructor(capacity int) LFUCache {
 	return LFUCache{
 		freqList:  newFreqList(),
@@ -664,95 +690,146 @@ func Constructor(capacity int) LFUCache {
 	}
 }
 
+// Get 方法：获取指定 key 的值，若 key 不存在则返回 -1
 func (lfu *LFUCache) Get(key int) int {
+	// 如果缓存容量为 0，直接返回 -1
 	if lfu.capacity == 0 {
 		return -1
 	}
-
+	// 在 cacheMap 中查找 key 对应的缓存节点
 	node, ok := lfu.cacheMap[key]
-	if !ok { // key 不存在
+	// 若找不到该 key，则返回 -1
+	if !ok {
 		return -1
 	}
 
-	// key 存在
+	// key 存在，更新该缓存项的频率
+	// 首先将该节点从当前缓存链表中移除
 	node.remove()
-
+	// 获取该节点的当前频率
 	freq := node.frequency
+	// 获取该频率桶
 	fNode := lfu.freqMap[freq]
 
+	// 尝试获取该频率 + 1 的频率桶
 	newFreqNode, ok := lfu.freqMap[freq+1]
-	if !ok { // 不存在 freq = n+1 的节点
+	if !ok {
+		// 如果没有频率桶，则创建一个新的频率桶
 		newFreqNode = &freqNode{
 			frequency: freq + 1,
-			data:      newCacheList(),
+			data:      newCacheList(), // 新建一个缓存链表
 		}
-
+		// 将新频率桶插入到当前频率桶后面
 		fNode.addBehind(newFreqNode)
+		// 在频率映射中记录新频率桶
 		lfu.freqMap[freq+1] = newFreqNode
 	}
-
+	// 增加缓存节点的频率
 	node.frequency++
+	// 将该节点插入到新缓存链表的头部
 	newFreqNode.data.addToHead(node)
 
-	if fNode.data.isEmpty() { // 频率节点(freq = n)为空，后删除是为了帮助freq = n+1的频率节点在新增时定位
+	// 如果缓存链表变空，则删除该频率桶
+	if fNode.data.isEmpty() {
 		fNode.remove()
 		delete(lfu.freqMap, freq)
 	}
-
+	// 返回缓存节点的值
 	return node.value
 }
 
+// Put 方法：插入或更新缓存项，如果缓存满则移除最不常使用的项
 func (lfu *LFUCache) Put(key int, value int) {
+	// 如果缓存容量为 0，则不执行任何操作
 	if lfu.capacity == 0 {
 		return
 	}
 
 	node, ok := lfu.cacheMap[key]
 	if ok {
+		// 如果 key 已存在，更新值并调用 Get 更新频率
 		lfu.Get(key)
 		node.value = value
-
 		return
 	}
 
+	// 如果缓存已满，需要删除最不常使用的缓存项
 	if len(lfu.cacheMap) >= lfu.capacity {
+		// 获取最小频率桶
 		fNode := lfu.freqList.head.next
-
+		// 获取该桶中最久未使用的缓存项
 		delNode := fNode.data.tail.prev
+		// 从缓存链表中删除该节点
 		delNode.remove()
+		// 从缓存映射中删除该缓存项
 		delete(lfu.cacheMap, delNode.key)
 
+		// 如果缓存链表为空且该频率大于 1，则删除该频率桶
 		if fNode.data.isEmpty() && fNode.frequency > 1 {
 			delete(lfu.freqMap, fNode.frequency)
 		}
 	}
 
+	// 插入新的缓存项
 	fNode, ok := lfu.freqMap[1]
 	if !ok {
+		// 如果频率为 1 的桶不存在，创建一个新的频率桶
 		fNode = &freqNode{
 			frequency: 1,
 			data:      newCacheList(),
 		}
-
+		// 将新的频率桶插入到频率链表的头部
 		lfu.freqList.addToHead(fNode)
+		// 在频率映射中记录该频率桶
 		lfu.freqMap[1] = fNode
 	}
 
+	// 创建新的缓存节点并将其插入到频率为 1 的频率桶中
 	newCacheNode := &cacheNode{
 		key:       key,
 		value:     value,
 		frequency: 1,
 	}
-
+	// 将新节点插入到频率桶的头部
 	fNode.data.addToHead(newCacheNode)
+	// 在缓存映射中记录该缓存节点
 	lfu.cacheMap[key] = newCacheNode
 }
 
+// 频率链表的实现，双向链表用于维护频率桶的顺序
 type freqList struct {
 	head *freqNode
 	tail *freqNode
 }
 
+/*
+freqNode, 频率节点，表示一个频率桶
+data 字段是一个指向 cacheList 的指针。cacheList 用于存储在该频率桶下的所有缓存节点（cacheNode）。
+它是一个双向链表，维护该频率桶下缓存项的顺序。
+为什么要这样设计？
+分组缓存项按频率：
+在 LFU 缓存中，缓存项需要根据访问频率进行组织。每个缓存项都有一个访问频率。通过 freqNode 和 cacheList 的组合，
+我们能够把所有具有相同频率的缓存项分组在一起。freqNode 用于表示频率桶，而 cacheList 用于存储具有相同频率的缓存项。
+频率桶帮助我们将缓存项按频率排序，便于查找和删除最少使用的缓存项。
+
+频率更新：
+当一个缓存项的频率发生变化时（例如被访问或更新），它需要从当前的频率桶中移除，并插入到新的频率桶中。
+cacheList 作为双向链表，允许我们高效地在一个桶中进行插入和删除操作。而 freqNode 通过 data 指向这个链表，使得
+每个频率桶都能动态管理和更新其对应的缓存项。
+
+提高效率：
+将缓存项按频率划分到不同的桶（freqNode）中，且每个频率桶内的缓存项通过 cacheList 组织，使得频率的更新、删除最少使用的
+项等操作都能够在常数时间内完成。
+例如，若缓存已满，我们需要删除最不常用的缓存项。在这个设计中，最不常用的项通常位于频率最小的桶中（freqNode 的 frequency 最小）。
+通过 cacheList，我们可以在该频率桶中轻松获取和删除最久未访问的缓存项。
+
+维护频率链表的顺序：
+freqList 是一个双向链表，维护了频率桶的顺序（从最低频率到最高频率）。当某个缓存项的访问频率发生变化时，它会被从当前的
+cacheList 移动到另一个频率桶的 cacheList 中。
+freqNode 通过指向 cacheList 来管理和更新同一频率下的所有缓存项，cacheList 在此过程中作为一个管理容器，允许高效
+的增删操作。
+
+*/
 type freqNode struct {
 	frequency int
 	data      *cacheList
@@ -760,49 +837,49 @@ type freqNode struct {
 	next      *freqNode
 }
 
+// 创建新的频率链表
 func newFreqList() *freqList {
 	headNode := &freqNode{}
 	tailNode := &freqNode{}
-
 	headNode.next = tailNode
 	tailNode.prev = headNode
-
 	return &freqList{
 		head: headNode,
 		tail: tailNode,
 	}
 }
 
+// 从频率链表中移除该频率节点
 func (f *freqNode) remove() {
 	f.prev.next = f.next
 	f.next.prev = f.prev
 }
 
+// 将频率节点插入到当前频率节点之后
 func (f *freqNode) addBehind(node *freqNode) {
 	next := f.next
-
 	f.next = node
 	node.next = next
-
 	next.prev = node
 	node.prev = f
 }
 
+// 将频率节点插入到链表头部
 func (fl *freqList) addToHead(node *freqNode) {
 	next := fl.head.next
-
 	fl.head.next = node
 	node.next = next
-
 	next.prev = node
 	node.prev = fl.head
 }
 
+// 缓存链表，双向链表用于维护缓存项的顺序
 type cacheList struct {
 	head *cacheNode
 	tail *cacheNode
 }
 
+// 缓存节点，表示一个缓存项
 type cacheNode struct {
 	key       int
 	value     int
@@ -811,34 +888,171 @@ type cacheNode struct {
 	next      *cacheNode
 }
 
+// 创建新的缓存链表
 func newCacheList() *cacheList {
 	headNode := &cacheNode{}
 	tailNode := &cacheNode{}
-
 	headNode.next = tailNode
 	tailNode.prev = headNode
-
 	return &cacheList{
 		head: headNode,
 		tail: tailNode,
 	}
 }
 
+// 从缓存链表中移除该缓存节点
 func (c *cacheNode) remove() {
 	c.prev.next = c.next
 	c.next.prev = c.prev
 }
 
+// 将缓存节点插入到链表头部
 func (cl *cacheList) addToHead(node *cacheNode) {
 	next := cl.head.next
-
 	cl.head.next = node
 	node.next = next
-
 	next.prev = node
 	node.prev = cl.head
 }
 
+// 判断缓存链表是否为空
 func (cl *cacheList) isEmpty() bool {
 	return cl.head.next == cl.tail
 }
+
+/*
+import (
+	"container/list"
+	"fmt"
+)
+
+// LFUCache 结构体
+type LFUCache struct {
+	capacity    int                   // 缓存容量
+	values      map[int]int           // 存储键值对
+	frequency   map[int]int           // 存储每个键的访问频率
+	freqList    map[int]*list.List    // 频率桶，key: 频率, value: 链表
+	keyFreqList map[int]*list.Element // 存储每个 key 对应的链表节点，帮助直接查找
+	minFreq     int                   // 最小访问频率
+}
+
+// Node 结构体，存储缓存中的每个项
+type Node struct {
+	key   int
+	value int
+}
+
+// Constructor 初始化 LFUCache
+func Constructor(capacity int) LFUCache {
+	return LFUCache{
+		capacity:    capacity,
+		values:      make(map[int]int),
+		frequency:   make(map[int]int),
+		freqList:    make(map[int]*list.List),
+		keyFreqList: make(map[int]*list.Element),
+		minFreq:     0,
+	}
+}
+
+// Get 从缓存中获取值
+func (lfu *LFUCache) Get(key int) int {
+	// 如果 key 不存在，返回 -1
+	if _, exists := lfu.values[key]; !exists {
+		return -1
+	}
+
+	// 获取当前频率
+	freq := lfu.frequency[key]
+	// 更新该 key 的频率
+	lfu.frequency[key]++
+
+	// 在频率桶中移动该节点
+	lfu.moveToNewFreqList(key, freq, lfu.frequency[key])
+
+	// 更新最小频率
+	if lfu.freqList[lfu.minFreq].Len() == 0 {
+		lfu.minFreq++
+	}
+
+	return lfu.values[key]
+}
+
+// Put 向缓存中添加键值对
+func (lfu *LFUCache) Put(key int, value int) {
+	// 如果容量为 0，直接返回
+	if lfu.capacity == 0 {
+		return
+	}
+
+	// 如果 key 已经存在，更新它的值
+	if _, exists := lfu.values[key]; exists {
+		lfu.values[key] = value
+		// 更新频率
+		lfu.Get(key)
+		return
+	}
+
+	// 如果 key 不存在且缓存已满，移除最不常使用的项
+	if len(lfu.values) == lfu.capacity {
+		lfu.removeLFU()
+	}
+
+	// 插入新的 key-value
+	lfu.values[key] = value
+	lfu.frequency[key] = 1
+
+	// 将该 key 插入到频率为 1 的链表
+	if lfu.freqList[1] == nil {
+		lfu.freqList[1] = list.New()
+	}
+	lfu.keyFreqList[key] = lfu.freqList[1].PushFront(&Node{key, value})
+
+	// 更新最小频率
+	lfu.minFreq = 1
+}
+
+// moveToNewFreqList 将某个键从旧频率桶移动到新频率桶
+func (lfu *LFUCache) moveToNewFreqList(key, oldFreq, newFreq int) {
+	// 从旧的频率桶中移除节点
+	oldList := lfu.freqList[oldFreq]
+	e := lfu.keyFreqList[key]
+	oldList.Remove(e)
+
+	// 如果新频率桶不存在，则创建它
+	if lfu.freqList[newFreq] == nil {
+		lfu.freqList[newFreq] = list.New()
+	}
+
+	// 将节点插入到新的频率桶中
+	lfu.keyFreqList[key] = lfu.freqList[newFreq].PushFront(&Node{key, lfu.values[key]})
+}
+
+// removeLFU 从缓存中移除最不常使用的项
+func (lfu *LFUCache) removeLFU() {
+	// 获取最小频率的链表
+	minList := lfu.freqList[lfu.minFreq]
+	// 删除最久未使用的节点
+	e := minList.Back()
+	node := e.Value.(*Node)
+	delete(lfu.values, node.key)
+	delete(lfu.frequency, node.key)
+	delete(lfu.keyFreqList, node.key)
+	minList.Remove(e)
+}
+
+func main() {
+	// 测试代码
+	lfu := Constructor(2)
+	lfu.Put(1, 1)
+	lfu.Put(2, 2)
+	fmt.Println(lfu.Get(1)) // 返回 1
+	lfu.Put(3, 3)           // 去除键 2
+	fmt.Println(lfu.Get(2)) // 返回 -1
+	fmt.Println(lfu.Get(3)) // 返回 3
+	lfu.Put(4, 4)           // 去除键 1
+	fmt.Println(lfu.Get(1)) // 返回 -1
+	fmt.Println(lfu.Get(3)) // 返回 3
+	fmt.Println(lfu.Get(4)) // 返回 4
+}
+
+*/
