@@ -915,3 +915,68 @@ func calculate(s string) int {
 	}
 	return res
 }
+
+/*
+leetcode 224 基本计算器
+给你一个字符串表达式 s ，请你实现一个基本计算器来计算并返回它的值。
+注意:不允许使用任何将字符串作为数学表达式计算的内置函数，比如 eval() 。
+
+示例 1：
+输入：s = "1 + 1"
+输出：2
+
+示例 2：
+输入：s = " 2-1 + 2 "
+输出：3
+
+示例 3：
+输入：s = "(1+(4+5+2)-3)+(6+8)"
+输出：23
+
+提示：
+1 <= s.length <= 3 * 105
+s 由数字、'+'、'-'、'('、')'、和 ' ' 组成
+s 表示一个有效的表达式
+'+' 不能用作一元运算(例如， "+1" 和 "+(2 + 3)" 无效)
+'-' 可以用作一元运算(即 "-1" 和 "-(2 + 3)" 是有效的)
+输入中不存在两个连续的操作符
+每个数字和运行的计算将适合于一个有符号的 32位 整数
+*/
+
+func calculateComplex(s string) int {
+	result, num, sign := 0, 0, 1
+	// 栈用于存储当前的 result 和 sign，以便在处理括号嵌套时能够正确还原上下文
+	stack := []int{}
+	for _, v := range s {
+		if v == ' ' {
+			continue
+			// 累计数字：遍历字符串时，如果遇到数字字符，将其累积到 num 中，处理多位数字的情况。
+		} else if v >= '0' && v <= '9' {
+			num = num*10 + int(v-'0')
+			// 符号处理：碰到 + 或 - 时，利用当前的 sign 将 num 累加到 result，然后更新符号。
+		} else if v == '+' {
+			result += sign * num
+			sign = 1
+			num = 0
+		} else if v == '-' {
+			result += sign * num
+			sign = -1
+			num = 0
+			// 括号处理：遇到 '(' 时，将当前计算状态保存到栈中。
+		} else if v == '(' {
+			stack = append(stack, result, sign)
+			result, sign = 0, 1
+		} else {
+			// 遇到 ')' 时，将当前括号内的计算结果与栈中的上下文合并。
+			result += sign * num
+			num = 0
+			// 遇到 ')'，将当前计算结果乘以栈顶的sign，并与栈顶的 result 相加
+			sign = stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
+			result = stack[len(stack)-1] + sign*result
+			stack = stack[:len(stack)-1]
+		}
+	}
+	result += sign * num
+	return result
+}
