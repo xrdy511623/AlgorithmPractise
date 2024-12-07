@@ -765,6 +765,8 @@ func (lfu *LFUCache) Put(key int, value int) {
 		delete(lfu.cacheMap, delNode.key)
 
 		// 如果缓存链表为空且该频率大于 1，则删除该频率桶
+		// 在 LFU 缓存中，对于频率为 1 的桶来说，我们不希望删除它，因为它是初始状态下所有缓存项的频率。
+		// 即使所有项都被删除，也不应该删除频率为 1 的桶。
 		if fNode.data.isEmpty() && fNode.frequency > 1 {
 			delete(lfu.freqMap, fNode.frequency)
 		}
