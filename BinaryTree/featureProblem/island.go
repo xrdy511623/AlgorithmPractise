@@ -256,3 +256,106 @@ func getPlusArea(grid [][]int, r, c, rows, columns int, record map[int]int) int 
 	size++
 	return size
 }
+
+/*
+leetcode 79 单词搜索
+给定一个 m x n 二维字符网格 board 和一个字符串单词 word 。如果 word 存在于网格中，返回 true ；否则，返回 false 。
+单词必须按照字母顺序，通过相邻的单元格内的字母构成，其中“相邻”单元格是那些水平相邻或垂直相邻的单元格。同一个单元格内的
+字母不允许被重复使用。
+
+输入：board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "ABCCED"
+输出：true
+
+提示：
+m == board.length
+n = board[i].length
+1 <= m, n <= 6
+1 <= word.length <= 15
+board 和 word 仅由大小写英文字母组成
+
+进阶：你可以使用搜索剪枝的技术来优化解决方案，使其在 board 更大的情况下可以更快解决问题？
+*/
+
+/*
+解题思路
+给定一个二维字符网格 board 和一个字符串 word，任务是判断 word 是否可以从网格中的某个位置出发，按字母顺序通过相邻
+的单元格（水平或垂直）构成。每个单元格只能使用一次。
+
+关键要点：
+相邻单元格：可以通过水平或垂直相邻的单元格连接。
+搜索方式：这是一个典型的“单词搜索”问题，可以用深度优先搜索（DFS）来解决。
+剪枝优化：DFS 搜索过程中，如果当前字母与目标字母不匹配，或者已经走过的路径包含该位置，则可以剪枝避免无效的搜索。
+
+解决方案
+DFS 搜索：
+从 board 的每一个单元格出发，进行深度优先搜索。每次搜索时，检查当前位置的字母是否与 word 中当前字母匹配。
+每个单元格只能使用一次，搜索过程中要标记已经访问过的单元格，避免重复使用。
+如果找到 word 中所有字母的匹配，则返回 true，否则继续搜索。
+
+剪枝策略：
+每次递归时，如果当前单元格的字母与 word 不匹配，立即返回 false。
+在每次递归调用后，需要将访问状态恢复，以便其他路径能够正确使用该单元格。
+
+边界条件：
+确保在 DFS 搜索时不越界。
+如果找到匹配的单词，直接返回 true。
+否则继续探索。
+
+*/
+
+func exist(board [][]byte, word string) bool {
+	// 获取网格的行列数
+	m, n := len(board), len(board[0])
+	// 创建一个二维数组记录网格board每个位置(单元格)的访问状态
+	visited := make([][]bool, m)
+	for i := 0; i < m; i++ {
+		visited[i] = make([]bool, n)
+	}
+	// 遍历网格中的每个单元格
+	for i := 0; i < m; i++ {
+		for j := 0; j < n; j++ {
+			// 如果当前单元格的字母与 word[0] 相同，则从该位置开始DFS搜索
+			if board[i][j] == word[0] {
+				if dfs(board, word, visited, 0, i, j) {
+					return true
+				}
+			}
+		}
+	}
+	// 如果没有找到匹配的单词，返回false
+	return false
+}
+
+func dfs(board [][]byte, word string, visited [][]bool, index, row, col int) bool {
+	// 如果已经遍历完整个单词 word，返回true，表示匹配成功
+	if index == len(word) {
+		return true
+	}
+	// 边界条件，越界直接返回false
+	if row < 0 || col < 0 || row >= len(board) || col >= len(board[0]) {
+		return false
+	}
+	// 如果该位置已经访问过或者当前字符不等于目标字符，直接返回false
+	if visited[row][col] || board[row][col] != word[index] {
+		return false
+	}
+	// 标记当前位置已经访问过
+	visited[row][col] = true
+	// 递归，从当前位置[row][col]的相邻位置(上下左右)判断能否继续匹配
+	if dfs(board, word, visited, index+1, row-1, col) {
+		return true
+	}
+	if dfs(board, word, visited, index+1, row+1, col) {
+		return true
+	}
+	if dfs(board, word, visited, index+1, row, col-1) {
+		return true
+	}
+	if dfs(board, word, visited, index+1, row, col+1) {
+		return true
+	}
+	// 回溯，在每次递归调用后，需要将访问状态恢复，以便其他路径能够正确使用该单元格。
+	visited[row][col] = false
+	// 如果还是没匹配成功，最后返回false
+	return false
+}
