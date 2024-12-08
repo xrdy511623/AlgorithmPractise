@@ -1850,3 +1850,59 @@ func findPeakElement(nums []int) int {
 		}
 	}
 }
+
+/*
+leetcode 11 盛最多水的容器
+给定一个长度为 n 的整数数组 height 。有 n 条垂线，第 i 条线的两个端点是 (i, 0) 和 (i, height[i]) 。
+找出其中的两条线，使得它们与 x 轴共同构成的容器可以容纳最多的水。
+返回容器可以储存的最大水量。
+说明：你不能倾斜容器。
+
+输入：[1,8,6,2,5,4,8,3,7]
+输出：49
+
+提示：
+n == height.length
+2 <= n <= 105
+0 <= height[i] <= 104
+*/
+
+/*
+容器的水量计算方法：
+容器的水量由两条线的宽度和高度共同决定。
+宽度由两条线的横坐标差决定。
+高度由这两条线中的较短的那条决定。
+因此，容器的容量可以表示为：
+容量 = min(height[left], height[right]) * (right - left)
+
+其中：
+left 和 right 是容器的左右边界的索引。
+height[left] 和 height[right] 是这两条垂直线的高度。
+
+暴力解法：
+遍历所有可能的线对 (i, j)，计算它们构成的容器的水量。时间复杂度为 O(n^2)，对于较大的 n，效率较低，不适合题目中的规模。
+双指针法（优化方案）：
+我们可以利用双指针的方法来优化解决方案。
+初始化两个指针，一个指向数组的开始位置 (l) 和一个指向数组的结束位置 (r)。
+计算这两个指针之间的容器的水量，并记录最大值。
+然后，移动较短的那条线的指针，目的是寻找可能更高的线，以增加容器的高度。
+如果 height[l] 小于 height[r]，则将 l 指针向右移动，否则将 r 指针向左移动。
+这样做的理由是，移动较短的线有可能找到一个更高的线，从而增加容器的容量。
+这个过程持续直到两个指针相遇，时间复杂度为 O(n)，空间复杂度为 O(1)。
+*/
+
+func maxArea(height []int) int {
+	maxWater := 0
+	l, r := 0, len(height)-1
+	for l < r {
+		width := r - l
+		minHeight := Utils.Min(height[l], height[r])
+		maxWater = Utils.Max(maxWater, width*minHeight)
+		if height[l] < height[r] {
+			l++
+		} else {
+			r--
+		}
+	}
+	return maxWater
+}
