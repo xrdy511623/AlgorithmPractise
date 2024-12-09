@@ -74,3 +74,10 @@ func FindLargestElement(nums []int) int {
 	}
 	return pos
 }
+
+func ReverseString(s []byte) string {
+	for i, n := 0, len(s); i < n/2; i++ {
+		s[i], s[n-1-i] = s[n-1-i], s[i]
+	}
+	return string(s)
+}

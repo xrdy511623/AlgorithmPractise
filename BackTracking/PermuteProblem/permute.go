@@ -29,15 +29,15 @@ func Permute(nums []int) [][]int {
 		}
 		for i := 0; i < size; i++ {
 			// 一个排列结果(path)里一个元素只能使用一次
-			if visited[nums[i]] {
+			if visited[i] {
 				continue
 			}
-			visited[nums[i]] = true
+			visited[i] = true
 			path = append(path, nums[i])
 			// 递归
 			backTrack()
 			// 回溯
-			visited[nums[i]] = false
+			visited[i] = false
 			path = path[:len(path)-1]
 		}
 	}

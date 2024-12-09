@@ -243,16 +243,16 @@ func CombinationSum(candidates []int, target int) [][]int {
 	sum, n := 0, len(candidates)
 	var backTrack func(int)
 	backTrack = func(start int) {
+		// 剪枝优化，如果sum已经大于目标和target，就可以返回了，继续遍历没有意义
+		if sum > target {
+			return
+		}
 		// 递归终止条件
 		// 若当前路径和等于目标和target，将此路径添加到结果集中
 		if sum == target {
 			temp := make([]int, len(path))
 			copy(temp, path)
 			res = append(res, temp)
-			return
-		}
-		// 剪枝优化，如果sum已经大于目标和target，就可以返回了，继续遍历没有意义
-		if sum > target {
 			return
 		}
 		for i := start; i < n; i++ {
@@ -323,6 +323,10 @@ func CombinationSumTwo(candidates []int, target int) [][]int {
 	sort.Ints(candidates)
 	var backTrack func(int)
 	backTrack = func(start int) {
+		// 减枝
+		if sum > target {
+			return
+		}
 		// 递归终止条件
 		if sum == target {
 			temp := make([]int, len(path))
