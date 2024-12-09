@@ -2,6 +2,7 @@ package sort
 
 import (
 	"AlgorithmPractise/Utils"
+	"math"
 	"sort"
 	"strconv"
 )
@@ -1801,4 +1802,119 @@ func mergeComplex(arr []int, temp []int, left, mid, right int) int {
 	}
 	// 返回当前合并过程中的逆序对数量
 	return count
+}
+
+/*
+leetcode 16 最接近的三数之和
+给你一个长度为 n 的整数数组 nums 和 一个目标值 target。请你从 nums 中选出三个整数，使它们的和与 target 最接近。
+
+返回这三个数的和。
+假定每组输入只存在恰好一个解。
+
+示例 1：
+输入：nums = [-1,2,1,-4], target = 1
+输出：2
+解释：与 target 最接近的和是 2 (-1 + 2 + 1 = 2)。
+
+示例 2：
+输入：nums = [0,0,0], target = 1
+输出：0
+解释：与 target 最接近的和是 0（0 + 0 + 0 = 0）。
+
+提示：
+3 <= nums.length <= 1000
+-1000 <= nums[i] <= 1000
+-104 <= target <= 104
+*/
+
+/*
+为了高效解决问题，可以使用双指针法，具体步骤如下：
+数组排序：先对数组进行升序排序，使得我们可以有序遍历，方便利用双指针查找。
+遍历数组，固定一个元素：用一个循环固定数组中的一个元素，然后在剩下的元素中找出另外两个数，使它们的和尽可能接近目标值。
+双指针查找：
+使用两个指针，一个指向固定元素后的第一个位置（左指针），另一个指向数组末尾（右指针）。
+根据当前三数之和与目标值的大小关系调整指针位置：
+如果当前和小于目标值，左指针右移以增加总和；
+如果当前和大于目标值，右指针左移以减小总和；
+如果当前和等于目标值，直接返回。
+记录最接近的和：每次计算当前和时，与记录的最接近的和比较并更新。
+返回最终结果：遍历完成后，返回记录的最接近的和。
+*/
+
+func threeSumClosest(nums []int, target int) int {
+	n := len(nums)
+	// 初始化最接近的和为一个极大值
+	closestSum := math.MaxInt32
+	// Step 1: 对数组排序
+	sort.Ints(nums)
+	// Step 2: 遍历数组，固定一个元素
+	for i := 0; i < n-2; i++ {
+		// 去重
+		if i > 0 && nums[i] == nums[i-1] {
+			continue
+		}
+		// Step 3: 双指针查找
+		l, r := i+1, n-1
+		for l < r {
+			// 计算当前三数之和
+			sum := nums[i] + nums[l] + nums[r]
+			// 如果当前和比已记录的更接近目标值，则更新
+			if Utils.Abs(sum-target) < Utils.Abs(closestSum-target) {
+				closestSum = sum
+			}
+			// 根据三数之和调整指针位置
+			if sum > target {
+				// 和大于目标值，右指针左移
+				r--
+			} else if sum < target {
+				// 和小于目标值，左指针右移
+				l++
+			} else {
+				// 如果和恰好等于目标值，直接返回
+				return sum
+			}
+		}
+	}
+	// 返回最终记录的最接近的和
+	return closestSum
+}
+
+/*
+leetcode 26 删除有序数组中的重复项
+给你一个 非严格递增排列 的数组 nums ，请你 原地 删除重复出现的元素，使每个元素 只出现一次 ，返回删除后数组的新长度。
+元素的 相对顺序应该保持 一致。然后返回nums 中唯一元素的个数。
+
+考虑 nums 的唯一元素的数量为 k ，你需要做以下事情确保你的题解可以被通过：
+更改数组 nums ，使 nums 的前 k 个元素包含唯一元素，并按照它们最初在 nums 中出现的顺序排列。nums 的其余元素与 nums
+的大小不重要。返回 k 。
+
+示例 1：
+
+输入：nums = [1,1,2]
+输出：2, nums = [1,2,_]
+解释：函数应该返回新的长度 2 ，并且原数组 nums 的前两个元素被修改为 1, 2 。不需要考虑数组中超出新长度后面的元素。
+示例 2：
+
+输入：nums = [0,0,1,1,1,2,2,3,3,4]
+输出：5, nums = [0,1,2,3,4]
+解释：函数应该返回新的长度 5 ， 并且原数组 nums 的前五个元素被修改为 0, 1, 2, 3, 4 。不需要考虑数组中超出新长度
+后面的元素。
+
+提示：
+1 <= nums.length <= 3 * 104
+-104 <= nums[i] <= 104
+nums 已按 非严格递增 排列
+*/
+
+func removeDuplicates(nums []int) int {
+	n := len(nums)
+	index := 0
+	for i := 0; i < n; i++ {
+		if i > 0 && nums[i] == nums[i-1] {
+			continue
+		}
+		nums[index] = nums[i]
+		index++
+	}
+	return index
 }

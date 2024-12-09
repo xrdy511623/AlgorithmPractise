@@ -320,10 +320,11 @@ func CombinationSumTwo(candidates []int, target int) [][]int {
 	var res [][]int
 	var path []int
 	sum := 0
+	n := len(candidates)
 	sort.Ints(candidates)
 	var backTrack func(int)
 	backTrack = func(start int) {
-		// 减枝
+		// 剪枝
 		if sum > target {
 			return
 		}
@@ -333,8 +334,7 @@ func CombinationSumTwo(candidates []int, target int) [][]int {
 			copy(temp, path)
 			res = append(res, temp)
 		}
-		// 剪枝:sum+candidates[i]<=target
-		for i := start; i < len(candidates); i++ {
+		for i := start; i < n; i++ {
 			// 同一树层去重
 			if i > start && candidates[i] == candidates[i-1] {
 				continue

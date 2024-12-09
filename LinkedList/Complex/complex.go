@@ -387,7 +387,7 @@ func oddEvenList(head *Entity.ListNode) *Entity.ListNode {
 }
 
 /*
-1.7 排序奇偶降链表
+1.7 排序奇升偶降链表
 给定一个奇数位升序，偶数位降序的链表，将其重新排序为一个升序链表。
 
 输入: 1->8->3->6->5->4->7->2
