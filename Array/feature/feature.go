@@ -1314,6 +1314,52 @@ func antiSpiralOrder(matrix [][]int) []int {
 }
 
 /*
+leetcode 59 螺旋矩阵II
+给你一个正整数 n ，生成一个包含 1 到 n2 所有元素，且元素按顺时针顺序螺旋排列的 n x n 正方形矩阵 matrix 。
+
+示例1:
+输入：n = 3
+输出：[[1,2,3],[8,9,4],[7,6,5]]
+
+提示：
+1 <= n <= 20
+*/
+
+func generateMatrix(n int) [][]int {
+	matrix := make([][]int, n)
+	for i := 0; i < n; i++ {
+		matrix[i] = make([]int, n)
+	}
+	order := 1
+	top, bottom, left, right := 0, n-1, 0, n-1
+	for top <= bottom && left <= right {
+		for col := left; col <= right; col++ {
+			matrix[top][col] = order
+			order++
+		}
+		for row := top + 1; row <= bottom; row++ {
+			matrix[row][right] = order
+			order++
+		}
+		if top < bottom && left < right {
+			for col := right - 1; col >= left; col-- {
+				matrix[bottom][col] = order
+				order++
+			}
+			for row := bottom - 1; row > top; row-- {
+				matrix[row][left] = order
+				order++
+			}
+		}
+		top++
+		bottom--
+		left++
+		right--
+	}
+	return matrix
+}
+
+/*
 1.26 随机组队
 一群朋友组队玩游戏，至少有5组人，一组至少2人
 要求:
