@@ -280,7 +280,7 @@ func Jump(nums []int) int {
 // JumpSimple 时间复杂度O(N),空间复杂度O(1)
 func JumpSimple(nums []int) int {
 	n := len(nums)
-	// 初始化右边界end，当前所能到达的最右边位置rightMost，以及跳跃次数count为0
+	// 初始化右边界end，当前所能到达的最右边位置rightMost，以及跳跃次数steps为0
 	end, rightMost, steps := 0, 0, 0
 	for i := 0; i < n-1; i++ {
 		// 更新当前所能到达的最大位置rightMost

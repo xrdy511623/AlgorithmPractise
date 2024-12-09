@@ -1690,3 +1690,115 @@ func largestNumber(nums []int) string {
 func compare(x, y string) bool {
 	return x+y > y+x
 }
+
+/*
+剑指Offer 51: 数组中的逆序对
+在股票交易中，如果前一天的股价高于后一天的股价，则可以认为存在一个「交易逆序对」。请设计一个程序，输入一段时间内的
+股票交易记录 record，返回其中存在的「交易逆序对」总数。
+
+
+示例 1:
+输入：record = [9, 7, 5, 4, 6]
+输出：8
+解释：交易中的逆序对为 (9, 7), (9, 5), (9, 4), (9, 6), (7, 5), (7, 4), (7, 6), (5, 4)。
+
+限制：
+0 <= record.length <= 50000
+*/
+
+/*
+思路:
+我们需要计算数组中的逆序对数目。一个逆序对 (i, j) 满足条件：
+i < j，且
+record[i] > record[j]
+对于一个数组，我们可以使用 归并排序（Merge Sort）的方法来计算逆序对。在归并排序的过程中，我们不仅能够排序数组，还能在
+合并的过程中统计逆序对的数量。
+
+归并排序（Merge Sort）思想：
+递归分割：将数组递归地分成两部分，直到每部分只有一个元素。
+合并阶段：将两个已经排好序的子数组合并成一个有序数组，在合并的过程中计算逆序对。
+统计逆序对：在合并时，如果 left[i] > right[j]，那么 left[i] 之后的所有元素都大于 right[j]，这就构成了多个逆序对。
+*/
+
+// ReversePairs 计算数组中的所有逆序对。
+// 它通过调用 mergeAndCount 函数来进行归并排序并统计逆序对数量。
+func ReversePairs(arr []int) int {
+	n := len(arr)
+	if n <= 1 {
+		return 0
+	}
+	// 创建一个临时数组，用于辅助归并操作
+	temp := make([]int, n)
+	// 调用 mergeAndCount 来进行归并排序并统计逆序对
+	return mergeAndCount(arr, temp, 0, n-1)
+}
+
+/*
+mergeAndCount 是递归分割并统计逆序对的核心函数。
+参数 arr 是当前需要处理的数组，temp 是辅助的临时数组用于合并操作。
+参数 left 和 right 分别是当前子数组的起始和结束位置。
+返回值 count 是逆序对的数量。
+*/
+func mergeAndCount(arr []int, temp []int, left, right int) int {
+	// 如果左边索引等于右边索引，说明已经分割到一个元素，不存在逆序对，直接返回
+	if left >= right {
+		return 0
+	}
+	// 找到中间位置，进行递归分割
+	mid := (left + right) / 2
+	// 递归处理左半部分，并统计逆序对
+	leftCount := mergeAndCount(arr, temp, left, mid)
+	// 递归处理右半部分，并统计逆序对
+	rightCount := mergeAndCount(arr, temp, mid+1, right)
+	// 合并左边和右边的两个部分，同时统计跨越左右部分的逆序对
+	count := mergeComplex(arr, temp, left, mid, right)
+	// 返回左部分的逆序对数 + 右部分的逆序对数 + 当前合并过程中的逆序对数
+	return leftCount + rightCount + count
+}
+
+/*
+mergeComplex 用于合并两个有序子数组并计算逆序对的数量。
+参数 arr 是需要处理的数组，temp 是辅助的临时数组，用于存储合并结果。
+参数 left, mid, right 分别表示当前子数组的起始、中间和结束位置。
+返回值 count 是当前合并过程中计算到的逆序对数。
+*/
+func mergeComplex(arr []int, temp []int, left, mid, right int) int {
+	// i 是左半部分的起始位置，j 是右半部分的起始位置，k 是合并后数组的位置，count用来记录逆序对的数量
+	i, j, k, count := left, mid+1, left, 0
+	// 合并两个有序子数组
+	for i <= mid && j <= right {
+		if arr[i] <= arr[j] {
+			// 如果左侧元素小于右侧元素，直接放入临时数组
+			temp[k] = arr[i]
+			i++
+		} else {
+			// 如果左侧元素大于右侧元素，说明有逆序对
+			// 因为左侧元素之后的所有元素都大于 arr[j]
+			temp[k] = arr[j]
+			// 当前 i 到 mid 之间的所有元素都大于 arr[j]
+			count += mid - i + 1
+			j++
+		}
+		k++
+	}
+
+	// 将左半部分剩余的元素放入临时数组
+	for i <= mid {
+		temp[k] = arr[i]
+		i++
+		k++
+	}
+
+	// 将右半部分剩余的元素放入临时数组
+	for j <= right {
+		temp[k] = arr[j]
+		j++
+		k++
+	}
+	// 将临时数组中的元素复制回原数组
+	for m := left; m <= right; m++ {
+		arr[m] = temp[m]
+	}
+	// 返回当前合并过程中的逆序对数量
+	return count
+}

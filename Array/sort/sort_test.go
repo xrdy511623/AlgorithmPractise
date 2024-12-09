@@ -127,3 +127,14 @@ func TestSearchRotateArray(t *testing.T) {
 		fmt.Println("test pass")
 	}
 }
+
+func TestReversePairs(t *testing.T) {
+	record := []int{9, 7, 5, 4, 6}
+	got := ReversePairs(record)
+	want := 8
+	if got != want {
+		t.Errorf("got:%v, expected:%v", got, want)
+	} else {
+		fmt.Println("test pass")
+	}
+}

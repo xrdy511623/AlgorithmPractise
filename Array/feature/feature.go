@@ -1492,6 +1492,8 @@ n == mat[i].length
 一共有 m+n−1条对角线，相邻的对角线的遍历方向不同，当前遍历方向为从左下到右上，则紧挨着的下一条对角线遍历方向为从右上
 到左下；
 
+对角线上的行列索引i+j=k(k指对角线编号)
+
 设对角线从上到下的编号为 i∈[0,m+n−2]：
 当i为偶数时，则第i条对角线的走向是从下往上遍历；
 当i为奇数时，则第i条对角线的走向是从上往下遍历；
@@ -1508,26 +1510,35 @@ n == mat[i].length
 
 func findDiagonalOrder(mat [][]int) []int {
 	m, n := len(mat), len(mat[0])
-	res := make([]int, m*n)
-	index := 0
+	res := make([]int, 0, m*n)
 	for i := 0; i < m+n-1; i++ {
 		if i%2 == 0 {
-			x := Utils.Min(i, m-1)
-			y := Utils.Max(i-m+1, 0)
-			for x >= 0 && y < n {
-				res[index] = mat[x][y]
-				index++
-				x--
-				y++
+			// 偶数对角线从下到上遍历
+			// 确定对角线的起始位置
+			row, col := 0, 0
+			if i < m {
+				row, col = i, 0
+			} else {
+				row, col = m-1, i-m+1
+			}
+			for row >= 0 && col < n {
+				res = append(res, mat[row][col])
+				row--
+				col++
 			}
 		} else {
-			x := Utils.Max(i-n+1, 0)
-			y := Utils.Min(i, n-1)
-			for x < m && y >= 0 {
-				res[index] = mat[x][y]
-				index++
-				x++
-				y--
+			// 奇数对角线从上到下遍历
+			// 确定对角线的起始位置
+			row, col := 0, 0
+			if i < n {
+				row, col = 0, i
+			} else {
+				row, col = i-n+1, n-1
+			}
+			for row < m && col >= 0 {
+				res = append(res, mat[row][col])
+				row++
+				col--
 			}
 		}
 	}
@@ -1905,4 +1916,51 @@ func maxArea(height []int) int {
 		}
 	}
 	return maxWater
+}
+
+func reversePairs(arr []int) int {
+	n := len(arr)
+	if n <= 1 {
+		return 0
+	}
+	temp := make([]int, n)
+	return mergeAndCount(0, n-1, arr, temp)
+}
+
+func mergeAndCount(l, r int, arr, temp []int) int {
+	if l >= r {
+		return 0
+	}
+	mid := (l + r) / 2
+	leftCount := mergeAndCount(l, mid, arr, temp)
+	rightCount := mergeAndCount(mid+1, r, arr, temp)
+	count := mergeComplex(l, r, mid, arr, temp)
+	return leftCount + rightCount + count
+}
+
+func mergeComplex(l, r, mid int, arr, temp []int) int {
+	i, j, k, count := l, mid+1, 0, 0
+	for i <= mid && j <= r {
+		if arr[i] <= arr[j] {
+			temp[k] = arr[i]
+			i++
+		} else {
+			temp[k] = arr[j]
+			count += mid - i + 1
+			j++
+		}
+		k++
+	}
+	for ; i <= mid; i++ {
+		temp[k] = arr[i]
+		k++
+	}
+	for ; j <= r; j++ {
+		temp[k] = arr[j]
+		k++
+	}
+	for m := l; m <= r; m++ {
+		arr[m] = temp[m]
+	}
+	return count
 }
