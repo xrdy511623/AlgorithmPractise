@@ -728,7 +728,7 @@ func leastCoinChange(coins []int, amount int) int {
 	for i := 1; i <= amount; i++ {
 		dp[i] = math.MaxInt32
 	}
-	for i := 0; i < len(coins); i++ {
+	for i, n := 0, len(coins); i < n; i++ {
 		for j := coins[i]; j <= amount; j++ {
 			if dp[j-coins[i]] != math.MaxInt32 {
 				dp[j] = Utils.Min(dp[j], dp[j-coins[i]]+1)

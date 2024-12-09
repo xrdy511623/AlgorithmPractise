@@ -1128,3 +1128,33 @@ func findTarget(root *Entity.TreeNode, k int) bool {
 	}
 	return false
 }
+
+/*
+剑指Offer 54 二叉搜索树的第k大节点
+输入：root = [7, 3, 9, 1, 5], cnt = 2
+       7
+      / \
+     3   9
+    / \
+   1   5
+输出：7
+*/
+
+func findTargetNode(root *Entity.TreeNode, k int) int {
+	res := 0
+	var help func(*Entity.TreeNode)
+	help = func(node *Entity.TreeNode) {
+		if node == nil || k == 0 {
+			return
+		}
+		help(node.Right)
+		k--
+		if k == 0 {
+			res = node.Val
+			return
+		}
+		help(node.Left)
+	}
+	help(root)
+	return res
+}
