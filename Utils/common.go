@@ -81,3 +81,7 @@ func ReverseString(s []byte) string {
 	}
 	return string(s)
 }
+
+func CheckAlphaNumeric(char byte) bool {
+	return char >= '0' && char <= '9' || char >= 'a' && char <= 'z' || char >= 'A' && char <= 'Z'
+}
