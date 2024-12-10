@@ -1117,3 +1117,56 @@ func maximalSquare(matrix [][]byte) int {
 	}
 	return maxSide * maxSide
 }
+
+/*
+圆环上有10个点，编号为0~9。从0点出发，每次可以逆时针和顺时针走一步，问走n步回到0点共有多少种走法。
+
+输入: 2
+输出: 2
+解释：有2种方案。分别是0->1->0和0->9->0
+*/
+
+/*
+思路:动态规划
+走n步到0的方案数=走n-1步到1的方案数+走n-1步到9的方案数。
+类似的，走i步到j点的方案数等于走i-1步到j点的相邻两个点，也就是j-1和j+1两个点的方案数之和
+因此，若设dp[i][j]为从0点出发走i步到j点的方案数，则递推式为：
+dp[i][j] = dp[i-1][(j-1+length)%length] + dp[i-1][(j+1)%length]
+公式之所以取余是因为j-1或j+1可能会超过圆环0~9的范围
+*/
+
+func backToOrigin(n int) int {
+	length := 10
+	dp := make([][]int, n+1)
+	for i := 0; i <= n; i++ {
+		dp[i] = make([]int, length)
+	}
+	dp[0][0] = 1
+	for i := 1; i <= n; i++ {
+		for j := 0; j < length; j++ {
+			dp[i][j] = dp[i-1][(j-1+length)%length] + dp[i-1][(j+1)%length]
+		}
+	}
+	return dp[n][0]
+}
+
+func backToOriginSimple(n int) int {
+	if n == 0 {
+		return 1
+	}
+	length := 10
+	// 初始化两个数组，分别表示上一步和当前步
+	prev, cur := make([]int, length), make([]int, length)
+	// 初始状态，第0步在点0
+	prev[0] = 1
+	for i := 1; i <= n; i++ {
+		for j := 0; j < length; j++ {
+			// 计算当前步的方案数
+			cur[j] = prev[(j-1+length)%length] + prev[(j+1)%length]
+		}
+		// 更新上一步为当前步
+		prev, cur = cur, prev
+	}
+	// 返回走n步回到点0的方案数
+	return prev[0]
+}
