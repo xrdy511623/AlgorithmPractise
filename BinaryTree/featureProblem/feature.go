@@ -1796,3 +1796,33 @@ func (c *Codec) deserialize(data string) *Entity.TreeNode {
 	}
 	return build()
 }
+
+/*
+剑指Offer 26 二叉树的子结构判断
+给定两棵二叉树 tree1 和 tree2，判断 tree2 是否以 tree1 的某个节点为根的子树具有 相同的结构和节点值 。
+注意，空树 不会是以 tree1 的某个节点为根的子树具有 相同的结构和节点值 。
+
+输入：tree1 = [3,6,7,1,8], tree2 = [6,1]
+输出：true
+解释：tree2 与 tree1 的一个子树拥有相同的结构和节点值。即 6 - > 1。
+
+提示：
+0 <= 节点个数 <= 10000
+*/
+
+func isSubStructure(A, B *Entity.TreeNode) bool {
+	if A == nil || B == nil {
+		return false
+	}
+	return check(A, B) || isSubStructure(A.Left, B) || isSubStructure(A.Right, B)
+}
+
+func check(a, b *Entity.TreeNode) bool {
+	if b == nil {
+		return true
+	}
+	if a == nil || a.Val != b.Val {
+		return false
+	}
+	return check(a.Left, b.Left) && check(a.Right, b.Right)
+}
