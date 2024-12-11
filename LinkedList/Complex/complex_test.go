@@ -1,14 +1,14 @@
-package Complex
+package complex
 
 import (
-	"algorithm-practise/linkedlist/Entity"
+	"algorithm-practise/linkedlist/entity"
 	"fmt"
 	"reflect"
 	"testing"
 )
 
 func TestSortOddAscEvenDescList(t *testing.T) {
-	head := SortOddAscEvenDescList(Entity.Node1)
+	head := SortOddAscEvenDescList(entity.Node1)
 	var got []int
 	for head != nil {
 		got = append(got, head.Val)

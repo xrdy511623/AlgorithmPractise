@@ -1,4 +1,4 @@
-package CombinationProblem
+package combination
 
 import (
 	"fmt"

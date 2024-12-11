@@ -1,6 +1,6 @@
-package ReverseLinkedList
+package reverselinkedlist
 
-import "algorithm-practise/linkedlist/Entity"
+import "algorithm-practise/linkedlist/entity"
 
 /*
 反转链表专题
@@ -14,11 +14,11 @@ Leetcode 24. 两两交换链表中的节点
 应返回2-1-4-3-6-5
 */
 
-func SwapPairs(head *Entity.ListNode) *Entity.ListNode {
+func SwapPairs(head *entity.ListNode) *entity.ListNode {
 	if head == nil || head.Next == nil {
 		return head
 	}
-	dummy := &Entity.ListNode{Next: head}
+	dummy := &entity.ListNode{Next: head}
 	pre, cur := dummy, head
 	for cur != nil && cur.Next != nil {
 		firstNode, secondNode := cur, cur.Next
@@ -35,8 +35,8 @@ func SwapPairs(head *Entity.ListNode) *Entity.ListNode {
 其实这个问题可以转化为K个一组反转链表的特例，此时K=2，所以可以像下面这样写
 */
 
-func SwapPairsTwo(head *Entity.ListNode) *Entity.ListNode {
-	dummy := &Entity.ListNode{Next: head}
+func SwapPairsTwo(head *entity.ListNode) *entity.ListNode {
+	dummy := &entity.ListNode{Next: head}
 	prev := dummy
 	for head != nil {
 		tail := prev
@@ -64,8 +64,8 @@ leetcode 206. 反转链表
 */
 
 // Reverse  思路:迭代法，时间复杂度O(n),空间复杂度O(1)
-func Reverse(head *Entity.ListNode) *Entity.ListNode {
-	var prev *Entity.ListNode
+func Reverse(head *entity.ListNode) *entity.ListNode {
+	var prev *entity.ListNode
 	cur := head
 	for cur != nil {
 		cur.Next, prev, cur = prev, cur, cur.Next
@@ -91,8 +91,8 @@ ndx。反转完后，要将反转后的子链表接入到原链表中，只需�
 上一次反转后子链表的尾结点tail。
 */
 
-func ReverseKGroup(head *Entity.ListNode, k int) *Entity.ListNode {
-	dummy := &Entity.ListNode{Next: head}
+func ReverseKGroup(head *entity.ListNode, k int) *entity.ListNode {
+	dummy := &entity.ListNode{Next: head}
 	prev := dummy
 	for head != nil {
 		tail := prev
@@ -118,8 +118,8 @@ func ReverseKGroup(head *Entity.ListNode, k int) *Entity.ListNode {
 	return dummy.Next
 }
 
-func reverse(head, tail *Entity.ListNode, k int) (*Entity.ListNode, *Entity.ListNode) {
-	var prev *Entity.ListNode
+func reverse(head, tail *entity.ListNode, k int) (*entity.ListNode, *entity.ListNode) {
+	var prev *entity.ListNode
 	cur := head
 	for i := 0; i < k; i++ {
 		cur.Next, prev, cur = prev, cur, cur.Next
@@ -149,12 +149,12 @@ left=2,right=4
 得到返回的head和tail节点，将pre节点的Next指针指向head节点，将tail节点的Next指针指向ndx节点即可。
 */
 
-func ReverseBetween(head *Entity.ListNode, left int, right int) *Entity.ListNode {
+func ReverseBetween(head *entity.ListNode, left int, right int) *entity.ListNode {
 	if left == right {
 		return head
 	}
 	k := right - left + 1
-	dummy := &Entity.ListNode{Next: head}
+	dummy := &entity.ListNode{Next: head}
 	prev := dummy
 	for i := 0; i < left-1; i++ {
 		prev = prev.Next
@@ -202,11 +202,11 @@ L0 → Ln → L1 → Ln - 1 → L2 → Ln - 2 → …
 
 // ReOrderLinkedList 用线性表存储该链表，利用线性表可以按下标访问的特性，按顺序访问指定元素，重建链表即可
 // 重排后链表的特点是前后两个节点的下标和为n-1,时间复杂度O(N),空间复杂度O(N)。
-func ReOrderLinkedList(head *Entity.ListNode) {
+func ReOrderLinkedList(head *entity.ListNode) {
 	if head == nil {
 		return
 	}
-	var nodes []*Entity.ListNode
+	var nodes []*entity.ListNode
 	for head != nil {
 		nodes = append(nodes, head)
 		head = head.Next
@@ -238,7 +238,7 @@ func ReOrderLinkedList(head *Entity.ListNode) {
 时间复杂度O(N),空间复杂度O(1)
 */
 
-func ReOrderLinkedListSimple(head *Entity.ListNode) {
+func ReOrderLinkedListSimple(head *entity.ListNode) {
 	if head == nil || head.Next == nil {
 		return
 	}
@@ -254,7 +254,7 @@ func ReOrderLinkedListSimple(head *Entity.ListNode) {
 }
 
 // GetMiddleNode 寻找链表中间节点
-func GetMiddleNode(head *Entity.ListNode) *Entity.ListNode {
+func GetMiddleNode(head *entity.ListNode) *entity.ListNode {
 	fast, slow := head, head
 	for fast.Next != nil && fast.Next.Next != nil {
 		fast = fast.Next.Next
@@ -264,8 +264,8 @@ func GetMiddleNode(head *Entity.ListNode) *Entity.ListNode {
 }
 
 // MergeLists 合并链表
-func MergeLists(l1, l2 *Entity.ListNode) {
-	var l1Tmp, l2Tmp *Entity.ListNode
+func MergeLists(l1, l2 *entity.ListNode) {
+	var l1Tmp, l2Tmp *entity.ListNode
 	for l1 != nil && l2 != nil {
 		l1Tmp = l1.Next
 		l2Tmp = l2.Next

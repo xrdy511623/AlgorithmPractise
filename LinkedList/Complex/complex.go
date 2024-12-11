@@ -1,8 +1,8 @@
-package Complex
+package complex
 
 import (
-	"algorithm-practise/linkedlist/Entity"
-	"algorithm-practise/linkedlist/ReverseLinkedList"
+	"algorithm-practise/linkedlist/entity"
+	"algorithm-practise/linkedlist/reverselinkedlist"
 )
 
 /*
@@ -160,11 +160,11 @@ leetcode 23. 合并K个升序链表
 空间复杂度：递归会使用到O(logK) 空间代价的栈空间。
 */
 
-func MergeKLists(lists []*Entity.ListNode) *Entity.ListNode {
+func MergeKLists(lists []*entity.ListNode) *entity.ListNode {
 	return Merge(lists, 0, len(lists)-1)
 }
 
-func Merge(lists []*Entity.ListNode, l, r int) *Entity.ListNode {
+func Merge(lists []*entity.ListNode, l, r int) *entity.ListNode {
 	if l == r {
 		return lists[l]
 	}
@@ -175,8 +175,8 @@ func Merge(lists []*Entity.ListNode, l, r int) *Entity.ListNode {
 	return MergeTwoLists(Merge(lists, l, mid), Merge(lists, mid+1, r))
 }
 
-func MergeTwoLists(l1, l2 *Entity.ListNode) *Entity.ListNode {
-	dummy := new(Entity.ListNode)
+func MergeTwoLists(l1, l2 *entity.ListNode) *entity.ListNode {
+	dummy := new(entity.ListNode)
 	cur := dummy
 	for l1 != nil && l2 != nil {
 		if l1.Val < l2.Val {
@@ -207,8 +207,8 @@ leetcode 2. 两数相加
 */
 
 // AddTwoNumbers 从低位也就是链表头开始相加,时间复杂度O(max(m,n)), m和n分别为两个链表的长度，空间复杂度O(1)
-func AddTwoNumbers(l1, l2 *Entity.ListNode) *Entity.ListNode {
-	dummy := new(Entity.ListNode)
+func AddTwoNumbers(l1, l2 *entity.ListNode) *entity.ListNode {
+	dummy := new(entity.ListNode)
 	cur := dummy
 	// 进位值初始值为0
 	carry := 0
@@ -223,7 +223,7 @@ func AddTwoNumbers(l1, l2 *Entity.ListNode) *Entity.ListNode {
 			l2 = l2.Next
 		}
 		sum += carry
-		cur.Next = &Entity.ListNode{Val: sum % 10}
+		cur.Next = &entity.ListNode{Val: sum % 10}
 		cur = cur.Next
 		carry = sum / 10
 	}
@@ -248,7 +248,7 @@ leetcode 445. 两数相加II
 把所有数字压入栈中，再依次取出相加。计算过程中需要注意进位的情况。
 */
 
-func AddTwoNumbersComplex(l1, l2 *Entity.ListNode) (head *Entity.ListNode) {
+func AddTwoNumbersComplex(l1, l2 *entity.ListNode) (head *entity.ListNode) {
 	var s1, s2 []int
 	for l1 != nil {
 		s1 = append(s1, l1.Val)
@@ -271,7 +271,7 @@ func AddTwoNumbersComplex(l1, l2 *Entity.ListNode) (head *Entity.ListNode) {
 			s2 = s2[:len(s2)-1]
 		}
 		sum += carry
-		cur := &Entity.ListNode{Val: sum % 10}
+		cur := &entity.ListNode{Val: sum % 10}
 		cur.Next = head
 		head = cur
 		carry = sum / 10
@@ -299,7 +299,7 @@ leetcode 61. 旋转链表
 
 */
 
-func RotateRight(head *Entity.ListNode, k int) *Entity.ListNode {
+func RotateRight(head *entity.ListNode, k int) *entity.ListNode {
 	if head == nil || head.Next == nil || k == 0 {
 		return head
 	}
@@ -343,7 +343,7 @@ Next指向偶数结点链表的头结点即可。
 */
 
 // OddEvenListSimple 时间复杂度为O(N), 空间复杂度为O(1)
-func OddEvenListSimple(head *Entity.ListNode) *Entity.ListNode {
+func OddEvenListSimple(head *entity.ListNode) *entity.ListNode {
 	if head == nil || head.Next == nil {
 		return head
 	}
@@ -363,11 +363,11 @@ func OddEvenListSimple(head *Entity.ListNode) *Entity.ListNode {
 }
 
 // oddEvenList 根据结点编号奇偶性分别迭代出奇数结点链表和偶数结点链表最后再合并
-func oddEvenList(head *Entity.ListNode) *Entity.ListNode {
+func oddEvenList(head *entity.ListNode) *entity.ListNode {
 	if head == nil || head.Next == nil {
 		return head
 	}
-	beforeOdd, beforeEven := new(Entity.ListNode), new(Entity.ListNode)
+	beforeOdd, beforeEven := new(entity.ListNode), new(entity.ListNode)
 	odd, even := beforeOdd, beforeEven
 	num := 1
 	for head != nil {
@@ -400,7 +400,7 @@ func oddEvenList(head *Entity.ListNode) *Entity.ListNode {
 降序排列的偶数结点链表反转，这样我们就得到了两个升序链表，最后将它们俩合并为一个升序链表即可
 */
 
-func SortOddAscEvenDescList(head *Entity.ListNode) *Entity.ListNode {
+func SortOddAscEvenDescList(head *entity.ListNode) *entity.ListNode {
 	if head == nil || head.Next == nil {
 		return head
 	}
@@ -416,7 +416,7 @@ func SortOddAscEvenDescList(head *Entity.ListNode) *Entity.ListNode {
 	odd.Next = nil
 	l1 := head
 	// 将偶数结点链表反转得到升序链表
-	l2 := ReverseLinkedList.Reverse(evenHead)
+	l2 := reverselinkedlist.Reverse(evenHead)
 	// 合并奇数结点链表和偶数结点链表这两个升序链表
 	return MergeTwoLists(l1, l2)
 }
@@ -433,9 +433,9 @@ leetcode 1171. 从链表中删去总和值为零的连续节点
 提示：答案 [1,2,1] 也是正确的。
 */
 
-func RemoveZeroSumSubLists(head *Entity.ListNode) *Entity.ListNode {
-	dummy := &Entity.ListNode{Next: head}
-	occurred := make(map[int]*Entity.ListNode)
+func RemoveZeroSumSubLists(head *entity.ListNode) *entity.ListNode {
+	dummy := &entity.ListNode{Next: head}
+	occurred := make(map[int]*entity.ListNode)
 	occurred[0] = dummy
 	sum := 0
 	for head != nil {
@@ -461,10 +461,10 @@ func RemoveZeroSumSubLists(head *Entity.ListNode) *Entity.ListNode {
 */
 
 // RemoveZeroSumSubListsSimple 更简单的写法是下面这样，时间复杂度为O(2N), 空间复杂度为O(N)
-func RemoveZeroSumSubListsSimple(head *Entity.ListNode) *Entity.ListNode {
-	dummy := &Entity.ListNode{Val: 0, Next: head}
+func RemoveZeroSumSubListsSimple(head *entity.ListNode) *entity.ListNode {
+	dummy := &entity.ListNode{Val: 0, Next: head}
 	sum := 0
-	dict := make(map[int]*Entity.ListNode)
+	dict := make(map[int]*entity.ListNode)
 	for p := dummy; p != nil; p = p.Next {
 		sum += p.Val
 		dict[sum] = p

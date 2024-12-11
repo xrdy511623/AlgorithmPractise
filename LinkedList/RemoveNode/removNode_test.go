@@ -1,14 +1,14 @@
-package RemoveNode
+package removenode
 
 import (
-	"algorithm-practise/linkedlist/Entity"
+	"algorithm-practise/linkedlist/entity"
 	"fmt"
 	"reflect"
 	"testing"
 )
 
 func TestRemoveDuplicateNodes(t *testing.T) {
-	head := RemoveDuplicateNodes(Entity.Node1)
+	head := RemoveDuplicateNodes(entity.Node1)
 	var got []int
 	for head != nil {
 		got = append(got, head.Val)

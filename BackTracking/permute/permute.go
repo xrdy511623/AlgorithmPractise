@@ -1,4 +1,4 @@
-package PermuteProblem
+package permute
 
 import (
 	"sort"

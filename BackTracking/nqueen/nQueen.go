@@ -1,4 +1,4 @@
-package nQueenProblem
+package nqueen
 
 import "strings"
 

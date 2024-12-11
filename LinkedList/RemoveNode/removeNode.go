@@ -1,6 +1,6 @@
-package RemoveNode
+package removenode
 
-import "algorithm-practise/linkedlist/Entity"
+import "algorithm-practise/linkedlist/entity"
 
 /*
 剑指Offer 18. 删除链表的节点
@@ -17,11 +17,11 @@ import "algorithm-practise/linkedlist/Entity"
 */
 
 // DeleteNode 思路:找到值等于val的目标节点target及其前驱节点pre，将pre.Next指向target的Next节点即可
-func DeleteNode(head *Entity.ListNode, val int) *Entity.ListNode {
+func DeleteNode(head *entity.ListNode, val int) *entity.ListNode {
 	if head == nil {
 		return nil
 	}
-	dummy := &Entity.ListNode{Next: head}
+	dummy := &entity.ListNode{Next: head}
 	prev, cur := dummy, head
 	for cur.Val != val {
 		prev = prev.Next
@@ -53,8 +53,8 @@ leetcode 203. 移除链表元素
 */
 
 // RemoveElements 时间复杂度O(N),空间复杂度O(1)
-func RemoveElements(head *Entity.ListNode, val int) *Entity.ListNode {
-	dummy := &Entity.ListNode{Next: head}
+func RemoveElements(head *entity.ListNode, val int) *entity.ListNode {
+	dummy := &entity.ListNode{Next: head}
 	prev, cur := dummy, head
 	for cur != nil {
 		if cur.Val == val {
@@ -88,13 +88,13 @@ leetcode 19. 删除链表的倒数第N个结点
 */
 
 // RemoveNthFromEnd 思路与1.1大体类似，那就是找到该节点的前一个节点，将其Next指针指向该节点的Next节点即可
-func RemoveNthFromEnd(head *Entity.ListNode, n int) *Entity.ListNode {
+func RemoveNthFromEnd(head *entity.ListNode, n int) *entity.ListNode {
 	length := GetLengthOfLinkedList(head)
 	// 若头结点为空或链表结点数小于n，则直接返回头结点
 	if length == 0 || length-n < 0 {
 		return head
 	}
-	dummy := &Entity.ListNode{Next: head}
+	dummy := &entity.ListNode{Next: head}
 	pre := dummy
 	for i := 0; i < length-n; i++ {
 		pre = pre.Next
@@ -103,7 +103,7 @@ func RemoveNthFromEnd(head *Entity.ListNode, n int) *Entity.ListNode {
 	return dummy.Next
 }
 
-func GetLengthOfLinkedList(head *Entity.ListNode) int {
+func GetLengthOfLinkedList(head *entity.ListNode) int {
 	length := 0
 	for head != nil {
 		length++
@@ -121,8 +121,8 @@ func GetLengthOfLinkedList(head *Entity.ListNode) int {
 */
 
 // RemoveNthNodeFromEnd 双指针法
-func RemoveNthNodeFromEnd(head *Entity.ListNode, n int) *Entity.ListNode {
-	dummy := &Entity.ListNode{Next: head}
+func RemoveNthNodeFromEnd(head *entity.ListNode, n int) *entity.ListNode {
+	dummy := &entity.ListNode{Next: head}
 	slow, fast := dummy, head
 	for i := 0; i < n; i++ {
 		if fast == nil {
@@ -151,7 +151,7 @@ leetcode 83. 删除排序链表中的重复元素
 结点。
 */
 
-func DeleteDuplicate(head *Entity.ListNode) *Entity.ListNode {
+func DeleteDuplicate(head *entity.ListNode) *entity.ListNode {
 	if head == nil || head.Next == nil {
 		return head
 	}
@@ -181,11 +181,11 @@ leetcode 82. 删除排序链表中的重复元素II
 prev.Next便指向当前节点cur的Next节点，这样就跳过了所有重复节点。
 */
 
-func DeleteDuplicates(head *Entity.ListNode) *Entity.ListNode {
+func DeleteDuplicates(head *entity.ListNode) *entity.ListNode {
 	if head == nil || head.Next == nil {
 		return head
 	}
-	dummy := &Entity.ListNode{Next: head}
+	dummy := &entity.ListNode{Next: head}
 	prev, cur := dummy, head
 	for cur != nil {
 		for cur.Next != nil && cur.Val == cur.Next.Val {
@@ -208,7 +208,7 @@ func DeleteDuplicates(head *Entity.ListNode) *Entity.ListNode {
 思路:哈希表去重,不能再使用1.4中的方法，因为这次是未排序链表，前面出现过的节点值在后面任意位置都可能再次出现
 */
 
-func RemoveDuplicateNodes(head *Entity.ListNode) *Entity.ListNode {
+func RemoveDuplicateNodes(head *entity.ListNode) *entity.ListNode {
 	if head == nil || head.Next == nil {
 		return head
 	}

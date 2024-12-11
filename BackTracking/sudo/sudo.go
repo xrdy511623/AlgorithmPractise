@@ -1,4 +1,4 @@
-package SolveSudo
+package sudo
 
 /*
 leetcode 37. 解数独

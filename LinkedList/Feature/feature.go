@@ -1,7 +1,7 @@
-package Feature
+package feature
 
 import (
-	"algorithm-practise/linkedlist/Entity"
+	"algorithm-practise/linkedlist/entity"
 )
 
 /*
@@ -19,7 +19,7 @@ pos来表示链表尾连接到链表中的位置（索引从0开始）。 如果
 */
 
 // CheckRing 时间复杂度O(n),空间复杂度O(1)
-func CheckRing(head *Entity.ListNode) bool {
+func CheckRing(head *entity.ListNode) bool {
 	if head == nil || head.Next == nil {
 		return false
 	}
@@ -41,11 +41,11 @@ func CheckRing(head *Entity.ListNode) bool {
 */
 
 // CheckRingUseHashTable 时间复杂度O(n),空间复杂度O(n)
-func CheckRingUseHashTable(head *Entity.ListNode) bool {
+func CheckRingUseHashTable(head *entity.ListNode) bool {
 	if head == nil || head.Next == nil {
 		return false
 	}
-	visited := make(map[*Entity.ListNode]bool)
+	visited := make(map[*entity.ListNode]bool)
 	for head != nil {
 		if visited[head] {
 			return true
@@ -71,11 +71,11 @@ leetcode 142. 环形链表II
 */
 
 // DetectCycleUseHashTable 时间复杂度O(N),空间复杂度O(N)
-func DetectCycleUseHashTable(head *Entity.ListNode) *Entity.ListNode {
+func DetectCycleUseHashTable(head *entity.ListNode) *entity.ListNode {
 	if head == nil || head.Next == nil {
 		return nil
 	}
-	seen := make(map[*Entity.ListNode]bool)
+	seen := make(map[*entity.ListNode]bool)
 	for head != nil {
 		if seen[head] {
 			return head
@@ -87,7 +87,7 @@ func DetectCycleUseHashTable(head *Entity.ListNode) *Entity.ListNode {
 }
 
 // DetectCycle 思路2，双指针法，不易想到，但是是最优解, 时间复杂度仍然是O(N),但空间复杂度下降为O(1)
-func DetectCycle(head *Entity.ListNode) *Entity.ListNode {
+func DetectCycle(head *entity.ListNode) *entity.ListNode {
 	if head == nil || head.Next == nil {
 		return nil
 	}
@@ -133,7 +133,7 @@ b+(a−c)
 a+(b−c)=b+(a−c)
 */
 
-func getIntersectionNode(headA, headB *Entity.ListNode) *Entity.ListNode {
+func getIntersectionNode(headA, headB *entity.ListNode) *entity.ListNode {
 	a, b := headA, headB
 	for a != b {
 		if a == nil {
@@ -162,7 +162,7 @@ func getIntersectionNode(headA, headB *Entity.ListNode) *Entity.ListNode {
 */
 
 // GetKthFromEnd 顺序查找，倒数第k个节点即为正数第n-k+1个节点
-func GetKthFromEnd(head *Entity.ListNode, k int) *Entity.ListNode {
+func GetKthFromEnd(head *entity.ListNode, k int) *entity.ListNode {
 	n := 0
 	cur := head
 	for cur != nil {
@@ -187,7 +187,7 @@ func GetKthFromEnd(head *Entity.ListNode, k int) *Entity.ListNode {
 (从头节点出发，所以要加1), 即为所求节点。
 */
 
-func GetKthNodeFromEnd(head *Entity.ListNode, k int) *Entity.ListNode {
+func GetKthNodeFromEnd(head *entity.ListNode, k int) *entity.ListNode {
 	fast, slow := head, head
 	for i := 0; i < k; i++ {
 		// 若链表中节点总数少于k个，则返回nil
@@ -210,8 +210,8 @@ leetcode 21. 合并两个有序链表
 输出：[1,1,2,3,4,4]
 */
 
-func MergeTwoLists(l1 *Entity.ListNode, l2 *Entity.ListNode) *Entity.ListNode {
-	dummy := new(Entity.ListNode)
+func MergeTwoLists(l1 *entity.ListNode, l2 *entity.ListNode) *entity.ListNode {
+	dummy := new(entity.ListNode)
 	cur := dummy
 	for l1 != nil && l2 != nil {
 		if l1.Val < l2.Val {
@@ -242,7 +242,7 @@ leetcode 148. 排序链表
 */
 
 // SortLinkedList 思路:归并排序解决
-func SortLinkedList(head *Entity.ListNode) *Entity.ListNode {
+func SortLinkedList(head *entity.ListNode) *entity.ListNode {
 	if head == nil || head.Next == nil {
 		return head
 	}
@@ -271,11 +271,11 @@ leetcode 86. 分隔链表
 3.拼接两个链表，p --> q
 */
 
-func PartitionLinkedList(head *Entity.ListNode, x int) *Entity.ListNode {
+func PartitionLinkedList(head *entity.ListNode, x int) *entity.ListNode {
 	if head == nil || head.Next == nil {
 		return head
 	}
-	p, q := new(Entity.ListNode), new(Entity.ListNode)
+	p, q := new(entity.ListNode), new(entity.ListNode)
 	c1, c2 := p, q
 	for head != nil {
 		if head.Val < x {
@@ -306,11 +306,11 @@ leetcode 147. 对链表进行插入排序
 输出: 1->2->3->4
 */
 
-func insertionSortList(head *Entity.ListNode) *Entity.ListNode {
+func insertionSortList(head *entity.ListNode) *entity.ListNode {
 	if head == nil || head.Next == nil {
 		return head
 	}
-	dummy := &Entity.ListNode{Next: head}
+	dummy := &entity.ListNode{Next: head}
 	// 有序链表的尾结点，待插入结点初始值分别为头结点以及头结点的下一个结点
 	lastSorted, cur := head, head.Next
 	for cur != nil {
@@ -469,7 +469,7 @@ leetcode 234 回文链表
 进阶：你能否用 O(n) 时间复杂度和 O(1) 空间复杂度解决此题？
 */
 
-func isPalindrome(head *Entity.ListNode) bool {
+func isPalindrome(head *entity.ListNode) bool {
 	l := []int{}
 	for head != nil {
 		l = append(l, head.Val)
@@ -483,7 +483,7 @@ func isPalindrome(head *Entity.ListNode) bool {
 	return true
 }
 
-func isPalindromeAdvanced(head *Entity.ListNode) bool {
+func isPalindromeAdvanced(head *entity.ListNode) bool {
 	tail := getMid(head)
 	mid := tail.Next
 	tail.Next = nil
@@ -501,7 +501,7 @@ func isPalindromeAdvanced(head *Entity.ListNode) bool {
 	return res
 }
 
-func getMid(head *Entity.ListNode) *Entity.ListNode {
+func getMid(head *entity.ListNode) *entity.ListNode {
 	fast, slow := head, head
 	for fast.Next != nil && fast.Next.Next != nil {
 		fast = fast.Next.Next
@@ -510,8 +510,8 @@ func getMid(head *Entity.ListNode) *Entity.ListNode {
 	return slow
 }
 
-func reverse(head *Entity.ListNode) *Entity.ListNode {
-	var prev *Entity.ListNode
+func reverse(head *entity.ListNode) *entity.ListNode {
+	var prev *entity.ListNode
 	cur := head
 	for cur != nil {
 		cur.Next, prev, cur = prev, cur, cur.Next

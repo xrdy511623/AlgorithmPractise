@@ -1,4 +1,4 @@
-package SubSetsProblem
+package subsets
 
 import "sort"
 

@@ -1,4 +1,4 @@
-package SplitProblem
+package split
 
 import "strconv"
 
