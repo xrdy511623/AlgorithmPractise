@@ -21,56 +21,57 @@ boolean empty() 如果栈是空的，返回 true；否则，返回 false 。
 */
 
 type MyStack struct {
-	InputQueue  []int
-	OutputQueue []int
+	// 主队列
+	q1 []int
+	// 辅助队列
+	q2 []int
 }
 
 func Constructor() MyStack {
 	return MyStack{
-		InputQueue:  make([]int, 0),
-		OutputQueue: make([]int, 0),
+		q1: make([]int, 0),
+		q2: make([]int, 0),
 	}
 }
 
+// Push 将元素压入栈顶
 func (s *MyStack) Push(x int) {
-	s.InputQueue = append(s.InputQueue, x)
+	// 将新元素加入辅助队列
+	s.q2 = append(s.q2, x)
+	// 将主队列的所有元素转移到辅助队列
+	for len(s.q1) > 0 {
+		s.q2 = append(s.q2, s.q1[0])
+		s.q1 = s.q1[1:]
+	}
+	// 交换 q1 和 q2
+	s.q1, s.q2 = s.q2, s.q1
 }
 
+// Pop 移除并返回栈顶元素
 func (s *MyStack) Pop() int {
-	if len(s.OutputQueue) == 0 {
-		for len(s.InputQueue) > 0 {
-			s.OutputQueue = append(s.OutputQueue, s.InputQueue[0])
-			s.InputQueue = s.InputQueue[1:]
-		}
-	} else {
-		if len(s.InputQueue) > 0 {
-			s.OutputQueue = append(s.OutputQueue, s.InputQueue[0])
-		}
+	// 空栈处理
+	if len(s.q1) == 0 {
+		return -1
 	}
-	value := s.OutputQueue[len(s.OutputQueue)-1]
-	s.OutputQueue = s.OutputQueue[:len(s.OutputQueue)-1]
-	return value
+	// 直接移除 q1 的队首元素
+	val := s.q1[0]
+	s.q1 = s.q1[1:]
+	return val
 }
 
+// Top 返回栈顶元素
 func (s *MyStack) Top() int {
-	if len(s.OutputQueue) == 0 {
-		for len(s.InputQueue) > 0 {
-			s.OutputQueue = append(s.OutputQueue, s.InputQueue[0])
-			s.InputQueue = s.InputQueue[1:]
-		}
-	} else {
-		if len(s.InputQueue) > 0 {
-			s.OutputQueue = append(s.OutputQueue, s.InputQueue[0])
-		}
+	// 空栈处理
+	if len(s.q1) == 0 {
+		return -1
 	}
-	return s.OutputQueue[len(s.OutputQueue)-1]
+	// q1 的队首元素即为栈顶
+	return s.q1[0]
 }
 
+// Empty 判断栈是否为空
 func (s *MyStack) Empty() bool {
-	if len(s.InputQueue) == 0 && len(s.OutputQueue) == 0 {
-		return true
-	}
-	return false
+	return len(s.q1) == 0
 }
 
 /*
