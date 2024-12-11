@@ -754,3 +754,72 @@ func isPalindromeSimple(s string) bool {
 	}
 	return true
 }
+
+/*
+补充题
+36进制由0-9，a-z，共36个字符表示。
+要求按照加法规则计算出任意两个36进制正整数的和，如1b + 2x = 48  （解释：47+105=152）
+要求：不允许使用先将36进制数字整体转为10进制，相加后再转回为36进制的做法
+*/
+
+/*
+36进制字符和数字的映射：
+
+0-9 表示数字 0-9。
+a-z 表示数字 10-35。
+建立两个映射：一个用于将字符转为数值（例如 map['a'] = 10），另一个用于将数值转为字符（例如 map[10] = 'a'）。
+
+逐位相加：
+从两个字符串的最低位开始（即从右到左），逐位相加。
+如果相加的结果超过36，记录进位值，进入下一轮计算。
+
+处理进位：
+如果最终仍有进位，需在结果前追加一位。
+
+返回结果：
+因为是从最低位开始计算，最后得到的结果需要反转。
+*/
+
+// charToValue: 将36进制字符映射为对应的数值
+func charToValue(c byte) int {
+	if c >= '0' && c <= '9' {
+		return int(c - '0')
+	}
+	return int(c-'a') + 10
+}
+
+// valueToChar: 将数值映射为对应的36进制字符
+func valueToChar(v int) byte {
+	if v >= 0 && v <= 9 {
+		return byte(v - '0')
+	}
+	return byte(v-10) + 'a'
+}
+
+func AddBase36(num1, num2 string) string {
+	l1, l2 := len(num1)-1, len(num2)-1
+	carry := 0
+	res := strings.Builder{}
+	for l1 >= 0 || l2 >= 0 || carry > 0 {
+		sum := 0
+		if l1 >= 0 {
+			sum += charToValue(num1[l1])
+			l1--
+		}
+		if l2 > 0 {
+			sum += charToValue(num2[l2])
+			l2--
+		}
+		// 计算当前位的和及进位
+		sum += carry
+		carry = sum / 36
+		// 存储当前位的结果
+		res.WriteByte(valueToChar(sum % 36))
+	}
+	// 由于结果是从低位开始存储的，需要反转
+	result := []byte(res.String())
+	for i, n := 0, len(result); i < n/2; i++ {
+		result[i], result[n-1-i] = result[n-1-i], result[i]
+	}
+	return string(result)
+}

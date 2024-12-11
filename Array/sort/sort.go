@@ -2231,10 +2231,8 @@ func triangleNumber(nums []int) int {
 			// 从 l 到 r 的所有组合都满足条件
 			if nums[l]+nums[r] > nums[k] {
 				count += r - l
-				// 尝试更小的右边界
 				r--
 			} else {
-				// 尝试更大的左边界
 				l++
 			}
 		}

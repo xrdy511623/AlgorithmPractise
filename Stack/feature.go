@@ -796,56 +796,27 @@ leetcode 85 最大矩形
 */
 
 func maximalRectangle(matrix [][]byte) int {
-	m, n := len(matrix), len(matrix[0])
-	left := make([][]int, m)
-	for i := 0; i < m; i++ {
-		left[i] = make([]int, n)
-		for j := 0; j < n; j++ {
-			if matrix[i][j] == '0' {
-				continue
-			}
-			if j == 0 {
-				left[i][j] = 1
-			} else {
-				left[i][j] = left[i][j-1] + 1
-			}
-		}
+	if len(matrix) == 0 || len(matrix[0]) == 0 {
+		return 0
 	}
-	res := 0
-	for j := 0; j < n; j++ {
-		up, down := make([]int, m), make([]int, m)
-		s := []int{}
-		for i := 0; i < m; i++ {
-			for len(s) > 0 && left[s[len(s)-1]][j] >= left[i][j] {
-				s = s[:len(s)-1]
-			}
-			if len(s) == 0 {
-				up[i] = -1
+	rows, cols := len(matrix), len(matrix[0])
+	// 初始化高度数组
+	heights := make([]int, cols)
+	maxArea := 0
+	// 遍历每一行
+	for i := 0; i < rows; i++ {
+		for j := 0; j < cols; j++ {
+			// 更新高度数组
+			if matrix[i][j] == '1' {
+				heights[j] += 1
 			} else {
-				up[i] = s[len(s)-1]
+				heights[j] = 0
 			}
-			s = append(s, i)
 		}
-
-		s = []int{}
-		for i := m - 1; i >= 0; i-- {
-			for len(s) > 0 && left[s[len(s)-1]][j] >= left[i][j] {
-				s = s[:len(s)-1]
-			}
-			if len(s) == 0 {
-				down[i] = m
-			} else {
-				down[i] = s[len(s)-1]
-			}
-			s = append(s, i)
-		}
-
-		for i := 0; i < m; i++ {
-			h := down[i] - up[i] - 1
-			res = utils.Max(res, h*(left[i][j]))
-		}
+		// 计算当前行的最大矩形面积
+		maxArea = utils.Max(maxArea, largestRectangleArea(heights))
 	}
-	return res
+	return maxArea
 }
 
 /*
