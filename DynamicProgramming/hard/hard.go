@@ -4,7 +4,9 @@ package hard
 package hard contains complex dynamicProgramming problems
 */
 
-import "algorithm-practise/utils"
+import (
+	"algorithm-practise/utils"
+)
 
 /*
 1.1 leetcode 42 接雨水
