@@ -1,4 +1,4 @@
-package Utils
+package utils
 
 type MaxHeap struct {
 	Size, Capacity int

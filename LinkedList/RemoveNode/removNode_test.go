@@ -1,7 +1,7 @@
 package RemoveNode
 
 import (
-	"AlgorithmPractise/LinkedList/Entity"
+	"algorithm-practise/linkedlist/Entity"
 	"fmt"
 	"reflect"
 	"testing"

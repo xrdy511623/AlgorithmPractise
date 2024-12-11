@@ -1,6 +1,6 @@
 package ReverseLinkedList
 
-import "AlgorithmPractise/LinkedList/Entity"
+import "algorithm-practise/linkedlist/Entity"
 
 /*
 反转链表专题

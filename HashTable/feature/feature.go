@@ -576,13 +576,13 @@ func TopKFrequent(nums []int, k int) []int {
 		}
 	}
 	hashTop := make([][]int, maxFreq+1)
-	for key, val := range freqMap {
-		hashTop[val] = append(hashTop[val], key)
+	for num, freq := range freqMap {
+		hashTop[freq] = append(hashTop[freq], num)
 	}
 	res := make([]int, 0)
-	for i := maxFreq; i >= 0; i-- {
-		res = append(res, hashTop[i]...)
-		k -= len(hashTop[i])
+	for freq := maxFreq; freq >= 0; freq-- {
+		res = append(res, hashTop[freq]...)
+		k -= len(hashTop[freq])
 		if k == 0 {
 			break
 		}

@@ -1,7 +1,7 @@
 package sort
 
 import (
-	"AlgorithmPractise/Utils"
+	"algorithm-practise/utils"
 	"container/heap"
 	"math"
 	"sort"
@@ -515,11 +515,11 @@ func Rotate(nums []int, k int) {
 		return
 	}
 	// 先反转整个数组
-	Utils.ReverseArray(nums)
+	utils.ReverseArray(nums)
 	// 然后反转数组nums[:k]部分
-	Utils.ReverseArray(nums[:k])
+	utils.ReverseArray(nums[:k])
 	// 最后反转数组nums[k:]部分
-	Utils.ReverseArray(nums[k:])
+	utils.ReverseArray(nums[k:])
 }
 
 /*
@@ -897,7 +897,7 @@ leetcode 215. 数组中的第K个最大元素
 // FindKthLargest 用最大堆排序解决
 func FindKthLargest(nums []int, k int) int {
 	n := len(nums)
-	mh := Utils.NewMaxHeap(n)
+	mh := utils.NewMaxHeap(n)
 	for _, num := range nums {
 		mh.Add(num)
 	}
@@ -1098,12 +1098,12 @@ func getKthElement(nums1, nums2 []int, k int) int {
 		}
 		// k=1，直接返回nums1[index1]或者nums2[index2]中较小值
 		if k == 1 {
-			return Utils.Min(nums1[index1], nums2[index2])
+			return utils.Min(nums1[index1], nums2[index2])
 		}
 		// 正常情况：比较两个数组的第 k/2 个元素
 		half := k / 2
-		newIndex1 := Utils.Min(index1+half-1, m-1)
-		newIndex2 := Utils.Min(index2+half-1, n-1)
+		newIndex1 := utils.Min(index1+half-1, m-1)
+		newIndex2 := utils.Min(index2+half-1, n-1)
 		pivot1, pivot2 := nums1[newIndex1], nums2[newIndex2]
 		if pivot1 <= pivot2 {
 			// 排除nums1的前half个元素，并更新 k 的值和起始索引。
@@ -1475,7 +1475,7 @@ func NextPermutation(nums []int) {
 		}
 		nums[i], nums[j] = nums[j], nums[i]
 	}
-	Utils.ReverseArray(nums[i+1:])
+	utils.ReverseArray(nums[i+1:])
 }
 
 /*
@@ -1860,7 +1860,7 @@ func threeSumClosest(nums []int, target int) int {
 			// 计算当前三数之和
 			sum := nums[i] + nums[l] + nums[r]
 			// 如果当前和比已记录的更接近目标值，则更新
-			if Utils.Abs(sum-target) < Utils.Abs(closestSum-target) {
+			if utils.Abs(sum-target) < utils.Abs(closestSum-target) {
 				closestSum = sum
 			}
 			// 根据三数之和调整指针位置
@@ -1957,7 +1957,7 @@ func getCount(prefix, n int) int {
 	cur, next, cnt := prefix, prefix+1, 0
 	for cur <= n {
 		// 子树节点数量 = [curr, next) 和 [1, n] 的交集长度
-		cnt += Utils.Min(next, n+1) - cur
+		cnt += utils.Min(next, n+1) - cur
 		cur *= 10
 		next *= 10
 	}

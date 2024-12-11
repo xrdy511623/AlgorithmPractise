@@ -1,7 +1,7 @@
 package feature
 
 import (
-	"AlgorithmPractise/Utils"
+	"algorithm-practise/utils"
 	"fmt"
 	"math"
 	"math/rand"
@@ -440,7 +440,7 @@ func LongestCommonPrefix(strs []string) string {
 }
 
 func lcp(str1, str2 string) string {
-	length := Utils.Min(len(str1), len(str2))
+	length := utils.Min(len(str1), len(str2))
 	index := 0
 	for index < length && str1[index] == str2[index] {
 		index++
@@ -470,7 +470,7 @@ func FindLengthOfLCIS(nums []int) int {
 		if i > 0 && v <= nums[i-1] {
 			start = i
 		}
-		maxLength = Utils.Max(maxLength, i-start+1)
+		maxLength = utils.Max(maxLength, i-start+1)
 	}
 
 	return maxLength
@@ -548,7 +548,7 @@ func MinSubArrayLen(target int, nums []int) int {
 		for sum >= target {
 			// 计算窗口大小，即满足和大于等于target的子数组长度
 			length := end - start + 1
-			minLength = Utils.Min(minLength, length)
+			minLength = utils.Min(minLength, length)
 			// 缩小窗口，也就是将滑动窗口的起始位置向右移动，看看是否仍满足和大于target
 			sum -= nums[start]
 			start++
@@ -1130,7 +1130,7 @@ leetcode 1201. 丑数III
 func NthUglyNumber(n int, a int, b int, c int) int {
 	ab, ac, bc := lcm(a, b), lcm(a, c), lcm(b, c)
 	abc := lcm(ab, c)
-	left, right := 0, n*Utils.Min(a, Utils.Min(b, c))
+	left, right := 0, n*utils.Min(a, utils.Min(b, c))
 	for left <= right {
 		mid := (left + right) / 2
 		count := mid/a + mid/b + mid/c - mid/ab - mid/ac - mid/bc + mid/abc
@@ -1172,7 +1172,7 @@ leetcode 878. 第N个神奇数字
 func NthMagicalNumber(n int, a int, b int) int {
 	mod := int(1e9) + 7
 	ab := lcm(a, b)
-	left, right := 0, n*Utils.Min(a, b)
+	left, right := 0, n*utils.Min(a, b)
 	for left <= right {
 		mid := (left + right) / 2
 		count := mid/a + mid/b - mid/ab
@@ -1499,7 +1499,7 @@ func MaxArea(height []int) int {
 	l, r := 0, len(height)-1
 	maxArea := 0
 	for l < r {
-		maxArea = Utils.Max(maxArea, Utils.Min(height[l], height[r])*(r-l))
+		maxArea = utils.Max(maxArea, utils.Min(height[l], height[r])*(r-l))
 		if height[l] <= height[r] {
 			l++
 		} else {
@@ -1953,8 +1953,8 @@ func maxArea(height []int) int {
 	l, r := 0, len(height)-1
 	for l < r {
 		width := r - l
-		minHeight := Utils.Min(height[l], height[r])
-		maxWater = Utils.Max(maxWater, width*minHeight)
+		minHeight := utils.Min(height[l], height[r])
+		maxWater = utils.Max(maxWater, width*minHeight)
 		if height[l] < height[r] {
 			l++
 		} else {
@@ -2065,4 +2065,55 @@ func sortColors(nums []int) {
 		nums[index] = 2
 		index++
 	}
+}
+
+/*
+leetcode 442 数组中重复的数据
+给你一个长度为 n 的整数数组 nums ，其中 nums 的所有整数都在范围 [1, n] 内，且每个整数出现 最多两次。请你找出所有出现
+两次的整数，并以数组形式返回。
+
+你必须设计并实现一个时间复杂度为 O(n) 且仅使用常量额外空间（不包括存储输出所需的空间）的算法解决此问题。
+
+示例 1：
+输入：nums = [4,3,2,7,8,2,3,1]
+输出：[2,3]
+
+示例 2：
+输入：nums = [1,1,2]
+输出：[1]
+
+示例 3：
+输入：nums = [1]
+输出：[]
+
+提示：
+n == nums.length
+1 <= n <= 105
+1 <= nums[i] <= n
+nums 中的每个元素出现 一次 或 两次
+*/
+
+/*
+我们可以给 nums[i] 加上「负号」表示数 i+1 已经出现过一次。具体地，我们首先对数组进行一次遍历。当遍历到位置 i 时，
+我们考虑 nums[nums[i]−1] 的正负性：
+
+如果 nums[nums[i]−1] 是正数，说明 nums[i] 还没有出现过，我们将 nums[nums[i]−1] 加上负号；
+如果 nums[nums[i]−1] 是负数，说明 nums[i] 已经出现过一次，我们将 nums[i] 放入答案。
+
+细节
+由于 nums[i] 本身可能已经为负数，因此在将 nums[i] 作为下标或者放入答案时，需要取绝对值
+*/
+
+func findDuplicates(nums []int) []int {
+	n := len(nums)
+	res := []int{}
+	for i := 0; i < n; i++ {
+		idx := utils.Abs(nums[i]) - 1
+		if nums[idx] < 0 {
+			res = append(res, utils.Abs(nums[i]))
+		} else {
+			nums[idx] = -nums[idx]
+		}
+	}
+	return res
 }

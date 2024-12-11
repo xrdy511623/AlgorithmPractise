@@ -5,8 +5,8 @@ medium contains middle level problems
 */
 
 import (
-	"AlgorithmPractise/BinaryTree/Entity"
-	"AlgorithmPractise/Utils"
+	"algorithm-practise/tree/binarytree/entity"
+	"algorithm-practise/utils"
 )
 
 /*
@@ -59,12 +59,12 @@ func rob(nums []int) int {
 	case 1:
 		maxValue = nums[0]
 	case 2:
-		maxValue = Utils.Max(nums[0], nums[1])
+		maxValue = utils.Max(nums[0], nums[1])
 	default:
 		dp := make([]int, n)
-		dp[0], dp[1] = nums[0], Utils.Max(nums[0], nums[1])
+		dp[0], dp[1] = nums[0], utils.Max(nums[0], nums[1])
 		for i := 2; i < n; i++ {
-			dp[i] = Utils.Max(dp[i-1], dp[i-2]+nums[i])
+			dp[i] = utils.Max(dp[i-1], dp[i-2]+nums[i])
 		}
 		maxValue = dp[n-1]
 	}
@@ -85,12 +85,12 @@ func robSimple(nums []int) int {
 	case 1:
 		maxValue = nums[0]
 	case 2:
-		maxValue = Utils.Max(nums[0], nums[1])
+		maxValue = utils.Max(nums[0], nums[1])
 	default:
 		dp := make([]int, 2)
-		dp[0], dp[1] = nums[0], Utils.Max(nums[0], nums[1])
+		dp[0], dp[1] = nums[0], utils.Max(nums[0], nums[1])
 		for i := 2; i < n; i++ {
-			newMax := Utils.Max(dp[0]+nums[i], dp[1])
+			newMax := utils.Max(dp[0]+nums[i], dp[1])
 			dp[0] = dp[1]
 			dp[1] = newMax
 		}
@@ -141,11 +141,11 @@ func robRing(nums []int) int {
 	case 1:
 		maxValue = nums[0]
 	case 2:
-		maxValue = Utils.Max(nums[0], nums[1])
+		maxValue = utils.Max(nums[0], nums[1])
 	default:
 		c1 := robRange(nums, 0, n-2)
 		c2 := robRange(nums, 1, n-1)
-		maxValue = Utils.Max(c1, c2)
+		maxValue = utils.Max(c1, c2)
 	}
 	return maxValue
 }
@@ -157,9 +157,9 @@ func robRange(nums []int, start, end int) int {
 	dp := make([]int, len(nums))
 	// 注意dp数组初始化
 	dp[start] = nums[start]
-	dp[start+1] = Utils.Max(nums[start], nums[start+1])
+	dp[start+1] = utils.Max(nums[start], nums[start+1])
 	for i := start + 2; i <= end; i++ {
-		dp[i] = Utils.Max(dp[i-2]+nums[i], dp[i-1])
+		dp[i] = utils.Max(dp[i-2]+nums[i], dp[i-1])
 	}
 	return dp[end]
 }
@@ -175,9 +175,9 @@ func robRangeSimple(nums []int, start, end int) int {
 	}
 	dp := make([]int, 2)
 	dp[0] = nums[start]
-	dp[1] = Utils.Max(nums[start], nums[start+1])
+	dp[1] = utils.Max(nums[start], nums[start+1])
 	for i := start + 2; i <= end; i++ {
-		newMax := Utils.Max(dp[0]+nums[i], dp[1])
+		newMax := utils.Max(dp[0]+nums[i], dp[1])
 		dp[0] = dp[1]
 		dp[1] = newMax
 	}
@@ -246,23 +246,23 @@ val2 = max(left[0], left[1]) + max(right[0], right[1]);
 */
 
 // robBinaryTree 时间复杂度：O(N) 每个节点只遍历了一次; 空间复杂度：O(logN) 算上递推系统栈的空间
-func robBinaryTree(root *Entity.TreeNode) int {
+func robBinaryTree(root *entity.TreeNode) int {
 	if root == nil {
 		return 0
 	}
-	var dfs func(*Entity.TreeNode) []int
-	dfs = func(node *Entity.TreeNode) []int {
+	var dfs func(*entity.TreeNode) []int
+	dfs = func(node *entity.TreeNode) []int {
 		if node == nil {
 			return []int{0, 0}
 		}
 		l := dfs(node.Left)
 		r := dfs(node.Right)
-		ng := Utils.Max(l[0], l[1]) + Utils.Max(r[0], r[1])
+		ng := utils.Max(l[0], l[1]) + utils.Max(r[0], r[1])
 		pos := node.Val + l[0] + r[0]
 		return []int{ng, pos}
 	}
 	res := dfs(root)
-	return Utils.Max(res[0], res[1])
+	return utils.Max(res[0], res[1])
 }
 
 /*
@@ -303,12 +303,12 @@ func massageArrange(nums []int) int {
 	case 1:
 		maxValue = nums[0]
 	case 2:
-		maxValue = Utils.Max(nums[0], nums[1])
+		maxValue = utils.Max(nums[0], nums[1])
 	default:
 		dp := make([]int, 2)
-		dp[0], dp[1] = nums[0], Utils.Max(nums[0], nums[1])
+		dp[0], dp[1] = nums[0], utils.Max(nums[0], nums[1])
 		for i := 2; i < n; i++ {
-			newMax := Utils.Max(dp[1], dp[0]+nums[i])
+			newMax := utils.Max(dp[1], dp[0]+nums[i])
 			dp[0] = dp[1]
 			dp[1] = newMax
 		}
@@ -335,7 +335,7 @@ func massageArrangement(nums []int) int {
 	case 1:
 		maxValue = nums[0]
 	case 2:
-		maxValue = Utils.Max(nums[0], nums[1])
+		maxValue = utils.Max(nums[0], nums[1])
 	default:
 		dp := make([][]int, n)
 		for i := 0; i < n; i++ {
@@ -344,10 +344,10 @@ func massageArrangement(nums []int) int {
 		dp[0][0] = 0
 		dp[0][1] = nums[0]
 		for i := 1; i < n; i++ {
-			dp[i][0] = Utils.Max(dp[i-1][0], dp[i-1][1])
+			dp[i][0] = utils.Max(dp[i-1][0], dp[i-1][1])
 			dp[i][1] = dp[i-1][0] + nums[i]
 		}
-		maxValue = Utils.Max(dp[n-1][0], dp[n-1][1])
+		maxValue = utils.Max(dp[n-1][0], dp[n-1][1])
 	}
 	return maxValue
 }
@@ -422,7 +422,7 @@ func deleteAndEarn(nums []int) int {
 	if n == 1 {
 		return nums[0]
 	}
-	maxValue := Utils.MaxValueOfArray(nums)
+	maxValue := utils.MaxValueOfArray(nums)
 	sum := make([]int, maxValue+1)
 	for _, num := range nums {
 		sum[num] += num
@@ -430,7 +430,7 @@ func deleteAndEarn(nums []int) int {
 	dp := make([]int, maxValue+1)
 	dp[1] = sum[1]
 	for i := 2; i <= maxValue; i++ {
-		dp[i] = Utils.Max(dp[i-1], dp[i-2]+sum[i])
+		dp[i] = utils.Max(dp[i-1], dp[i-2]+sum[i])
 	}
 	return dp[maxValue]
 }
@@ -448,7 +448,7 @@ func deleteAndEarnSimple(nums []int) int {
 	if n == 1 {
 		return nums[0]
 	}
-	maxValue := Utils.MaxValueOfArray(nums)
+	maxValue := utils.MaxValueOfArray(nums)
 	sum := make([]int, maxValue+1)
 	for _, num := range nums {
 		sum[num] += num
@@ -456,7 +456,7 @@ func deleteAndEarnSimple(nums []int) int {
 	dp := make([]int, 2)
 	dp[1] = sum[1]
 	for i := 2; i <= maxValue; i++ {
-		newMax := Utils.Max(dp[1], dp[0]+sum[i])
+		newMax := utils.Max(dp[1], dp[0]+sum[i])
 		dp[0] = dp[1]
 		dp[1] = newMax
 	}

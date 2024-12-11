@@ -1,4 +1,4 @@
-package Entity
+package entity
 
 type TreeNode struct {
 	Val   int

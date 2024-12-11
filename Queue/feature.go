@@ -1,7 +1,7 @@
-package Queue
+package queue
 
 import (
-	"AlgorithmPractise/Utils"
+	"algorithm-practise/utils"
 	"math"
 )
 
@@ -104,7 +104,7 @@ leetcode 239. 滑动窗口最大值
 func maxSlidingWindow(nums []int, k int) []int {
 	var res []int
 	for i := 0; i+k <= len(nums); i++ {
-		res = append(res, Utils.MaxValueOfArray(nums[i:i+k]))
+		res = append(res, utils.MaxValueOfArray(nums[i:i+k]))
 	}
 	return res
 }
@@ -215,7 +215,7 @@ func ShortestSubarray(nums []int, k int) int {
 		}
 		// 尝试将队首元素移除，以缩小窗口，得到更短的距离
 		for len(monoQueue) > 0 && v-sumPrefix[monoQueue[0]] >= k {
-			minLength = Utils.Min(minLength, i-monoQueue[0])
+			minLength = utils.Min(minLength, i-monoQueue[0])
 			monoQueue = monoQueue[1:]
 		}
 		monoQueue = append(monoQueue, i)

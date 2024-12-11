@@ -1,8 +1,8 @@
-package pathSumProblem
+package pathsum
 
 import (
-	"AlgorithmPractise/BinaryTree/Entity"
-	"AlgorithmPractise/Utils"
+	"algorithm-practise/tree/binarytree/entity"
+	"algorithm-practise/utils"
 	"math"
 	"strconv"
 )
@@ -26,11 +26,11 @@ leetcode 112. 路径总和
 思路一:BFS
 */
 
-func HasPathSum(root *Entity.TreeNode, targetSum int) bool {
+func HasPathSum(root *entity.TreeNode, targetSum int) bool {
 	if root == nil {
 		return false
 	}
-	queue := []*Entity.TreeNode{root}
+	queue := []*entity.TreeNode{root}
 	for len(queue) > 0 {
 		node := queue[0]
 		queue = queue[1:]
@@ -53,7 +53,7 @@ func HasPathSum(root *Entity.TreeNode, targetSum int) bool {
 思路二:DFS
 */
 
-func HasPathSumSimple(root *Entity.TreeNode, targetSum int) bool {
+func HasPathSumSimple(root *entity.TreeNode, targetSum int) bool {
 	if root == nil {
 		return false
 	}
@@ -74,7 +74,7 @@ func HasPathSumSimple(root *Entity.TreeNode, targetSum int) bool {
 */
 
 // PathSum BFS解决，简单易懂效率高
-func PathSum(root *Entity.TreeNode, target int) [][]int {
+func PathSum(root *entity.TreeNode, target int) [][]int {
 	var res [][]int
 	if root == nil {
 		return res
@@ -105,13 +105,13 @@ func PathSum(root *Entity.TreeNode, target int) [][]int {
 }
 
 // PathSumUseDfs DFS递归也能解决
-func PathSumUseDfs(root *Entity.TreeNode, target int) [][]int {
+func PathSumUseDfs(root *entity.TreeNode, target int) [][]int {
 	var res [][]int
 	if root == nil {
 		return res
 	}
-	var dfs func(*Entity.TreeNode, []int)
-	dfs = func(node *Entity.TreeNode, path []int) {
+	var dfs func(*entity.TreeNode, []int)
+	dfs = func(node *entity.TreeNode, path []int) {
 		if node.Left == nil && node.Right == nil && sumOfArray(path) == target {
 			res = append(res, path)
 		}
@@ -133,7 +133,7 @@ func PathSumUseDfs(root *Entity.TreeNode, target int) [][]int {
 }
 
 type Group struct {
-	Node *Entity.TreeNode
+	Node *entity.TreeNode
 	Path []int
 }
 
@@ -172,7 +172,7 @@ root = [10,5,-3,3,2,null,11,3,-2,null,1], sum = 8
     3.  -3 -> 11
 */
 
-func NumberOfPathSum(root *Entity.TreeNode, target int) int {
+func NumberOfPathSum(root *entity.TreeNode, target int) int {
 	if root == nil {
 		return 0
 	}
@@ -218,13 +218,13 @@ func CountTarget(s []int, target int) int {
 /*
 哈希表+前缀和
 */
-func pathSum(root *Entity.TreeNode, targetSum int) int {
+func pathSum(root *entity.TreeNode, targetSum int) int {
 	preMap := make(map[int]int)
 	// 处理包含根节点的情况，如果root.Val==targetSum,统计结果不能忽略它
 	preMap[0] = 1
 	count := 0
-	var dfs func(*Entity.TreeNode, int)
-	dfs = func(node *Entity.TreeNode, preSum int) {
+	var dfs func(*entity.TreeNode, int)
+	dfs = func(node *entity.TreeNode, preSum int) {
 		if node == nil {
 			return
 		}
@@ -280,15 +280,15 @@ DFS递归解决
 */
 
 // FindFrequentTreeSum 先序遍历+DFS
-func FindFrequentTreeSum(root *Entity.TreeNode) []int {
+func FindFrequentTreeSum(root *entity.TreeNode) []int {
 	var res []int
 	if root == nil {
 		return res
 	}
 
 	treeSum := make(map[int]int)
-	var subTreeSum func(*Entity.TreeNode) int
-	subTreeSum = func(node *Entity.TreeNode) int {
+	var subTreeSum func(*entity.TreeNode) int
+	subTreeSum = func(node *entity.TreeNode) int {
 		if node == nil {
 			return 0
 		}
@@ -366,21 +366,21 @@ leetcode 124. 二叉树中的最大路径和
 迭代最大路径和pathSum=Max(pathSum, lp+rp+node.Val)
 */
 
-func MaxPathSum(root *Entity.TreeNode) int {
+func MaxPathSum(root *entity.TreeNode) int {
 	if root == nil {
 		return 0
 	}
 	maxSum := math.MinInt32
-	var dfs func(*Entity.TreeNode) int
-	dfs = func(node *Entity.TreeNode) int {
+	var dfs func(*entity.TreeNode) int
+	dfs = func(node *entity.TreeNode) int {
 		if node == nil {
 			return 0
 		}
-		leftPath := Utils.Max(dfs(node.Left), 0)
-		rightPath := Utils.Max(dfs(node.Right), 0)
+		leftPath := utils.Max(dfs(node.Left), 0)
+		rightPath := utils.Max(dfs(node.Right), 0)
 		// 更新maxSum的值，左子树最大收益+右子树最大收益+节点本身的值
-		maxSum = Utils.Max(maxSum, leftPath+rightPath+node.Val)
-		return Utils.Max(leftPath, rightPath) + node.Val
+		maxSum = utils.Max(maxSum, leftPath+rightPath+node.Val)
+		return utils.Max(leftPath, rightPath) + node.Val
 	}
 	dfs(root)
 	return maxSum
@@ -401,12 +401,12 @@ leetcode 404. 左叶子之和
 */
 
 // SumOfLeftLeaves BFS
-func SumOfLeftLeaves(root *Entity.TreeNode) int {
+func SumOfLeftLeaves(root *entity.TreeNode) int {
 	sum := 0
 	if root == nil {
 		return sum
 	}
-	queue := []*Entity.TreeNode{root}
+	queue := []*entity.TreeNode{root}
 	for len(queue) != 0 {
 		node := queue[0]
 		queue = queue[1:]
@@ -424,10 +424,10 @@ func SumOfLeftLeaves(root *Entity.TreeNode) int {
 }
 
 // SumOfLeftLeavesSimple DFS
-func SumOfLeftLeavesSimple(root *Entity.TreeNode) int {
+func SumOfLeftLeavesSimple(root *entity.TreeNode) int {
 	sum := 0
-	var findLeftLeaves func(*Entity.TreeNode)
-	findLeftLeaves = func(node *Entity.TreeNode) {
+	var findLeftLeaves func(*entity.TreeNode)
+	findLeftLeaves = func(node *entity.TreeNode) {
 		if node == nil {
 			return
 		}
@@ -472,12 +472,12 @@ leetcode 129. 求根节点到叶节点数字之和
 */
 
 // SumNumbers BFS解决, 时间复杂度O(N),空间复杂度O(H),H为二叉树的高度
-func SumNumbers(root *Entity.TreeNode) int {
+func SumNumbers(root *entity.TreeNode) int {
 	sum := 0
 	if root == nil {
 		return sum
 	}
-	queue := []*Entity.TreeNode{root}
+	queue := []*entity.TreeNode{root}
 	for len(queue) != 0 {
 		node := queue[0]
 		queue = queue[1:]
@@ -508,9 +508,9 @@ func SumNumbers(root *Entity.TreeNode) int {
 */
 
 // SumNumbersSimple DFS递归解决
-func SumNumbersSimple(root *Entity.TreeNode) int {
-	var dfs func(*Entity.TreeNode, int) int
-	dfs = func(node *Entity.TreeNode, pathSum int) int {
+func SumNumbersSimple(root *entity.TreeNode) int {
+	var dfs func(*entity.TreeNode, int) int
+	dfs = func(node *entity.TreeNode, pathSum int) int {
 		if node == nil {
 			return 0
 		}
@@ -534,12 +534,12 @@ leetcode 257
 */
 
 type NodePath struct {
-	Node *Entity.TreeNode
+	Node *entity.TreeNode
 	Path string
 }
 
 // BinaryTreePaths BFS解决
-func BinaryTreePaths(root *Entity.TreeNode) []string {
+func BinaryTreePaths(root *entity.TreeNode) []string {
 	var res []string
 	if root == nil {
 		return res
@@ -565,10 +565,10 @@ func BinaryTreePaths(root *Entity.TreeNode) []string {
 }
 
 // BinaryTreePathsUseDFS DFS+先序遍历解决
-func BinaryTreePathsUseDFS(root *Entity.TreeNode) []string {
+func BinaryTreePathsUseDFS(root *entity.TreeNode) []string {
 	var paths []string
-	var dfs func(*Entity.TreeNode, string)
-	dfs = func(root *Entity.TreeNode, path string) {
+	var dfs func(*entity.TreeNode, string)
+	dfs = func(root *entity.TreeNode, path string) {
 		if root != nil {
 			path += strconv.Itoa(root.Val)
 			if root.Left == nil && root.Right == nil {
@@ -596,7 +596,7 @@ leetcode 1315. 祖父节点值为偶数的节点和
 */
 
 // SumEvenGrandparent DFS
-func SumEvenGrandparent(root *Entity.TreeNode) int {
+func SumEvenGrandparent(root *entity.TreeNode) int {
 	if root == nil {
 		return 0
 	}
@@ -623,12 +623,12 @@ func SumEvenGrandparent(root *Entity.TreeNode) int {
 }
 
 // SumEvenGrandparentSimple BFS
-func SumEvenGrandparentSimple(root *Entity.TreeNode) int {
+func SumEvenGrandparentSimple(root *entity.TreeNode) int {
 	if root == nil {
 		return 0
 	}
 	sum := 0
-	queue := []*Entity.TreeNode{root}
+	queue := []*entity.TreeNode{root}
 	for len(queue) != 0 {
 		node := queue[0]
 		queue = queue[1:]
@@ -679,12 +679,12 @@ leetcode 1026. 节点与其祖先之间的最大差值
 */
 
 // MaxAncestorDiff DFS递归解决
-func MaxAncestorDiff(root *Entity.TreeNode) int {
+func MaxAncestorDiff(root *entity.TreeNode) int {
 	if root == nil {
 		return 0
 	}
-	var dfs func(*Entity.TreeNode, int, int) int
-	dfs = func(node *Entity.TreeNode, min, max int) int {
+	var dfs func(*entity.TreeNode, int, int) int
+	dfs = func(node *entity.TreeNode, min, max int) int {
 		if node == nil {
 			return max - min
 		}
@@ -696,19 +696,19 @@ func MaxAncestorDiff(root *Entity.TreeNode) int {
 		}
 		leftMax := dfs(node.Left, min, max)
 		rightMax := dfs(node.Right, min, max)
-		return Utils.Max(leftMax, rightMax)
+		return utils.Max(leftMax, rightMax)
 	}
 	return dfs(root, root.Val, root.Val)
 }
 
 type MaxDiff struct {
-	Node *Entity.TreeNode
+	Node *entity.TreeNode
 	// Diff中存储两个数，分别是当前节点与其所有祖先节点值中的最大值和最小值
 	Diff []int
 }
 
 // MaxAncestorDiffSimple BFS
-func MaxAncestorDiffSimple(root *Entity.TreeNode) int {
+func MaxAncestorDiffSimple(root *entity.TreeNode) int {
 	maxVal := 0
 	if root == nil {
 		return maxVal
@@ -720,7 +720,7 @@ func MaxAncestorDiffSimple(root *Entity.TreeNode) int {
 		max, min := diff[0], diff[1]
 		queue = queue[1:]
 		// 迭代最大差值maxVal
-		maxVal = Utils.Max(maxVal, max-min)
+		maxVal = utils.Max(maxVal, max-min)
 		if node.Left != nil {
 			// 迭代当前节点左子节点Diff中的最大值和最小值
 			// 就是将左子节点的值与其父亲节点，也就是当前节点的值进行比较
@@ -791,21 +791,21 @@ leetcode 863
 
 // Element 结构体Element由两部分组成，Node记录二叉树当前节点指针，Distance表示当前节点与target的距离
 type Element struct {
-	Node     *Entity.TreeNode
+	Node     *entity.TreeNode
 	Distance int
 }
 
-func DistanceK(root, target *Entity.TreeNode, k int) []int {
+func DistanceK(root, target *entity.TreeNode, k int) []int {
 	var res []int
 	// parentMap记录二叉树根节点外所有节点的父节点
-	parentMap := make(map[*Entity.TreeNode]*Entity.TreeNode)
+	parentMap := make(map[*entity.TreeNode]*entity.TreeNode)
 	// seen记录已经出现过的节点，用于去重。
-	seen := make(map[*Entity.TreeNode]bool)
+	seen := make(map[*entity.TreeNode]bool)
 	// 因为是从target节点开始做广度优先搜索，所以target就是第一个出现的节点
 	seen[target] = true
-	var dfs func(*Entity.TreeNode)
+	var dfs func(*entity.TreeNode)
 	// dfs函数遍历整个二叉树，记录根节点外所有节点的父节点
-	dfs = func(node *Entity.TreeNode) {
+	dfs = func(node *entity.TreeNode) {
 		if node == nil {
 			return
 		}
@@ -836,7 +836,7 @@ func DistanceK(root, target *Entity.TreeNode, k int) []int {
 		node, d := queue[0].Node, queue[0].Distance
 		queue = queue[1:]
 		// 将与target距离相等的节点(当前节点的父节点，左子节点和右子节点)放到同一个数组中
-		array := []*Entity.TreeNode{parentMap[node], node.Left, node.Right}
+		array := []*entity.TreeNode{parentMap[node], node.Left, node.Right}
 		for _, td := range array {
 			// 如果这个节点非空，且没有出现在哈希表seen中
 			// 就可以将该节点添加到队列中，同时该节点与target距离即为当前节点与target距离+1

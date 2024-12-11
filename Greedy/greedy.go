@@ -1,8 +1,8 @@
-package Greedy
+package greedy
 
 import (
-	"AlgorithmPractise/BinaryTree/Entity"
-	"AlgorithmPractise/Utils"
+	"algorithm-practise/tree/binarytree/entity"
+	"algorithm-practise/utils"
 	"math"
 	"sort"
 	"strconv"
@@ -224,7 +224,7 @@ func CanJump(nums []int) bool {
 	for i := 0; i < n; i++ {
 		// i <= rightMost证明i这个位置可达，然后更新rightMost
 		if i <= rightMost {
-			rightMost = Utils.Max(i+nums[i], rightMost)
+			rightMost = utils.Max(i+nums[i], rightMost)
 		}
 		// 如果rightMost能延伸到数组末尾位置，证明可以跳到末尾
 		if rightMost >= n-1 {
@@ -284,7 +284,7 @@ func JumpSimple(nums []int) int {
 	end, rightMost, steps := 0, 0, 0
 	for i := 0; i < n-1; i++ {
 		// 更新当前所能到达的最大位置rightMost
-		rightMost = Utils.Max(i+nums[i], rightMost)
+		rightMost = utils.Max(i+nums[i], rightMost)
 		// 当下标移动到右边界时，跳跃次数需要加1，同时更新右边界为rightMost
 		if i == end {
 			end = rightMost
@@ -399,7 +399,7 @@ func LargestSumAfterKNegations(nums []int, k int) int {
 	sort.Ints(nums)
 	for _, num := range nums {
 		// 迭代数组中的最小绝对值
-		minAbs = Utils.MinAbs(minAbs, num)
+		minAbs = utils.MinAbs(minAbs, num)
 		if num < 0 && k > 0 {
 			sum += -1 * num
 			k--
@@ -587,7 +587,7 @@ func DistributeCandy(ratings []int) int {
 	// 从后向前遍历，考虑左边评分高于右边的情况
 	for i := n - 2; i >= 0; i-- {
 		if ratings[i] > ratings[i+1] {
-			candies[i] = Utils.Max(candies[i], candies[i+1]+1)
+			candies[i] = utils.Max(candies[i], candies[i+1]+1)
 		}
 		sum += candies[i]
 	}
@@ -802,7 +802,7 @@ func FindMinArrowShots(points [][]int) int {
 			num++
 		} else {
 			// 两个气球重叠，则更新右边气球的最小右边界以便尽可能地与下一个气球重叠
-			points[i][1] = Utils.Min(points[i-1][1], points[i][1])
+			points[i][1] = utils.Min(points[i-1][1], points[i][1])
 		}
 	}
 	return num
@@ -873,7 +873,7 @@ func EraseOverlapIntervalsComplex(intervals [][]int) int {
 	for i := 1; i < n; i++ {
 		for j := 0; j < i; j++ {
 			if intervals[j][1] <= intervals[i][0] {
-				dp[i] = Utils.Max(dp[i], dp[j]+1)
+				dp[i] = utils.Max(dp[i], dp[j]+1)
 			}
 		}
 		// 迭代最大的不重叠区间数
@@ -909,7 +909,7 @@ func EraseOverlapIntervals(intervals [][]int) int {
 			// 此时需要移除的最小重叠区间数累加1
 			minOverlap++
 			// 要移除的重叠区间数最小，自然是要右边的右端点尽可能小，才能尽可能的不与后继区间(i+1区间)重叠
-			intervals[i][1] = Utils.Min(intervals[i-1][1], intervals[i][1])
+			intervals[i][1] = utils.Min(intervals[i-1][1], intervals[i][1])
 		}
 	}
 	return minOverlap
@@ -951,7 +951,7 @@ func PartitionLabels(s string) []int {
 		positionMap[s[i]] = i
 	}
 	for i := 0; i < size; i++ {
-		right = Utils.Max(right, positionMap[s[i]])
+		right = utils.Max(right, positionMap[s[i]])
 		if i == right {
 			res = append(res, right-left+1)
 			left = i + 1
@@ -970,7 +970,7 @@ func PartitionLabelsTwo(s string) []int {
 	}
 	left, right := 0, 0
 	for i := 0; i < size; i++ {
-		right = Utils.Max(right, marks[s[i]-'a'])
+		right = utils.Max(right, marks[s[i]-'a'])
 		if i == right {
 			res = append(res, right-left+1)
 			left = right + 1
@@ -1018,7 +1018,7 @@ func Merge(intervals [][]int) [][]int {
 		size := len(merged)
 		// 如果有重叠，则将merged末尾元素的右端点更新为较大值
 		if intervals[i][0] <= merged[size-1][1] {
-			merged[size-1][1] = Utils.Max(merged[size-1][1], intervals[i][1])
+			merged[size-1][1] = utils.Max(merged[size-1][1], intervals[i][1])
 		} else {
 			// 若不重叠，则直接追加到merged里面
 			merged = append(merged, intervals[i])
@@ -1078,7 +1078,7 @@ func RemoveCoveredIntervals(intervals [][]int) int {
 			count--
 		} else {
 			// 此时更新右边界rMax的值
-			rMax = Utils.Max(rMax, intervals[i][1])
+			rMax = utils.Max(rMax, intervals[i][1])
 		}
 	}
 	// 最后返回的count即为所求答案
@@ -1257,17 +1257,17 @@ leetcode 968
 */
 
 // MinCameraCover 时间复杂度O(N), 空间复杂度O(2N)
-func MinCameraCover(root *Entity.TreeNode) int {
+func MinCameraCover(root *entity.TreeNode) int {
 	// 定义哈希表covered记录节点是否被监视
-	covered := make(map[*Entity.TreeNode]bool)
+	covered := make(map[*entity.TreeNode]bool)
 	// 空节点一律记录为已被监控
 	covered[nil] = true
 	// 定义哈希表parentMap记录节点的父亲节点
-	parentMap := make(map[*Entity.TreeNode]*Entity.TreeNode)
+	parentMap := make(map[*entity.TreeNode]*entity.TreeNode)
 	// 需要的摄像头数量，初始值为0
 	camera := 0
-	var dfs func(*Entity.TreeNode)
-	dfs = func(node *Entity.TreeNode) {
+	var dfs func(*entity.TreeNode)
+	dfs = func(node *entity.TreeNode) {
 		if node == nil {
 			return
 		}
@@ -1328,9 +1328,9 @@ func MaxScoreSightseeingPair(values []int) int {
 	preMax := values[0] + 0
 	for j := 1; j < len(values); j++ {
 		// 计算景点j的最高得分，并迭代highestScore
-		highestScore = Utils.Max(highestScore, preMax+values[j]-j)
+		highestScore = utils.Max(highestScore, preMax+values[j]-j)
 		// 更新preMax为下一个景点j+1所用
-		preMax = Utils.Max(preMax, values[j]+j)
+		preMax = utils.Max(preMax, values[j]+j)
 	}
 	return highestScore
 }

@@ -5,7 +5,7 @@ medium contains middle level problems
 */
 
 import (
-	"AlgorithmPractise/Utils"
+	"algorithm-practise/utils"
 	"container/heap"
 	"math"
 	"sort"
@@ -140,7 +140,7 @@ func bagProblem(weight, value []int, capacity int) int {
 			if j < weight[i] {
 				dp[i][j] = dp[i-1][j]
 			} else {
-				dp[i][j] = Utils.Max(dp[i-1][j], dp[i-1][j-weight[i]]+value[i])
+				dp[i][j] = utils.Max(dp[i-1][j], dp[i-1][j-weight[i]]+value[i])
 			}
 		}
 	}
@@ -155,7 +155,7 @@ func bagProblemSimple(weight, value []int, capacity int) int {
 		// 必须逆序遍历背包, 确保元素不会被重复放入
 		for j := capacity; j >= weight[i]; j-- {
 			// dp一维数组递推公式
-			dp[j] = Utils.Max(dp[j], dp[j-weight[i]]+value[i])
+			dp[j] = utils.Max(dp[j], dp[j-weight[i]]+value[i])
 		}
 	}
 	return dp[capacity]
@@ -213,7 +213,7 @@ dp[target] = target, 返回true
 
 // canPartition 时间复杂度O(n^2)，空间复杂度O(n)
 func canPartition(nums []int) bool {
-	sum := Utils.SumOfArray(nums)
+	sum := utils.SumOfArray(nums)
 	// 如果数组nums元素之和sum为奇数则不可能平分为两个子集
 	if sum%2 == 1 {
 		return false
@@ -306,7 +306,7 @@ func LastStoneWeight(stones []int) int {
 
 func lastStoneWeightSimple(stones []int) int {
 	n := len(stones)
-	mh := Utils.NewMaxHeap(n)
+	mh := utils.NewMaxHeap(n)
 	for _, v := range stones {
 		mh.Add(v)
 	}
@@ -367,7 +367,7 @@ dp数组的长度，最精确的做法是遍历stones数组，累加数组元素
 
 // lastStoneWeight 时间复杂度O(sum/2 * n), 空间复杂度为O(n), n为stones数组长度，sum/2为stones数组之和的一半
 func lastStoneWeight(stones []int) int {
-	sum := Utils.SumOfArray(stones)
+	sum := utils.SumOfArray(stones)
 	target := sum / 2
 	dp := make([]int, target+1)
 	for i := 0; i < len(stones); i++ {
@@ -441,9 +441,9 @@ nums: [1, 1, 1, 1, 1], target:3
 
 // findTargetSumWays 时间复杂度O(n * capacity)，空间复杂度：O(capacity)， n为nums数组长度，capacity为背包容量，
 func findTargetSumWays(nums []int, target int) int {
-	sum := Utils.SumOfArray(nums)
+	sum := utils.SumOfArray(nums)
 	// target的绝对值比数组和还大，是不可能有结果的
-	if Utils.Abs(target) > sum {
+	if utils.Abs(target) > sum {
 		return 0
 	}
 	// 因为本题转化为在nums数组中找和为left的组合数，也就是找(sum + target) / 2 的组合数
@@ -528,7 +528,7 @@ func findMaxForm(strs []string, m, n int) int {
 		oneNum := strings.Count(str, "1")
 		for i := m; i >= zeroNum; i-- {
 			for j := n; j >= oneNum; j-- {
-				dp[i][j] = Utils.Max(dp[i][j], dp[i-zeroNum][j-oneNum]+1)
+				dp[i][j] = utils.Max(dp[i][j], dp[i-zeroNum][j-oneNum]+1)
 			}
 		}
 	}
@@ -549,7 +549,7 @@ func completeBagProblem(weight, value []int, capacity int) int {
 	dp := make([]int, capacity+1)
 	for i := 0; i < len(weight); i++ {
 		for j := weight[i]; j <= capacity; j++ {
-			dp[j] = Utils.Max(dp[j], dp[j-weight[i]]+value[i])
+			dp[j] = utils.Max(dp[j], dp[j-weight[i]]+value[i])
 		}
 	}
 	return dp[capacity]
@@ -731,7 +731,7 @@ func leastCoinChange(coins []int, amount int) int {
 	for i, n := 0, len(coins); i < n; i++ {
 		for j := coins[i]; j <= amount; j++ {
 			if dp[j-coins[i]] != math.MaxInt32 {
-				dp[j] = Utils.Min(dp[j], dp[j-coins[i]]+1)
+				dp[j] = utils.Min(dp[j], dp[j-coins[i]]+1)
 			}
 		}
 	}
@@ -787,7 +787,7 @@ func numSquares(n int) int {
 	}
 	for i := 1; i*i <= n; i++ {
 		for j := i * i; j <= n; j++ {
-			dp[j] = Utils.Min(dp[j], dp[j-i*i]+1)
+			dp[j] = utils.Min(dp[j], dp[j-i*i]+1)
 		}
 	}
 	return dp[n]
@@ -897,7 +897,7 @@ func multiBagProblem(weight, value, nums []int, capacity int) int {
 	}
 	for i := 0; i < n; i++ {
 		for j := capacity; j >= weight[i]; j-- {
-			dp[j] = Utils.Max(dp[j], dp[j-weight[i]]+value[i])
+			dp[j] = utils.Max(dp[j], dp[j-weight[i]]+value[i])
 		}
 	}
 	return dp[capacity]
@@ -951,15 +951,15 @@ func minFallingPathSum(matrix [][]int) int {
 	for i := n - 2; i >= 0; i-- {
 		for j := 0; j < n; j++ {
 			if j == 0 {
-				dp[i][j] = Utils.Min(dp[i+1][j], dp[i+1][j+1]) + matrix[i][j]
+				dp[i][j] = utils.Min(dp[i+1][j], dp[i+1][j+1]) + matrix[i][j]
 			} else if j == n-1 {
-				dp[i][j] = Utils.Min(dp[i+1][j], dp[i+1][j-1]) + matrix[i][j]
+				dp[i][j] = utils.Min(dp[i+1][j], dp[i+1][j-1]) + matrix[i][j]
 			} else {
-				dp[i][j] = Utils.Min(dp[i+1][j], Utils.Min(dp[i+1][j-1], dp[i+1][j+1])) + matrix[i][j]
+				dp[i][j] = utils.Min(dp[i+1][j], utils.Min(dp[i+1][j-1], dp[i+1][j+1])) + matrix[i][j]
 			}
 		}
 	}
-	return Utils.MinValueOfArray(dp[0])
+	return utils.MinValueOfArray(dp[0])
 }
 
 /*
@@ -994,7 +994,7 @@ func minimumTotal(triangle [][]int) int {
 	}
 	for i := n - 2; i >= 0; i-- {
 		for j := 0; j < i+1; j++ {
-			dp[i][j] = Utils.Min(dp[i+1][j], dp[i+1][j+1]) + triangle[i][j]
+			dp[i][j] = utils.Min(dp[i+1][j], dp[i+1][j+1]) + triangle[i][j]
 		}
 	}
 	return dp[0][0]
@@ -1069,7 +1069,7 @@ func countSquares(matrix [][]int) int {
 			} else if matrix[i][j] == 0 {
 				dp[i][j] = 0
 			} else {
-				dp[i][j] = Utils.Min(dp[i-1][j], Utils.Min(dp[i][j-1], dp[i-1][j-1])) + 1
+				dp[i][j] = utils.Min(dp[i-1][j], utils.Min(dp[i][j-1], dp[i-1][j-1])) + 1
 			}
 			count += dp[i][j]
 		}
@@ -1108,7 +1108,7 @@ func maximalSquare(matrix [][]byte) int {
 	for i := 1; i < len(matrix); i++ {
 		for j := 1; j < len(matrix[i]); j++ {
 			if dp[i][j] == 1 {
-				dp[i][j] = Utils.Min(dp[i-1][j], Utils.Min(dp[i][j-1], dp[i-1][j-1])) + 1
+				dp[i][j] = utils.Min(dp[i-1][j], utils.Min(dp[i][j-1], dp[i-1][j-1])) + 1
 				if maxSide < dp[i][j] {
 					maxSide = dp[i][j]
 				}

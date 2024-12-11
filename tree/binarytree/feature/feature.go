@@ -1,9 +1,9 @@
-package featureProblem
+package feature
 
 import (
-	"AlgorithmPractise/BinaryTree/Entity"
-	Entity2 "AlgorithmPractise/LinkedList/Entity"
-	"AlgorithmPractise/Utils"
+	Entity2 "algorithm-practise/linkedlist/Entity"
+	"algorithm-practise/tree/binarytree/entity"
+	"algorithm-practise/utils"
 	"fmt"
 	"math"
 	"reflect"
@@ -29,7 +29,7 @@ leetcode 226. 翻转二叉树
 */
 
 // InvertBinaryTree 后序遍历递归版
-func InvertBinaryTree(root *Entity.TreeNode) *Entity.TreeNode {
+func InvertBinaryTree(root *entity.TreeNode) *entity.TreeNode {
 	if root == nil {
 		return nil
 	}
@@ -40,7 +40,7 @@ func InvertBinaryTree(root *Entity.TreeNode) *Entity.TreeNode {
 }
 
 // InvertBinaryTreeTwo 或者也可以写成这样 先序遍历递归版
-func InvertBinaryTreeTwo(root *Entity.TreeNode) *Entity.TreeNode {
+func InvertBinaryTreeTwo(root *entity.TreeNode) *entity.TreeNode {
 	if root == nil {
 		return nil
 	}
@@ -51,11 +51,11 @@ func InvertBinaryTreeTwo(root *Entity.TreeNode) *Entity.TreeNode {
 }
 
 // InvertTreeUseIteration 迭代法(先序遍历)
-func InvertTreeUseIteration(root *Entity.TreeNode) *Entity.TreeNode {
+func InvertTreeUseIteration(root *entity.TreeNode) *entity.TreeNode {
 	if root == nil {
 		return nil
 	}
-	stack := []*Entity.TreeNode{root}
+	stack := []*entity.TreeNode{root}
 	for len(stack) > 0 {
 		node := stack[len(stack)-1]
 		stack = stack[:len(stack)-1]
@@ -71,11 +71,11 @@ func InvertTreeUseIteration(root *Entity.TreeNode) *Entity.TreeNode {
 }
 
 // InvertTreeUseBFS BFS(层序遍历)
-func InvertTreeUseBFS(root *Entity.TreeNode) *Entity.TreeNode {
+func InvertTreeUseBFS(root *entity.TreeNode) *entity.TreeNode {
 	if root == nil {
 		return nil
 	}
-	queue := []*Entity.TreeNode{root}
+	queue := []*entity.TreeNode{root}
 	for len(queue) > 0 {
 		node := queue[0]
 		node.Left, node.Right = node.Right, node.Left
@@ -114,12 +114,12 @@ leetcode 104
 空间复杂度：此方法空间的消耗取决于队列存储的元素数量，其在最坏情况下会达到 O(n)。
 */
 
-func MaxDepth(root *Entity.TreeNode) int {
+func MaxDepth(root *entity.TreeNode) int {
 	maxDepth := 0
 	if root == nil {
 		return maxDepth
 	}
-	queue := []*Entity.TreeNode{root}
+	queue := []*entity.TreeNode{root}
 	for len(queue) > 0 {
 		levelSize := len(queue)
 		for i := 0; i < levelSize; i++ {
@@ -153,11 +153,11 @@ DFS递归法求解
 
 */
 
-func MaxDepthUseDfs(root *Entity.TreeNode) int {
+func MaxDepthUseDfs(root *entity.TreeNode) int {
 	if root == nil {
 		return 0
 	}
-	return 1 + Utils.Max(MaxDepthUseDfs(root.Left), MaxDepthUseDfs(root.Right))
+	return 1 + utils.Max(MaxDepthUseDfs(root.Left), MaxDepthUseDfs(root.Right))
 }
 
 /*
@@ -173,7 +173,7 @@ p和q均存在于给定的二叉树中。
 */
 
 // NearestCommonAncestor 递归解决, 参看二叉树的最近公共祖先.png
-func NearestCommonAncestor(root, p, q *Entity.TreeNode) *Entity.TreeNode {
+func NearestCommonAncestor(root, p, q *entity.TreeNode) *entity.TreeNode {
 	if root == nil || p == root || q == root {
 		return root
 	}
@@ -196,14 +196,14 @@ func NearestCommonAncestor(root, p, q *Entity.TreeNode) *Entity.TreeNode {
 的信息向上跳,如果集合visited中碰到已经访问过的节点,那么该节点就是我们要找的最近公共祖先
 */
 
-func NearestCommonAncestorUseIteration(root, p, q *Entity.TreeNode) *Entity.TreeNode {
+func NearestCommonAncestorUseIteration(root, p, q *entity.TreeNode) *entity.TreeNode {
 	if root == nil {
 		return root
 	}
-	parentDict := make(map[int]*Entity.TreeNode)
+	parentDict := make(map[int]*entity.TreeNode)
 	visited := make(map[int]bool)
-	var dfs func(node *Entity.TreeNode)
-	dfs = func(node *Entity.TreeNode) {
+	var dfs func(node *entity.TreeNode)
+	dfs = func(node *entity.TreeNode) {
 		if node == nil {
 			return
 		}
@@ -247,17 +247,17 @@ leetcode 543. 二叉树的直径
 1+max(lh+rh),时间复杂度度O(n),空间复杂度O(h),n为该二叉树节点个数，h为该二叉树高度
 */
 
-func DiameterOfBinaryTree(root *Entity.TreeNode) int {
+func DiameterOfBinaryTree(root *entity.TreeNode) int {
 	maxDia := 0
-	var dfs func(*Entity.TreeNode) int
-	dfs = func(node *Entity.TreeNode) int {
+	var dfs func(*entity.TreeNode) int
+	dfs = func(node *entity.TreeNode) int {
 		if node == nil {
 			return 0
 		}
 		lh := dfs(node.Left)
 		rh := dfs(node.Right)
-		maxDia = Utils.Max(maxDia, lh+rh)
-		return 1 + Utils.Max(lh, rh)
+		maxDia = utils.Max(maxDia, lh+rh)
+		return 1 + utils.Max(lh, rh)
 	}
 	dfs(root)
 	return maxDia
@@ -273,12 +273,12 @@ leetcode 199. 二叉树的右视图
 */
 
 // RightSideView BFS(广度优先遍历解决)，时间复杂度O(N),空间复杂度O(N)
-func RightSideView(root *Entity.TreeNode) []int {
+func RightSideView(root *entity.TreeNode) []int {
 	var res []int
 	if root == nil {
 		return res
 	}
-	queue := []*Entity.TreeNode{root}
+	queue := []*entity.TreeNode{root}
 	for len(queue) != 0 {
 		levelSize := len(queue)
 		res = append(res, queue[levelSize-1].Val)
@@ -316,19 +316,19 @@ leetcode 110. 平衡二叉树
 */
 
 // IsBalanced 时间复杂度O(N*N),空间复杂度O(N)
-func IsBalanced(root *Entity.TreeNode) bool {
+func IsBalanced(root *entity.TreeNode) bool {
 	if root == nil {
 		return true
 	}
-	return Utils.Abs(GetHeightOfBinaryTree(root.Left)-GetHeightOfBinaryTree(root.Right)) <= 1 && IsBalanced(root.Left) && IsBalanced(root.Right)
+	return utils.Abs(GetHeightOfBinaryTree(root.Left)-GetHeightOfBinaryTree(root.Right)) <= 1 && IsBalanced(root.Left) && IsBalanced(root.Right)
 }
 
 // GetHeightOfBinaryTree 计算以root为根节点的二叉树的高度
-func GetHeightOfBinaryTree(root *Entity.TreeNode) int {
+func GetHeightOfBinaryTree(root *entity.TreeNode) int {
 	if root == nil {
 		return 0
 	}
-	return 1 + Utils.Max(GetHeightOfBinaryTree(root.Left), GetHeightOfBinaryTree(root.Right))
+	return 1 + utils.Max(GetHeightOfBinaryTree(root.Left), GetHeightOfBinaryTree(root.Right))
 }
 
 /*
@@ -340,20 +340,20 @@ func GetHeightOfBinaryTree(root *Entity.TreeNode) int {
 */
 
 // IsBalancedSimple 时间复杂度O(N), 空间复杂度O(N)
-func IsBalancedSimple(root *Entity.TreeNode) bool {
+func IsBalancedSimple(root *entity.TreeNode) bool {
 	return Height(root) >= 0
 }
 
-func Height(root *Entity.TreeNode) int {
+func Height(root *entity.TreeNode) int {
 	if root == nil {
 		return 0
 	}
 	lh := Height(root.Left)
 	rh := Height(root.Right)
-	if lh == -1 || rh == -1 || Utils.Abs(lh-rh) > 1 {
+	if lh == -1 || rh == -1 || utils.Abs(lh-rh) > 1 {
 		return -1
 	}
-	return 1 + Utils.Max(lh, rh)
+	return 1 + utils.Max(lh, rh)
 }
 
 /*
@@ -365,12 +365,12 @@ func Height(root *Entity.TreeNode) int {
 */
 
 type Element struct {
-	Node   *Entity.TreeNode
+	Node   *entity.TreeNode
 	Number int
 }
 
 // IsCompleteTree 时间复杂度O(N),空间复杂度O(N)
-func IsCompleteTree(root *Entity.TreeNode) bool {
+func IsCompleteTree(root *entity.TreeNode) bool {
 	if root == nil {
 		return true
 	}
@@ -391,10 +391,10 @@ func IsCompleteTree(root *Entity.TreeNode) bool {
 	return seq == count
 }
 
-func IsCompleteTreeTwo(root *Entity.TreeNode) bool {
+func IsCompleteTreeTwo(root *entity.TreeNode) bool {
 	// 标记层序遍历时是否有遇到空节点，初始值为false
 	empty := false
-	q := []*Entity.TreeNode{root}
+	q := []*entity.TreeNode{root}
 	for len(q) > 0 {
 		node := q[0]
 		q = q[1:]
@@ -420,7 +420,7 @@ leetcode 100. 相同的树
 */
 
 // IsSameTree DFS递归解决 时间复杂度O(min(M, N)),空间复杂度O(min(M, N))
-func IsSameTree(p, q *Entity.TreeNode) bool {
+func IsSameTree(p, q *entity.TreeNode) bool {
 	if p == nil && q == nil {
 		return true
 	}
@@ -458,7 +458,7 @@ func IsSameTree(p, q *Entity.TreeNode) bool {
 */
 
 // WidthOfBinaryTree 时间复杂度O(N),空间复杂度O(N)
-func WidthOfBinaryTree(root *Entity.TreeNode) int {
+func WidthOfBinaryTree(root *entity.TreeNode) int {
 	maxWidth := 0
 	if root == nil {
 		return maxWidth
@@ -467,7 +467,7 @@ func WidthOfBinaryTree(root *Entity.TreeNode) int {
 	queue := []Element{Element{root, 1}}
 	for len(queue) > 0 {
 		size := len(queue)
-		maxWidth = Utils.Max(maxWidth, queue[size-1].Number-queue[0].Number+1)
+		maxWidth = utils.Max(maxWidth, queue[size-1].Number-queue[0].Number+1)
 		for i := 0; i < size; i++ {
 			node := queue[0].Node
 			num := queue[0].Number
@@ -521,17 +521,17 @@ leetcode 101. 对称二叉树
 [2, 3, 101, 101, 101]，显然与preOrder不同，问题得以解决。
 */
 
-func IsSymmetric(root *Entity.TreeNode) bool {
+func IsSymmetric(root *entity.TreeNode) bool {
 	if root == nil {
 		return true
 	}
 	leftPreOrder := PreOrder(root.Left)
 	rightPostOrder := PostOrder(root.Right)
 	// 因为slice不能直接比较，所以借助反射包中的方法比较
-	return reflect.DeepEqual(leftPreOrder, Utils.ReverseArray(rightPostOrder))
+	return reflect.DeepEqual(leftPreOrder, utils.ReverseArray(rightPostOrder))
 }
 
-func PreOrder(node *Entity.TreeNode) []int {
+func PreOrder(node *entity.TreeNode) []int {
 	var res []int
 	if node == nil {
 		res = append(res, 101)
@@ -543,7 +543,7 @@ func PreOrder(node *Entity.TreeNode) []int {
 	return res
 }
 
-func PostOrder(node *Entity.TreeNode) []int {
+func PostOrder(node *entity.TreeNode) []int {
 	var res []int
 	if node == nil {
 		res = append(res, 101)
@@ -564,14 +564,14 @@ func PostOrder(node *Entity.TreeNode) []int {
 进行比较判断。
 */
 
-func IsSymmetricUseBFS(root *Entity.TreeNode) bool {
+func IsSymmetricUseBFS(root *entity.TreeNode) bool {
 	if root == nil {
 		return true
 	}
 	return BFS(root.Left, root.Right)
 }
 
-func BFS(node1, node2 *Entity.TreeNode) bool {
+func BFS(node1, node2 *entity.TreeNode) bool {
 	// 两个节点均为空节点，返回true
 	if node1 == nil && node2 == nil {
 		return true
@@ -601,14 +601,14 @@ true；否则，返回false 。
 */
 
 // IsSubTree BFS解决
-func IsSubTree(s, t *Entity.TreeNode) bool {
+func IsSubTree(s, t *entity.TreeNode) bool {
 	if s == nil {
 		return false
 	}
 	return Check(s, t) || IsSubTree(s.Left, t) || IsSubTree(s.Right, t)
 }
 
-func Check(node1, node2 *Entity.TreeNode) bool {
+func Check(node1, node2 *entity.TreeNode) bool {
 	if node1 == nil && node2 == nil {
 		return true
 	}
@@ -635,7 +635,7 @@ func Check(node1, node2 *Entity.TreeNode) bool {
 来判断答案。
 */
 
-func IsSubTreeSimple(s, t *Entity.TreeNode) bool {
+func IsSubTreeSimple(s, t *entity.TreeNode) bool {
 	max := math.MinInt32
 	GetMaxElement(s, &max)
 	GetMaxElement(t, &max)
@@ -652,7 +652,7 @@ func IsSubTreeSimple(s, t *Entity.TreeNode) bool {
 	return false
 }
 
-func GetPreOrder(node *Entity.TreeNode, list []int, lN, rN int) []int {
+func GetPreOrder(node *entity.TreeNode, list []int, lN, rN int) []int {
 	if node == nil {
 		return list
 	}
@@ -670,7 +670,7 @@ func GetPreOrder(node *Entity.TreeNode, list []int, lN, rN int) []int {
 	return list
 }
 
-func GetMaxElement(root *Entity.TreeNode, max *int) {
+func GetMaxElement(root *entity.TreeNode, max *int) {
 	if root == nil {
 		return
 	}
@@ -722,7 +722,7 @@ c其实包含了两种情况，一是当前二叉树左右子树均为空时，�
 二是二叉树左右子树均不为空，返回1+min(ld,rd)，也是正确的，所以这两种情况最小深度的计算可以合并。
 */
 
-func MinDepth(root *Entity.TreeNode) int {
+func MinDepth(root *entity.TreeNode) int {
 	if root == nil {
 		return 0
 	}
@@ -731,17 +731,17 @@ func MinDepth(root *Entity.TreeNode) int {
 	} else if root.Right == nil && root.Left != nil {
 		return 1 + MinDepth(root.Left)
 	} else {
-		return Utils.Min(MinDepth(root.Left), MinDepth(root.Right)) + 1
+		return utils.Min(MinDepth(root.Left), MinDepth(root.Right)) + 1
 	}
 }
 
-func MinDepthUseBFS(root *Entity.TreeNode) int {
+func MinDepthUseBFS(root *entity.TreeNode) int {
 	if root == nil {
 		return 0
 	}
 	// 此时根节点不为空，则最小深度至少为1
 	depth := 1
-	queue := []*Entity.TreeNode{root}
+	queue := []*entity.TreeNode{root}
 	for len(queue) != 0 {
 		size := len(queue)
 		for i := 0; i < size; i++ {
@@ -780,7 +780,7 @@ leetcode 222. 完全二叉树的节点个数
 */
 
 // CountNodes 时间复杂度O(logN*logN),空间复杂度O(logN)
-func CountNodes(root *Entity.TreeNode) int {
+func CountNodes(root *entity.TreeNode) int {
 	if root == nil {
 		return 0
 	}
@@ -810,12 +810,12 @@ leetcode 513. 找树左下角的值
 思路一:广度优先遍历(BFS),用一个数组保存二叉树每一层最左侧节点的值，最后返回这个数组的末尾元素即可
 */
 
-func FindBottomLeftValue(root *Entity.TreeNode) int {
+func FindBottomLeftValue(root *entity.TreeNode) int {
 	if root.Left == nil && root.Right == nil {
 		return root.Val
 	}
 	var res []int
-	queue := []*Entity.TreeNode{root}
+	queue := []*entity.TreeNode{root}
 	for len(queue) != 0 {
 		size := len(queue)
 		res = append(res, queue[0].Val)
@@ -833,11 +833,11 @@ func FindBottomLeftValue(root *Entity.TreeNode) int {
 	return res[len(res)-1]
 }
 
-func FindBottomLeftValueTwo(root *Entity.TreeNode) int {
+func FindBottomLeftValueTwo(root *entity.TreeNode) int {
 	if root.Left == nil && root.Right == nil {
 		return root.Val
 	}
-	q := []*Entity.TreeNode{root}
+	q := []*entity.TreeNode{root}
 	target := root.Val
 	for len(q) > 0 {
 		size := len(q)
@@ -862,13 +862,13 @@ func FindBottomLeftValueTwo(root *Entity.TreeNode) int {
 思路二: 深度优先遍历(DFS),当达到最大深度时，找到最左边的叶子节点的值(先序遍历)
 */
 
-func FindBottomLeftValueSimple(root *Entity.TreeNode) int {
+func FindBottomLeftValueSimple(root *entity.TreeNode) int {
 	if root.Left == nil && root.Right == nil {
 		return root.Val
 	}
 	maxDepth, res := 0, 0
-	var dfs func(*Entity.TreeNode, int)
-	dfs = func(node *Entity.TreeNode, depth int) {
+	var dfs func(*entity.TreeNode, int)
+	dfs = func(node *entity.TreeNode, depth int) {
 		if node.Left == nil && node.Right == nil {
 			if depth > maxDepth {
 				maxDepth = depth
@@ -925,7 +925,7 @@ leetcode 617. 合并二叉树
 */
 
 // MergeTrees 递归解决
-func MergeTrees(root1 *Entity.TreeNode, root2 *Entity.TreeNode) *Entity.TreeNode {
+func MergeTrees(root1 *entity.TreeNode, root2 *entity.TreeNode) *entity.TreeNode {
 	if root1 == nil && root2 == nil {
 		return nil
 	}
@@ -935,7 +935,7 @@ func MergeTrees(root1 *Entity.TreeNode, root2 *Entity.TreeNode) *Entity.TreeNode
 	if root1 == nil && root2 != nil {
 		return root2
 	}
-	root := &Entity.TreeNode{Val: root1.Val + root2.Val}
+	root := &entity.TreeNode{Val: root1.Val + root2.Val}
 	root.Left = MergeTrees(root1.Left, root2.Left)
 	root.Right = MergeTrees(root1.Right, root2.Right)
 	return root
@@ -972,10 +972,10 @@ leetcode 687. 最长同值路径
 */
 
 // LongestSameValuePath 时间复杂度O(N),空间复杂度O(H)
-func LongestSameValuePath(root *Entity.TreeNode) int {
+func LongestSameValuePath(root *entity.TreeNode) int {
 	longestLength := 0
-	var dfs func(*Entity.TreeNode) int
-	dfs = func(node *Entity.TreeNode) int {
+	var dfs func(*entity.TreeNode) int
+	dfs = func(node *entity.TreeNode) int {
 		if node == nil {
 			return 0
 		}
@@ -994,8 +994,8 @@ func LongestSameValuePath(root *Entity.TreeNode) int {
 			rightLength = 0
 		}
 		// 迭代最长同值路径的值，左最长路径+右最长路径
-		longestLength = Utils.Max(longestLength, leftLength+rightLength)
-		return Utils.Max(leftLength, rightLength)
+		longestLength = utils.Max(longestLength, leftLength+rightLength)
+		return utils.Max(leftLength, rightLength)
 	}
 	dfs(root)
 	return longestLength
@@ -1031,14 +1031,14 @@ leetcode 652. 寻找重复的子树
 如果有重复,则将该节点添加到结果列表中.
 */
 
-func FindDuplicateSubtrees(root *Entity.TreeNode) []*Entity.TreeNode {
-	var res []*Entity.TreeNode
+func FindDuplicateSubtrees(root *entity.TreeNode) []*entity.TreeNode {
+	var res []*entity.TreeNode
 	if root == nil {
 		return res
 	}
 	subTreeMap := make(map[string]int)
-	var dfs func(*Entity.TreeNode) string
-	dfs = func(node *Entity.TreeNode) string {
+	var dfs func(*entity.TreeNode) string
+	dfs = func(node *entity.TreeNode) string {
 		if node == nil {
 			return "#"
 		}
@@ -1070,7 +1070,7 @@ leetcode 1367. 二叉树中的列表
 */
 
 // IsSubPath 递归解决
-func IsSubPath(head *Entity2.ListNode, root *Entity.TreeNode) bool {
+func IsSubPath(head *Entity2.ListNode, root *entity.TreeNode) bool {
 	if root == nil {
 		return false
 	}
@@ -1078,7 +1078,7 @@ func IsSubPath(head *Entity2.ListNode, root *Entity.TreeNode) bool {
 	return help(head, root) || IsSubPath(head, root.Left) || IsSubPath(head, root.Right)
 }
 
-func help(head *Entity2.ListNode, root *Entity.TreeNode) bool {
+func help(head *Entity2.ListNode, root *entity.TreeNode) bool {
 	if head == nil {
 		return true
 	}
@@ -1104,13 +1104,13 @@ leetcode 114. 二叉树展开为链表
 */
 
 // Flatten dfs先序遍历解决
-func Flatten(root *Entity.TreeNode) {
+func Flatten(root *entity.TreeNode) {
 	if root == nil {
 		return
 	}
-	var dfs func(*Entity.TreeNode) []*Entity.TreeNode
-	dfs = func(node *Entity.TreeNode) []*Entity.TreeNode {
-		res := []*Entity.TreeNode{}
+	var dfs func(*entity.TreeNode) []*entity.TreeNode
+	dfs = func(node *entity.TreeNode) []*entity.TreeNode {
+		res := []*entity.TreeNode{}
 		if node == nil {
 			return res
 		}
@@ -1129,12 +1129,12 @@ func Flatten(root *Entity.TreeNode) {
 }
 
 // 迭代法解决, 前序遍历和展开同步进行
-func flattenUseIteration(root *Entity.TreeNode) {
+func flattenUseIteration(root *entity.TreeNode) {
 	if root == nil {
 		return
 	}
-	var prev *Entity.TreeNode
-	stack := []*Entity.TreeNode{root}
+	var prev *entity.TreeNode
+	stack := []*entity.TreeNode{root}
 	for len(stack) > 0 {
 		cur := stack[len(stack)-1]
 		stack = stack[:len(stack)-1]
@@ -1152,7 +1152,7 @@ func flattenUseIteration(root *Entity.TreeNode) {
 }
 
 // 寻找前驱结点
-func findPredecessor(root *Entity.TreeNode) {
+func findPredecessor(root *entity.TreeNode) {
 	if root == nil {
 		return
 	}
@@ -1320,12 +1320,12 @@ leetcode 面试题 04.03. 特定深度节点链表
 */
 
 // ListOfDepth BFS解决
-func ListOfDepth(root *Entity.TreeNode) []*Entity2.ListNode {
+func ListOfDepth(root *entity.TreeNode) []*Entity2.ListNode {
 	var res []*Entity2.ListNode
 	if root == nil {
 		return res
 	}
-	queue := []*Entity.TreeNode{root}
+	queue := []*entity.TreeNode{root}
 	for len(queue) != 0 {
 		size := len(queue)
 		dummy := new(Entity2.ListNode)
@@ -1355,7 +1355,7 @@ leetcode 1325. 删除给定值的叶子节点
 */
 
 // RemoveLeafNodes 后序遍历，递归解决
-func RemoveLeafNodes(root *Entity.TreeNode, target int) *Entity.TreeNode {
+func RemoveLeafNodes(root *entity.TreeNode, target int) *entity.TreeNode {
 	if root == nil {
 		return nil
 	}
@@ -1382,13 +1382,13 @@ leetcode 1302. 层数最深叶子节点的和
 */
 
 // DeepestLeavesSum BFS解决
-func DeepestLeavesSum(root *Entity.TreeNode) int {
+func DeepestLeavesSum(root *entity.TreeNode) int {
 	sum := 0
 	if root == nil {
 		return sum
 	}
 	depth, maxDepth := 1, 0
-	queue := []*Entity.TreeNode{root}
+	queue := []*entity.TreeNode{root}
 	for len(queue) != 0 {
 		size := len(queue)
 		for i := 0; i < size; i++ {
@@ -1414,14 +1414,14 @@ func DeepestLeavesSum(root *Entity.TreeNode) int {
 }
 
 // DeepestLeavesSumSimple DFS解决
-func DeepestLeavesSumSimple(root *Entity.TreeNode) int {
+func DeepestLeavesSumSimple(root *entity.TreeNode) int {
 	sum := 0
 	if root == nil {
 		return sum
 	}
 	maxDepth := 0
-	var dfs func(*Entity.TreeNode, int)
-	dfs = func(node *Entity.TreeNode, depth int) {
+	var dfs func(*entity.TreeNode, int)
+	dfs = func(node *entity.TreeNode, depth int) {
 		if node == nil {
 			return
 		}
@@ -1469,20 +1469,20 @@ leetcode 563. 二叉树的坡度
 在遍历过程中累加当前节点的坡度即可
 */
 
-func FindTilt(root *Entity.TreeNode) int {
+func FindTilt(root *entity.TreeNode) int {
 	res := 0
 	if root == nil {
 		return res
 	}
-	var dfs func(*Entity.TreeNode) int
-	dfs = func(node *Entity.TreeNode) int {
+	var dfs func(*entity.TreeNode) int
+	dfs = func(node *entity.TreeNode) int {
 		if node == nil {
 			return 0
 		}
 		l := dfs(node.Left)
 		r := dfs(node.Right)
 		// 当前节点坡度即为其左子树元素和与右子树元素和之差的绝对值
-		res += Utils.Abs(l - r)
+		res += utils.Abs(l - r)
 		return l + r + node.Val
 	}
 	dfs(root)
@@ -1532,12 +1532,12 @@ leetcode 1123. 最深叶节点的最近公共祖先
 的最近公共祖先，和当前节点的高度（右子树高度加1).
 */
 
-func LcaDeepestLeaves(root *Entity.TreeNode) *Entity.TreeNode {
+func LcaDeepestLeaves(root *entity.TreeNode) *entity.TreeNode {
 	if root == nil {
 		return nil
 	}
-	var dfs func(*Entity.TreeNode) (*Entity.TreeNode, int)
-	dfs = func(node *Entity.TreeNode) (*Entity.TreeNode, int) {
+	var dfs func(*entity.TreeNode) (*entity.TreeNode, int)
+	dfs = func(node *entity.TreeNode) (*entity.TreeNode, int) {
 		if node == nil {
 			return nil, 0
 		}
@@ -1555,16 +1555,16 @@ func LcaDeepestLeaves(root *Entity.TreeNode) *Entity.TreeNode {
 	return node
 }
 
-func LcaDeepestLeavesUseBFS(root *Entity.TreeNode) *Entity.TreeNode {
+func LcaDeepestLeavesUseBFS(root *entity.TreeNode) *entity.TreeNode {
 	if root == nil {
 		return nil
 	}
-	parentMap := make(map[*Entity.TreeNode]*Entity.TreeNode)
-	queue := []*Entity.TreeNode{root}
+	parentMap := make(map[*entity.TreeNode]*entity.TreeNode)
+	queue := []*entity.TreeNode{root}
 	// 最大深度和当前深度初始值分别设置为0，1(root不为nil,所以当前深度depth至少是1)
 	maxDepth, depth := 0, 1
 	// 最深层叶子节点集合
-	leaves := []*Entity.TreeNode{}
+	leaves := []*entity.TreeNode{}
 	for len(queue) > 0 {
 		size := len(queue)
 		for i := 0; i < size; i++ {
@@ -1572,7 +1572,7 @@ func LcaDeepestLeavesUseBFS(root *Entity.TreeNode) *Entity.TreeNode {
 			if node.Left == nil && node.Right == nil {
 				// 如果最大深度小于当前深度，则重置最大深度和最深层叶子节点集合
 				if maxDepth < depth {
-					maxDepth, leaves = depth, []*Entity.TreeNode{node}
+					maxDepth, leaves = depth, []*entity.TreeNode{node}
 				} else if maxDepth == depth {
 					leaves = append(leaves, node)
 				}
@@ -1599,7 +1599,7 @@ func LcaDeepestLeavesUseBFS(root *Entity.TreeNode) *Entity.TreeNode {
 	// 最深叶子节点一定是从左到右排列，不一定都是属于同一个父亲节点的子节点，那么按最糟糕的情况算，找出集合
 	// 最左侧叶子节点与最右侧叶子节点的最近公共祖先即可。
 	p, q := leaves[0], leaves[len(leaves)-1]
-	visited := make(map[*Entity.TreeNode]bool)
+	visited := make(map[*entity.TreeNode]bool)
 	for p != nil {
 		visited[p] = true
 		p = parentMap[p]
@@ -1633,10 +1633,10 @@ root2 = [3,5,1,6,7,4,2,null,null,null,null,null,null,9,8]
 在得到了两棵树分别的「叶值序列」后，我们比较它们是否相等即可。
 */
 
-func LeafSimilar(root1, root2 *Entity.TreeNode) bool {
+func LeafSimilar(root1, root2 *entity.TreeNode) bool {
 	var res []int
-	var dfs func(*Entity.TreeNode)
-	dfs = func(node *Entity.TreeNode) {
+	var dfs func(*entity.TreeNode)
+	dfs = func(node *entity.TreeNode) {
 		if node == nil {
 			return
 		}
@@ -1660,13 +1660,13 @@ leetcode 1448
 好节点X 定义为：从根到该节点 X 所经过的节点中，没有任何节点的值大于 X 的值。
 */
 
-func goodNodes(root *Entity.TreeNode) int {
+func goodNodes(root *entity.TreeNode) int {
 	if root == nil {
 		return 0
 	}
 	cnt := 0
-	var dfs func(*Entity.TreeNode, int)
-	dfs = func(node *Entity.TreeNode, max int) {
+	var dfs func(*entity.TreeNode, int)
+	dfs = func(node *entity.TreeNode, max int) {
 		if node == nil {
 			return
 		}
@@ -1674,10 +1674,10 @@ func goodNodes(root *Entity.TreeNode) int {
 			cnt++
 		}
 		if node.Left != nil {
-			dfs(node.Left, Utils.Max(max, node.Left.Val))
+			dfs(node.Left, utils.Max(max, node.Left.Val))
 		}
 		if node.Right != nil {
-			dfs(node.Right, Utils.Max(max, node.Right.Val))
+			dfs(node.Right, utils.Max(max, node.Right.Val))
 		}
 		return
 	}
@@ -1711,7 +1711,7 @@ func goodNodes(root *Entity.TreeNode) int {
 所以就是从根节点出发，分别得出员工被邀请参加派对，或者不被邀请所得到的快乐值，取较大值即可。
 */
 
-func isInvited(e *Entity.Employee) int {
+func isInvited(e *entity.Employee) int {
 	if len(e.Sub) == 0 {
 		return e.Happy
 	}
@@ -1722,19 +1722,19 @@ func isInvited(e *Entity.Employee) int {
 	return res
 }
 
-func notInvited(e *Entity.Employee) int {
+func notInvited(e *entity.Employee) int {
 	if len(e.Sub) == 0 {
 		return 0
 	}
 	res := 0
 	for _, sub := range e.Sub {
-		res += Utils.Max(isInvited(sub), notInvited(sub))
+		res += utils.Max(isInvited(sub), notInvited(sub))
 	}
 	return res
 }
 
-func GetMostHappy(e *Entity.Employee) int {
-	return Utils.Max(isInvited(e), notInvited(e))
+func GetMostHappy(e *entity.Employee) int {
+	return utils.Max(isInvited(e), notInvited(e))
 }
 
 /*
@@ -1760,10 +1760,10 @@ func Construct() Codec {
 }
 
 // Serializes a tree to a single string.
-func (c *Codec) serialize(root *Entity.TreeNode) string {
+func (c *Codec) serialize(root *entity.TreeNode) string {
 	sp := strings.Builder{}
-	var dfs func(*Entity.TreeNode)
-	dfs = func(node *Entity.TreeNode) {
+	var dfs func(*entity.TreeNode)
+	dfs = func(node *entity.TreeNode) {
 		if node == nil {
 			sp.WriteString("null,")
 			return
@@ -1779,17 +1779,17 @@ func (c *Codec) serialize(root *Entity.TreeNode) string {
 }
 
 // Deserializes your encoded data to tree.
-func (c *Codec) deserialize(data string) *Entity.TreeNode {
+func (c *Codec) deserialize(data string) *entity.TreeNode {
 	sp := strings.Split(data, ",")
-	var build func() *Entity.TreeNode
-	build = func() *Entity.TreeNode {
+	var build func() *entity.TreeNode
+	build = func() *entity.TreeNode {
 		if sp[0] == "null" {
 			sp = sp[1:]
 			return nil
 		}
 		val, _ := strconv.Atoi(sp[0])
 		sp = sp[1:]
-		node := &Entity.TreeNode{Val: val}
+		node := &entity.TreeNode{Val: val}
 		node.Left = build()
 		node.Right = build()
 		return node
@@ -1810,14 +1810,14 @@ func (c *Codec) deserialize(data string) *Entity.TreeNode {
 0 <= 节点个数 <= 10000
 */
 
-func isSubStructure(A, B *Entity.TreeNode) bool {
+func isSubStructure(A, B *entity.TreeNode) bool {
 	if A == nil || B == nil {
 		return false
 	}
 	return check(A, B) || isSubStructure(A.Left, B) || isSubStructure(A.Right, B)
 }
 
-func check(a, b *Entity.TreeNode) bool {
+func check(a, b *entity.TreeNode) bool {
 	if b == nil {
 		return true
 	}

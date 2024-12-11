@@ -5,7 +5,7 @@ medium contains middle level problems
 */
 
 import (
-	"AlgorithmPractise/Utils"
+	"algorithm-practise/utils"
 )
 
 /*
@@ -65,7 +65,7 @@ func lengthOfLTS(nums []int) int {
 	for i := 1; i < n; i++ {
 		for j := 0; j < i; j++ {
 			if nums[i] > nums[j] {
-				dp[i] = Utils.Max(dp[i], dp[j]+1)
+				dp[i] = utils.Max(dp[i], dp[j]+1)
 			}
 		}
 		if dp[i] > maxLength {
@@ -372,7 +372,7 @@ func longestCommonSubSequence(text1, text2 string) int {
 			if text1[i-1] == text2[j-1] {
 				dp[i][j] = dp[i-1][j-1] + 1
 			} else {
-				dp[i][j] = Utils.Max(dp[i-1][j], dp[i][j-1])
+				dp[i][j] = utils.Max(dp[i-1][j], dp[i][j-1])
 			}
 		}
 	}
@@ -418,7 +418,7 @@ func maxUncrossLines(nums1, nums2 []int) int {
 			if nums1[i-1] == nums2[j-1] {
 				dp[i][j] = dp[i-1][j-1] + 1
 			} else {
-				dp[i][j] = Utils.Max(dp[i-1][j], dp[i][j-1])
+				dp[i][j] = utils.Max(dp[i-1][j], dp[i][j-1])
 			}
 		}
 	}
@@ -469,7 +469,7 @@ func maxSubArray(nums []int) int {
 	dp[0] = nums[0]
 	max := nums[0]
 	for i := 1; i < n; i++ {
-		dp[i] = Utils.Max(dp[i-1]+nums[i], nums[i])
+		dp[i] = utils.Max(dp[i-1]+nums[i], nums[i])
 		if max < dp[i] {
 			max = dp[i]
 		}
@@ -533,15 +533,15 @@ func maxSubarraySumCircular(nums []int) int {
 	curMax, curMin, maxSub, minSub, sum := nums[0], nums[0], nums[0], nums[0], nums[0]
 	for i := 1; i < n; i++ {
 		sum += nums[i]
-		curMax = Utils.Max(curMax+nums[i], nums[i])
-		maxSub = Utils.Max(curMax, maxSub)
-		curMin = Utils.Min(curMin+nums[i], nums[i])
-		minSub = Utils.Min(curMin, minSub)
+		curMax = utils.Max(curMax+nums[i], nums[i])
+		maxSub = utils.Max(curMax, maxSub)
+		curMin = utils.Min(curMin+nums[i], nums[i])
+		minSub = utils.Min(curMin, minSub)
 	}
 	if sum == minSub {
 		return maxSub
 	}
-	return Utils.Max(maxSub, sum-minSub)
+	return utils.Max(maxSub, sum-minSub)
 }
 
 /*
@@ -607,9 +607,9 @@ func maxProduct(nums []int) int {
 	maxDp[0], minDp[0] = nums[0], nums[0]
 	max := nums[0]
 	for i := 1; i < n; i++ {
-		maxDp[i] = Utils.Max(maxDp[i-1]*nums[i], Utils.Max(minDp[i-1]*nums[i], nums[i]))
-		minDp[i] = Utils.Min(minDp[i-1]*nums[i], Utils.Min(maxDp[i-1]*nums[i], nums[i]))
-		max = Utils.Max(max, maxDp[i])
+		maxDp[i] = utils.Max(maxDp[i-1]*nums[i], utils.Max(minDp[i-1]*nums[i], nums[i]))
+		minDp[i] = utils.Min(minDp[i-1]*nums[i], utils.Min(maxDp[i-1]*nums[i], nums[i]))
+		max = utils.Max(max, maxDp[i])
 	}
 	return max
 }
@@ -626,9 +626,9 @@ func maxProductSimple(nums []int) int {
 	maxP, minP, max := nums[0], nums[0], nums[0]
 	for i := 1; i < len(nums); i++ {
 		mx, mn := maxP, minP
-		maxP = Utils.Max(mx*nums[i], Utils.Max(mn*nums[i], nums[i]))
-		minP = Utils.Min(mn*nums[i], Utils.Min(mx*nums[i], nums[i]))
-		max = Utils.Max(max, maxP)
+		maxP = utils.Max(mx*nums[i], utils.Max(mn*nums[i], nums[i]))
+		minP = utils.Min(mn*nums[i], utils.Min(mx*nums[i], nums[i]))
+		max = utils.Max(max, maxP)
 	}
 	return max
 }
@@ -764,7 +764,7 @@ func getMaxLen(nums []int) int {
 		} else {
 			pos[i], ng[i] = 0, 0
 		}
-		maxLength = Utils.Max(maxLength, pos[i])
+		maxLength = utils.Max(maxLength, pos[i])
 	}
 	return maxLength
 }
@@ -807,7 +807,7 @@ func getMaxLenSimple(nums []int) int {
 		} else {
 			pos, ng = 0, 0
 		}
-		maxLength = Utils.Max(maxLength, pos)
+		maxLength = utils.Max(maxLength, pos)
 	}
 	return maxLength
 }
@@ -845,9 +845,9 @@ func getMaxLenTwo(nums []int) int {
 			ng++
 		}
 		if ng%2 == 0 {
-			maxLength = Utils.Max(maxLength, pos+ng)
+			maxLength = utils.Max(maxLength, pos+ng)
 		} else {
-			maxLength = Utils.Max(maxLength, i-first)
+			maxLength = utils.Max(maxLength, i-first)
 		}
 	}
 	return maxLength
@@ -1079,7 +1079,7 @@ func minDistance(word1, word2 string) int {
 			if word1[i-1] == word2[j-1] {
 				dp[i][j] = dp[i-1][j-1]
 			} else {
-				dp[i][j] = Utils.Min(dp[i-1][j-1]+2, Utils.Min(dp[i-1][j]+1, dp[i][j-1]+1))
+				dp[i][j] = utils.Min(dp[i-1][j-1]+2, utils.Min(dp[i-1][j]+1, dp[i][j-1]+1))
 			}
 		}
 	}
@@ -1106,7 +1106,7 @@ func minDistanceSimple(word1, word2 string) int {
 			if word1[i-1] == word2[j-1] {
 				dp[i][j] = dp[i-1][j-1] + 1
 			} else {
-				dp[i][j] = Utils.Max(dp[i-1][j], dp[i][j-1])
+				dp[i][j] = utils.Max(dp[i-1][j], dp[i][j-1])
 			}
 		}
 	}
@@ -1182,7 +1182,7 @@ func minDistanceComplex(word1, word2 string) int {
 			if word1[i-1] == word2[j-1] {
 				dp[i][j] = dp[i-1][j-1]
 			} else {
-				dp[i][j] = Utils.Min(dp[i-1][j-1], Utils.Min(dp[i-1][j], dp[i][j-1])) + 1
+				dp[i][j] = utils.Min(dp[i-1][j-1], utils.Min(dp[i-1][j], dp[i][j-1])) + 1
 			}
 		}
 	}
@@ -1316,7 +1316,7 @@ func longestPalindromeSubSeqSimple(s string) int {
 	for i := 0; i < n; i++ {
 		l1, r1 := getStartAndStop(s, i, i, n)
 		l2, r2 := getStartAndStop(s, i, i+1, n)
-		maxLength = Utils.Max(maxLength, Utils.Max(r1-l1+1, r2-l2+1))
+		maxLength = utils.Max(maxLength, utils.Max(r1-l1+1, r2-l2+1))
 	}
 	return maxLength
 }
@@ -1388,7 +1388,7 @@ func longestPalindromeSubSeq(s string) int {
 			if s[i] == s[j] {
 				dp[i][j] = dp[i+1][j-1] + 2
 			} else {
-				dp[i][j] = Utils.Max(dp[i+1][j], dp[i][j-1])
+				dp[i][j] = utils.Max(dp[i+1][j], dp[i][j-1])
 			}
 		}
 	}
@@ -1533,7 +1533,7 @@ func findNumberOfLIS(nums []int) int {
 				} else if dp[j]+1 == dp[i] {
 					count[i] += count[j]
 				}
-				dp[i] = Utils.Max(dp[i], dp[j]+1)
+				dp[i] = utils.Max(dp[i], dp[j]+1)
 			}
 		}
 		if maxLength < dp[i] {
@@ -1813,7 +1813,7 @@ func nthUglyNumber(n int) int {
 		// 否则dp数组中会出现重复数字(譬如x2=x3=6,此时p2=3,p3=2,p5=1，dp[6]=6)，dp[7]仍然是6
 		// 因此不能使用if/else if/else的判断逻辑
 		x2, x3, x5 := dp[p2]*2, dp[p3]*3, dp[p5]*5
-		dp[i] = Utils.Min(x2, Utils.Min(x3, x5))
+		dp[i] = utils.Min(x2, utils.Min(x3, x5))
 		if dp[i] == x2 {
 			p2++
 		}

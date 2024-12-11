@@ -1,6 +1,6 @@
 package RemoveNode
 
-import "AlgorithmPractise/LinkedList/Entity"
+import "algorithm-practise/linkedlist/Entity"
 
 /*
 剑指Offer 18. 删除链表的节点

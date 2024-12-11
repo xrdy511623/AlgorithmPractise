@@ -4,7 +4,7 @@ package simple
 simple package contains easy items
 */
 
-import "AlgorithmPractise/Utils"
+import "algorithm-practise/utils"
 
 /*
 leetcode 509
@@ -183,9 +183,9 @@ func MinCostClimbingStairs(cost []int) int {
 	dp := make([]int, n)
 	// dp数组make初始化时默认值就是0,所以dp[0]和dp[1]不用再赋值了
 	for i := 2; i < n; i++ {
-		dp[i] = Utils.Min(dp[i-1]+cost[i-1], dp[i-2]+cost[i-2])
+		dp[i] = utils.Min(dp[i-1]+cost[i-1], dp[i-2]+cost[i-2])
 	}
-	return Utils.Min(dp[n-1]+cost[n-1], dp[n-2]+cost[n-2])
+	return utils.Min(dp[n-1]+cost[n-1], dp[n-2]+cost[n-2])
 }
 
 // MinCostClimbingStairsSimple 同样的，可以优化一下空间复杂度.时间复杂度O(N), 空间复杂度O(1)
@@ -193,11 +193,11 @@ func MinCostClimbingStairsSimple(cost []int) int {
 	n := len(cost)
 	dp := make([]int, 2)
 	for i := 2; i < n; i++ {
-		minCost := Utils.Min(dp[0]+cost[i-2], dp[1]+cost[i-1])
+		minCost := utils.Min(dp[0]+cost[i-2], dp[1]+cost[i-1])
 		dp[0] = dp[1]
 		dp[1] = minCost
 	}
-	return Utils.Min(dp[0]+cost[n-2], dp[1]+cost[n-1])
+	return utils.Min(dp[0]+cost[n-2], dp[1]+cost[n-1])
 }
 
 /*
@@ -396,7 +396,7 @@ func minPathSum(grid [][]int) int {
 	}
 	for i := 1; i < m; i++ {
 		for j := 1; j < n; j++ {
-			dp[i][j] = Utils.Min(dp[i-1][j], dp[i][j-1]) + grid[i][j]
+			dp[i][j] = utils.Min(dp[i-1][j], dp[i][j-1]) + grid[i][j]
 		}
 	}
 	return dp[m-1][n-1]
@@ -445,7 +445,7 @@ func maxValue(grid [][]int) int {
 
 	for i := 1; i < m; i++ {
 		for j := 1; j < n; j++ {
-			dp[i][j] = Utils.Max(dp[i-1][j], dp[i][j-1]) + grid[i][j]
+			dp[i][j] = utils.Max(dp[i-1][j], dp[i][j-1]) + grid[i][j]
 		}
 	}
 	return dp[m-1][n-1]
@@ -516,7 +516,7 @@ func integerBreak(n int) int {
 	for i := 3; i <= n; i++ {
 		// 因为初始化dp[2] = 1, 所以j的取值最大不能超过i-2,这样i-j才会>=2
 		for j := 1; j < i-1; j++ {
-			dp[i] = Utils.Max(dp[i], Utils.Max((i-j)*j, dp[i-j]*j))
+			dp[i] = utils.Max(dp[i], utils.Max((i-j)*j, dp[i-j]*j))
 		}
 	}
 	return dp[n]

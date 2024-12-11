@@ -1,14 +1,14 @@
-package featureProblem
+package feature
 
 import (
-	"AlgorithmPractise/BinaryTree/Entity"
-	Entity2 "AlgorithmPractise/LinkedList/Entity"
+	Entity2 "algorithm-practise/linkedlist/Entity"
+	"algorithm-practise/tree/binarytree/entity"
 	"math"
 )
 
 /*
 二叉搜索树专题
-BST二叉搜索树(Binary Search Tree)是一种特殊类型的二叉树，它的特点是根节点值为所有节点值排序序列
+BST二叉搜索树(Binary Search tree)是一种特殊类型的二叉树，它的特点是根节点值为所有节点值排序序列
 的中位数，任一节点值均大于等于其左子树所有节点值，且均小于等于其右子树所有节点值。因此它的中序遍历
 序列是一个升序的有序数组。
 */
@@ -21,12 +21,12 @@ leetcode 701. 二叉搜索树中的插入操作
 */
 
 // InsertIntoBST 迭代法 时间复杂度O(N)，空间复杂度O(1)
-func InsertIntoBST(root *Entity.TreeNode, val int) *Entity.TreeNode {
+func InsertIntoBST(root *entity.TreeNode, val int) *entity.TreeNode {
 	if root == nil {
-		return &Entity.TreeNode{Val: val}
+		return &entity.TreeNode{Val: val}
 	}
 	cur := root
-	newNode := &Entity.TreeNode{Val: val}
+	newNode := &entity.TreeNode{Val: val}
 	for cur != nil {
 		if val < cur.Val {
 			if cur.Left == nil {
@@ -46,9 +46,9 @@ func InsertIntoBST(root *Entity.TreeNode, val int) *Entity.TreeNode {
 }
 
 // InsertIntoBSTSimple 递归法 时间复杂度O(N)，空间复杂度O(1)
-func InsertIntoBSTSimple(root *Entity.TreeNode, val int) *Entity.TreeNode {
+func InsertIntoBSTSimple(root *entity.TreeNode, val int) *entity.TreeNode {
 	if root == nil {
-		root = &Entity.TreeNode{Val: val}
+		root = &entity.TreeNode{Val: val}
 		return root
 	}
 	if val < root.Val {
@@ -91,7 +91,7 @@ c 要删除的节点有左子节点，那么为了维持BST的特性，我们需
 */
 
 // DeleteNodeInBST 时间复杂度O(logN)，空间复杂度O(H)
-func DeleteNodeInBST(root *Entity.TreeNode, key int) *Entity.TreeNode {
+func DeleteNodeInBST(root *entity.TreeNode, key int) *entity.TreeNode {
 	if root == nil {
 		return nil
 	} else if key < root.Val {
@@ -113,7 +113,7 @@ func DeleteNodeInBST(root *Entity.TreeNode, key int) *Entity.TreeNode {
 }
 
 // Predecessor 在二叉搜索树(BST)中寻找当前节点的前驱节点
-func Predecessor(cur *Entity.TreeNode) *Entity.TreeNode {
+func Predecessor(cur *entity.TreeNode) *entity.TreeNode {
 	pre := cur.Left
 	if pre == nil {
 		return pre
@@ -125,7 +125,7 @@ func Predecessor(cur *Entity.TreeNode) *Entity.TreeNode {
 }
 
 // Successor 在二叉搜索树(BST)中寻找当前节点的后继节点
-func Successor(cur *Entity.TreeNode) *Entity.TreeNode {
+func Successor(cur *entity.TreeNode) *entity.TreeNode {
 	post := cur.Right
 	if post == nil {
 		return post
@@ -147,9 +147,9 @@ leetcode 98. 验证二叉搜索树
 */
 
 // CheckIsValidBST 一个很容易想到的思路是中序遍历二叉树，如果它是BST，就会得到一个升序序列，否则就不是BST
-func CheckIsValidBST(root *Entity.TreeNode) bool {
+func CheckIsValidBST(root *entity.TreeNode) bool {
 	minValue := math.MinInt64
-	stack := []*Entity.TreeNode{}
+	stack := []*entity.TreeNode{}
 	for len(stack) > 0 || root != nil {
 		if root != nil {
 			stack = append(stack, root)
@@ -168,13 +168,13 @@ func CheckIsValidBST(root *Entity.TreeNode) bool {
 }
 
 // IsValidBST 利用二叉搜索树的特征递归解决,时间复杂度和空间复杂度都是O(N)
-func IsValidBST(root *Entity.TreeNode) bool {
+func IsValidBST(root *entity.TreeNode) bool {
 	min := math.MinInt64
 	max := math.MaxInt64
 	return helper(root, min, max)
 }
 
-func helper(root *Entity.TreeNode, min, max int) bool {
+func helper(root *entity.TreeNode, min, max int) bool {
 	if root == nil {
 		return true
 	}
@@ -192,7 +192,7 @@ leetcode 700. 二叉搜索树中的搜索
 */
 
 // SearchBST DFS递归
-func SearchBST(root *Entity.TreeNode, val int) *Entity.TreeNode {
+func SearchBST(root *entity.TreeNode, val int) *entity.TreeNode {
 	if root == nil || root.Val == val {
 		return root
 	}
@@ -204,7 +204,7 @@ func SearchBST(root *Entity.TreeNode, val int) *Entity.TreeNode {
 }
 
 // SearchBSTSimple 迭代法
-func SearchBSTSimple(root *Entity.TreeNode, val int) *Entity.TreeNode {
+func SearchBSTSimple(root *entity.TreeNode, val int) *entity.TreeNode {
 	for root != nil {
 		if root.Val < val {
 			root = root.Right
@@ -231,10 +231,10 @@ func SearchBSTSimple(root *Entity.TreeNode, val int) *Entity.TreeNode {
 空间复杂度为O(n),因此不是最佳解决方案。
 */
 
-func InorderSuccessor(root, p *Entity.TreeNode) *Entity.TreeNode {
-	var travel func(node *Entity.TreeNode) []*Entity.TreeNode
-	travel = func(node *Entity.TreeNode) []*Entity.TreeNode {
-		res := []*Entity.TreeNode{}
+func InorderSuccessor(root, p *entity.TreeNode) *entity.TreeNode {
+	var travel func(node *entity.TreeNode) []*entity.TreeNode
+	travel = func(node *entity.TreeNode) []*entity.TreeNode {
+		res := []*entity.TreeNode{}
 		if node == nil {
 			return res
 		}
@@ -274,11 +274,11 @@ func InorderSuccessor(root, p *Entity.TreeNode) *Entity.TreeNode {
 */
 
 // InorderSuccessorUseIteration 迭代法解决，时间复杂度降低为O(pos),空间复杂度降低为O(1)
-func InorderSuccessorUseIteration(root, p *Entity.TreeNode) *Entity.TreeNode {
+func InorderSuccessorUseIteration(root, p *entity.TreeNode) *entity.TreeNode {
 	if root == nil {
 		return nil
 	}
-	var prev *Entity.TreeNode
+	var prev *entity.TreeNode
 	for root.Val != p.Val {
 		if root.Val < p.Val {
 			root = root.Right
@@ -308,11 +308,11 @@ func InorderSuccessorUseIteration(root, p *Entity.TreeNode) *Entity.TreeNode {
 如果指定节点没有对应的“上一个”节点，则返回null。
 */
 
-func InorderPredecessor(root, p *Entity.TreeNode) *Entity.TreeNode {
+func InorderPredecessor(root, p *entity.TreeNode) *entity.TreeNode {
 	if root == nil {
 		return nil
 	}
-	var prev *Entity.TreeNode
+	var prev *entity.TreeNode
 	for root.Val != p.Val {
 		if p.Val > root.Val {
 			prev = root
@@ -341,7 +341,7 @@ leetcode 938. 二叉搜索树的范围和
 */
 
 // RangeSumBST 递归 时间复杂度O(N)，空间复杂度O(N)
-func RangeSumBST(root *Entity.TreeNode, low int, high int) int {
+func RangeSumBST(root *entity.TreeNode, low int, high int) int {
 	if root == nil {
 		return 0
 	}
@@ -355,12 +355,12 @@ func RangeSumBST(root *Entity.TreeNode, low int, high int) int {
 }
 
 // RangeSumBSTSimple 迭代 时间复杂度O(N)，空间复杂度O(N)
-func RangeSumBSTSimple(root *Entity.TreeNode, low int, high int) int {
+func RangeSumBSTSimple(root *entity.TreeNode, low int, high int) int {
 	sum := 0
 	if root == nil {
 		return sum
 	}
-	queue := []*Entity.TreeNode{root}
+	queue := []*entity.TreeNode{root}
 	for len(queue) != 0 {
 		node := queue[0]
 		queue = queue[1:]
@@ -381,7 +381,7 @@ func RangeSumBSTSimple(root *Entity.TreeNode, low int, high int) int {
 
 /*
 leetcode 538. 把二叉搜索树转换为累加树
-1.8 给出二叉搜索树的根节点，该树的节点值各不相同，请你将其转换为累加树（Greater Sum Tree），使每个节点
+1.8 给出二叉搜索树的根节点，该树的节点值各不相同，请你将其转换为累加树（Greater Sum tree），使每个节点
 node的新值等于原树中大于或等于node.val的值之和。
 
 提醒一下，二叉搜索树满足下列约束条件：
@@ -418,10 +418,10 @@ node的新值等于原树中大于或等于node.val的值之和。
 */
 
 // ConvertBST 时间复杂度O(N)，空间复杂度O(N)
-func ConvertBST(root *Entity.TreeNode) *Entity.TreeNode {
+func ConvertBST(root *entity.TreeNode) *entity.TreeNode {
 	sum := 0
-	var dfs func(*Entity.TreeNode)
-	dfs = func(node *Entity.TreeNode) {
+	var dfs func(*entity.TreeNode)
+	dfs = func(node *entity.TreeNode) {
 		if node == nil {
 			return
 		}
@@ -453,14 +453,14 @@ leetcode 108
 为切割点，一定能保证左右子树范围大体相当，是平衡树。
 */
 
-func SortedArrayToBST(nums []int) *Entity.TreeNode {
+func SortedArrayToBST(nums []int) *entity.TreeNode {
 	// 递归终止条件，当有序数组为空时，返回nil
 	if len(nums) == 0 {
 		return nil
 	}
 	// 当前根节点永远是有序数组中间位置元素
 	mid := len(nums) / 2
-	root := &Entity.TreeNode{Val: nums[mid]}
+	root := &entity.TreeNode{Val: nums[mid]}
 	root.Left = SortedArrayToBST(nums[:mid])
 	root.Left = SortedArrayToBST(nums[mid+1:])
 	return root
@@ -487,7 +487,7 @@ leetcode 109. 有序链表转换二叉搜索树
 数组的过程。
 */
 
-func sortedListToBST(head *Entity2.ListNode) *Entity.TreeNode {
+func sortedListToBST(head *Entity2.ListNode) *entity.TreeNode {
 	if head == nil {
 		return nil
 	}
@@ -496,13 +496,13 @@ func sortedListToBST(head *Entity2.ListNode) *Entity.TreeNode {
 		sortedArray = append(sortedArray, head.Val)
 		head = head.Next
 	}
-	var dfs func([]int) *Entity.TreeNode
-	dfs = func(nums []int) *Entity.TreeNode {
+	var dfs func([]int) *entity.TreeNode
+	dfs = func(nums []int) *entity.TreeNode {
 		if len(nums) == 0 {
 			return nil
 		}
 		mid := len(nums) / 2
-		root := &Entity.TreeNode{Val: nums[mid]}
+		root := &entity.TreeNode{Val: nums[mid]}
 		root.Left = dfs(nums[:mid])
 		root.Right = dfs(nums[mid+1:])
 		return root
@@ -600,7 +600,7 @@ leetcode 235. 二叉搜索树的最近公共祖先
 */
 
 // LowestCommonAncestor 迭代法解决
-func LowestCommonAncestor(root, p, q *Entity.TreeNode) *Entity.TreeNode {
+func LowestCommonAncestor(root, p, q *entity.TreeNode) *entity.TreeNode {
 	for root != nil {
 		if p.Val < root.Val && q.Val < root.Val {
 			root = root.Left
@@ -614,7 +614,7 @@ func LowestCommonAncestor(root, p, q *Entity.TreeNode) *Entity.TreeNode {
 }
 
 // LowestCommonAncestorUseRecursion 递归法解决
-func LowestCommonAncestorUseRecursion(root, p, q *Entity.TreeNode) *Entity.TreeNode {
+func LowestCommonAncestorUseRecursion(root, p, q *entity.TreeNode) *entity.TreeNode {
 	if p.Val < root.Val && q.Val < root.Val {
 		return LowestCommonAncestorUseRecursion(root.Left, p, q)
 	} else if p.Val > root.Val && q.Val > root.Val {
@@ -631,10 +631,10 @@ func LowestCommonAncestorUseRecursion(root, p, q *Entity.TreeNode) *Entity.TreeN
 */
 
 // IncreasingBST 时间复杂度O(2*N)，空间复杂度O(N)
-func IncreasingBST(root *Entity.TreeNode) *Entity.TreeNode {
-	var res []*Entity.TreeNode
-	var dfs func(*Entity.TreeNode)
-	dfs = func(node *Entity.TreeNode) {
+func IncreasingBST(root *entity.TreeNode) *entity.TreeNode {
+	var res []*entity.TreeNode
+	var dfs func(*entity.TreeNode)
+	dfs = func(node *entity.TreeNode) {
 		if node != nil {
 			dfs(node.Left)
 			res = append(res, node)
@@ -642,7 +642,7 @@ func IncreasingBST(root *Entity.TreeNode) *Entity.TreeNode {
 		}
 	}
 	dfs(root)
-	dummy := new(Entity.TreeNode)
+	dummy := new(entity.TreeNode)
 	cur := dummy
 	for _, node := range res {
 		cur.Right = node
@@ -653,11 +653,11 @@ func IncreasingBST(root *Entity.TreeNode) *Entity.TreeNode {
 }
 
 // IncreasingSimpleBST 更好的做法是在中序遍历的过程中直接改变节点指向，时间复杂度下降为O(N)
-func IncreasingSimpleBST(root *Entity.TreeNode) *Entity.TreeNode {
-	dummy := new(Entity.TreeNode)
+func IncreasingSimpleBST(root *entity.TreeNode) *entity.TreeNode {
+	dummy := new(entity.TreeNode)
 	cur := dummy
-	var helper func(*Entity.TreeNode)
-	helper = func(node *Entity.TreeNode) {
+	var helper func(*entity.TreeNode)
+	helper = func(node *entity.TreeNode) {
 		if node == nil {
 			return
 		}
@@ -685,10 +685,10 @@ int next()将指针向右移动，然后返回指针处的数字。
 
 type BSTIterator struct {
 	Nums []int
-	Root *Entity.TreeNode
+	Root *entity.TreeNode
 }
 
-func Constructor(root *Entity.TreeNode) BSTIterator {
+func Constructor(root *entity.TreeNode) BSTIterator {
 	nums := make([]int, 0)
 	Inorder(root, &nums)
 	return BSTIterator{
@@ -707,7 +707,7 @@ func (bst *BSTIterator) HasNext() bool {
 	return len(bst.Nums) > 0
 }
 
-func Inorder(node *Entity.TreeNode, nums *[]int) {
+func Inorder(node *entity.TreeNode, nums *[]int) {
 	if node == nil {
 		return
 	}
@@ -724,18 +724,18 @@ leetcode 95. 不同的二叉搜索树
 输出：[[1,null,2,null,3],[1,null,3,2],[2,1,3],[3,1,null,null,2],[3,2,null,1]]
 */
 
-func GenerateTrees(n int) []*Entity.TreeNode {
+func GenerateTrees(n int) []*entity.TreeNode {
 	if n == 0 {
-		return []*Entity.TreeNode{}
+		return []*entity.TreeNode{}
 	}
 	return Helper(1, n)
 }
 
-func Helper(start, end int) []*Entity.TreeNode {
+func Helper(start, end int) []*entity.TreeNode {
 	if start > end {
-		return []*Entity.TreeNode{nil}
+		return []*entity.TreeNode{nil}
 	}
-	var allTrees []*Entity.TreeNode
+	var allTrees []*entity.TreeNode
 	// 枚举可行根节点
 	for i := start; i <= end; i++ {
 		// 若根节点值为i,则左子树根节点取值范围为[1,i-1], 右子树根节点取值范围为[i+1,n]
@@ -746,7 +746,7 @@ func Helper(start, end int) []*Entity.TreeNode {
 		// 从左子树集合中选出一棵左子树，从右子树集合中选出一棵右子树，拼接到根节点上
 		for _, left := range leftTrees {
 			for _, right := range rightTrees {
-				curTree := &Entity.TreeNode{Val: i}
+				curTree := &entity.TreeNode{Val: i}
 				curTree.Left = left
 				curTree.Right = right
 				allTrees = append(allTrees, curTree)
@@ -771,9 +771,9 @@ leetcode 530. 二叉搜索树的最小绝对差
 */
 
 // GetMinimumDifference 中序遍历得到升序数组，然后迭代取相邻元素差值的最小值即可
-func GetMinimumDifference(root *Entity.TreeNode) int {
-	var dfs func(*Entity.TreeNode) []int
-	dfs = func(node *Entity.TreeNode) (res []int) {
+func GetMinimumDifference(root *entity.TreeNode) int {
+	var dfs func(*entity.TreeNode) []int
+	dfs = func(node *entity.TreeNode) (res []int) {
 		if node == nil {
 			return res
 		}
@@ -793,11 +793,11 @@ func GetMinimumDifference(root *Entity.TreeNode) int {
 }
 
 // GetMinimumDifferenceSimple 也可以直接在dfs中序遍历中迭代这个最小差值
-func GetMinimumDifferenceSimple(root *Entity.TreeNode) int {
-	var prev *Entity.TreeNode
+func GetMinimumDifferenceSimple(root *entity.TreeNode) int {
+	var prev *entity.TreeNode
 	min := math.MaxInt32
-	var dfs func(*Entity.TreeNode)
-	dfs = func(node *Entity.TreeNode) {
+	var dfs func(*entity.TreeNode)
+	dfs = func(node *entity.TreeNode) {
 		if node == nil {
 			return
 		}
@@ -812,13 +812,13 @@ func GetMinimumDifferenceSimple(root *Entity.TreeNode) int {
 	return min
 }
 
-func GetMinDiffSimple(root *Entity.TreeNode) int {
+func GetMinDiffSimple(root *entity.TreeNode) int {
 	if root == nil {
 		return 0
 	}
 	minDiff := math.MaxInt32
-	stack := []*Entity.TreeNode{}
-	var prev *Entity.TreeNode
+	stack := []*entity.TreeNode{}
+	var prev *entity.TreeNode
 	for len(stack) > 0 || root != nil {
 		if root != nil {
 			stack = append(stack, root)
@@ -859,12 +859,12 @@ BST(二叉搜索树)统计节点值出现频率，那就通过中序遍历形成
 */
 
 // FindMode  时间复杂度O(N)，空间复杂度O(N)
-func FindMode(root *Entity.TreeNode) []int {
+func FindMode(root *entity.TreeNode) []int {
 	res := []int{}
-	var prev *Entity.TreeNode
+	var prev *entity.TreeNode
 	count, maxCount := 1, 1
-	var dfs func(*Entity.TreeNode)
-	dfs = func(node *Entity.TreeNode) {
+	var dfs func(*entity.TreeNode)
+	dfs = func(node *entity.TreeNode) {
 		if node == nil {
 			return
 		}
@@ -893,14 +893,14 @@ func FindMode(root *Entity.TreeNode) []int {
 	return res
 }
 
-func findMode(root *Entity.TreeNode) []int {
+func findMode(root *entity.TreeNode) []int {
 	res := []int{}
 	if root == nil {
 		return res
 	}
-	var prev *Entity.TreeNode
+	var prev *entity.TreeNode
 	maxFreq, freq := 1, 1
-	s := []*Entity.TreeNode{}
+	s := []*entity.TreeNode{}
 	for len(s) > 0 || root != nil {
 		if root != nil {
 			s = append(s, root)
@@ -945,7 +945,7 @@ leetcode 669. 修剪二叉搜索树
 类似地，当node.val<low，那么修剪后的二叉树出现在节点的右边。否则，我们将会修剪树的两边。
 */
 
-func TrimBST(root *Entity.TreeNode, low, high int) *Entity.TreeNode {
+func TrimBST(root *entity.TreeNode, low, high int) *entity.TreeNode {
 	if root == nil {
 		return nil
 	}
@@ -974,9 +974,9 @@ leetcode 1305. 两棵二叉搜索树中的所有元素
 */
 
 // GetAllElements 中序遍历+归并排序
-func GetAllElements(root1, root2 *Entity.TreeNode) []int {
-	var dfs func(*Entity.TreeNode) []int
-	dfs = func(node *Entity.TreeNode) (res []int) {
+func GetAllElements(root1, root2 *entity.TreeNode) []int {
+	var dfs func(*entity.TreeNode) []int
+	dfs = func(node *entity.TreeNode) (res []int) {
 		if node == nil {
 			return res
 		}
@@ -1030,11 +1030,11 @@ func GetAllElements(root1, root2 *Entity.TreeNode) []int {
 输出：[8,5,10,1,7,null,12]
 */
 
-func BstFromPreorder(preorder []int) *Entity.TreeNode {
+func BstFromPreorder(preorder []int) *entity.TreeNode {
 	if len(preorder) == 0 {
 		return nil
 	}
-	root := &Entity.TreeNode{Val: preorder[0]}
+	root := &entity.TreeNode{Val: preorder[0]}
 	var left, right []int
 	for _, v := range preorder[1:] {
 		if v < root.Val {
@@ -1052,11 +1052,11 @@ func BstFromPreorder(preorder []int) *Entity.TreeNode {
 1.21 拓展: 后序遍历构造二叉搜索树
 */
 
-func BstFromPostorder(postorder []int) *Entity.TreeNode {
+func BstFromPostorder(postorder []int) *entity.TreeNode {
 	if len(postorder) == 0 {
 		return nil
 	}
-	root := &Entity.TreeNode{Val: postorder[len(postorder)-1]}
+	root := &entity.TreeNode{Val: postorder[len(postorder)-1]}
 	var left, right []int
 	for _, v := range postorder[:len(postorder)-1] {
 		if v < root.Val {
@@ -1087,10 +1087,10 @@ func BstFromPostorder(postorder []int) *Entity.TreeNode {
 */
 
 // FindTarget 先序遍历+哈希表
-func FindTarget(root *Entity.TreeNode, k int) bool {
+func FindTarget(root *entity.TreeNode, k int) bool {
 	hashtable := make(map[int]bool)
-	var dfs func(*Entity.TreeNode) bool
-	dfs = func(node *Entity.TreeNode) bool {
+	var dfs func(*entity.TreeNode) bool
+	dfs = func(node *entity.TreeNode) bool {
 		if node == nil {
 			return false
 		}
@@ -1104,10 +1104,10 @@ func FindTarget(root *Entity.TreeNode, k int) bool {
 }
 
 // findTarget 中序遍历+双指针
-func findTarget(root *Entity.TreeNode, k int) bool {
+func findTarget(root *entity.TreeNode, k int) bool {
 	var sortedArray []int
-	var dfs func(*Entity.TreeNode)
-	dfs = func(node *Entity.TreeNode) {
+	var dfs func(*entity.TreeNode)
+	dfs = func(node *entity.TreeNode) {
 		if node == nil {
 			return
 		}
@@ -1140,10 +1140,10 @@ func findTarget(root *Entity.TreeNode, k int) bool {
 输出：7
 */
 
-func findKLargestNode(root *Entity.TreeNode, k int) int {
+func findKLargestNode(root *entity.TreeNode, k int) int {
 	res := 0
-	var help func(*Entity.TreeNode)
-	help = func(node *Entity.TreeNode) {
+	var help func(*entity.TreeNode)
+	help = func(node *entity.TreeNode) {
 		if node == nil || k == 0 {
 			return
 		}
@@ -1170,10 +1170,10 @@ leetcode 230 二叉搜索树的第k小节点
 输出：3
 */
 
-func findKSmallestNode(root *Entity.TreeNode, k int) int {
+func findKSmallestNode(root *entity.TreeNode, k int) int {
 	res := 0
-	var help func(*Entity.TreeNode)
-	help = func(node *Entity.TreeNode) {
+	var help func(*entity.TreeNode)
+	help = func(node *entity.TreeNode) {
 		if root == nil || k == 0 {
 			return
 		}

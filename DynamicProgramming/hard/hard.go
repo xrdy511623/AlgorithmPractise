@@ -4,7 +4,7 @@ package hard
 package hard contains complex dynamicProgramming problems
 */
 
-import "AlgorithmPractise/Utils"
+import "algorithm-practise/utils"
 
 /*
 1.1 leetcode 42 接雨水
@@ -25,10 +25,10 @@ func TrapBrutal(height []int) int {
 	sum := 0
 	leftMax, rightMax, n := 0, 0, len(height)
 	for i := 1; i < n-1; i++ {
-		leftMax = Utils.MaxValueOfArray(height[:i])
-		rightMax = Utils.MaxValueOfArray(height[i+1:])
+		leftMax = utils.MaxValueOfArray(height[:i])
+		rightMax = utils.MaxValueOfArray(height[i+1:])
 		if leftMax > height[i] && rightMax > height[i] {
-			sum += Utils.Min(leftMax, rightMax) - height[i]
+			sum += utils.Min(leftMax, rightMax) - height[i]
 		}
 	}
 	return sum
@@ -63,13 +63,13 @@ func trapUseDp(height []int) int {
 	leftMax, rightMax := make([]int, n), make([]int, n)
 	leftMax[1], rightMax[n-2] = height[0], height[n-1]
 	for i := 2; i < n-1; i++ {
-		leftMax[i] = Utils.Max(height[i-1], leftMax[i-1])
+		leftMax[i] = utils.Max(height[i-1], leftMax[i-1])
 	}
 	for j := n - 3; j >= 1; j-- {
-		rightMax[j] = Utils.Max(height[j+1], rightMax[j+1])
+		rightMax[j] = utils.Max(height[j+1], rightMax[j+1])
 	}
 	for k := 1; k <= n-2; k++ {
-		if value := Utils.Min(leftMax[k], rightMax[k]) - height[k]; value > 0 {
+		if value := utils.Min(leftMax[k], rightMax[k]) - height[k]; value > 0 {
 			sum += value
 		}
 	}
@@ -101,7 +101,7 @@ func trapUseStack(height []int) int {
 			// 积水区域宽度为积水处左侧柱子位置与右侧柱子位置之差-1
 			curWidth := i - left - 1
 			// 积水区域高度便等于积水处左侧高度与右侧高度的最小值-低洼处高度
-			curHeight := Utils.Min(height[left], h) - low
+			curHeight := utils.Min(height[left], h) - low
 			// 此处积水区域的面积即为此处收集到的雨水量
 			sum += curWidth * curHeight
 		}
@@ -139,13 +139,13 @@ func trapSimple(height []int) int {
 	left, right := 1, n-2
 	for i := 1; i < n-1; i++ {
 		if height[left-1] < height[right+1] {
-			leftMax = Utils.Max(leftMax, height[left-1])
+			leftMax = utils.Max(leftMax, height[left-1])
 			if leftMax > height[left] {
 				sum += leftMax - height[left]
 			}
 			left++
 		} else {
-			rightMax = Utils.Max(rightMax, height[right+1])
+			rightMax = utils.Max(rightMax, height[right+1])
 			if rightMax > height[right] {
 				sum += rightMax - height[right]
 			}

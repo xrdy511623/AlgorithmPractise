@@ -1,7 +1,7 @@
 package feature
 
 import (
-	"AlgorithmPractise/Utils"
+	"algorithm-practise/utils"
 	"math"
 	"strconv"
 	"strings"
@@ -343,10 +343,10 @@ func LengthOfLongestSubstring(s string) int {
 	for i, length := 0, len(s); i < length; i++ {
 		if pos, ok := visited[s[i]]; ok {
 			// 如果当前字符在哈希表中出现过，更新窗口左边界start
-			start = Utils.Max(start, pos+1)
+			start = utils.Max(start, pos+1)
 		}
 		visited[s[i]] = i
-		maxLength = Utils.Max(maxLength, i-start+1)
+		maxLength = utils.Max(maxLength, i-start+1)
 	}
 	return maxLength
 }
@@ -675,7 +675,7 @@ func reverseNum(x int) int {
 		sign = -1
 		ss = ss[1:]
 	}
-	reversedNumStr := Utils.ReverseString(ss)
+	reversedNumStr := utils.ReverseString(ss)
 	num, _ := strconv.Atoi(reversedNumStr)
 	res := num * sign
 	if res <= math.MinInt32 || res >= math.MaxInt32 {
@@ -720,7 +720,7 @@ func isPalindrome(s string) bool {
 	n := len(ss)
 	ssNew := []byte{}
 	for i := 0; i < n; i++ {
-		if !Utils.CheckAlphaNumeric(s[i]) {
+		if !utils.CheckAlphaNumeric(s[i]) {
 			continue
 		}
 		ssNew = append(ssNew, ss[i])
@@ -740,10 +740,10 @@ func isPalindrome(s string) bool {
 func isPalindromeSimple(s string) bool {
 	l, r := 0, len(s)-1
 	for l < r {
-		for l < r && !Utils.CheckAlphaNumeric(s[l]) {
+		for l < r && !utils.CheckAlphaNumeric(s[l]) {
 			l++
 		}
-		for l < r && !Utils.CheckAlphaNumeric(s[r]) {
+		for l < r && !utils.CheckAlphaNumeric(s[r]) {
 			r--
 		}
 		if strings.ToLower(string([]byte{s[l]})) != strings.ToLower(string([]byte{s[r]})) {

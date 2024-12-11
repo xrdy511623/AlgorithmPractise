@@ -4,7 +4,7 @@ package medium
 medium contains middle level problems
 */
 
-import "AlgorithmPractise/Utils"
+import "algorithm-practise/utils"
 
 /*
 1.1 leetcode 121 买卖股票的最佳时机
@@ -79,8 +79,8 @@ func maxProfit(prices []int) int {
 	dp[0][0] = -prices[0]
 	dp[0][1] = 0
 	for i := 1; i < n; i++ {
-		dp[i][0] = Utils.Max(dp[i-1][0], -prices[i])
-		dp[i][1] = Utils.Max(dp[i-1][1], dp[i-1][0]+prices[i])
+		dp[i][0] = utils.Max(dp[i-1][0], -prices[i])
+		dp[i][1] = utils.Max(dp[i-1][1], dp[i-1][0]+prices[i])
 	}
 	return dp[n-1][1]
 }
@@ -95,9 +95,9 @@ func MaxProfitSimple(prices []int) int {
 	for i := 1; i < n; i++ {
 		profit := prices[i] - minPrice
 		if profit > 0 {
-			maxProfit = Utils.Max(maxProfit, profit)
+			maxProfit = utils.Max(maxProfit, profit)
 		}
-		minPrice = Utils.Min(minPrice, prices[i])
+		minPrice = utils.Min(minPrice, prices[i])
 	}
 	return maxProfit
 }
@@ -185,8 +185,8 @@ func maxProfitOne(prices []int) int {
 	dp[0][0] = -prices[0]
 	dp[0][1] = 0
 	for i := 1; i < n; i++ {
-		dp[i][0] = Utils.Max(dp[i-1][0], dp[i-1][1]-prices[i])
-		dp[i][1] = Utils.Max(dp[i-1][1], dp[i-1][0]+prices[i])
+		dp[i][0] = utils.Max(dp[i-1][0], dp[i-1][1]-prices[i])
+		dp[i][1] = utils.Max(dp[i-1][1], dp[i-1][0]+prices[i])
 	}
 	return dp[n-1][1]
 }
@@ -199,8 +199,8 @@ func maxProfitOneSimple(prices []int) int {
 	}
 	sell, buy := 0, -prices[0]
 	for i := 1; i < n; i++ {
-		sell = Utils.Max(sell, buy+prices[i])
-		buy = Utils.Max(buy, sell-prices[i])
+		sell = utils.Max(sell, buy+prices[i])
+		buy = utils.Max(buy, sell-prices[i])
 	}
 	return sell
 }
@@ -289,10 +289,10 @@ func maxProfitTwo(prices []int) int {
 	dp[0][3] = -prices[0]
 	dp[0][4] = 0
 	for i := 1; i < n; i++ {
-		dp[i][1] = Utils.Max(dp[i-1][1], dp[i-1][0]-prices[i])
-		dp[i][2] = Utils.Max(dp[i-1][2], dp[i-1][1]+prices[i])
-		dp[i][3] = Utils.Max(dp[i-1][3], dp[i-1][2]-prices[i])
-		dp[i][4] = Utils.Max(dp[i-1][4], dp[i-1][3]+prices[i])
+		dp[i][1] = utils.Max(dp[i-1][1], dp[i-1][0]-prices[i])
+		dp[i][2] = utils.Max(dp[i-1][2], dp[i-1][1]+prices[i])
+		dp[i][3] = utils.Max(dp[i-1][3], dp[i-1][2]-prices[i])
+		dp[i][4] = utils.Max(dp[i-1][4], dp[i-1][3]+prices[i])
 	}
 	return dp[n-1][4]
 }
@@ -306,10 +306,10 @@ func maxProfitTwoSimple(prices []int) int {
 	buy1, sell1 := -prices[0], 0
 	buy2, sell2 := -prices[0], 0
 	for i := 1; i < n; i++ {
-		buy1 = Utils.Max(buy1, -prices[i])
-		sell1 = Utils.Max(sell1, buy1+prices[i])
-		buy2 = Utils.Max(buy2, sell1-prices[i])
-		sell2 = Utils.Max(sell2, buy2+prices[i])
+		buy1 = utils.Max(buy1, -prices[i])
+		sell1 = utils.Max(sell1, buy1+prices[i])
+		buy2 = utils.Max(buy2, sell1-prices[i])
+		sell2 = utils.Max(sell2, buy2+prices[i])
 	}
 	return sell2
 }
@@ -403,10 +403,10 @@ func maxProfitK(prices []int, k int) int {
 		for j := 1; j < 2*k+1; j++ {
 			// j为奇数，代表买入
 			if j%2 == 1 {
-				dp[i][j] = Utils.Max(dp[i-1][j], dp[i-1][j-1]-prices[i])
+				dp[i][j] = utils.Max(dp[i-1][j], dp[i-1][j-1]-prices[i])
 			} else {
 				// j为偶数，代表卖出
-				dp[i][j] = Utils.Max(dp[i-1][j], dp[i-1][j-1]+prices[i])
+				dp[i][j] = utils.Max(dp[i-1][j], dp[i-1][j-1]+prices[i])
 			}
 		}
 	}
@@ -474,11 +474,11 @@ func maxProfitIncludeFreeze(prices []int) int {
 	}
 	dp[0][0] = -prices[0]
 	for i := 1; i < n; i++ {
-		dp[i][0] = Utils.Max(dp[i-1][0], dp[i-1][2]-prices[i])
+		dp[i][0] = utils.Max(dp[i-1][0], dp[i-1][2]-prices[i])
 		dp[i][1] = dp[i-1][0] + prices[i]
-		dp[i][2] = Utils.Max(dp[i-1][1], dp[i-1][2])
+		dp[i][2] = utils.Max(dp[i-1][1], dp[i-1][2])
 	}
-	return Utils.Max(dp[n-1][1], dp[n-1][2])
+	return utils.Max(dp[n-1][1], dp[n-1][2])
 }
 
 /*
@@ -532,12 +532,12 @@ func maxProfitIncludeFreezePeriod(prices []int) int {
 	}
 	dp[0][0] = -prices[0]
 	for i := 1; i < n; i++ {
-		dp[i][0] = Utils.Max(dp[i-1][0], Utils.Max(dp[i-1][1], dp[i-1][3])-prices[i])
-		dp[i][1] = Utils.Max(dp[i-1][1], dp[i-1][3])
+		dp[i][0] = utils.Max(dp[i-1][0], utils.Max(dp[i-1][1], dp[i-1][3])-prices[i])
+		dp[i][1] = utils.Max(dp[i-1][1], dp[i-1][3])
 		dp[i][2] = dp[i-1][0] + prices[i]
 		dp[i][3] = dp[i-1][2]
 	}
-	return Utils.Max(dp[n-1][1], Utils.Max(dp[n-1][2], dp[n-1][3]))
+	return utils.Max(dp[n-1][1], utils.Max(dp[n-1][2], dp[n-1][3]))
 }
 
 /*
@@ -576,8 +576,8 @@ func maxProfitIncludeFee(prices []int, fee int) int {
 	}
 	dp[0][0] = -prices[0]
 	for i := 1; i < n; i++ {
-		dp[i][0] = Utils.Max(dp[i-1][0], dp[i-1][1]-prices[i])
-		dp[i][1] = Utils.Max(dp[i-1][1], dp[i-1][0]+prices[i]-fee)
+		dp[i][0] = utils.Max(dp[i-1][0], dp[i-1][1]-prices[i])
+		dp[i][1] = utils.Max(dp[i-1][1], dp[i-1][0]+prices[i]-fee)
 	}
 	return dp[n-1][1]
 }
@@ -589,8 +589,8 @@ func maxProfitIncludeFeeSimple(prices []int, fee int) int {
 	}
 	sell, buy := 0, -prices[0]
 	for i := 1; i < n; i++ {
-		sell = Utils.Max(sell, buy+prices[i]-fee)
-		buy = Utils.Max(buy, sell-prices[i])
+		sell = utils.Max(sell, buy+prices[i]-fee)
+		buy = utils.Max(buy, sell-prices[i])
 	}
 	return sell
 }

@@ -1,7 +1,7 @@
-package Stack
+package stack
 
 import (
-	"AlgorithmPractise/Utils"
+	"algorithm-practise/utils"
 	"math"
 	"strconv"
 	"strings"
@@ -168,7 +168,7 @@ func Construct() MinStack {
 func (ms *MinStack) Push(val int) {
 	ms.stack = append(ms.stack, val)
 	top := ms.minStack[len(ms.minStack)-1]
-	ms.minStack = append(ms.minStack, Utils.Min(top, val))
+	ms.minStack = append(ms.minStack, utils.Min(top, val))
 }
 
 func (ms *MinStack) Pop() {
@@ -408,7 +408,7 @@ func LongestValidParentheses(s string) int {
 			if len(stack) == 0 {
 				stack = append(stack, i)
 			} else {
-				maxLength = Utils.Max(maxLength, i-stack[len(stack)-1])
+				maxLength = utils.Max(maxLength, i-stack[len(stack)-1])
 			}
 		}
 	}
@@ -441,7 +441,7 @@ func LongestValidParenthesesSimple(s string) int {
 			right++
 		}
 		if left == right {
-			maxLength = Utils.Max(maxLength, 2*right)
+			maxLength = utils.Max(maxLength, 2*right)
 		} else if right > left {
 			left, right = 0, 0
 		}
@@ -454,7 +454,7 @@ func LongestValidParenthesesSimple(s string) int {
 			right++
 		}
 		if left == right {
-			maxLength = Utils.Max(maxLength, 2*right)
+			maxLength = utils.Max(maxLength, 2*right)
 		} else if left > right {
 			left, right = 0, 0
 		}
@@ -486,7 +486,7 @@ func LongestValidParenthesesComplex(s string) int {
 					dp[i] = dp[i-1] + 2
 				}
 			}
-			maxLength = Utils.Max(maxLength, dp[i])
+			maxLength = utils.Max(maxLength, dp[i])
 		}
 	}
 	return maxLength
@@ -605,13 +605,13 @@ func CheckValidStringSimple(s string) bool {
 			maxCount++
 			minCount++
 		} else if ch == ')' {
-			minCount = Utils.Max(minCount-1, 0)
+			minCount = utils.Max(minCount-1, 0)
 			maxCount--
 			if maxCount < 0 {
 				return false
 			}
 		} else {
-			minCount = Utils.Max(minCount-1, 0)
+			minCount = utils.Max(minCount-1, 0)
 			maxCount++
 		}
 	}
@@ -647,9 +647,9 @@ func largestRectangleAreaBrutal(heights []int) int {
 		// 枚举矩形的右边界
 		for r := l; r < n; r++ {
 			// 确定矩形最小高度
-			minHeight = Utils.Min(minHeight, heights[r])
+			minHeight = utils.Min(minHeight, heights[r])
 			// 计算矩形面积，迭代最大面积
-			res = Utils.Max(res, minHeight*(r-l+1))
+			res = utils.Max(res, minHeight*(r-l+1))
 		}
 	}
 	return res
@@ -671,7 +671,7 @@ func largestRectangleAreaBrutalTwo(heights []int) int {
 		for r+1 < n && heights[r+1] >= h {
 			r++
 		}
-		res = Utils.Max(res, h*(r-l+1))
+		res = utils.Max(res, h*(r-l+1))
 	}
 	return res
 }
@@ -755,7 +755,7 @@ func largestRectangleArea(heights []int) int {
 		// 面积即为当前柱子的高度*宽度(也就是右边界-左边界-1)
 		// 减一是因为左右边界的柱子高度都是低于当前柱子高度的，所以左右边界都不包含
 		// 迭代最大矩形面积
-		res = Utils.Max(res, heights[i]*(right[i]-left[i]-1))
+		res = utils.Max(res, heights[i]*(right[i]-left[i]-1))
 	}
 	return res
 }
@@ -781,7 +781,7 @@ func largestRectangleAreaSimple(heights []int) int {
 	}
 	res := 0
 	for i := 0; i < n; i++ {
-		res = Utils.Max(res, heights[i]*(right[i]-left[i]-1))
+		res = utils.Max(res, heights[i]*(right[i]-left[i]-1))
 	}
 	return res
 }
@@ -842,7 +842,7 @@ func maximalRectangle(matrix [][]byte) int {
 
 		for i := 0; i < m; i++ {
 			h := down[i] - up[i] - 1
-			res = Utils.Max(res, h*(left[i][j]))
+			res = utils.Max(res, h*(left[i][j]))
 		}
 	}
 	return res

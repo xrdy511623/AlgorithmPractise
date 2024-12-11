@@ -1,7 +1,7 @@
-package featureProblem
+package feature
 
 import (
-	"AlgorithmPractise/Utils"
+	"algorithm-practise/utils"
 )
 
 /*
@@ -158,7 +158,7 @@ func maxAreaOfIsland(grid [][]int) int {
 			if grid[r][c] == 1 {
 				area := dfs(r, c)
 				// 迭代最大岛屿面积
-				maxArea = Utils.Max(maxArea, area)
+				maxArea = utils.Max(maxArea, area)
 			}
 		}
 	}
@@ -213,7 +213,7 @@ func largestIsland(grid [][]int) int {
 		for c := 0; c < columns; c++ {
 			if grid[r][c] == 1 {
 				area := dfs(r, c, index)
-				maxLand = Utils.Max(maxLand, area)
+				maxLand = utils.Max(maxLand, area)
 				record[index] = area
 				index++
 			}
@@ -224,12 +224,12 @@ func largestIsland(grid [][]int) int {
 		for c := 0; c < columns; c++ {
 			if grid[r][c] == 0 {
 				plus := getPlusArea(grid, r, c, rows, columns, record)
-				maxPlus = Utils.Max(maxPlus, plus)
+				maxPlus = utils.Max(maxPlus, plus)
 			}
 		}
 	}
 	// 有可能全是陆地，所以最大岛屿面积得是maxLand, maxPlus的较大值
-	return Utils.Max(maxLand, maxPlus)
+	return utils.Max(maxLand, maxPlus)
 }
 
 func getPlusArea(grid [][]int, r, c, rows, columns int, record map[int]int) int {
