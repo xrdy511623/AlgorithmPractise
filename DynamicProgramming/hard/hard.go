@@ -249,3 +249,89 @@ func isMatch(s string, p string) bool {
 	// 返回最终结果，s 和 p 是否完全匹配
 	return dp[m][n]
 }
+
+/*
+leetcode 329 矩阵中的最长递增路径
+给定一个 m x n 整数矩阵 matrix ，找出其中 最长递增路径 的长度。
+对于每个单元格，你可以往上，下，左，右四个方向移动。 你 不能 在 对角线 方向上移动或移动到 边界外（即不允许环绕）。
+
+输入：matrix = [[3,4,5],[3,2,6],[2,2,1]]
+输出：4
+解释：最长递增路径是 [3, 4, 5, 6]。注意不允许在对角线方向上移动。
+
+提示：
+m == matrix.length
+n == matrix[i].length
+1 <= m, n <= 200
+0 <= matrix[i][j] <= 231 - 1
+*/
+
+/*
+思路:动态规划+dfs搜索
+这是一道典型的动态规划和深度优先搜索（DFS）结合的题目，适合用 记忆化搜索 来优化性能。具体步骤如下：
+
+定义问题：
+我们需要找到矩阵中最长的递增路径。递增路径的定义是当前位置值严格小于下一位置值。
+每个位置可以向上下左右四个方向移动，但不能越界或重复访问。
+解法：
+
+使用深度优先搜索（DFS）遍历矩阵，从每个位置开始尝试寻找最长路径。
+使用一个二维数组 cache 来保存从每个位置开始的最长递增路径长度。如果某个位置已经计算过，直接返回缓存值，避免重复计算。
+
+优化：
+DFS + 记忆化搜索将时间复杂度从指数级降到线性级别
+O(m×n)，因为每个单元格最多只会被计算一次。
+
+边界条件：
+空矩阵或单元格长度为 1 时直接返回结果。
+*/
+
+func check(r, c, rows, cols int) bool {
+	return r >= 0 && r < rows && c >= 0 && c < cols
+}
+
+func longestIncreasingPath(matrix [][]int) int {
+	if len(matrix) == 0 || len(matrix[0]) == 0 {
+		return 0
+	}
+	m, n := len(matrix), len(matrix[0])
+	// 缓存数组，cache[i][j] 表示从位置 (i, j) 开始的最长递增路径长度
+	cache := make([][]int, m)
+	for i := 0; i < m; i++ {
+		cache[i] = make([]int, n)
+	}
+	maxLength := 0
+	var dfs func(int, int) int
+	dfs = func(r, c int) int {
+		// 如果当前位置已经计算过，直接返回缓存值，避免重复计算
+		if cache[r][c] != 0 {
+			return cache[r][c]
+		}
+		length := 1
+		// 遍历上下左右邻近位置，寻找最长递增路径
+		// 判断边界条件及递增条件
+		if check(r-1, c, m, n) && matrix[r][c] < matrix[r-1][c] {
+			length = utils.Max(length, 1+dfs(r-1, c))
+		}
+		if check(r+1, c, m, n) && matrix[r][c] < matrix[r+1][c] {
+			length = utils.Max(length, 1+dfs(r+1, c))
+		}
+		if check(r, c-1, m, n) && matrix[r][c] < matrix[r][c-1] {
+			length = utils.Max(length, 1+dfs(r, c-1))
+		}
+		if check(r, c+1, m, n) && matrix[r][c] < matrix[r][c+1] {
+			length = utils.Max(length, 1+dfs(r, c+1))
+		}
+		// 缓存结果并返回
+		cache[r][c] = length
+		return length
+	}
+	// 遍历每个位置，找到最长路径
+	for r := 0; r < m; r++ {
+		for c := 0; c < n; c++ {
+			// 迭代最长路径长度 maxLength
+			maxLength = utils.Max(maxLength, dfs(r, c))
+		}
+	}
+	return maxLength
+}
