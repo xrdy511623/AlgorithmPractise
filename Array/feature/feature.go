@@ -2255,3 +2255,49 @@ func findDuplicate(nums []int) int {
 	}
 	return fast
 }
+
+/*
+文物朝代判断
+展览馆展出来自 13 个朝代的文物，每排展柜展出 5 个文物。某排文物的摆放情况记录于数组 places，其中 places[i]
+表示处于第 i 位文物的所属朝代编号。其中，编号为 0 的朝代表示未知朝代。请判断并返回这排文物的所属朝代编号是否
+能够视为连续的五个朝代（如遇未知朝代可算作连续情况）。
+
+示例 1：
+输入: places = [0, 6, 9, 0, 7]
+输出: True
+
+示例 2：
+输入: places = [7, 8, 9, 10, 11]
+输出: True
+
+提示：
+places.length = 5
+0 <= places[i] <= 13
+*/
+
+func checkDynasty(places []int) bool {
+	// 初始化最大值和最小值
+	max, min := 0, 14
+	// 记录非零朝代编号出现次数
+	seen := make(map[int]int)
+	for _, num := range places {
+		// 遇到未知朝代直接跳过
+		if num == 0 {
+			continue
+		}
+		seen[num]++
+		// 如果非零朝代编号重复，返回失败
+		if seen[num] > 1 {
+			return false
+		}
+		// 迭代数组中的最大值和最小值
+		if max < num {
+			max = num
+		}
+		if min > num {
+			min = num
+		}
+	}
+	// 检查最大值和最小值的差距是否可被零填充
+	return max-min <= 4
+}

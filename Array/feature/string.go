@@ -889,3 +889,65 @@ func longestSubstring(s string, k int) int {
 	// 如果没有找到任何字符的频率小于 k，说明整个字符串满足条件
 	return n
 }
+
+/*
+leetcode 168 Excel表列名称
+给你一个整数 columnNumber ，返回它在 Excel 表中相对应的列名称。
+
+例如：
+A -> 1
+B -> 2
+C -> 3
+...
+Z -> 26
+AA -> 27
+AB -> 28
+...
+
+示例 1：
+输入：columnNumber = 1
+输出："A"
+
+示例 2：
+输入：columnNumber = 28
+输出："AB"
+
+示例 3：
+输入：columnNumber = 701
+输出："ZY"
+
+示例 4：
+输入：columnNumber = 2147483647
+输出："FXSHRXW"
+
+提示：
+1 <= columnNumber <= 231 - 1
+*/
+
+/*
+Excel 的列编号与字母表的关系类似于 26 进制数：
+每一列可以看作是基于 26 的数字，其中字母 A 表示 1，B 表示 2，...，Z 表示 26。
+与传统 26 进制不同的是，Excel 的列编号是从 1 开始的，而不是从 0 开始。这需要特别处理：
+例如：第 26 列是 Z，第 27 列是 AA，这意味着每次减去 1，使得编号对齐到从 0 开始的 26 进制表示。
+
+转换步骤：
+对 columnNumber 不断取模 26，得到当前位的字母。
+将 columnNumber 减去当前位的值，然后除以 26，继续处理更高位。
+直到 columnNumber 为 0，停止。
+*/
+
+func convertToTitle(columnNumber int) string {
+	// 定义结果字符串
+	res := ""
+	for columnNumber > 0 {
+		// Excel 列号是从 1 开始的，调整到 0 开始
+		columnNumber--
+		// 当前位的字符：'A' + 余数
+		char := 'A' + (columnNumber % 26)
+		// 字符加到结果前面
+		res = string(char) + res
+		// 减去当前位的值，并继续处理更高位
+		columnNumber /= 26
+	}
+	return res
+}
