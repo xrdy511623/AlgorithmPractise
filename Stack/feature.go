@@ -1081,3 +1081,72 @@ func removeKdigits(num string, k int) string {
 	}
 	return res
 }
+
+/*
+leetcode 316/1081 去除重复字母/不同字符的最小子序列
+给你一个字符串s ，请你去除字符串中重复的字母，使得每个字母只出现一次。需保证返回结果的字典序最小
+（要求不能打乱其他字符的相对位置）。
+
+示例 1：
+输入：s = "bcabc"
+输出："abc"
+
+示例 2：
+输入：s = "cbacdcbc"
+输出："acdb"
+
+提示：
+1 <= s.length <= 104
+s 由小写英文字母组成
+*/
+
+/*
+思路:单调栈
+本题要求去除重复字母，并保持字典序最小。可以使用单调栈来高效解决这个问题。核心思想是：
+统计字符出现次数： 首先遍历字符串，统计每个字符出现的次数，方便后续判断字符是否可以被移除。
+使用栈维护结果： 使用一个栈来维护最终的结果字符串。遍历输入字符串，对于每个字符：
+如果该字符已经在栈中，则跳过。
+否则，比较栈顶字符和当前字符：
+如果栈顶字符的字典序大于当前字符，并且栈顶字符在后续还会出现（即统计次数大于0），则弹出栈顶字符，直到栈为空或不满足上述条件。
+将当前字符压入栈。
+构建结果字符串： 遍历完成后，栈中的字符即为最终结果，将其转换为字符串返回。
+之所以使用单调栈，是因为它能够有效地维护一个递增（或递减）的序列，从而帮助我们找到字典序最小的组合。
+*/
+
+func removeDuplicateLetters(s string) string {
+	n := len(s)
+	if n <= 1 {
+		return s
+	}
+	// 统计每个字符出现的次数
+	count := make([]int, 26)
+	for i := 0; i < n; i++ {
+		count[s[i]-'a']++
+	}
+	// 栈用于维护结果
+	stack := make([]byte, 0)
+	// 记录字符是否在栈中
+	inStack := make([]bool, 26)
+
+	for i := 0; i < n; i++ {
+		char := s[i]
+		index := char - 'a'
+		// 如果字符已经在栈中，则跳过
+		if inStack[index] {
+			count[index]--
+			continue
+		}
+		// 维护单调栈
+		for len(stack) > 0 && stack[len(stack)-1] > char && count[stack[len(stack)-1]-'a'] > 0 {
+			inStack[stack[len(stack)-1]-'a'] = false
+			stack = stack[:len(stack)-1]
+		}
+		// 将当前字符入栈
+		stack = append(stack, char)
+		// 标记该字符已在栈中
+		inStack[index] = true
+		// 剩余次数减一
+		count[index]--
+	}
+	return string(stack)
+}
