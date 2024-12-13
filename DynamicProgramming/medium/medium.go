@@ -454,7 +454,7 @@ func findTargetSumWays(nums []int, target int) int {
 	capacity := (sum + target) / 2
 	dp := make([]int, capacity+1)
 	dp[0] = 1
-	for i := 0; i < len(nums); i++ {
+	for i, n := 0, len(nums); i < n; i++ {
 		for j := capacity; j >= nums[i]; j-- {
 			dp[j] += dp[j-nums[i]]
 		}

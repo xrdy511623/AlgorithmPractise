@@ -91,7 +91,7 @@ func PathSum(root *entity.TreeNode, target int) [][]int {
 			leftPath := make([]int, len(path))
 			copy(leftPath, path)
 			leftPath = append(leftPath, node.Left.Val)
-			queue = append(queue, Group{node.Right, leftPath})
+			queue = append(queue, Group{node.Left, leftPath})
 		}
 		if node.Right != nil {
 			rightPath := make([]int, len(path))
