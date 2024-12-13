@@ -2239,3 +2239,111 @@ func triangleNumber(nums []int) int {
 	}
 	return count
 }
+
+/*
+leetcode 378 有序矩阵中第k小的元素
+给你一个 n x n 矩阵 matrix ，其中每行和每列元素均按升序排序，找到矩阵中第 k 小的元素。
+请注意，它是 排序后 的第 k 小元素，而不是第 k 个 不同 的元素。
+
+你必须找到一个内存复杂度优于 O(n2) 的解决方案。
+
+示例 1：
+输入：matrix = [[1,5,9],[10,11,13],[12,13,15]], k = 8
+输出：13
+解释：矩阵中的元素为 [1,5,9,10,11,12,13,13,15]，第 8 小元素是 13
+
+示例 2：
+输入：matrix = [[-5]], k = 1
+输出：-5
+
+提示：
+n == matrix.length
+n == matrix[i].length
+1 <= n <= 300
+-109 <= matrix[i][j] <= 109
+题目数据 保证 matrix 中的所有行和列都按 非递减顺序 排列
+1 <= k <= n2
+
+进阶：
+你能否用一个恒定的内存(即 O(1) 内存复杂度)来解决这个问题?
+你能在 O(n) 的时间复杂度下解决这个问题吗?这个方法对于面试来说可能太超前了，但是你会发现阅读这篇文章（http://www.cse.yorku.ca/~andy/pubs/X+Y.pdf）很有趣。
+*/
+
+/*
+思路:二分查找
+由于矩阵的每行和每列都按升序排序，可以将问题转化为二分查找问题，结合“查找矩阵中小于等于某个值的元素个数”来解决。
+
+二分查找法
+定义搜索区间：
+最小值为矩阵的左上角元素 matrix[0][0]。
+最大值为矩阵的右下角元素 matrix[n-1][n-1]。
+
+中间值判定：
+计算当前中间值 mid = (min + max) / 2。
+判断矩阵中小于等于 mid 的元素个数：
+如果个数 count >= k，则第 k 小的元素可能在左区间，更新 max = mid。
+如果个数 count < k，则第 k 小的元素一定在右区间，更新 min = mid + 1。
+
+结束条件：
+当 min == max 时，即可返回答案。
+
+如何计算矩阵中小于等于某个值的元素个数：
+利用矩阵的行列排序特性，从左下角或右上角出发：
+如果当前元素 matrix[i][j] <= mid，则该行所有元素都满足条件，累加计数，并向右移动。
+如果当前元素 matrix[i][j] > mid，则向上移动。
+*/
+
+func kthSmallest(matrix [][]int, k int) int {
+	n := len(matrix)
+	// 定义二分搜索的左右边界
+	l, r := matrix[0][0], matrix[n-1][n-1]
+	for l < r {
+		mid := l + (r-l)/2
+		count := findLessEqualCount(matrix, n, mid)
+		if count < k {
+			l = mid + 1
+		} else {
+			r = mid
+		}
+	}
+	return l
+}
+
+// 计算矩阵中小于等于 target 的元素个数
+func findLessEqualCount(matrix [][]int, n, target int) int {
+	count, row, col := 0, n-1, 0
+	for row >= 0 && col < n {
+		if matrix[row][col] <= target {
+			// 当前列所有元素都满足条件
+			count += row + 1
+			col++
+		} else {
+			row--
+		}
+	}
+	return count
+}
+
+/*
+变形题：给你一个 n x n 矩阵 matrix ，其中每行和每列元素均按升序排序，找到矩阵中第 k 大的元素。
+请注意，它是排序后 的第 k 大元素，而不是第 k 个 不同 的元素。
+你必须找到一个内存复杂度优于 O(n2) 的解决方案。
+*/
+
+func kthLargest(matrix [][]int, k int) int {
+	n := len(matrix)
+	// 定义二分搜索的左右边界
+	l, r := matrix[0][0], matrix[n-1][n-1]
+	// 转化，寻找第k大元素，即寻找第n*n-k+1小的元素
+	k = n*n - k + 1
+	for l < r {
+		mid := l + (r-l)/2
+		count := findLessEqualCount(matrix, n, mid)
+		if count < k {
+			r = mid - 1
+		} else {
+			l = mid
+		}
+	}
+	return l
+}
