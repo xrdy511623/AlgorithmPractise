@@ -1170,3 +1170,119 @@ func backToOriginSimple(n int) int {
 	// 返回走n步回到点0的方案数
 	return prev[0]
 }
+
+/*
+leetcode 97 交错字符串
+给定三个字符串 s1、s2、s3，请你帮忙验证 s3 是否是由 s1 和 s2 交错 组成的。
+两个字符串 s 和 t 交错 的定义与过程如下，其中每个字符串都会被分割成若干非空
+子字符串：
+s = s1 + s2 + ... + sn
+t = t1 + t2 + ... + tm
+|n - m| <= 1
+交错 是 s1 + t1 + s2 + t2 + s3 + t3 + ... 或者 t1 + s1 + t2 + s2 + t3 + s3 + ...
+注意：a + b 意味着字符串 a 和 b 连接。
+
+输入：s1 = "aabcc", s2 = "dbbca", s3 = "aadbbcbcac"
+输出：true
+
+提示：
+
+0 <= s1.length, s2.length <= 100
+0 <= s3.length <= 200
+s1、s2、和 s3 都由小写英文字母组成
+
+进阶：您能否仅使用 O(s2.length) 额外的内存空间来解决它?
+*/
+
+/*
+思路:动态规划
+定义状态：
+
+dp[i][j] 表示 s1 的前 i 个字符 和 s2 的前 j 个字符 是否能够交错组成 s3 的前 i+j 个字符。
+状态转移方程：
+
+如果 s1[i-1] == s3[i+j-1] 且 dp[i-1][j] 为真，则 dp[i][j] = true。
+如果 s2[j-1] == s3[i+j-1] 且 dp[i][j-1] 为真，则 dp[i][j] = true。
+即：
+dp[i][j] = (s1[i-1] == s3[i+j-1] && dp[i-1][j]) || (s2[j-1] == s3[i+j-1] && dp[i][j-1])
+
+推导:
+dp[i][j] = true 的条件为：
+当前字符由 s1 提供，且之前的状态满足：
+如果 s1[i-1] == s3[i+j-1] 且 dp[i-1][j] = true：
+意味着 s3 的第 i+j-1 个字符来源于 s1 的第 i-1 个字符；
+同时，剩下的 s1 的前 i-1 和 s2 的前 j 已经可以交错组成 s3 的前 i+j-1 个字符。
+
+当前字符由 s2 提供，且之前的状态满足：
+如果 s2[j-1] == s3[i+j-1] 且 dp[i][j-1] = true：
+意味着 s3 的第 i+j-1 个字符来源于 s2 的第 j-1 个字符；
+同时，剩下的 s1 的前 i 和 s2 的前 j-1 已经可以交错组成 s3 的前 i+j-1 个字符
+
+边界条件：
+dp[0][0] = true，表示空的 s1 和空的 s2 可以组成空的 s3。
+
+当 i=0 时，dp[0][j] 仅依赖 s2：
+dp[0][j] = dp[0][j-1] && (s2[j-1] == s3[j-1])
+
+当 j=0 时，dp[i][0] 仅依赖 s1：
+dp[i][0] = dp[i-1][0] && (s1[i-1] == s3[i-1])
+
+最终结果：
+返回 dp[len(s1)][len(s2)]。
+*/
+
+func isInterleave(s1 string, s2 string, s3 string) bool {
+	m, n, k := len(s1), len(s2), len(s3)
+	// 如果长度不匹配，直接返回 false
+	if m+n != k {
+		return false
+	}
+	// 初始化二维 DP 数组
+	dp := make([][]bool, m+1)
+	for i := 0; i <= m; i++ {
+		dp[i] = make([]bool, n+1)
+	}
+	// 边界条件
+	// 空的 s1 和空的 s2 可以组成空的 s3
+	dp[0][0] = true
+	// 填充第一列 (只使用 s1)
+	for i := 1; i <= m; i++ {
+		dp[i][0] = dp[i-1][0] && s1[i-1] == s3[i-1]
+	}
+	// 填充第一行 (只使用 s2)
+	for j := 1; j <= n; j++ {
+		dp[0][j] = dp[0][j-1] && s2[j-1] == s3[j-1]
+	}
+	// 填充整个dp数组
+	for i := 1; i <= m; i++ {
+		for j := 1; j <= n; j++ {
+			// 状态转移方程
+			dp[i][j] = (dp[i-1][j] && s1[i-1] == s3[i+j-1]) || (dp[i][j-1] && s2[j-1] == s3[i+j-1])
+		}
+	}
+	// 返回最终结果
+	return dp[m][n]
+}
+
+// isInterleaveSimple 使用一维数组降低空间复杂度
+func isInterleaveSimple(s1 string, s2 string, s3 string) bool {
+	n, m, k := len(s1), len(s2), len(s3)
+	// 长度不匹配，直接返回 false
+	if n+m != k {
+		return false
+	}
+	// dp[j] 表示 s1 的前 i 个字符和 s2 的前 j 个字符是否能组成 s3 的前 i+j 个字符
+	dp := make([]bool, m+1)
+	// 初始化 dp 数组
+	for j := 0; j <= m; j++ {
+		dp[j] = j == 0 || (dp[j-1] && s2[j-1] == s3[j-1])
+	}
+	// 动态规划填表
+	for i := 1; i <= n; i++ {
+		dp[0] = dp[0] && s1[i-1] == s3[i-1] // 更新第一列
+		for j := 1; j <= m; j++ {
+			dp[j] = (dp[j] && s1[i-1] == s3[i+j-1]) || (dp[j-1] && s2[j-1] == s3[i+j-1])
+		}
+	}
+	return dp[m]
+}
