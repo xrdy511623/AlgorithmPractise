@@ -1,6 +1,7 @@
 package sum
 
 import (
+	"algorithm-practise/utils"
 	"math"
 	"sort"
 	"strconv"
@@ -200,4 +201,94 @@ func FourSum(nums []int, target int) [][]int {
 		}
 	}
 	return res
+}
+
+/*
+leetcode 410 分割数组的最大值
+给定一个非负整数数组 nums 和一个整数 k ，你需要将这个数组分成 k 个非空的连续子数组，使得这 k 个子数组各自和的最大值
+最小。
+
+返回分割后最小的和的最大值。
+子数组 是数组中连续的部份。
+
+示例 1：
+输入：nums = [7,2,5,10,8], k = 2
+输出：18
+解释：
+一共有四种方法将 nums 分割为 2 个子数组。
+其中最好的方式是将其分为 [7,2,5] 和 [10,8] 。
+因为此时这两个子数组各自的和的最大值为18，在所有情况中最小。
+
+示例 2：
+输入：nums = [1,2,3,4,5], k = 2
+输出：9
+
+示例 3：
+输入：nums = [1,4,4], k = 3
+输出：4
+
+提示：
+1 <= nums.length <= 1000
+0 <= nums[i] <= 106
+1 <= k <= min(50, nums.length)
+*/
+
+/*
+思路:二分查找+动态规划
+这个问题是一个经典的动态规划 + 二分查找 的结合问题。
+
+1. 二分查找的关键思想
+我们可以通过二分查找来寻找最小的 "最大子数组和"。即我们要找到一个最小的最大和，使得可以将数组分成 k 个子数组，每个子
+数组的和都不超过这个最大值。
+
+最小值：max(nums)，因为每个子数组的和必须至少为一个元素的值。
+最大值：sum(nums)，这是没有任何分割时数组的总和。
+然后我们通过二分查找从 max(nums) 到 sum(nums) 的区间来找到最小的最大和。
+
+2. 动态规划的辅助判断
+对于每一个 "最大和" 值，我们需要判断是否可以将数组分成不超过 k 个子数组，使得每个子数组的和都小于等于当前的最大和。
+我们可以通过一个贪心算法来判断。
+从头开始遍历数组，当当前子数组的和超过最大和时，我们就开始分割，开始新的一组子数组。
+
+步骤总结：
+初始化二分查找的边界：l = max(nums)，r = sum(nums)。
+在二分查找中，判断中间值 mid 是否能将数组分成 k 个子数组，若能则尝试减小最大和，否则增大。
+返回最终的二分查找结果。
+*/
+
+func splitArray(nums []int, k int) int {
+	// 二分查找的最小和最大值
+	l := utils.MaxValueOfArray(nums)
+	r := utils.SumOfArray(nums)
+	for l < r {
+		mid := l + (r-l)/2
+		// 如果可以分割，说明可以尝试更小的最大和
+		if canSplit(nums, mid, k) {
+			r = mid
+		} else {
+			// 否则说明 maxSum 需要更大
+			l = mid + 1
+		}
+	}
+	return l
+}
+
+// canSplit 判断是否能将数组 nums 分割成 k 个子数组，使得每个子数组的和不超过 maxSum
+func canSplit(nums []int, maxSum, k int) bool {
+	// curSum当前子数组和初始化为0，count初始化为1，表示至少需要一个子数组
+	curSum, count := 0, 1
+	for _, num := range nums {
+		// 如果当前子数组的和加上 num 超过了 maxSum，就需要分割
+		if curSum+num > maxSum {
+			count++
+			curSum = num
+			// 如果分割的子数组超过了 k 个，则返回 false
+			if count > k {
+				return false
+			}
+		} else {
+			curSum = curSum + num
+		}
+	}
+	return true
 }

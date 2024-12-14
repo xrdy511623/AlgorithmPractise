@@ -581,11 +581,8 @@ func ReverseWords(s string) string {
 	var res []string
 	for _, str := range array {
 		bytes := []byte(str)
-		n := len(bytes)
-		for i := 0; i < n/2; i++ {
-			temp := bytes[n-1-i]
-			bytes[n-1-i] = bytes[i]
-			bytes[i] = temp
+		for i, n := 0, len(bytes); i < n/2; i++ {
+			bytes[i], bytes[n-1-i] = bytes[n-1-i], bytes[i]
 		}
 		res = append(res, string(bytes))
 	}
