@@ -1783,7 +1783,7 @@ func largestNumber(nums []int) string {
 	}
 	// 自定义排序规则
 	sort.Slice(numStrs, func(i, j int) bool {
-		return compare(numStrs[i], numStrs[j])
+		return utils.CompareDesc(numStrs[i], numStrs[j])
 	})
 	// 处理特殊情况：如果结果全是 "0"
 	if numStrs[0] == "0" {
@@ -1795,11 +1795,6 @@ func largestNumber(nums []int) string {
 		res += v
 	}
 	return res
-}
-
-// compare 自定义排序规则
-func compare(x, y string) bool {
-	return x+y > y+x
 }
 
 /*
@@ -2455,4 +2450,78 @@ func kthLargest(matrix [][]int, k int) int {
 		}
 	}
 	return l
+}
+
+/*
+剑指Offer 45 把数组排成最小的数
+闯关游戏需要破解一组密码，闯关组给出的有关密码的线索是：
+
+一个拥有密码所有元素的非负整数数组 password
+密码是 password 中所有元素拼接后得到的最小的一个数
+请编写一个程序返回这个密码。
+
+示例 1:
+输入: password = [15, 8, 7]
+输出: "1578"
+
+示例 2:
+输入: password = [0, 3, 30, 34, 5, 9]
+输出: "03033459"
+
+提示:
+0 < password.length <= 100
+
+说明:
+输出结果可能非常大，所以你需要返回一个字符串而不是整数
+拼接起来的数字可能会有前导 0，最后结果不需要去掉前导 0
+*/
+
+func crackPassword(password []int) string {
+	n := len(password)
+	strArr := make([]string, n)
+	for i, v := range password {
+		strArr[i] = strconv.Itoa(v)
+	}
+	sort.Slice(strArr, func(i, j int) bool {
+		return utils.CompareAsc(strArr[i], strArr[j])
+	})
+	res := ""
+	for _, str := range strArr {
+		res += str
+	}
+	return res
+}
+
+/*
+剑指Offer 53 在排序数组中查找数字I
+某班级考试成绩按非严格递增顺序记录于整数数组 scores，请返回目标成绩 target 的出现次数。
+
+示例 1：
+输入: scores = [2, 2, 3, 4, 4, 4, 5, 6, 6, 8], target = 4
+输出: 3
+
+示例 2：
+输入: scores = [1, 2, 3, 5, 7, 9], target = 6
+输出: 0
+
+提示：
+0 <= scores.length <= 105
+-109 <= scores[i] <= 109
+scores 是一个非递减数组
+-109 <= target <= 109
+*/
+
+/*
+思路: 二分查找
+在排序数组中找到第一个等于目标值target的位置l以及最后一个等于目标值target的位置r,
+那么该排序数组中目标值target的出现次数便等于r-l+1
+*/
+
+func countTarget(scores []int, target int) int {
+	l := findBoundary(scores, target, true)
+	if l == -1 {
+		return 0
+	}
+	r := findBoundary(scores, target, false)
+	return r - l + 1
 }

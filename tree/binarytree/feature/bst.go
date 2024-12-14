@@ -1188,3 +1188,76 @@ func findKSmallestNode(root *entity.TreeNode, k int) int {
 	help(root)
 	return res
 }
+
+/*
+leetcode 426 将二叉搜索树转化为排序的双向链表
+将一个 二叉搜索树 就地转化为一个 已排序的双向循环链表 。
+对于双向循环列表，你可以将左右孩子指针作为双向循环链表的前驱和后继指针，第一个节点的前驱是最后一个节点，最后一个节点的后继
+是第一个节点。
+特别地，我们希望可以 就地 完成转换操作。当转化完成以后，树中节点的左指针需要指向前驱，树中节点的右指针需要指向后继。
+还需要返回链表中最小元素的指针。
+
+提示：
+-1000 <= Node.val <= 1000
+Node.left.val < Node.val < Node.right.val
+Node.val 的所有值都是独一无二的
+0 <= Number of Nodes <= 2000
+*/
+
+/*
+思路分析
+二叉搜索树（BST）的特点：
+对于每一个节点，左子树的所有节点值都小于该节点值，右子树的所有节点值都大于该节点值。
+对于BST中的节点，在中序遍历时，节点值是按升序排列的。
+
+双向循环链表的要求：
+我们将BST的中序遍历结果转化为双向循环链表。每个节点的左指针指向前驱节点，右指针指向后继节点。
+双向循环链表的第一个节点的前驱是最后一个节点，最后一个节点的后继是第一个节点。
+
+操作方式：
+通过中序遍历 BST，我们可以获得一个升序排列的节点序列。
+在遍历过程中，我们可以维护链表的前驱和后继指针，并且在遍历完成后，手动连接最后一个节点和第一个节点，以形成循环链表。
+
+解决方法
+我们可以使用递归的方式来进行中序遍历，同时维护两个指针：
+prev：指向当前节点的前驱节点。
+head：指向链表的头部，即最小值节点。
+*/
+
+func treeToDoublyList(root *entity.TreeNode) *entity.TreeNode {
+	if root == nil {
+		return nil
+	}
+	var prev, head *entity.TreeNode
+	// 根据BST的特点进行中序遍历
+	var inOrder func(*entity.TreeNode)
+	inOrder = func(node *entity.TreeNode) {
+		// 递归终止条件，遇到空节点
+		if node == nil {
+			return
+		}
+		// 遍历左子树
+		inOrder(node.Left)
+		// 处理当前节点
+		if prev != nil {
+			// 将当前节点与前驱节点连接
+			prev.Right = node
+			node.Left = prev
+		} else {
+			// 第一个节点是链表的头部
+			head = node
+		}
+		// 更新前驱节点为当前节点
+		prev = node
+		// 遍历右子树
+		inOrder(node.Right)
+	}
+	// 中序遍历树并建立双向链表
+	inOrder(root)
+	// 完成循环链表的连接
+	if head != nil && prev != nil {
+		head.Left = prev
+		prev.Right = head
+	}
+	return head
+}

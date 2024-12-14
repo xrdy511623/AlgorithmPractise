@@ -85,3 +85,13 @@ func ReverseString(s []byte) string {
 func CheckAlphaNumeric(char byte) bool {
 	return char >= '0' && char <= '9' || char >= 'a' && char <= 'z' || char >= 'A' && char <= 'Z'
 }
+
+// CompareDesc 自定义降序规则
+func CompareDesc(x, y string) bool {
+	return x+y > y+x
+}
+
+// CompareAsc 自定义升序规则
+func CompareAsc(x, y string) bool {
+	return x+y < y+x
+}

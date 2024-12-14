@@ -195,6 +195,7 @@ func SingleNumberSimple(nums []int) int {
 
 /*
 剑指Offer 56 - I. 数组中数字出现的次数
+leetcode 260 只出现一次的数字III
 1.5 一个整型数组nums里除两个数字之外，其他数字都出现了两次。请写程序找出这两个只出现一次的数字。要求时间复杂度
 是O(n)，空间复杂度是O(1)。
 
