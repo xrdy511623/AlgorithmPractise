@@ -1479,6 +1479,115 @@ func NextPermutation(nums []int) {
 }
 
 /*
+leetcode 556 下一个更大元素III
+给你一个正整数 n ，请你找出符合条件的最小整数，其由重新排列 n 中存在的每位数字组成，并且其值大于 n 。如果不存在这样的正整数，
+则返回 -1 。
+注意 ，返回的整数应当是一个 32 位整数 ，如果存在满足题意的答案，但不是 32 位整数 ，同样返回 -1 。
+
+示例 1：
+输入：n = 12
+输出：21
+
+示例 2：
+输入：n = 21
+输出：-1
+
+提示：
+1 <= n <= 231 - 1
+*/
+
+func nextGreaterElement(n int) int {
+	numStr := strconv.Itoa(n)
+	ss := []byte(numStr)
+	length := len(ss)
+	i := length - 2
+	for i >= 0 && ss[i] >= ss[i+1] {
+		i--
+	}
+	if i == -1 {
+		return -1
+	}
+	if i >= 0 {
+		j := length - 1
+		for j >= 0 && ss[i] >= ss[j] {
+			j--
+		}
+		ss[i], ss[j] = ss[j], ss[i]
+		utils.ReverseString(ss[i+1:])
+	}
+	res, _ := strconv.Atoi(string(ss))
+	if res > math.MaxInt32 {
+		return -1
+	}
+	return res
+}
+
+/*
+leetcode 670 最大交换
+给定一个非负整数，你至多可以交换一次数字中的任意两位。返回你能得到的最大值。
+
+示例 1 :
+输入: 2736
+输出: 7236
+解释: 交换数字2和数字7。
+
+示例 2 :
+输入: 9973
+输出: 9973
+解释: 不需要交换。
+注意:
+给定数字的范围是 [0, 10的8次方]
+*/
+
+/*
+1. 交换位置的原则：
+我们需要找到最大的数字，并试图将它移到最前面的位置，交换尽量能使结果变大的数字。
+如果数字在某一位置上已经足够大，那我们就不再交换。
+2. 具体步骤：
+从左到右遍历数字： 通过遍历数字的每一位，找到可以交换的数字（选择一个较小的数字，并尝试将其与右边的较大数字交换）。
+交换的策略：
+记录每个数字出现的位置。
+对于当前数字，找出其右边比它大的数字，并与它交换。
+3. 最大化结果：
+我们希望通过一次交换来得到更大的数，所以我们会选择左边的数字尽量小、右边的数字尽量大来交换。
+4. 关键点：
+如果经过一次交换后，数字没有发生变化，说明已经是最大值，不需要进行交换。
+
+*/
+
+func maximumSwap(num int) int {
+	// 将数字转化为字符串，以便方便访问每一位
+	numStr := strconv.Itoa(num)
+	// 记录每一位数字最后出现的位置
+	last := make([]int, 10)
+	for i := range numStr {
+		last[numStr[i]-'0'] = i
+	}
+	// 尝试交换每一位数字
+	for i := range numStr {
+		// 从9到当前位的数字检查，看看是否能找到比当前数字大的数字
+		for digit := 9; digit > int(numStr[i]-'0'); digit-- {
+			// 如果找到了一个更大的数字，且它的索引在当前位之后
+			if last[digit] > i {
+				// 交换当前位和找到的更大数字所在的位置
+				res := swap(numStr, i, last[digit])
+				// 交换后直接返回结果
+				ret, _ := strconv.Atoi(res)
+				return ret
+			}
+		}
+	}
+	// 如果没有交换，直接返回原数
+	return num
+}
+
+func swap(s string, i, j int) string {
+	ss := []byte(s)
+	ss[i], ss[j] = ss[j], ss[i]
+	return string(ss)
+}
+
+/*
 leetcode 88. 合并两个有序数组
 给你两个按非递减顺序排列的整数数组nums1 和 nums2，另有两个整数m和n ，分别表示nums1和nums2中的元素数目。
 请你合并nums2到nums1中，使合并后的数组同样按非递减顺序排列。
