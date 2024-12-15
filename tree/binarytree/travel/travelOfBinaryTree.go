@@ -342,8 +342,6 @@ func ZigzagLevelOrder(root *entity.TreeNode) [][]int {
 			// 满足队列先进先出特性
 			node := queue[i]
 			curLevel[i] = node.Val
-			// 将该层节点值依次添加到curLevel中
-			curLevel = append(curLevel, node.Val)
 			if node.Left != nil {
 				queue = append(queue, node.Left)
 			}
