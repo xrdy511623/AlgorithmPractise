@@ -586,7 +586,7 @@ func VerifyPreOrder(preOrder []int) bool {
 			p++
 		}
 		m := p
-		for nums[p] > nums[start] && p < stop {
+		for nums[p] > nums[start] {
 			p++
 		}
 		return p == stop && recur(nums, start+1, m-1) && recur(nums, m, stop)
