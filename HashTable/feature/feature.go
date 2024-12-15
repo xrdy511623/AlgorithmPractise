@@ -2,7 +2,9 @@ package feature
 
 import (
 	"math"
+	"math/rand"
 	"sort"
+	"time"
 )
 
 /*
@@ -923,138 +925,104 @@ func (cl *cacheList) isEmpty() bool {
 }
 
 /*
-import (
-	"container/list"
-	"fmt"
-)
+leetcode 380 O(1)时间复杂度插入，删除和获取随机元素
 
-// LFUCache 结构体
-type LFUCache struct {
-	capacity    int                   // 缓存容量
-	values      map[int]int           // 存储键值对
-	frequency   map[int]int           // 存储每个键的访问频率
-	freqList    map[int]*list.List    // 频率桶，key: 频率, value: 链表
-	keyFreqList map[int]*list.Element // 存储每个 key 对应的链表节点，帮助直接查找
-	minFreq     int                   // 最小访问频率
-}
+实现RandomizedSet 类：
+RandomizedSet() 初始化 RandomizedSet 对象
+bool insert(int val) 当元素 val 不存在时，向集合中插入该项，并返回 true ；否则，返回 false 。
+bool remove(int val) 当元素 val 存在时，从集合中移除该项，并返回 true ；否则，返回 false 。
+int getRandom() 随机返回现有集合中的一项（测试用例保证调用此方法时集合中至少存在一个元素）。每个元素应该有相同的概率被返回。
+你必须实现类的所有函数，并满足每个函数的 平均 时间复杂度为 O(1) 。
 
-// Node 结构体，存储缓存中的每个项
-type Node struct {
-	key   int
-	value int
-}
 
-// Constructor 初始化 LFUCache
-func Constructor(capacity int) LFUCache {
-	return LFUCache{
-		capacity:    capacity,
-		values:      make(map[int]int),
-		frequency:   make(map[int]int),
-		freqList:    make(map[int]*list.List),
-		keyFreqList: make(map[int]*list.Element),
-		minFreq:     0,
-	}
-}
+示例：
+输入
+["RandomizedSet", "insert", "remove", "insert", "getRandom", "remove", "insert", "getRandom"]
+[[], [1], [2], [2], [], [1], [2], []]
+输出
+[null, true, false, true, 2, true, false, 2]
 
-// Get 从缓存中获取值
-func (lfu *LFUCache) Get(key int) int {
-	// 如果 key 不存在，返回 -1
-	if _, exists := lfu.values[key]; !exists {
-		return -1
-	}
+解释
+RandomizedSet randomizedSet = new RandomizedSet();
+randomizedSet.insert(1); // 向集合中插入 1 。返回 true 表示 1 被成功地插入。
+randomizedSet.remove(2); // 返回 false ，表示集合中不存在 2 。
+randomizedSet.insert(2); // 向集合中插入 2 。返回 true 。集合现在包含 [1,2] 。
+randomizedSet.getRandom(); // getRandom 应随机返回 1 或 2 。
+randomizedSet.remove(1); // 从集合中移除 1 ，返回 true 。集合现在包含 [2] 。
+randomizedSet.insert(2); // 2 已在集合中，所以返回 false 。
+randomizedSet.getRandom(); // 由于 2 是集合中唯一的数字，getRandom 总是返回 2 。
 
-	// 获取当前频率
-	freq := lfu.frequency[key]
-	// 更新该 key 的频率
-	lfu.frequency[key]++
-
-	// 在频率桶中移动该节点
-	lfu.moveToNewFreqList(key, freq, lfu.frequency[key])
-
-	// 更新最小频率
-	if lfu.freqList[lfu.minFreq].Len() == 0 {
-		lfu.minFreq++
-	}
-
-	return lfu.values[key]
-}
-
-// Put 向缓存中添加键值对
-func (lfu *LFUCache) Put(key int, value int) {
-	// 如果容量为 0，直接返回
-	if lfu.capacity == 0 {
-		return
-	}
-
-	// 如果 key 已经存在，更新它的值
-	if _, exists := lfu.values[key]; exists {
-		lfu.values[key] = value
-		// 更新频率
-		lfu.Get(key)
-		return
-	}
-
-	// 如果 key 不存在且缓存已满，移除最不常使用的项
-	if len(lfu.values) == lfu.capacity {
-		lfu.removeLFU()
-	}
-
-	// 插入新的 key-value
-	lfu.values[key] = value
-	lfu.frequency[key] = 1
-
-	// 将该 key 插入到频率为 1 的链表
-	if lfu.freqList[1] == nil {
-		lfu.freqList[1] = list.New()
-	}
-	lfu.keyFreqList[key] = lfu.freqList[1].PushFront(&Node{key, value})
-
-	// 更新最小频率
-	lfu.minFreq = 1
-}
-
-// moveToNewFreqList 将某个键从旧频率桶移动到新频率桶
-func (lfu *LFUCache) moveToNewFreqList(key, oldFreq, newFreq int) {
-	// 从旧的频率桶中移除节点
-	oldList := lfu.freqList[oldFreq]
-	e := lfu.keyFreqList[key]
-	oldList.Remove(e)
-
-	// 如果新频率桶不存在，则创建它
-	if lfu.freqList[newFreq] == nil {
-		lfu.freqList[newFreq] = list.New()
-	}
-
-	// 将节点插入到新的频率桶中
-	lfu.keyFreqList[key] = lfu.freqList[newFreq].PushFront(&Node{key, lfu.values[key]})
-}
-
-// removeLFU 从缓存中移除最不常使用的项
-func (lfu *LFUCache) removeLFU() {
-	// 获取最小频率的链表
-	minList := lfu.freqList[lfu.minFreq]
-	// 删除最久未使用的节点
-	e := minList.Back()
-	node := e.Value.(*Node)
-	delete(lfu.values, node.key)
-	delete(lfu.frequency, node.key)
-	delete(lfu.keyFreqList, node.key)
-	minList.Remove(e)
-}
-
-func main() {
-	// 测试代码
-	lfu := Constructor(2)
-	lfu.Put(1, 1)
-	lfu.Put(2, 2)
-	fmt.Println(lfu.Get(1)) // 返回 1
-	lfu.Put(3, 3)           // 去除键 2
-	fmt.Println(lfu.Get(2)) // 返回 -1
-	fmt.Println(lfu.Get(3)) // 返回 3
-	lfu.Put(4, 4)           // 去除键 1
-	fmt.Println(lfu.Get(1)) // 返回 -1
-	fmt.Println(lfu.Get(3)) // 返回 3
-	fmt.Println(lfu.Get(4)) // 返回 4
-}
-
+提示：
+-231 <= val <= 231 - 1
+最多调用 insert、remove 和 getRandom 函数 2 * 105 次
+在调用 getRandom 方法时，数据结构中 至少存在一个 元素。
 */
+
+/*
+思路:哈希表+动态数组
+设计思路：
+
+插入 (insert)：
+如果元素不在集合中，则将其添加到数组的末尾，并将该元素和数组索引映射到哈希表。
+时间复杂度：O(1)。
+
+删除 (remove)：
+如果元素在集合中，先找到其在数组中的索引，然后用数组最后一个元素替代该位置的元素，这样就能保持数组的连续性。
+然后更新哈希表，删除该元素的映射。
+时间复杂度：O(1)。
+
+获取随机数 (getRandom)：
+从数组中随机选择一个元素，这可以通过 rand.Intn(len(array)) 轻松实现，时间复杂度 O(1)。
+*/
+
+type RandomizedSet struct {
+	// 哈希表，用来存储元素值到数组索引的映射
+	indexMap map[int]int
+	// 数组，用来存储集合的元素
+	nums []int
+}
+
+func Construct() RandomizedSet {
+	// 初始化随机数生成器
+	rand.Seed(time.Now().UnixNano())
+	return RandomizedSet{
+		indexMap: make(map[int]int),
+		nums:     []int{},
+	}
+}
+
+func (rs *RandomizedSet) Insert(val int) bool {
+	// val 已经存在
+	if _, exists := rs.indexMap[val]; exists {
+		return false
+	}
+	// 将 val 添加到数组末尾
+	rs.nums = append(rs.nums, val)
+	// 更新哈希表，存储 val 在数组中的索引
+	rs.indexMap[val] = len(rs.nums) - 1
+	return true
+}
+
+func (rs *RandomizedSet) Remove(val int) bool {
+	if index, exists := rs.indexMap[val]; exists {
+		lastIdx := len(rs.nums) - 1
+		lastVal := rs.nums[lastIdx]
+		// 将数组最后一个元素移到要删除的位置
+		rs.nums[index] = lastVal
+		// 更新哈希表中 lastVal 的索引
+		rs.indexMap[lastVal] = index
+		//  删除 val
+		rs.nums = rs.nums[:lastIdx]
+		// 从哈希表中删除 val 的映射
+		delete(rs.indexMap, val)
+		return true
+	}
+	return false
+}
+
+func (rs *RandomizedSet) GetRandom() int {
+	// 获取一个随机索引
+	randIdx := rand.Intn(len(rs.nums))
+	// 返回对应的元素
+	return rs.nums[randIdx]
+}
