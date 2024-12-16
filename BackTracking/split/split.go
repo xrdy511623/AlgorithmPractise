@@ -65,6 +65,56 @@ func IsPalindrome(s string, start, end int) bool {
 }
 
 /*
+leetcode 680 验证回文串II
+给你一个字符串 s，最多 可以从中删除一个字符。
+请你判断 s 是否能成为回文字符串：如果能，返回 true ；否则，返回 false 。
+
+示例 1：
+输入：s = "aba"
+输出：true
+
+示例 2：
+输入：s = "abca"
+输出：true
+解释：你可以删除字符 'c' 。
+
+示例 3：
+输入：s = "abc"
+输出：false
+
+提示：
+1 <= s.length <= 105
+s 由小写英文字母组成
+*/
+
+/*
+思路:双指针
+回文的定义：从前向后和从后向前读都是一样的字符串。
+双指针法：
+使用两个指针 left 和 right，分别指向字符串的头和尾。
+比较 s[left] 和 s[right]：
+如果相等，两个指针继续向中间移动；
+如果不相等，可以选择删除一个字符：
+删除左边字符：验证子字符串 s[left+1:right+1] 是否为回文；
+删除右边字符：验证子字符串 s[left:right] 是否为回文。
+如果上述两种情况都不满足，返回 false。
+子函数验证回文：
+编写一个辅助函数判断字符串是否为严格回文，继续使用双指针。
+*/
+
+func validPalindrome(s string) bool {
+	l, r := 0, len(s)-1
+	for l < r {
+		if !IsPalindrome(s, l, r) {
+			return IsPalindrome(s, l+1, r) || IsPalindrome(s, l, r-1)
+		}
+		l++
+		r--
+	}
+	return true
+}
+
+/*
 leetcode 93. 复原IP地址
 1.2 给定一个只包含数字的字符串，复原它并返回所有可能的IP地址格式。
 有效的IP地址正好由四个整数（每个整数位于0到255之间组成，且不能含有前导0），整数之间用'.'分隔。
