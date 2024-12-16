@@ -852,32 +852,34 @@ arr 长度范围在[1, 1000000]之间
 */
 
 func SearchRotateArray(arr []int, target int) int {
-	low, high := 0, len(arr)-1
-	result := -1
-
-	for low <= high {
-		mid := (low + high) / 2
+	l, r := 0, len(arr)-1
+	for l <= r {
+		// 当l符合时直接返回, 因为找的是最小的索引
+		if arr[l] == target {
+			return l
+		}
+		mid := (l + r) / 2
+		// 当中间值等于目标值，将右边界移到中间，因为左边可能还有相等的值
 		if arr[mid] == target {
-			// 找到一个候选解，继续向左查找
-			result = mid
-			high = mid - 1
-		} else if arr[mid] >= arr[low] {
-			// 左半部分有序
-			if arr[low] <= target && target < arr[mid] {
-				high = mid - 1
+			r = mid
+		} else if arr[l] < arr[mid] {
+			if arr[l] <= target && target < arr[mid] {
+				r = mid - 1
 			} else {
-				low = mid + 1
+				l = mid + 1
+			}
+		} else if arr[l] > arr[mid] {
+			if arr[mid] < target && target <= arr[r] {
+				l = mid + 1
+			} else {
+				r = mid - 1
 			}
 		} else {
-			// 右半部分有序
-			if arr[mid] < target && target <= arr[high] {
-				low = mid + 1
-			} else {
-				high = mid - 1
-			}
+			// 当 arr[l] == arr[mid] 时，无法确定哪边是有序的，故向右移动左边界来跳过重复元素。
+			l++
 		}
 	}
-	return result
+	return -1
 }
 
 /*
