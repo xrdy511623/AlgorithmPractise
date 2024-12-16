@@ -511,6 +511,49 @@ func sortedListToBST(head *Entity2.ListNode) *entity.TreeNode {
 }
 
 /*
+优化:双指针+递归
+使用中序遍历构造法直接从链表构造平衡二叉搜索树，无需将链表转化为数组：
+由于链表是有序的，构造平衡 BST 的核心是找到链表的中点作为根节点。
+通过快慢指针找到链表的中间节点，将其作为当前树的根节点。
+递归地对中点左侧的子链表构造左子树，对中点右侧的子链表构造右子树。
+这种方法可以节省数组构造的额外空间，同时保持时间复杂度为O(n)。
+*/
+
+func sortedListToBSTSimple(head *Entity2.ListNode) *entity.TreeNode {
+	if head == nil {
+		return nil
+	}
+	if head.Next == nil {
+		return &entity.TreeNode{
+			Val: head.Val,
+		}
+	}
+	// 使用快慢指针找到链表的中间节点
+	var prev *Entity2.ListNode
+	fast, slow := head, head
+	for fast != nil && fast.Next != nil {
+		prev = slow
+		slow = slow.Next
+		fast = fast.Next.Next
+	}
+	// 断开链表，分成左右两部分
+	if prev != nil {
+		prev.Next = nil
+	}
+	// 中点即为当前子树的根
+	root := &entity.TreeNode{
+		Val: slow.Val,
+	}
+	// 左链表构造左子树
+	if slow != head {
+		root.Left = sortedListToBSTSimple(head)
+	}
+	// 右链表构造右子树
+	root.Right = sortedListToBSTSimple(slow.Next)
+	return root
+}
+
+/*
 剑指Offer 33. 二叉搜索树的后序遍历序列
 1.11 输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历结果。如果是则返回true，否则返回false。假设输入
 的数组的任意两个数字都互不相同。

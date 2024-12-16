@@ -249,6 +249,50 @@ func FindAnagrams(s string, p string) []int {
 }
 
 /*
+思路:滑动窗口
+异位词的定义：两个字符串的字符及其出现次数相同。
+滑动窗口：
+使用一个长度为 p 的窗口在字符串 s 上滑动。
+对每个窗口内的字符串进行字符计数，判断其是否与 p 的字符计数匹配。
+优化：
+使用一个固定大小为 26 的数组（针对小写字母），分别记录窗口内字符和目标字符串 p 的字符计数。
+每次滑动时，仅更新窗口内新增和移除的字符的计数，而不是重新计算整个窗口的字符计数。
+*/
+
+func FindAnagramsTwo(s string, p string) []int {
+	res := []int{}
+	m, n := len(s), len(p)
+	// 特殊情况：s 的长度小于 p，直接返回
+	if n > m {
+		return res
+	}
+	// 初始化两个计数数组
+	var pCount, sCount [26]int
+	for i, v := range p {
+		pCount[v-'a']++
+		sCount[s[i]-'a']++
+	}
+	// 滑动窗口开始
+	l, r := 0, len(p)-1
+	for r < m {
+		// 判断当前窗口是否是异位词
+		if pCount == sCount {
+			res = append(res, l)
+		}
+		// 移动窗口右边界
+		r++
+		if r < m {
+			// 新增窗口右边字符
+			sCount[s[r]-'a']++
+		}
+		// 移除窗口左边字符
+		sCount[s[l]-'a']--
+		l++
+	}
+	return res
+}
+
+/*
 leetcode 49. 字母异位词分组
 1.4 给你一个字符串数组，请你将字母异位词组合在一起。可以按任意顺序返回结果列表。
 字母异位词是由重新排列源单词的字母得到的一个新单词，所有源单词中的字母通常恰好只用一次。
