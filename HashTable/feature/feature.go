@@ -650,7 +650,6 @@ capacity时，则应该在插入新项之前，移除最不经常使用的项。
 
 /*
 数据结构设计：
-
 LFUCache 结构体包含了两个双向链表：freqList 和 cacheList，以及两个映射：freqMap 和 cacheMap。
 freqList 用于维护所有频率桶的顺序，频率桶由 freqNode 表示。每个 freqNode 都包含一个 cacheList，
 用于管理对应频率下的缓存项。
@@ -704,7 +703,6 @@ func (lfu *LFUCache) Get(key int) int {
 	if !ok {
 		return -1
 	}
-
 	// key 存在，更新该缓存项的频率
 	// 首先将该节点从当前缓存链表中移除
 	node.remove()
@@ -712,7 +710,6 @@ func (lfu *LFUCache) Get(key int) int {
 	freq := node.frequency
 	// 获取该频率桶
 	fNode := lfu.freqMap[freq]
-
 	// 尝试获取该频率 + 1 的频率桶
 	newFreqNode, ok := lfu.freqMap[freq+1]
 	if !ok {
@@ -730,8 +727,7 @@ func (lfu *LFUCache) Get(key int) int {
 	node.frequency++
 	// 将该节点插入到新缓存链表的头部
 	newFreqNode.data.addToHead(node)
-
-	// 如果缓存链表变空，则删除该频率桶
+	// 如果原缓存链表变空，则删除该频率桶
 	if fNode.data.isEmpty() {
 		fNode.remove()
 		delete(lfu.freqMap, freq)
@@ -765,7 +761,6 @@ func (lfu *LFUCache) Put(key int, value int) {
 		delNode.remove()
 		// 从缓存映射中删除该缓存项
 		delete(lfu.cacheMap, delNode.key)
-
 		// 如果缓存链表为空且该频率大于 1，则删除该频率桶
 		// 在 LFU 缓存中，对于频率为 1 的桶来说，我们不希望删除它，因为它是初始状态下所有缓存项的频率。
 		// 即使所有项都被删除，也不应该删除频率为 1 的桶。
@@ -794,7 +789,7 @@ func (lfu *LFUCache) Put(key int, value int) {
 		value:     value,
 		frequency: 1,
 	}
-	// 将新节点插入到频率桶的头部
+	// 将新缓存节点插入到缓存链表的头部
 	fNode.data.addToHead(newCacheNode)
 	// 在缓存映射中记录该缓存节点
 	lfu.cacheMap[key] = newCacheNode
@@ -861,20 +856,18 @@ func (f *freqNode) remove() {
 
 // 将频率节点插入到当前频率节点之后
 func (f *freqNode) addBehind(node *freqNode) {
-	next := f.next
-	f.next = node
-	node.next = next
-	next.prev = node
 	node.prev = f
+	node.next = f.next
+	f.next.prev = node
+	f.next = node
 }
 
 // 将频率节点插入到链表头部
 func (fl *freqList) addToHead(node *freqNode) {
-	next := fl.head.next
-	fl.head.next = node
-	node.next = next
-	next.prev = node
 	node.prev = fl.head
+	node.next = fl.head.next
+	fl.head.next.prev = node
+	fl.head.next = node
 }
 
 // 缓存链表，双向链表用于维护缓存项的顺序
@@ -912,11 +905,10 @@ func (c *cacheNode) remove() {
 
 // 将缓存节点插入到链表头部
 func (cl *cacheList) addToHead(node *cacheNode) {
-	next := cl.head.next
-	cl.head.next = node
-	node.next = next
-	next.prev = node
 	node.prev = cl.head
+	node.next = cl.head.next
+	cl.head.next.prev = node
+	cl.head.next = node
 }
 
 // 判断缓存链表是否为空
