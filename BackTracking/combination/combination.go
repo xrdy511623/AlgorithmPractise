@@ -174,9 +174,10 @@ digits[i] 是范围 ['2', '9'] 的一个数字。
 
 // LetterCombinations 回溯算法解决
 func LetterCombinations(digits string) []string {
+	res := []string{}
 	length := len(digits)
 	if length == 0 {
-		return nil
+		return res
 	}
 	// 建立电话号码与字符串的映射关系
 	m := make(map[byte]string)
@@ -188,7 +189,6 @@ func LetterCombinations(digits string) []string {
 	m['7'] = "pqrs"
 	m['8'] = "tuv"
 	m['9'] = "wxyz"
-	var res []string
 	path := []byte{}
 	var backTrack func(int)
 	backTrack = func(index int) {

@@ -377,7 +377,7 @@ func copyRandomList(head *Node) *Node {
 		if node == nil {
 			return nil
 		}
-		if Node, done := cache[node]; done {
+		if Node, ok := cache[node]; ok {
 			return Node
 		}
 		newNode := &Node{Val: node.Val}
@@ -442,14 +442,15 @@ func copyRandomListSimple(head *Node) *Node {
 	curOld := head
 	curNew := newHead
 	for curNew != nil {
-		curOld.Next = curOld.Next.Next // 还原原链表
+		// 还原原链表
+		curOld.Next = curOld.Next.Next
 		if curNew.Next != nil {
-			curNew.Next = curNew.Next.Next // 设置新链表的 next
+			// 设置新链表的 next
+			curNew.Next = curNew.Next.Next
 		}
 		curOld = curOld.Next
 		curNew = curNew.Next
 	}
-
 	return newHead
 }
 

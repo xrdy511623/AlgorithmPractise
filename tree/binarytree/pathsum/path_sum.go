@@ -821,7 +821,7 @@ func DistanceK(root, target *entity.TreeNode, k int) []int {
 	dfs(root)
 	// 从target节点开始bfs搜索,那么此时与target的距离就是0
 	queue := []Element{{target, 0}}
-	for len(queue) != 0 {
+	for len(queue) > 0 {
 		if queue[0].Distance == k {
 			// 因为是queue是先进先出的队列，所以如果第一个元素与target的距离为k
 			// 代表队列中所有元素距离都是k
