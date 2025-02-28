@@ -399,15 +399,32 @@ s[i] 为 '(' 或 ')'
 // LongestValidParentheses 时间复杂度O(N), 空间复杂度O(N)
 func LongestValidParentheses(s string) int {
 	maxLength, n := 0, len(s)
+	// 创建一个栈，并压入 -1 作为初始标记（-1 是一个边界值，帮助计算长度）。
 	stack := []int{-1}
 	for i := 0; i < n; i++ {
+		// 遇到左括号，将其索引压入栈中。
 		if s[i] == '(' {
 			stack = append(stack, i)
 		} else {
+			// 遇到右括号，弹出栈顶元素与右括号匹配
 			stack = stack[:len(stack)-1]
+			// 连续性保证：算法的目标是计算最长的连续有效括号子串。压入无效右括号的索引后，栈顶总能正确反映当前子串的
+			// 左边界前一个位置，确保计算不会跨越无效位置。
+			// 如果弹出后栈为空，说明没有匹配的左括号，将当前右括号的索引压入栈中，作为新的无效位置标记。
 			if len(stack) == 0 {
 				stack = append(stack, i)
 			} else {
+				/*
+					在括号匹配问题中，我们通常使用栈来跟踪括号的位置。这里，i 是当前右括号 ')' 的索引，而
+					stack[len(stack)-1] 是栈顶元素的索引。栈顶元素可能是：
+					一个未匹配的左括号 '(' 的索引；
+					或者是一个无效的右括号 ')' 的索引（之前未能配对时压入的）。
+					当我们遇到一个右括号 ')' 并成功匹配（即弹出栈顶的左括号后），需要计算当前有效子串的长度。
+					计算公式 currentLen := i - stack[len(stack)-1] 的含义是：
+					stack[len(stack)-1] 表示当前有效子串的“左边界”前一个位置；
+					i 是当前有效子串的右边界；
+					因此，i - stack[len(stack)-1] 直接给出了从左边界后一个位置到右边界的元素个数，也就是有效子串的长度。
+				*/
 				maxLength = utils.Max(maxLength, i-stack[len(stack)-1])
 			}
 		}
@@ -996,6 +1013,7 @@ func dailyTemperatures(temperatures []int) []int {
 	for i := 0; i < n; i++ {
 		// 如果当前温度比栈顶的温度高，那么找到了答案
 		// 弹出栈顶元素，计算天数差并更新答案
+		// temperatures = [73,74,75,71,69,72,76,73]
 		for len(stack) > 0 && temperatures[i] > temperatures[stack[len(stack)-1]] {
 			idx := stack[len(stack)-1]
 			stack = stack[:len(stack)-1]

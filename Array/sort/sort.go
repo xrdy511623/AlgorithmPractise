@@ -253,9 +253,10 @@ func MergeSort(array []int) []int {
 }
 
 // Merge 合并两个有序数组
-func Merge(left, right []int) (res []int) {
+func Merge(left, right []int) []int {
 	l, r := 0, 0
 	ll, rl := len(left), len(right)
+	res := make([]int, 0, ll+rl)
 	// 比较两个子数组left和right的当前元素：
 	// 使用两个指针 l 和 r 分别遍历 left 和 right。
 	// 将较小的元素加入结果数组，同时对应的指针向前移动。
@@ -2642,6 +2643,65 @@ func twoSum(numbers []int, target int) []int {
 		}
 	}
 	return []int{-1, -1}
+}
+
+/*
+给你一个前半部分是升序，后半部分是降序的数组，数据里可能包含有重复元素，请你删除数组中的重复元素，
+最后返回一个不含重复元素的升序数组。
+
+例如: 输入: []int{1,2,2,3,3,4,4,5,6,5,5,4,3,3,2,2,1}
+输出: []int{1,2,3,4,5,6}
+*/
+
+func removeDuplicate(nums []int) []int {
+	n := len(nums)
+	if n <= 1 {
+		return nums
+	}
+	sortNums := make([]int, n)
+	index, l, r := 0, 0, n-1
+	for l <= r {
+		if nums[l] <= nums[r] {
+			sortNums[index] = nums[l]
+			l++
+		} else {
+			sortNums[index] = nums[r]
+			r--
+		}
+		index++
+	}
+	res := make([]int, 0, n)
+	for i := range sortNums {
+		if i > 0 && sortNums[i] == sortNums[i-1] {
+			continue
+		}
+		res = append(res, sortNums[i])
+	}
+	return res
+}
+
+// removeDuplicateSimple 将时间复杂度和空间复杂度降低一半
+func removeDuplicateSimple(nums []int) []int {
+	n := len(nums)
+	if n <= 1 {
+		return nums
+	}
+	res := make([]int, 0, n)
+	l, r := 0, n-1
+	for l <= r {
+		candidate := 0
+		if nums[l] <= nums[r] {
+			candidate = nums[l]
+			l++
+		} else {
+			candidate = nums[r]
+			r--
+		}
+		if len(res) == 0 || candidate > res[len(res)-1] {
+			res = append(res, candidate)
+		}
+	}
+	return res
 }
 
 /*

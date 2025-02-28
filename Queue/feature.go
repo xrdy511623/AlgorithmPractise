@@ -104,7 +104,7 @@ leetcode 239. 滑动窗口最大值
 // maxSlidingWindow 暴力解法 时间复杂度O(N*K), 空间复杂度O(N)
 func maxSlidingWindow(nums []int, k int) []int {
 	var res []int
-	for i := 0; i+k <= len(nums); i++ {
+	for i, n := 0, len(nums); i+k <= n; i++ {
 		res = append(res, utils.MaxValueOfArray(nums[i:i+k]))
 	}
 	return res

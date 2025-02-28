@@ -581,7 +581,7 @@ func TopKFrequent(nums []int, k int) []int {
 	for num, freq := range freqMap {
 		hashTop[freq] = append(hashTop[freq], num)
 	}
-	res := make([]int, 0)
+	res := make([]int, 0, len(freqMap))
 	for freq := maxFreq; freq >= 0; freq-- {
 		res = append(res, hashTop[freq]...)
 		k -= len(hashTop[freq])
@@ -827,7 +827,6 @@ freqList 是一个双向链表，维护了频率桶的顺序（从最低频率�
 cacheList 移动到另一个频率桶的 cacheList 中。
 freqNode 通过指向 cacheList 来管理和更新同一频率下的所有缓存项，cacheList 在此过程中作为一个管理容器，允许高效
 的增删操作。
-
 */
 type freqNode struct {
 	frequency int

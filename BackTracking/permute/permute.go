@@ -117,15 +117,21 @@ leetcode 22 括号生成
 func generateParenthesis(n int) []string {
 	res := []string{}
 	var dfs func(int, int, string)
+	// l和r分别代表当前字符串中左括号的数量和右括号的数量
 	dfs = func(l, r int, path string) {
+		// 终止条件：当前字符串长度达到 2*n
 		if len(path) == 2*n {
 			res = append(res, path)
 			return
 		}
+		// 分支 1：如果左括号数量小于 n，可以添加左括号
 		if l < n {
+			// 递归调用，在当前字符串后添加 "("，左括号数量加 1
 			dfs(l+1, r, path+"(")
 		}
+		// 分支 2：如果右括号数量小于左括号数量，可以添加右括号
 		if r < l {
+			// 递归调用，在当前字符串后添加 ")"，右括号数量加 1
 			dfs(l, r+1, path+")")
 		}
 	}

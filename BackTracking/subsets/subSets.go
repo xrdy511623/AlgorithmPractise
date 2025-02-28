@@ -64,12 +64,13 @@ leetcode 90. 子集II
 func SubsetsWithDup(nums []int) [][]int {
 	var res [][]int
 	var path []int
+	n := len(nums)
 	// 对nums数组进行排序
 	sort.Ints(nums)
 	var backTrack func(int)
 	backTrack = func(start int) {
 		// 递归终止条件，当start移动到数组nums末尾元素后
-		if start > len(nums) {
+		if start > n {
 			return
 		}
 		// 收集树中所有节点的结果
@@ -77,7 +78,7 @@ func SubsetsWithDup(nums []int) [][]int {
 		copy(temp, path)
 		// 此处不能return，因为子集要收集所有树节点的结果
 		res = append(res, temp)
-		for i := start; i < len(nums); i++ {
+		for i := start; i < n; i++ {
 			// 同一树层去重
 			if i > start && nums[i] == nums[i-1] {
 				continue
