@@ -1,15 +1,15 @@
-package sort_test
+package sort
 
 import (
-	"algorithm-practise/array/sort"
 	"fmt"
+	"learngo/sort"
 	"reflect"
 	"testing"
 )
 
 func TestBubbleSort(t *testing.T) {
 	array := []int{54, 26, 93, 17, 77, 31, 44, 55, 20}
-	got := sort.BubbleSort(array)
+	got := BubbleSort(array)
 	want := []int{17, 20, 26, 31, 44, 54, 55, 77, 93}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("got:%v, expected:%v", got, want)
@@ -20,7 +20,7 @@ func TestBubbleSort(t *testing.T) {
 
 func TestInsertSort(t *testing.T) {
 	array := []int{54, 26, 93, 17, 77, 31, 44, 55, 20}
-	got := sort.InsertSort(array)
+	got := InsertSort(array)
 	want := []int{17, 20, 26, 31, 44, 54, 55, 77, 93}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("got:%v, expected:%v", got, want)
@@ -114,7 +114,7 @@ func TestQuickSort(t *testing.T) {
 
 func TestMergeSort(t *testing.T) {
 	array := []int{54, 26, 93, 17, 77, 31, 44, 55, 20}
-	got := sort.MergeSort(array)
+	got := MergeSort(array)
 	want := []int{17, 20, 26, 31, 44, 54, 55, 77, 93}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("got:%v, expected:%v", got, want)
@@ -125,7 +125,7 @@ func TestMergeSort(t *testing.T) {
 
 func TestBinarySearch(t *testing.T) {
 	array := []int{17, 20, 26, 31, 44, 54, 55, 77, 93}
-	got := sort.BinarySearch(array, 26)
+	got := BinarySearch(array, 26)
 	want := 2
 	if got != want {
 		t.Errorf("got:%v, expected:%v", got, want)
@@ -136,7 +136,7 @@ func TestBinarySearch(t *testing.T) {
 
 func TestBinarySearchUseRecursion(t *testing.T) {
 	array := []int{17, 20, 26, 31, 44, 54, 55, 77, 93}
-	got := sort.BinarySearchUseRecursion(array, 55)
+	got := BinarySearchUseRecursion(array, 55)
 	want := true
 	if got != want {
 		t.Errorf("got:%v, expected:%v", got, want)
@@ -147,7 +147,7 @@ func TestBinarySearchUseRecursion(t *testing.T) {
 
 func TestSearchRange(t *testing.T) {
 	array := []int{17, 20, 26, 26, 26, 31, 44, 54, 55, 77, 93}
-	got := sort.SearchRange(array, 26)
+	got := SearchRange(array, 26)
 	want := []int{2, 4}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("got:%v, expected:%v", got, want)
@@ -158,7 +158,7 @@ func TestSearchRange(t *testing.T) {
 
 func TestSearch(t *testing.T) {
 	array := []int{17, 20, 26, 26, 26, 31, 44, 54, 55, 77, 93}
-	got := sort.Search(array, 26)
+	got := Search(array, 26)
 	want := 3
 	if got != want {
 		t.Errorf("got:%v, expected:%v", got, want)
@@ -169,7 +169,7 @@ func TestSearch(t *testing.T) {
 
 func TestRotate(t *testing.T) {
 	nums := []int{1, 2, 3, 4, 5, 6, 7}
-	sort.Rotate(nums, 3)
+	Rotate(nums, 3)
 	got := nums
 	want := []int{5, 6, 7, 1, 2, 3, 4}
 	if !reflect.DeepEqual(got, want) {
@@ -181,7 +181,7 @@ func TestRotate(t *testing.T) {
 
 func TestFindMinSimple(t *testing.T) {
 	nums := []int{3, 4, 5, 1, 2}
-	got := sort.FindMin(nums)
+	got := FindMin(nums)
 	want := 1
 	if got != want {
 		t.Errorf("got:%v, expected:%v", got, want)
@@ -192,7 +192,7 @@ func TestFindMinSimple(t *testing.T) {
 
 func TestSearchRotateArray(t *testing.T) {
 	array := []int{15, 16, 19, 20, 25, 1, 3, 4, 5, 7, 10, 14}
-	got := sort.SearchRotateArray(array, 7)
+	got := SearchRotateArray(array, 7)
 	want := 9
 	if got != want {
 		t.Errorf("got:%v, expected:%v", got, want)
@@ -203,11 +203,101 @@ func TestSearchRotateArray(t *testing.T) {
 
 func TestReversePairs(t *testing.T) {
 	record := []int{9, 7, 5, 4, 6}
-	got := sort.ReversePairs(record)
+	got := ReversePairs(record)
 	want := 8
 	if got != want {
 		t.Errorf("got:%v, expected:%v", got, want)
 	} else {
 		fmt.Println("test pass")
+	}
+}
+
+// 测试用例结构
+type testCase struct {
+	name     string
+	users    []*userOnLine
+	expected int64
+}
+
+func TestGetMaxOnlineTime(t *testing.T) {
+	testCases := []testCase{
+		{
+			name: "Basic case",
+			users: []*userOnLine{
+				{uid: 1, loginTime: 100, logoutTime: 300},
+				{uid: 2, loginTime: 200, logoutTime: 400},
+				{uid: 3, loginTime: 250, logoutTime: 350},
+				{uid: 4, loginTime: 150, logoutTime: 280},
+			},
+			expected: 250,
+		},
+		{
+			name: "All users log in at the same time",
+			users: []*userOnLine{
+				{uid: 1, loginTime: 100, logoutTime: 200},
+				{uid: 2, loginTime: 100, logoutTime: 300},
+				{uid: 3, loginTime: 100, logoutTime: 400},
+			},
+			expected: 100,
+		},
+		{
+			name: "Users log in and out sequentially",
+			users: []*userOnLine{
+				{uid: 1, loginTime: 100, logoutTime: 150},
+				{uid: 2, loginTime: 150, logoutTime: 200},
+				{uid: 3, loginTime: 200, logoutTime: 250},
+			},
+			expected: 100, // 第一个用户登录时刻是最大在线人数首次出现的时刻
+		},
+		{
+			name: "Only one user",
+			users: []*userOnLine{
+				{uid: 1, loginTime: 500, logoutTime: 800},
+			},
+			expected: 500,
+		},
+		{
+			name: "Users log out at the same time",
+			users: []*userOnLine{
+				{uid: 1, loginTime: 100, logoutTime: 300},
+				{uid: 2, loginTime: 200, logoutTime: 300},
+				{uid: 3, loginTime: 250, logoutTime: 300},
+			},
+			expected: 250,
+		},
+		{
+			name: "Users stay online the whole day",
+			users: []*userOnLine{
+				{uid: 1, loginTime: 0, logoutTime: 86400},
+				{uid: 2, loginTime: 0, logoutTime: 86400},
+				{uid: 3, loginTime: 0, logoutTime: 86400},
+			},
+			expected: 0,
+		},
+		{
+			name: "Users log in at different times",
+			users: []*userOnLine{
+				{uid: 1, loginTime: 100, logoutTime: 500},
+				{uid: 2, loginTime: 200, logoutTime: 600},
+				{uid: 3, loginTime: 300, logoutTime: 700},
+				{uid: 4, loginTime: 400, logoutTime: 800},
+				{uid: 5, loginTime: 500, logoutTime: 900},
+			},
+			expected: 400,
+		},
+		{
+			name:     "No users",
+			users:    []*userOnLine{},
+			expected: 0, // 没有用户，默认返回 0
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			result := getMaxOnlineTime(tc.users)
+			if result != tc.expected {
+				t.Errorf("Expected %d, but got %d", tc.expected, result)
+			}
+		})
 	}
 }
