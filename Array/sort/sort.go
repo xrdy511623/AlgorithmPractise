@@ -2888,6 +2888,19 @@ func (h *WordMinHeap) Pop() interface{} {
 	return x
 }
 
+const (
+	MaxFileSize = 300 * 1024 * 1024 // 300MB
+	BucketCount = 100               // 初始桶数
+)
+
+// BucketFile 表示一个桶文件及其当前大小
+type BucketFile struct {
+	File     *os.File
+	Size     int64
+	FileNum  int // 用于动态创建新文件，如 bucket_0_1.txt
+	BucketID int
+}
+
 // hashFunction 计算单词的哈希值
 func hashFunction(word string) uint32 {
 	h := fnv.New32a()
@@ -2903,32 +2916,52 @@ func splitFile(inputFile string, bucketDir string) error {
 	}
 	defer file.Close()
 
-	// 创建100个小文件的输出流
-	buckets := make([]*os.File, 100)
-	for i := 0; i < 100; i++ {
+	// 初始化桶文件
+	buckets := make(map[int]*BucketFile) // 使用 map 动态管理桶
+	for i := 0; i < BucketCount; i++ {
 		bucketFile := filepath.Join(bucketDir, fmt.Sprintf("bucket_%d.txt", i))
 		f, err := os.Create(bucketFile)
 		if err != nil {
 			return err
 		}
-		defer f.Close()
-		buckets[i] = f
+		buckets[i] = &BucketFile{File: f, Size: 0, FileNum: 0, BucketID: i}
 	}
 
-	// 逐行读取大文件并分配单词
 	scanner := bufio.NewScanner(file)
-	// 按单词读取
 	scanner.Split(bufio.ScanWords)
 	for scanner.Scan() {
-		// 去除逗号
 		word := strings.Trim(scanner.Text(), ",")
 		if word == "" {
 			continue
 		}
-		// 分配到0-99的桶
-		hash := hashFunction(word) % 100
-		// 将单词写入对应的桶文件，
-		fmt.Fprintln(buckets[hash], word)
+		hash := hashFunction(word) % BucketCount
+		bucket := buckets[int(hash)]
+
+		// 检查文件大小是否接近 300MB
+		// 单词长度 + 换行符
+		wordSize := int64(len(word) + 1)
+		if bucket.Size+wordSize > MaxFileSize {
+			// 关闭当前文件
+			bucket.File.Close()
+			bucket.FileNum++
+			// 创建新文件
+			newFileName := filepath.Join(bucketDir, fmt.Sprintf("bucket_%d_%d.txt", bucket.BucketID, bucket.FileNum))
+			f, err := os.Create(newFileName)
+			if err != nil {
+				return err
+			}
+			bucket.File = f
+			bucket.Size = 0
+		}
+
+		// 写入单词并更新大小
+		fmt.Fprintln(bucket.File, word)
+		bucket.Size += wordSize
+	}
+
+	// 关闭所有文件
+	for _, bucket := range buckets {
+		bucket.File.Close()
 	}
 	return scanner.Err()
 }
