@@ -2,10 +2,16 @@ package sort
 
 import (
 	"algorithm-practise/utils"
+	"bufio"
 	"container/heap"
+	"fmt"
+	"hash/fnv"
 	"math"
+	"os"
+	"path/filepath"
 	"sort"
 	"strconv"
+	"strings"
 )
 
 /*
@@ -2766,6 +2772,7 @@ type event struct {
 }
 
 /*
+字节面试算法题
 统计活动在线人数在一天的什么时候达到峰值，如果有多个时刻达到峰值，输出第一个.
 这里用户的登录和登出时间都是秒(相对于当天0时0分0秒过去了多少秒，在0-3600x24之间)
 统计在哪个时刻(相对于当天0时0分0秒过去了多少秒)在线人数达到了峰值。
@@ -2819,4 +2826,161 @@ func getMaxOnlineTime(users []*userOnLine) int64 {
 		}
 	}
 	return peakTime
+}
+
+/*
+现在有一个30G的大文件，文件内容都是单词，彼此之间用逗号隔开，现在需要找到文件中出现频次最高的10个单词，
+但是内存有限，每次最多只能使用300MB的内存，应该怎么办？
+*/
+
+/*
+为了在300MB内存限制下处理30GB的大文件，我们可以使用以下方法：
+分治法：将大文件分割成多个小文件，每个小文件的大小控制在内存限制范围内。
+哈希分片：通过哈希函数将单词分配到不同的“桶”（bucket）中，确保相同单词总是进入同一个桶。
+局部统计：对每个桶中的单词进行频次统计。
+全局统计：合并所有桶的统计结果，找到全局频次最高的10个单词。
+
+具体步骤
+分割大文件：
+读取30GB文件，逐个处理单词。
+使用哈希函数计算每个单词的哈希值，并根据哈希值分配到100个小文件中（每个文件约300MB）。
+统计每个小文件的单词频次：
+对每个小文件，使用map统计其中单词的出现次数。
+
+合并统计结果：
+使用最小堆（优先队列）合并所有小文件的统计结果，找出全局频次最高的10个单词。
+
+内存控制
+30GB ÷ 100 = 300MB，每个小文件约为300MB，适合内存限制。
+在处理每个小文件时，map的内存使用不会超过300MB。
+合并阶段使用最小堆，只维护10个元素，内存占用极小。
+*/
+
+// WordCount 定义单词及其频次的结构体
+type WordCount struct {
+	Word  string
+	Count int
+}
+
+// WordMinHeap 定义一个小顶堆，用于维护频次最高的10个单词
+type WordMinHeap []WordCount
+
+func (h WordMinHeap) Len() int {
+	return len(h)
+}
+
+func (h WordMinHeap) Less(i, j int) bool {
+	return h[i].Count < h[j].Count
+}
+func (h WordMinHeap) Swap(i, j int) {
+	h[i], h[j] = h[j], h[i]
+}
+
+func (h *WordMinHeap) Push(x interface{}) {
+	*h = append(*h, x.(WordCount))
+}
+
+func (h *WordMinHeap) Pop() interface{} {
+	old := *h
+	n := len(old)
+	x := old[n-1]
+	*h = old[0 : n-1]
+	return x
+}
+
+// hashFunction 计算单词的哈希值
+func hashFunction(word string) uint32 {
+	h := fnv.New32a()
+	h.Write([]byte(word))
+	return h.Sum32()
+}
+
+// splitFile 将大文件分割成100个小文件
+func splitFile(inputFile string, bucketDir string) error {
+	file, err := os.Open(inputFile)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	// 创建100个小文件的输出流
+	buckets := make([]*os.File, 100)
+	for i := 0; i < 100; i++ {
+		bucketFile := filepath.Join(bucketDir, fmt.Sprintf("bucket_%d.txt", i))
+		f, err := os.Create(bucketFile)
+		if err != nil {
+			return err
+		}
+		defer f.Close()
+		buckets[i] = f
+	}
+
+	// 逐行读取大文件并分配单词
+	scanner := bufio.NewScanner(file)
+	// 按单词读取
+	scanner.Split(bufio.ScanWords)
+	for scanner.Scan() {
+		// 去除逗号
+		word := strings.Trim(scanner.Text(), ",")
+		if word == "" {
+			continue
+		}
+		// 分配到0-99的桶
+		hash := hashFunction(word) % 100
+		// 将单词写入对应的桶文件，
+		fmt.Fprintln(buckets[hash], word)
+	}
+	return scanner.Err()
+}
+
+// countWordsInBucket 统计单个小文件中单词的频次
+func countWordsInBucket(bucketFile string) (map[string]int, error) {
+	file, err := os.Open(bucketFile)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	wordCount := make(map[string]int)
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		word := scanner.Text()
+		wordCount[word]++
+	}
+	return wordCount, scanner.Err()
+}
+
+// findTop10Words 合并所有小文件的统计结果，找出频次最高的10个单词
+func findTop10Words(bucketDir string) ([]WordCount, error) {
+	topHeap := &WordMinHeap{}
+	heap.Init(topHeap)
+
+	// 处理每个小文件
+	for i := 0; i < 100; i++ {
+		bucketFile := filepath.Join(bucketDir, fmt.Sprintf("bucket_%d.txt", i))
+		wordCount, err := countWordsInBucket(bucketFile)
+		if err != nil {
+			return nil, err
+		}
+		// 更新最小堆
+		for word, count := range wordCount {
+			if topHeap.Len() < 10 {
+				heap.Push(topHeap, WordCount{Word: word, Count: count})
+			} else if count > (*topHeap)[0].Count {
+				heap.Pop(topHeap)
+				heap.Push(topHeap, WordCount{Word: word, Count: count})
+			}
+		}
+	}
+
+	// 提取前10个单词
+	result := make([]WordCount, 0, 10)
+	for topHeap.Len() > 0 {
+		result = append(result, heap.Pop(topHeap).(WordCount))
+	}
+	// 按频次降序排列
+	for i, n := 0, len(result); i < n/2; i++ {
+		result[i], result[n-1-i] = result[n-1-i], result[i]
+	}
+	return result, nil
 }
