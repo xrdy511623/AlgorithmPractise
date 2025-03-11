@@ -901,7 +901,34 @@ leetcode 215. 数组中的第K个最大元素
 示例2:
 输入: [3,2,3,1,2,4,5,5,6] 和 k = 4
 输出: 4
+
+限制条件:
+1 <= k <= nums.length <= 10000
+-10000 <= nums[i] <= 10000
 */
+
+/*
+考虑到数组中最大元素也就是10000，长度也不会超过10000，所以我们可以用空间换时间，用哈希表来存储数组中元素出现的次数，
+然后从最大值(10000)开始迭代，当k减到小于等于0时，就找到了是我们要的第K大元素
+*/
+
+func findKthLargest(nums []int, k int) int {
+	// 构造长度为20001的数组，为了避免记录负数元素时下标出现问题，我们给元素统一加上10000
+	// 这样索引0对应-10000，索引20000对应10000
+	freq := make([]int, 20001)
+	offset := 10000
+	for _, num := range nums {
+		freq[num+offset]++
+	}
+	// 从大到小遍历 freq 数组
+	for i := 20000; i >= 0; i-- {
+		k -= freq[i]
+		if k <= 0 {
+			return i - offset
+		}
+	}
+	return -10001
+}
 
 // FindKthLargest 用最大堆排序解决
 func FindKthLargest(nums []int, k int) int {

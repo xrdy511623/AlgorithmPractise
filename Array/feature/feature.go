@@ -500,16 +500,16 @@ leetcode 53. 最大子数组和
 */
 
 func MaxSubArray(nums []int) int {
-	max, n := nums[0], len(nums)
+	maxSub, n := nums[0], len(nums)
 	for i := 1; i < n; i++ {
 		if nums[i-1] > 0 {
 			nums[i] += nums[i-1]
 		}
-		if nums[i] > max {
-			max = nums[i]
+		if nums[i] > maxSub {
+			maxSub = nums[i]
 		}
 	}
-	return max
+	return maxSub
 }
 
 /*
