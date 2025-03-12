@@ -563,6 +563,118 @@ func MinSubArrayLen(target int, nums []int) int {
 }
 
 /*
+leetcode 1423 可获得的最大点数
+几张卡牌 排成一行，每张卡牌都有一个对应的点数。点数由整数数组 cardPoints 给出。
+
+每次行动，你可以从行的开头或者末尾拿一张卡牌，最终你必须正好拿 k 张卡牌。
+
+你的点数就是你拿到手中的所有卡牌的点数之和。
+
+给你一个整数数组 cardPoints 和整数 k，请你返回可以获得的最大点数。
+
+
+
+示例 1：
+
+输入：cardPoints = [1,2,3,4,5,6,1], k = 3
+输出：12
+解释：第一次行动，不管拿哪张牌，你的点数总是 1 。但是，先拿最右边的卡牌将会最大化你的可获得点数。最优策略是拿右边的三张牌，
+最终点数为 1 + 6 + 5 = 12 。
+示例 2：
+
+输入：cardPoints = [2,2,2], k = 2
+输出：4
+解释：无论你拿起哪两张卡牌，可获得的点数总是 4 。
+示例 3：
+
+输入：cardPoints = [9,7,7,9,7,7,9], k = 7
+输出：55
+解释：你必须拿起所有卡牌，可以获得的点数为所有卡牌的点数之和。
+示例 4：
+
+输入：cardPoints = [1,1000,1], k = 1
+输出：1
+解释：你无法拿到中间那张卡牌，所以可以获得的最大点数为 1 。
+示例 5：
+
+输入：cardPoints = [1,79,80,1,1,1,200,1], k = 3
+输出：202
+
+
+提示：
+
+1 <= cardPoints.length <= 10^5
+1 <= cardPoints[i] <= 10^4
+1 <= k <= cardPoints.length
+*/
+
+/*
+思路:滑动窗口
+这个问题要求从数组 cardPoints 的开头或末尾拿正好 k 张卡牌，求最大点数和。直接枚举所有可能的开头和末尾组合会非常复杂，
+时间复杂度为 O(2^k)，对于 (k) 较大时不可行。因此，我们需要一个更高效的算法。
+
+思路分析
+问题本质：从数组两端拿 k 个元素，等价于从数组中选择一个长度为 n−k
+的连续子数组（剩余部分），使得这个子数组的和最小，剩余的 (k) 个元素（从两端取）的和最大。
+
+滑动窗口：总和是固定的（数组所有元素之和），最大化 (k) 个元素的和等价于最小化剩余 n−k
+个元素的和。我们可以用滑动窗口来计算长度为 n−k 的子数组的最小和。
+
+步骤：
+计算数组总和 (total)。
+用滑动窗口找到长度为 n −k的子数组的最小和 (minWindowSum)。
+
+最大点数 = total−minWindow
+
+时间复杂度
+计算总和：(O(n))。
+滑动窗口遍历：(O(n))，窗口大小固定为 n−k，只需遍历一次。
+总时间复杂度：(O(n))。
+
+空间复杂度
+只需几个变量存储总和和窗口和，空间复杂度为 (O(1))。
+
+特殊情况
+当 k=n 时，直接返回数组总和。
+当 k=0 时，返回 0（题目保证 k≥1)
+)。
+*/
+
+func maxScore(cardPoints []int, k int) int {
+	// 计算数组cardPoints总和
+	n := len(cardPoints)
+	total := 0
+	for _, point := range cardPoints {
+		total += point
+	}
+	// 特殊处理，如果k=n，直接返回数组cardPoints的所有点数之和
+	if k == n {
+		return total
+	}
+	// 使用滑动窗口找到长度为 n-k 的子数组的最小和
+	// 窗口大小恒定为n-k
+	windowSize := n - k
+	// 窗口和初初始化为0
+	windowSum := 0
+	// 初始化第一个窗口的和
+	for i := 0; i < windowSize; i++ {
+		windowSum += cardPoints[i]
+	}
+	// 记录最小窗口和，初始为第一个窗口
+	minWindowSum := windowSum
+	// 滑动窗口，从左到右移动，更新最小窗口和
+	for i := windowSize; i < n; i++ {
+		// 移除窗口左端元素，加入右端新元素
+		windowSum = windowSum - cardPoints[i-windowSize] + cardPoints[i]
+		if windowSum < minWindowSum {
+			minWindowSum = windowSum
+		}
+	}
+	// 最大点数 = 总和 - 最小窗口和
+	return total - minWindowSum
+}
+
+/*
 leetcode 557. 反转字符串中的单词III
 1.14 给定一个字符串，你需要反转字符串中每个单词的字符顺序，同时仍保留空格和单词的初始顺序。
 
