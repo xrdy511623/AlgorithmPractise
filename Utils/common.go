@@ -95,3 +95,26 @@ func CompareDesc(x, y string) bool {
 func CompareAsc(x, y string) bool {
 	return x+y < y+x
 }
+
+// ReverseStr 返回字符串 s 的反转结果
+func ReverseStr(s string) string {
+	// 使用 strings.Builder 也可以，但这里用 []byte 直接操作
+	b := []byte(s)
+	for i, n := 0, len(b); i < n/2; i++ {
+		b[i], b[n-1-i] = b[n-1-i], b[i]
+	}
+	return string(b)
+}
+
+// CheckPalindrome 检查字符串 s 是否为回文
+func CheckPalindrome(s string) bool {
+	i, j := 0, len(s)-1
+	for i < j {
+		if s[i] != s[j] {
+			return false
+		}
+		i++
+		j--
+	}
+	return true
+}

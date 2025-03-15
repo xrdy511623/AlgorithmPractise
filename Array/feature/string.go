@@ -799,6 +799,64 @@ func isPalindromeSimple(s string) bool {
 }
 
 /*
+leetcode 906 超级回文数
+如果一个正整数自身是回文数，而且它也是一个回文数的平方，那么我们称这个数为 超级回文数 。
+现在，给你两个以字符串形式表示的正整数 left 和 right，统计并返回区间 [left, right] 中的 超级回文数 的数目。
+
+示例 1：
+输入：left = "4", right = "1000"
+输出：4
+解释：4、9、121 和 484 都是超级回文数。
+注意 676 不是超级回文数：26 * 26 = 676 ，但是 26 不是回文数。
+
+示例 2：
+输入：left = "1", right = "2"
+输出：1
+
+提示：
+1 <= left.length, right.length <= 18
+left 和 right 仅由数字（0 - 9）组成。
+left 和 right 不含前导零。
+left 和 right 表示的整数在区间 [1, 1018 - 1] 内。
+left 小于等于 right 。
+*/
+
+func superPalindromesInRange(left string, right string) int {
+	low, _ := strconv.ParseInt(left, 10, 64)
+	high, _ := strconv.ParseInt(right, 10, 64)
+	count := 0
+	// 为了保证 y^2 <= 10^18，y 最大值约为 10^9。我们枚举回文数根 y。
+	// 采用构造回文数的方式：枚举前半部分 i
+	// 注意：由于 i 的值决定了回文数的长度，对于 i 较大的情况生成的回文数已经会超过 10^9，
+	// 因此当 y*y 超出 high 时可以提前结束循环。
+	// 枚举上界取 100000 是一个经验值（因为 10^5 构造出的回文数一般可覆盖到 10^9 的范围）
+	for i := 1; i < 100000; i++ {
+		s := strconv.Itoa(i)
+		// 构造奇数长度的回文数：将 s 与 s[0:len(s)-1] 的反转拼接
+		oddStr := s + utils.ReverseStr(s[:len(s)-1])
+		oddPalind, _ := strconv.ParseInt(oddStr, 10, 64)
+		// 检查回文奇数的平方数是否在low,high区间内并且是否也是回文字符串
+		oddSquare := oddPalind * oddPalind
+		if oddSquare >= low && oddSquare < high && utils.CheckPalindrome(strconv.FormatInt(oddSquare, 10)) {
+			count++
+		}
+		// 构造偶数长度的回文数：将 s 与 reverse(s) 拼接
+		evenStr := s + utils.ReverseStr(s)
+		// 检查回文偶数的平方数是否在low,high区间内并且是否也是回文字符串
+		evenPalind, _ := strconv.ParseInt(evenStr, 10, 64)
+		evenSquare := evenPalind * evenPalind
+		if evenSquare >= low && evenSquare < high && utils.CheckPalindrome(strconv.FormatInt(evenSquare, 10)) {
+			// 注意：当 s 长度大于1时，偶数和奇数构造可能生成相同的回文数
+			// 为避免重复计数，我们只在不重复的情况下计数
+			if len(s) == 1 || evenStr != oddStr {
+				count++
+			}
+		}
+	}
+	return count
+}
+
+/*
 补充题
 36进制由0-9，a-z，共36个字符表示。
 要求按照加法规则计算出任意两个36进制正整数的和，如1b + 2x = 48  （解释：47+105=152）
