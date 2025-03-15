@@ -3044,3 +3044,120 @@ func findTop10Words(bucketDir string) ([]WordCount, error) {
 	}
 	return result, nil
 }
+
+/*
+有如下结构的json数据, 根据成绩输出每个班级学生的名次.
+
+{
+  "一班": {
+    "张小丙": 87,
+    "张小甲": 98,
+    "张小乙": 90
+  },
+  "二班": {
+    "王七六": 76,
+    "王九七": 97,
+    "胡八一": 81,
+    "王六零": 60,
+    "刘八一": 81,
+    "李八一": 81
+  }
+}
+题目解释
+按照班级进行排名, 分数相同的时候名次相同.
+
+当出现相同分数的情况下, 名次并不连续. 既排名在两个并列第一之后的学生名次是第三, 排名在三个并列第一之后的学生名次是第四.
+
+输出示例(不需要考虑输出顺序):
+
+一班 张小丙 第3名
+一班 张小甲 第1名
+一班 张小乙 第2名
+
+二班 王七六 第5名
+二班 王九七 第1名
+二班 胡八一 第2名
+二班 王六零 第6名
+二班 刘八一 第2名
+二班 李八一 第2名
+*/
+
+/*
+解析JSON：将JSON数据解析为Go结构体。
+转换为可排序结构：将每个班级的学生和成绩转换为切片，便于排序。
+
+排序与排名：
+对每个班级的学生按成绩降序排序。
+计算名次：相同分数赋相同名次，下一个不同分数的名次基于前面的学生总数。
+输出结果：按要求格式化输出。
+*/
+
+type Student struct {
+	Name  string
+	Score int
+}
+
+func RankStudent(classData map[string]map[string]int) []string {
+	res := []string{}
+	for class, studentData := range classData {
+		// 将每个班级的学生和成绩转换为切片，便于排序。
+		studentList := make([]Student, 0, len(studentData))
+		for name, score := range studentData {
+			studentList = append(studentList, Student{
+				Name:  name,
+				Score: score,
+			})
+		}
+		// 对每个班级的学生按成绩降序排序。
+		sort.Slice(studentList, func(i, j int) bool {
+			return studentList[i].Score > studentList[j].Score
+		})
+		r := 1
+		for i := range studentList {
+			if i > 0 && studentList[i].Score != studentList[i-1].Score {
+				r = i + 1
+			}
+			rank := fmt.Sprintf("class:%v, name:%v, 第%d名", class, studentList[i].Name, r)
+			res = append(res, rank)
+		}
+	}
+	return res
+}
+
+type GlobalStudent struct {
+	Class string
+	Name  string
+	Score int
+}
+
+/*
+成绩排名规则不变，但是范围扩大到所有班级
+*/
+
+func GlobalRank(classData map[string]map[string]int) []string {
+	res := []string{}
+	// 将每个班级的学生和成绩转换为切片，便于排序。
+	studentList := []GlobalStudent{}
+	for class, studentData := range classData {
+		for name, score := range studentData {
+			studentList = append(studentList, GlobalStudent{
+				Class: class,
+				Name:  name,
+				Score: score,
+			})
+		}
+	}
+	// 对所有班级的学生按成绩降序排序。
+	sort.Slice(studentList, func(i, j int) bool {
+		return studentList[i].Score > studentList[j].Score
+	})
+	r := 1
+	for i := range studentList {
+		if i > 0 && studentList[i].Score != studentList[i-1].Score {
+			r = i + 1
+		}
+		rank := fmt.Sprintf("class:%v, name:%v, 第%d名", studentList[i].Class, studentList[i].Name, r)
+		res = append(res, rank)
+	}
+	return res
+}

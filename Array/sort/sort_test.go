@@ -1,8 +1,8 @@
 package sort
 
 import (
+	"encoding/json"
 	"fmt"
-	"learngo/sort"
 	"reflect"
 	"testing"
 )
@@ -90,7 +90,7 @@ func TestQuickSort(t *testing.T) {
 
 			// 如果数组非空，调用 QuickSort
 			if len(input) > 0 {
-				sort.QuickSort(input, 0, len(input)-1)
+				QuickSort(input, 0, len(input)-1)
 			}
 
 			// 比较实际结果与预期结果
@@ -299,5 +299,59 @@ func TestGetMaxOnlineTime(t *testing.T) {
 				t.Errorf("Expected %d, but got %d", tc.expected, result)
 			}
 		})
+	}
+}
+
+func TestRankStudent(t *testing.T) {
+	jsonData := `{
+	  "一班": {
+		"张小丙": 87,
+		"张小甲": 98,
+		"张小乙": 90
+	  },
+	  "二班": {
+		"王七六": 76,
+		"王九七": 97,
+		"胡八一": 81,
+		"王六零": 60,
+		"刘八一": 81,
+		"李八一": 81
+	  }
+	}`
+	var classData map[string]map[string]int
+	err := json.Unmarshal([]byte(jsonData), &classData)
+	if err != nil {
+		fmt.Printf("json unmarshal failed,err:%v\n", err)
+	}
+	res := RankStudent(classData)
+	for _, item := range res {
+		fmt.Println(item)
+	}
+}
+
+func TestGlobalRankStudent(t *testing.T) {
+	jsonData := `{
+	  "一班": {
+		"张小丙": 87,
+		"张小甲": 98,
+		"张小乙": 90
+	  },
+	  "二班": {
+		"王七六": 76,
+		"王九七": 97,
+		"胡八一": 81,
+		"王六零": 60,
+		"刘八一": 81,
+		"李八一": 81
+	  }
+	}`
+	var classData map[string]map[string]int
+	err := json.Unmarshal([]byte(jsonData), &classData)
+	if err != nil {
+		fmt.Printf("json unmarshal failed,err:%v\n", err)
+	}
+	res := GlobalRank(classData)
+	for _, item := range res {
+		fmt.Println(item)
 	}
 }
