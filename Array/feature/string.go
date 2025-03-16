@@ -1121,3 +1121,26 @@ func checkInclusion(s1 string, s2 string) bool {
 	}
 	return false
 }
+
+/*
+对于给定的十六进制数，输出其对应的十进制表示。
+在本题中，十六进制数的格式为：0x 开头，后跟若干个十六进制数字0-9 和A-F。其中，
+A-F 依次代表10−15 。
+*/
+
+func hexToDecimal(hex string) int {
+	hex = strings.ToUpper(hex[2:])
+	n := len(hex)
+	res := 0
+	for i := 0; i < n; i++ {
+		value := 0
+		char := hex[n-1-i]
+		if char >= '0' && char <= '9' {
+			value = int(char - '0')
+		} else {
+			value = int(char-'A') + 10
+		}
+		res += value * int(math.Pow(16, float64(i)))
+	}
+	return res
+}

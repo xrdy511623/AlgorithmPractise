@@ -14,3 +14,13 @@ func TestAddBase36(t *testing.T) {
 		fmt.Println("test pass")
 	}
 }
+
+func TestHexToDecimal(t *testing.T) {
+	var hex string
+	_, err := fmt.Scan(&hex)
+	if err != nil {
+		return
+	}
+	res := hexToDecimal(hex)
+	fmt.Println(res)
+}

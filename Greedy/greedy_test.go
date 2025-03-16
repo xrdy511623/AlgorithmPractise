@@ -17,3 +17,18 @@ func TestReconstructQueue(t *testing.T) {
 	}
 
 }
+
+func TestCompute(t *testing.T) {
+	for {
+		var n int
+		_, err := fmt.Scan(&n)
+		if err != nil {
+			break
+		}
+		if n == 0 {
+			continue
+		}
+		res := compute(n)
+		fmt.Println(res)
+	}
+}
