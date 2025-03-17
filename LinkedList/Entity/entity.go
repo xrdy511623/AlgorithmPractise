@@ -11,6 +11,12 @@ type TreeNode struct {
 	Right *TreeNode
 }
 
+type DoubleLinkedListNode struct {
+	Val  int
+	Prev *DoubleLinkedListNode
+	Next *DoubleLinkedListNode
+}
+
 var node6 = &ListNode{3, nil}
 var node5 = &ListNode{4, node6}
 var node4 = &ListNode{3, node5}

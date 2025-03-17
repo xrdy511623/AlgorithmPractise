@@ -1826,3 +1826,63 @@ func check(a, b *entity.TreeNode) bool {
 	}
 	return check(a.Left, b.Left) && check(a.Right, b.Right)
 }
+
+/*
+剑指offer 08 二叉树的下一个结点
+给定一棵二叉树的其中一个节点，请找出中序遍历序列的下一个节点。（树的后继）
+
+注意：
+如果给定的节点是中序遍历序列的最后一个，则返回空节点;
+二叉树一定不为空，且给定的节点一定不是空节点；
+*/
+
+/*
+二叉树的中序遍历：{ [左子树], 根节点, [右子树] }
+如图(bt.png)所示二叉树的中序遍历：D, B, H, E, I, A, F, C, G
+
+分三种情况：
+如果该节点有右子树，那么下一个节点就是其右子树中最左边的节点；
+如果该节点没有右子树，且是其父节点的左子节点，那么下一个节点就是其父节点；
+如果该节点没有右子树，且是其父节点的右子节点，沿着父指针一直向上，直到找到一个节点，它是其父节点的左子节点，
+如果这样的节点存在，那么这个节点的父节点即是所求。
+
+例如：
+情况 1：图中节点 B 的下一个节点是节点 H；
+情况 2：图中节点 H 的下一个节点是节点 E；
+情况 3：图中节点 I 的下一个节点是节点 A。
+*/
+
+type TreeLinkNode struct {
+	Val    int
+	Left   *TreeLinkNode
+	Right  *TreeLinkNode
+	Father *TreeLinkNode
+}
+
+func GetNext(p *TreeLinkNode) *TreeLinkNode {
+	if p == nil {
+		return nil
+	}
+
+	// 情况1：如果有右子树，后继是右子树中最左的节点
+	if p.Right != nil {
+		successor := p.Right
+		for successor.Left != nil {
+			successor = successor.Left
+		}
+		return successor
+	}
+	// 情况2：如果没有右子树，向上查找第一个是其父节点左孩子的节点
+	current := p
+	parent := p.Father
+	for parent != nil {
+		if current == parent.Left {
+			return parent
+		}
+		current = parent
+		parent = parent.Father
+	}
+
+	// 如果没有找到后继，说明是中序遍历的最后一个节点
+	return nil
+}

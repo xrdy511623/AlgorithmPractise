@@ -1284,36 +1284,33 @@ func treeToDoublyList(root *entity.TreeNode) *entity.TreeNode {
 	if root == nil {
 		return nil
 	}
-	var prev, head *entity.TreeNode
-	// 根据BST的特点进行中序遍历
+	// pre 记录前驱，head 记录头节点
+	var head, prev *entity.TreeNode
+	// 中序遍历转换为双向链表
 	var inOrder func(*entity.TreeNode)
 	inOrder = func(node *entity.TreeNode) {
-		// 递归终止条件，遇到空节点
 		if node == nil {
 			return
 		}
-		// 遍历左子树
+		// 递归左子树
 		inOrder(node.Left)
 		// 处理当前节点
 		if prev != nil {
-			// 将当前节点与前驱节点连接
+			// pre 的 右指针 指向当前节点（后继）
 			prev.Right = node
+			// 当前节点的 左指针 指向 pre（前驱）
 			node.Left = prev
 		} else {
-			// 第一个节点是链表的头部
+			// 第一个节点即最小的节点
 			head = node
 		}
-		// 更新前驱节点为当前节点
+		// 更新 pre 为当前节点
 		prev = node
-		// 遍历右子树
 		inOrder(node.Right)
 	}
-	// 中序遍历树并建立双向链表
 	inOrder(root)
-	// 完成循环链表的连接
-	if head != nil && prev != nil {
-		head.Left = prev
-		prev.Right = head
-	}
+	// 连接头尾，使其成为循环双向链表
+	head.Left = prev
+	prev.Right = head
 	return head
 }
