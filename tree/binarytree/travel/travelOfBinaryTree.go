@@ -289,11 +289,10 @@ func LevelOrderBottom(root *entity.TreeNode) [][]int {
 	queue := []*entity.TreeNode{root}
 	for len(queue) != 0 {
 		levelSize := len(queue)
-		var curLevel []int
+		curLevel := make([]int, levelSize)
 		for i := 0; i < levelSize; i++ {
-			node := queue[0]
-			curLevel = append(curLevel, node.Val)
-			queue = queue[1:]
+			node := queue[i]
+			curLevel[i] = node.Val
 			if node.Left != nil {
 				queue = append(queue, node.Left)
 			}
@@ -301,6 +300,7 @@ func LevelOrderBottom(root *entity.TreeNode) [][]int {
 				queue = append(queue, node.Right)
 			}
 		}
+		queue = queue[levelSize:]
 		res = append(res, curLevel)
 	}
 	return ReverseComplexArray(res)

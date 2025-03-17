@@ -591,23 +591,29 @@ recur(m,j−1):判断此树的右子树是否正确。
 */
 
 func VerifyPostOrder(postOrder []int) bool {
-	var recur func([]int, int, int) bool
-	recur = func(array []int, start, stop int) bool {
-		if start >= stop {
+	var recur func(int, int) bool
+	recur = func(l, r int) bool {
+		// 空树或单节点是有效的
+		if l >= r {
 			return true
 		}
-		p := start
-		for array[p] < array[stop] {
-			p += 1
+		p := l
+		root := postOrder[r]
+		// 找到右子树开始的位置(也就是第一个大于根节点的位置)
+		for postOrder[p] < root {
+			p++
 		}
+		// m是右子树的起始位置
 		m := p
-		for array[p] > array[stop] {
-			p += 1
+		// 检查右子树所有值是否都大于根节点
+		for postOrder[p] > root {
+			p++
 		}
-		return p == stop && recur(array, start, m-1) && recur(array, m, stop-1)
+		// p应该正好到达r，且左右子树都有效
+		return p == r && recur(l, m-1) && recur(m, r-1)
 	}
 
-	return recur(postOrder, 0, len(postOrder)-1)
+	return recur(0, len(postOrder)-1)
 }
 
 /*
@@ -619,22 +625,29 @@ func VerifyPostOrder(postOrder []int) bool {
 */
 
 func VerifyPreOrder(preOrder []int) bool {
-	var recur func([]int, int, int) bool
-	recur = func(nums []int, start, stop int) bool {
-		if start >= stop {
+	var recur func(int, int) bool
+	recur = func(l, r int) bool {
+		// 空树或单节点是有效的
+		if l >= r {
 			return true
 		}
-		p := start + 1
-		for nums[p] < nums[start] {
+		p := l + 1
+		root := preOrder[l]
+		// 找到右子树开始的位置(也就是第一个大于根节点的位置)
+		for p <= r && preOrder[p] < root {
 			p++
 		}
+		// m是右子树的起始位置
 		m := p
-		for nums[p] > nums[start] {
+		// 检查右子树所有值是否都大于根节点
+		for p <= r && preOrder[p] > root {
 			p++
 		}
-		return p == stop && recur(nums, start+1, m-1) && recur(nums, m, stop)
+		// p应该正好到达r+1，且左右子树都有效
+		return p == r+1 && recur(l+1, m-1) && recur(m, r)
 	}
-	return recur(preOrder, 0, len(preOrder)-1)
+
+	return recur(0, len(preOrder)-1)
 }
 
 /*
