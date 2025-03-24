@@ -358,3 +358,72 @@ func dfs(board [][]byte, word string, visited [][]bool, index, row, col int) boo
 	// 如果还是没匹配成功，最后返回false
 	return false
 }
+
+/*
+剑指offer 13 机器人的运动范围
+一个m行n列的矩阵，从坐标 [0,0] 到坐标 [m-1,n-1] 。一个机器人从坐标 [0, 0] 的格子开始移动，
+它每次可以向左、右、上、下移动一格（不能移动到方格外），也不能进入行坐标和列坐标的数位之和大于k的格子。
+例如，当k为18时，机器人能够进入方格 [35, 37] ，因为3+5+3+7=18。但它不能进入方格 [35, 38]，因为3+5+3+8=19。
+请问该机器人能够到达多少个格子？
+*/
+
+/*
+合法性判断
+对于任意格子 [i, j]，我们需要判断它是否在范围内，并且其行坐标和列坐标的数位之和不大于 k。
+定义一个辅助函数 sumDigits(num int) int 用于计算一个数的各位数字之和。
+
+DFS搜索
+从起点 [0,0] 开始，递归搜索上下左右四个方向的格子：
+每次移动前先判断目标格子是否越界、是否已访问，以及该格子是否满足数位之和条件。
+如果满足，则将该格子标记为已访问，并继续搜索该格子四个方向的格子。
+
+搜索过程中统计所有能到达的格子数量。
+
+注意搜索方向
+为了避免重复搜索，可以只向右和向下搜索，但由于题目中机器人可以四个方向移动，因此使用四个方向的搜索也不会重复访问，
+因为使用了 visited 数组。
+
+返回结果
+DFS 返回从当前格子能到达的格子数（包括当前格子），最终返回起点 [0,0] 的计数即为机器人能到达的格子数。
+*/
+
+// sumDigits 计算一个整数 x 的各位数字之和
+func sumDigits(num int) int {
+	sum := 0
+	for num > 0 {
+		sum += num % 10
+		num /= 10
+	}
+	return sum
+}
+
+func deepSearch(i, j, m, n, k int, visited [][]bool) int {
+	// 如果行下标或者列下标越界,或者行坐标和列坐标的数位之和大于k，返回0
+	if i < 0 || i >= m || j < 0 || j >= n || sumDigits(i)+sumDigits(j) > k {
+		return 0
+	}
+	// 如果该位置已经被标记，返回0
+	if visited[i][j] {
+		return 0
+	}
+	// 标记该位置已被访问
+	visited[i][j] = true
+	// 计数当前格子1，加上四个方向的搜索结果
+	cnt := 1
+	// 上下左右四个方向递归搜索
+	cnt += deepSearch(i+1, j, m, n, k, visited)
+	cnt += deepSearch(i-1, j, m, n, k, visited)
+	cnt += deepSearch(i, j-1, m, n, k, visited)
+	cnt += deepSearch(i, j+1, m, n, k, visited)
+	return cnt
+}
+
+func movingCount(m, n, k int) int {
+	// 创建一个 m x n 的二维布尔数组，用于标记已访问格子
+	visited := make([][]bool, m)
+	for i := 0; i < m; i++ {
+		visited[i] = make([]bool, n)
+	}
+	// 从起点 [0,0] 开始 DFS
+	return deepSearch(0, 0, m, n, k, visited)
+}

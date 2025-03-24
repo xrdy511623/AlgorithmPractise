@@ -1263,3 +1263,49 @@ func nextGreaterElements(nums []int) []int {
 	}
 	return res
 }
+
+/*
+剑指offer 31 栈的压入，弹出序列
+输入两个整数序列，第一个序列表示栈的压入顺序，请判断第二个序列是否为该栈的弹出顺序。假设压入栈的所有数字均不相等。
+例如，序列 {1,2,3,4,5} 是某栈的压栈序列，序列 {4,5,3,2,1} 是该压栈序列对应的一个弹出序列，但 {4,3,5,1,2}
+就不可能是该压栈序列的弹出序列。
+
+2. 示例
+示例1：
+输入：pushed = [1,2,3,4,5], popped = [4,5,3,2,1]
+输出：true
+解释：我们可以按以下顺序执行：
+push(1), push(2), push(3), push(4), pop() -> 4,
+push(5), pop() -> 5, pop() -> 3, pop() -> 2, pop() -> 1
+
+示例2：
+输入：pushed = [1,2,3,4,5], popped = [4,3,5,1,2]
+输出：false
+解释：1 不能在 2 之前弹出。
+*/
+
+/*
+此题的解题思路是模仿出栈
+
+步骤：
+新建一个空栈（临时栈）用来执行入栈操作
+遍历入栈，每次一个元素压入临时栈，判断临时栈顶元素是否与出栈栈顶元素相等
+相等，临时栈顶元素出栈，出栈后移一位，循环判断
+最后，返回临时栈，若为空说明顺序一致
+*/
+
+func checkStackSequence(pushed, popped []int) bool {
+	if len(pushed) != len(popped) {
+		return false
+	}
+	stack := make([]int, 0, len(pushed))
+	i := 0
+	for _, num := range pushed {
+		stack = append(stack, num)
+		for len(stack) > 0 && stack[len(stack)-1] == popped[i] {
+			stack = stack[:len(stack)-1]
+			i++
+		}
+	}
+	return len(stack) == 0
+}

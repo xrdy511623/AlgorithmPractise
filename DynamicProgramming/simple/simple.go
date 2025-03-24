@@ -4,7 +4,10 @@ package simple
 simple package contains easy items
 */
 
-import "algorithm-practise/utils"
+import (
+	"algorithm-practise/utils"
+	"strconv"
+)
 
 /*
 leetcode 509
@@ -132,6 +135,33 @@ func ClimbStairsSimple(n int) int {
 		dp[1] = sum
 	}
 	return dp[1]
+}
+
+/*
+剑指offer 10 矩形覆盖
+我们可以用2*1的小矩形横着或者竖着去覆盖更大的矩形。请问用n个2*1的小矩形无重叠地覆盖一个2*n的大矩形，总共有多少种方法？
+*/
+
+/*
+思路:从最简单的开始推导，可以发现这又是一个斐波拉契数列
+显然，当n = 1时，只有一种方法;
+当n = 2时，有两种方法;
+当n = 3时，有三种方法;
+当n = 4时，有五种方法;
+于是有dp[n]=dp[n-1]+dp[n-2]
+*/
+
+func coverMatrix(n int) int {
+	if n <= 2 {
+		return n
+	}
+	l1, l2 := 1, 2
+	for i := 3; i <= n; i++ {
+		sum := l1 + l2
+		l1 = l2
+		l2 = sum
+	}
+	return l2
 }
 
 /*
@@ -585,4 +615,68 @@ func getRowSimple(rowIndex int) []int {
 		row[i] = row[i-1] * (rowIndex - i + 1) / i
 	}
 	return row
+}
+
+/*
+剑指offer 46 把数字翻译成字符串
+现有一串神秘的密文 code，经调查，密文的特点和规则如下：
+
+密文由非负整数组成
+数字 0-25 分别对应字母 a-z
+请根据上述规则将密文 code 解密为字符串，并返回共有多少种解密结果。
+
+
+示例 1：
+输入：code = 216612
+输出：6
+解释：216612 解密后有 6 种不同的形式，分别是 "cbggbc"，"vggbc"，"vggm"，"cbggm"，"cqgbc" 和 "cqgm"
+
+
+提示：
+0 <= code < 231
+*/
+
+func crackNumber(code int) int {
+	// 处理小于等于 9 的情况：只有一个数字，只能解码为一个字母，所以方法数为 1
+	if code <= 9 {
+		return 1
+	}
+	// 处理 10 到 25 的情况：可以解码为两个单独的字母或一个组合字母，所以方法数为 2
+	if code >= 10 && code <= 25 {
+		return 2
+	}
+	// 将整数 code 转换为字符串，便于按位处理
+	s := strconv.Itoa(code)
+	n := len(s)
+	// 创建一个动态规划数组 dp，dp[i] 表示前 i+1 个数字的解码方法数
+	dp := make([]int, n)
+	// 初始化 dp[0]：第一个数字（s[0]）只能单独解码，所以方法数为 1
+	dp[0] = 1
+	// 计算前两个数字（s[0:2]）的解码方法数
+	num, _ := strconv.Atoi(s[:2])
+	// 如果前两个数字在 10 到 25 之间，可以单独解码（两个字母）或组合解码（一个字母），方法数为 2
+	if num >= 10 && num <= 25 {
+		dp[1] = 2
+	} else {
+		// 如果前两个数字不在 10 到 25 之间，只能单独解码为两个字母，方法数为 1，比如27只能各自分开单独解码，得到ch
+		dp[1] = 1
+	}
+	// 从第 3 个数字开始（i=2），通过循环计算每个位置的解码方法数
+	for i := 2; i < n; i++ {
+		// 取出当前数字和前一个数字，组成一个两位数
+		newNum, _ := strconv.Atoi(s[i-1 : i+1])
+		if newNum >= 10 && newNum <= 25 {
+			// 如果这个两位数在 10 到 25 之间：
+			// 1. 可以单独解码当前数字，方法数为 dp[i-1]
+			// 2. 可以与前一个数字组合解码，方法数为 dp[i-2]
+			// 总方法数为 dp[i-1] + dp[i-2]
+			dp[i] = dp[i-1] + dp[i-2]
+		} else {
+			// 如果这个两位数不在 10 到 25 之间，只能单独解码当前数字
+			// 方法数与前一个位置相同，即 dp[i-1]
+			dp[i] = dp[i-1]
+		}
+	}
+	// 返回整个数字的解码方法数，即 dp 数组的最后一个值
+	return dp[n-1]
 }

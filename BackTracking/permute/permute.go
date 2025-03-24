@@ -138,3 +138,46 @@ func generateParenthesis(n int) []string {
 	dfs(0, 0, "")
 	return res
 }
+
+/*
+输入一个字符串，打印出该字符串中字符的所有排列。
+你可以以任意顺序返回这个字符串数组，但里面不能有重复元素。
+注意:字符串里可能有重复字符，但要求输出排列不重复
+
+示例:
+输入：s = "abc"
+输出：["abc","acb","bac","bca","cab","cba"]
+*/
+
+func permuteOfString(s string) []string {
+	runes := []rune(s)
+	sort.Slice(runes, func(i, j int) bool {
+		return runes[i] < runes[j]
+	})
+	n := len(runes)
+	res := []string{}
+	path := make([]rune, 0, n)
+	visited := make(map[int]bool, n)
+	var backTrack func()
+	backTrack = func() {
+		if len(path) == n {
+			res = append(res, string(path))
+			return
+		}
+		for i := 0; i < n; i++ {
+			if visited[i] {
+				continue
+			}
+			if i > 0 && runes[i] == runes[i-1] && visited[i-1] {
+				continue
+			}
+			visited[i] = true
+			path = append(path, runes[i])
+			backTrack()
+			visited[i] = false
+			path = path[:len(path)-1]
+		}
+	}
+	backTrack()
+	return res
+}
