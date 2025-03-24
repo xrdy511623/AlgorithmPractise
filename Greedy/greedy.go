@@ -1349,3 +1349,288 @@ func compute(n int) int {
 	}
 	return total
 }
+
+/*
+任务处理
+在某个项目中有多个任务(用tasks数组表示)需要您进行处理，其中tasks[i]=[si,ei],你可以在si <= day <= ei 中的任意一天处理该任务，
+请返回你可以处理的最大任务数。
+输入描述
+第一行为任务数量n，1 <=n<= 100000。后面n行表示各个任务的开始时间和终止时间，使用si,ei表示,1 <= si <= ei <= 100000
+输出描述
+输出为一个整数，表示可以处理的最大任务数。
+
+示例1
+输入：
+3
+1 1
+1 2
+1 3
+输出：
+3
+*/
+
+// maxTasks 计算可以处理的最大任务数
+func maxTasks(tasks [][2]int) int {
+	// 按照任务结束时间 (ei) 升序排序任务
+	sort.Slice(tasks, func(i, j int) bool {
+		return tasks[i][1] < tasks[j][1]
+	})
+	// 初始化布尔数组记录天数占用情况
+	// MaxDay 为最大天数 100000，数组下标从 1 到 100000
+	const MaxDay = 100000
+	occupied := make([]bool, MaxDay+1)
+	// 遍历任务，贪心选择未被占用的天数
+	count := 0
+	for _, task := range tasks {
+		// 当前任务的开始和结束时间
+		si, ei := task[0], task[1]
+		// 在 [si, ei] 内寻找第一个未被占用的天数
+		for day := si; day <= ei; day++ {
+			if !occupied[day] {
+				// 标记该天数为已占用
+				occupied[day] = true
+				// 任务数加 1
+				count++
+				// 找到后退出循环，处理下一个任务
+				break
+			}
+		}
+	}
+	return count
+}
+
+/*
+结对编程
+某部门计划通过结队编程来进行项目开发，已知该部门有 N 名员工，每个员工有独一无二的职级，每三个员工形成一个小组进行结队编程，结队分组规则如下：
+从部门中选出序号分别为 i、j、k 的3名员工，他们的职级分别为 level[i]，level[j]，level[k]，结队小组满足 level[i] < level[j] < level[k]
+或者 level[i] > level[j] > level[k]，其中 0 ≤ i < j < k < n。
+请你按上述条件计算可能组合的小组数量。同一员工可以参加多个小组。
+
+输入描述
+第一行输入：员工总数 n
+第二行输入：按序号依次排列的员工的职级 level，中间用空格隔开
+
+备注：
+1 <= n <= 6000
+1 <= level[i] <= 10^5
+
+输出描述
+可能结队的小组数量
+
+示例1
+输入：
+4
+1 2 3 4
+
+输出：
+4
+
+说明：
+可能结队成的组合(1,2,3)、(1,2,4)、(1,3,4)、(2,3,4)
+
+示例2
+输入：
+3
+5 4 7
+输出：
+0
+说明：
+根据结队条件，我们无法为该部门组建小组
+*/
+
+/*
+解题思路
+我们要计算在 N 名员工中，满足以下条件的三人小组数量：
+选择三个员工 i, j, k，其中 0 ≤ i < j < k < N。
+职级满足递增（level[i] < level[j] < level[k]）或递减（level[i] > level[j] > level[k]）。
+
+问题分析
+输入：
+第一行：员工总数 N (1 ≤ N ≤ 6000)
+第二行：N 个员工的职级 level[i] (1 ≤ level[i] ≤ 10^5)
+输出：满足条件的小组数量
+
+条件：i < j < k，且职级严格递增或递减
+
+设计方法
+以中间员工 j 为核心：
+对于每个 j (1 ≤ j ≤ N-2)，计算以 j 为中间员工的小组数量。
+即统计满足 i < j < k 的 (i, j, k) 组合，其中职级递增或递减。
+
+统计左右两侧：
+左侧 (0 ≤ i < j)：
+计算比 level[j] 小的员工数量（leftSmaller）。
+计算比 level[j] 大的员工数量（leftLarger）。
+
+右侧 (j < k < N)：
+计算比 level[j] 小的员工数量（rightSmaller）。
+计算比 level[j] 大的员工数量（rightLarger）。
+
+计算小组数量：
+递增情况 (level[i] < level[j] < level[k])：
+leftSmaller × rightLarger
+递减情况 (level[i] > level[j] > level[k])：
+leftLarger × rightSmaller
+对每个 j 的贡献累加。
+
+优化：
+右侧预处理：由于 N 最大为 6000，直接计算右侧会导致 O(N^2) 复杂度超时。使用后缀统计提前计算 rightSmaller 和 rightLarger。
+左侧动态维护：遍历 j 时，逐步更新 leftSmaller 和 leftLarger。
+
+算法步骤
+预处理右侧：
+从后向前遍历 level 数组，计算每个位置 j 右侧的 rightSmaller[j] 和 rightLarger[j]。
+
+遍历 j：
+从 j = 1 到 N-2，动态维护 leftSmaller 和 leftLarger。
+计算每个 j 的小组数量并累加。
+输出总和。
+
+复杂度
+时间复杂度：O(N)，预处理和遍历均为线性。
+空间复杂度：O(N)，用于存储后缀统计数组。
+*/
+
+func teamCoding(level []int) int {
+	n := len(level)
+	total := 0
+
+	// 遍历每个中间位置 j，从 1 到 n-2
+	for j := 1; j < n-1; j++ {
+		leftSmaller, leftLarger := 0, 0
+		// 统计 j 左侧的员工数：分别统计比 level[j] 小和大的数量
+		for i := 0; i < j; i++ {
+			if level[i] < level[j] {
+				leftSmaller++
+			} else if level[i] > level[j] {
+				leftLarger++
+			}
+		}
+		rightSmaller, rightLarger := 0, 0
+		// 统计 j 右侧的员工数：分别统计比 level[j] 小和大的数量
+		for k := j + 1; k < n; k++ {
+			if level[k] < level[j] {
+				rightSmaller++
+			} else if level[k] > level[j] {
+				rightLarger++
+			}
+		}
+		// 对于递增的组合：左侧比 level[j] 小的个数乘以右侧比 level[j] 大的个数
+		// 对于递减的组合：左侧比 level[j] 大的个数乘以右侧比 level[j] 小的个数
+		total += leftSmaller*rightLarger + leftLarger*rightSmaller
+	}
+	return total
+}
+
+/*
+找座位
+在一个大型体育场内举办了一场大型活动，由于疫情防控的需要，要求每位观众必须间隔至少一个空位才允许落座。现在给出一排观众座位分布图，
+座位中存在已落座的观众，请计算出，在不移动现有观众座位的情况下，最多还能坐下多少名观众。
+输入描述
+一个数组，用来标识某一排座位中，每个座位是否已经坐人。0表示该座位没有坐人，1表示该座位已经坐人。输出描述
+整数，在不移动现有观众座位的情况下，最多还能坐下多少名观众。
+
+示例1
+输入：
+10001
+输出：
+1
+
+示例2
+输入：
+0101
+输出：
+0
+
+备注1 <= 数组长度 <= 10000
+*/
+
+func canSeat(seats []int, i, n int) bool {
+	// 当前位置必须是空位
+	if seats[i] == 1 {
+		return false
+	}
+	// 左边有观众，不能落座
+	if i > 0 && seats[i-1] == 1 {
+		return false
+	}
+	// 右边有观众，不能落座
+	if i < n-1 && seats[i+1] == 1 {
+		return false
+	}
+	return true
+}
+
+func findSeats(seats []int) int {
+	n := len(seats)
+	cnt := 0
+	for i := 0; i < n; i++ {
+		if canSeat(seats, i, n) {
+			cnt++
+			// 落座后，将该位置标记为1，以便后续判断
+			seats[i] = 1
+		}
+	}
+	return cnt
+}
+
+/*
+执行时长
+为了充分发挥GPU算力，需要尽可能多的将任务交给GPU执行，现在有一个任务数组，数组元素表示在这1秒内新增的任务个数且每秒都有新增任务。
+假设GPU最多一次执行n个任务，一次执行耗时1秒，在保证GPU不空闲情况下，最少需要多长时间执行完成。
+
+输入描述
+第一个参数为GPU一次最多执行的任务个数，取值范围[1, 10000]
+第二个参数为任务数组长度，取值范围[1, 10000]
+第三个参数为任务数组，数字范围[1, 10000]
+
+输出描述
+执行完所有任务最少需要多少秒。
+
+示例1
+输入：
+3
+5
+1 2 3 4 5
+
+输出：
+6
+
+说明：
+一次最多执行 3 个任务，最少耗时 6s。
+
+示例2
+输入：
+4
+5
+5 4 1 1 1
+
+输出：
+5
+
+说明：
+一次最多执行 4 个任务，最少耗时 5s。
+*/
+
+func leastExecuteTime(n int, tasks []int) int {
+	length := len(tasks)
+	// 未完成任务数，初始化为0
+	unfinished := 0
+	// 最短执行时长(单位秒)，初始化为0
+	seconds := 0
+	for i := 0; i < length; i++ {
+		unfinished += tasks[i]
+		//  GPU执行的任务数，取未完成任务数和n的最小值
+		executed := utils.Min(n, unfinished)
+		unfinished -= executed
+		seconds++
+	}
+	// 处理剩余任务（如果未完成任务数不为0）
+	for unfinished > 0 {
+		// 继续执行剩余未完成任务
+		executed := utils.Min(n, unfinished)
+		unfinished -= executed
+		seconds++
+	}
+	return seconds
+}

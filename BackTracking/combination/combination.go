@@ -1,6 +1,8 @@
 package combination
 
 import (
+	"algorithm-practise/utils"
+	"math"
 	"sort"
 )
 
@@ -351,4 +353,67 @@ func CombinationSumTwo(candidates []int, target int) [][]int {
 	}
 	backTrack(0)
 	return res
+}
+
+/*
+游戏分组
+部门准备举办一场王者荣耀表演赛，有 10 名游戏爱好者参与，分为两队，每队 5 人。
+每位参与者都有一个评分，代表着他的游戏水平。为了表演赛尽可能精彩，我们需要把 10 名参赛者分为实力尽量相近的两队。
+一队的实力可以表示为这一队 5 名队员的评分总和。
+现在给你 10 名参与者的游戏水平评分，请你根据上述要求分队，最后输出这两组的实力差绝对值。
+
+输入描述
+10 个整数，表示 10 名参与者的游戏水平评分。范围在 [1,10000] 之间。
+
+输出描述
+实力最相近两队的实力差绝对值。
+
+示例1
+输入：
+1 2 3 4 5 6 7 8 9 10
+
+输出：
+1
+
+说明：
+10 名队员分为两组，两组实力差绝对值最小为 1
+*/
+
+func ArrangeGameGroup(scores []int) int {
+	n := len(scores)
+	length := n / 2
+	group := []int{}
+	curSum := 0
+	// 计算数组和totalSum
+	totalSum := 0
+	for _, score := range scores {
+		totalSum += score
+	}
+	minDiff := math.MaxInt32
+	var backTrack func(int)
+	backTrack = func(start int) {
+		// 剪枝
+		if start > n || len(group) > length {
+			return
+		}
+		// 迭代最小差值
+		if len(group) == length {
+			// totalSum - curSum为另一分组的分数和，减去当前分组分数和，即为两个分组的实力差
+			diff := utils.Abs(totalSum - curSum - curSum)
+			if diff < minDiff {
+				minDiff = diff
+			}
+		}
+		for i := start; i < n; i++ {
+			curSum += scores[i]
+			group = append(group, scores[i])
+			// 递归
+			backTrack(i + 1)
+			// 回溯
+			curSum -= scores[i]
+			group = group[:len(group)-1]
+		}
+	}
+	backTrack(0)
+	return minDiff
 }

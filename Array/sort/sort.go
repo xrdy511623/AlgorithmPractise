@@ -3161,3 +3161,95 @@ func GlobalRank(classData map[string]map[string]int) []string {
 	}
 	return res
 }
+
+/*
+寻找身高相近的小朋友
+小明今年升学到了小学1年级来到新班级后，发现其他小朋友身高参差不齐，然后就想基于各小朋友和自己的身高差，对他们进行排序，
+请帮他实现排序输入描述第一行为正整数h和n，0<h<200为小明的身高，0<n<50为新班级其他小朋友个数；第二行为n个正整数，
+h1~hn分别是其他小朋友的身高，取值范围0<hi<200，且n个正整数；各不相同。输出描述输出排序结果，各正整数以空格分割和
+小明身高差绝对值最小的小朋友排在前面，和小明身高差绝对值最大的小朋友排在后面。如果两个小朋友和小明身高差一样，则
+个子较小的小朋友排在前面
+输入
+100 10
+95, 96, 97, 98, 99, 101, 102, 103, 104, 105  输出 99 101 98 102 97 103 96 104 95 105
+
+输出
+99 101 98 102 97 103 96 104 95 105
+*/
+
+func heightSort(h int, heights []int) []int {
+	sort.Slice(heights, func(i, j int) bool {
+		diffI := utils.Abs(heights[i] - h)
+		diffJ := utils.Abs(heights[j] - h)
+		if diffI != diffJ {
+			return diffI < diffJ
+		} else {
+			return heights[i] < heights[j]
+		}
+	})
+	return heights
+}
+
+/*
+用连续自然数之和来表达整数
+一个整数可以由连续的自然数之和来表示。给定一个整数，计算该整数有几种连续自然数之和的表达式，且打印出每种表达式。输入描述
+一个目标整数T (1 <=T<= 1000)输出描述
+该整数的所有表达式的个数。如果有多种表达式，输出要求为：1.自然数个数最少的表达式优先输出2.每个表达式中按自然数递增的顺序输出，
+具体的格式参见样例。在每个测试数据结束时，输出一行”Result:X”，其中X是最终的表达式个数。
+
+示例1
+输入:
+9
+输出:
+9=9
+9=4+5
+9=2+3+4
+Result:3
+
+说明:
+整数 9 有三种表示方法，第1个表达式只有1个自然数，最先输出，第2个表达式有2个自然数，第2次序输出，第3个表达式有3个自然数，
+最后输出。每个表达式中的自然数都是按递增次序输出的。
+数字与符号之间无空格。
+
+示例2
+输入：
+10
+输出：
+10=10
+10=1+2+3+4
+Result:2
+*/
+
+type expr struct {
+	Start int
+	Len   int
+}
+
+func continualExpressions(T int) {
+	expressions := []expr{}
+	for length := 1; length*(length+1)/2 <= T; length++ {
+		reminder := T - (length-1)*length/2
+		if reminder > 0 && reminder%length == 0 {
+			start := reminder / length
+			expressions = append(expressions, expr{
+				Start: start,
+				Len:   length,
+			})
+		}
+	}
+	sort.Slice(expressions, func(i, j int) bool {
+		return expressions[i].Len < expressions[j].Len
+	})
+
+	for _, e := range expressions {
+		fmt.Print(T, "=")
+		for i := 0; i < e.Len; i++ {
+			fmt.Print(e.Start + i)
+			if i < e.Len-1 {
+				fmt.Print("+")
+			}
+		}
+		fmt.Println()
+	}
+	fmt.Printf("Result:%d\n", len(expressions))
+}

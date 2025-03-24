@@ -477,6 +477,7 @@ func BuildTreeFromPreAndInSimple(preorder []int, inorder []int) *entity.TreeNode
 	for i, v := range inorder {
 		hashTable[v] = i
 	}
+	preIndex := 0
 	var dfs func(int, int) *entity.TreeNode
 	dfs = func(left, right int) *entity.TreeNode {
 		// 递归终止条件，left>right
@@ -484,8 +485,8 @@ func BuildTreeFromPreAndInSimple(preorder []int, inorder []int) *entity.TreeNode
 			return nil
 		}
 		// 根节点的值一定是前序遍历序列的第一个元素
-		val := preorder[0]
-		preorder = preorder[1:]
+		val := preorder[preIndex]
+		preIndex++
 		root := &entity.TreeNode{Val: val}
 		// 找到根节点值在中序遍历序列inorder中的位置index
 		index := hashTable[val]
@@ -519,13 +520,14 @@ func BuildTreeFromPostAndIn(inorder []int, postorder []int) *entity.TreeNode {
 	for i, v := range inorder {
 		hashTable[v] = i
 	}
-	var dfs func(left, right int) *entity.TreeNode
+	posIndex := len(postorder) - 1
+	var dfs func(int, int) *entity.TreeNode
 	dfs = func(left, right int) *entity.TreeNode {
 		if left > right {
 			return nil
 		}
-		val := postorder[len(postorder)-1]
-		postorder = postorder[:len(postorder)-1]
+		val := postorder[posIndex]
+		posIndex--
 		root := &entity.TreeNode{Val: val}
 		index := hashTable[val]
 		// 想一想，为什么要先设置右子节点，如果先设置左子节点就会出错，why?

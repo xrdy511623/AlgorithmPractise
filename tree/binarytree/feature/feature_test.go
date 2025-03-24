@@ -46,3 +46,15 @@ func TestGetMostHappy(t *testing.T) {
 		fmt.Println("test pass")
 	}
 }
+
+func TestComputeBinaryTree(t *testing.T) {
+	inOrder := []int{-3, 12, 6, 8, 9, -10, -7}
+	preOrder := []int{8, 12, -3, 6, -10, 9, -7}
+	want := []int{0, 3, 0, 7, 0, 2, 0}
+	got := computeBinaryTree(preOrder, inOrder)
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("excepted:%v, got:%v", want, got)
+	} else {
+		fmt.Println("test pass")
+	}
+}

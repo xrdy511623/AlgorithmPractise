@@ -1017,3 +1017,199 @@ func (rs *RandomizedSet) GetRandom() int {
 	// 返回对应的元素
 	return rs.nums[randIdx]
 }
+
+/*
+万能字符单词拼写
+有一个字符串数组 words 和一个字符串 chars。假如可以用 chars 中的字母拼写出 words 中的某个"单词"（字符串)，那么我们就认为
+你掌握了这个单词。
+
+words 的字符仅由 a-z 英文小写宁母组成，例如“abc”。
+chars 由 a- z 英文小写字母和“?”组成，其中英文“?"表示万能字符，能够在拼写时当作任意一个英文字母。例如“?"可以当作"a"等字母。
+
+注意: 每次拼写时，chars 中的每个字母和万能字符都只能使用一次。
+输出词汇表 words 中你掌握的所有单词的个数。没有掌握任何单词，则输出0。
+
+输入描述
+第一行: 输入数组 words 的个数，记作N。
+第二行~第N+1行: 依次输入数组words的每个字符串元素。
+第N+2行: 输入字符串 chars
+
+输出描述
+输出一个整数，表示词汇表 words 中你掌握的单词个数
+
+备注
+1 <= words.length <= 100
+1 <= words[i].length, chars.length <= 100
+所有字符串中都仅包含小写英文字母、英文问号
+
+示例1
+输入
+4
+cat
+bt
+hat
+tree
+atach??
+
+输出
+3
+说明:可以掌握的单词 "cat”、“bt"和"hat"。
+*/
+
+func countFrequency(s string) [26]int {
+	freq := [26]int{}
+	for _, char := range s {
+		if char >= 'a' && char <= 'z' {
+			freq[char-'a']++
+		}
+	}
+	return freq
+}
+
+func masterWordsCount(words []string, chars string) int {
+	charFreq := countFrequency(chars)
+	// 统计chars中的万能字符(?)的数量
+	markCount := 0
+	for _, char := range chars {
+		if char == '?' {
+			markCount++
+		}
+	}
+	masterCount := 0
+	for _, word := range words {
+		fillCount := 0
+		wordFreq := countFrequency(word)
+		for i := 0; i < 26; i++ {
+			if wordFreq[i] > charFreq[i] {
+				fillCount += wordFreq[i] - charFreq[i]
+			}
+		}
+		// 如果需要补的字符数不超过chars中的万能字符(?)的数量，则表示已掌握该单词word
+		if fillCount <= markCount {
+			masterCount++
+		}
+	}
+	return masterCount
+}
+
+/*
+小朋友至少有几个
+幼儿园组织活动，老师布置了一个任务：
+每个小朋友去了解与自己同一个小区的小朋友还有几个。
+我们将这些数量汇总到数组 garden 中。
+请根据这些小朋友给出的信息，计算小朋友至少有几个?
+
+输入描述
+输入：garden[] = {2, 2, 3}
+
+说明：
+garden 数组长度最大为 999
+每个小区的小朋友数量最多 1000 人，也就是 garden[i] 的范围为 [0, 999]
+
+输出描述
+输出：7
+
+示例1
+输入：
+2 2 3
+
+输出：
+7
+
+说明：
+第一个小朋友反馈有两个小朋友和自己同一小区，即此小区有3个小朋友。
+第二个小朋友反馈有两个小朋友和自己同一小区，即此小区有3个小朋友。
+这两个小朋友，可能是同一小区的，且此小区的小朋友只有3个人。
+第三个小区反馈还有3个小朋友与自己同一小区，则这些小朋友只能是另外一个小区的。这个小区有4个小朋友。
+*/
+
+func countKids(garden []int) int {
+	n := len(garden)
+	freqMark := make(map[int]int, n)
+	for i := 0; i < n; i++ {
+		freqMark[garden[i]]++
+	}
+	totalKids := 0
+	for k, freq := range freqMark {
+		if k == 0 {
+			totalKids += freq
+		} else {
+			numGroups := int(math.Ceil(float64(freq) / float64(k+1)))
+			totalKids += numGroups * (k + 1)
+		}
+	}
+	return totalKids
+}
+
+/*
+内存冷热标记
+现代计算机系统通常存在多级的存储设备，针对海量的负载优化的一种思路是将热点内存页优化先放到快速存储层级，这就需要对内存页
+进行冷热标记。
+一种典型的方案是基于内存页的访问频次进行标记，如果统计窗口内访问次数大于等于设定阈值，要实现基于频次的冷热标记。内存页使用
+页框号作为标识。
+
+输入描述
+第一行输入为 N, 表示访存序列的记录条数， 0 < N ≤ 10000。
+第二行为访问内存序列，空格间隔的 N 个内存页框号，页面号范围 0 ~ 65535，同一个页框号可能重复出现，出现的次数即为对应框号的频次。
+第三行为热内存的频次阈值 T ，正整数范围 1 ≤ T ≤ 10000。
+
+输出描述
+第一行为输出标记为热内存的内存页个数，如果没有被标记为热内存的，则输出 0。
+如果第一行大于 0，则接下来按照访问频次降序输出内存页框号，一行一个，频次一样的页框号，页框号小的排前面。
+
+示例1
+输入：
+10
+1 2 1 2 1 2 1 2 1 2
+5
+
+输出：
+2
+1
+2
+
+说明：
+内存页 1 和内存页 2 均被访问了5 次，达到了阈值5 ，因此热内存页有2个。内存页1 和内存页 2 的访问频次相等，页框号小的排前面。
+
+示例2
+输入：
+5
+1 2 3 4 5
+3
+
+输出：
+0
+
+说明：
+从访问跟踪里面访问频次没有超过 3 的，因此热内存个数为 0。
+*/
+
+// PageFreq 定义页面号和频次的结构体
+type PageFreq struct {
+	// 页面号
+	Page int
+	// 访问频次
+	Freq int
+}
+
+func markHotAndColdMemory(T int, pages []int) []PageFreq {
+	n := len(pages)
+	freq := make(map[int]int, n)
+	for _, page := range pages {
+		freq[page]++
+	}
+	// 筛选热内存页面,预分配容量
+	hotPages := make([]PageFreq, 0, len(freq))
+	for page, cnt := range freq {
+		if cnt >= T {
+			hotPages = append(hotPages, PageFreq{Page: page, Freq: cnt})
+		}
+	}
+	sort.Slice(hotPages, func(i, j int) bool {
+		if hotPages[i].Freq == hotPages[j].Freq {
+			return hotPages[i].Page < hotPages[j].Page
+		}
+		return hotPages[i].Freq > hotPages[j].Freq
+	})
+	return hotPages
+}

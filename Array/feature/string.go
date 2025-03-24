@@ -5,6 +5,7 @@ import (
 	"math"
 	"strconv"
 	"strings"
+	"unicode"
 )
 
 /*
@@ -1046,7 +1047,7 @@ func convertToTitle(columnNumber int) string {
 		// 当前位的字符：'A' + 余数
 		char := 'A' + (columnNumber % 26)
 		// 字符加到结果前面
-		res = string(char) + res
+		res = string(rune(char)) + res
 		// 减去当前位的值，并继续处理更高位
 		columnNumber /= 26
 	}
@@ -1143,4 +1144,156 @@ func hexToDecimal(hex string) int {
 		res += value * int(math.Pow(16, float64(i)))
 	}
 	return res
+}
+
+/*
+数据单元的变量替换
+将一个csv格式的数据文件中包含有单元格引用的内容替换为对应单元格内容的实际值。
+csv格式的数据文件使用逗号作为分隔符将各单位的内容进行分隔。
+
+输入描述
+
+1. 输入只有一行数据，用逗号分隔每个单元格，行尾没有逗号。最多26个单元格，对应编号A-Z。
+
+2. 每个单元格的内容包含字母和数字，以及使用<>分隔的单元格引用，例如：<A>表示引用第一个单元的值。
+
+3. 每个单元格的内容，在替换前和替换后均不超过100个字符。
+
+5. 引用单元格的位置不受限制，运行排在后面的单元格被排在前面的单元格引用。
+
+6. 不存在循环引用的情况
+
+7. 不存在多重<>的情况，一个单元格只能引用一个其他单元格。
+
+输出描述：
+
+输出所有单元格展开的内容，单元格之间用逗号分隔。处理过程中出现错误时，输出字符串“-1”表示出错。
+
+示例1
+
+输入1, 2<A>00
+
+输出1，2100
+
+说明
+
+第二个单元中有对A单元的引用，A单元格的值为1，替换时，将A单元的内容替代<A>的位置，并和其他内容合并。
+
+示例2
+
+输入
+<B>12,1
+
+输出
+
+112，1
+
+说明
+
+第一个单元中有对B单元的引用，B单元格的值为1，替换时，将第二个数据单元的内容替代<B>的位置，并和其他内容合并。
+
+示例3
+
+输入
+
+<B<12,1
+
+输出
+
+-1
+
+说明
+第一个单元中有错误的单元格引用方式，输出-1
+*/
+
+func ReplaceVariables(input string) string {
+	cells := strings.Split(input, ",")
+	// 遍历每个单元格
+	for i, cell := range cells {
+		// 查找单元格中是否存在引用标记"<"和">"
+		l := strings.Index(cell, "<")
+		r := strings.Index(cell, ">")
+		// 如果找到 "<" 或 ">" 中只有一个，或者 "<" 在 ">" 后面，格式错误
+		if (l == -1 && r != -1) || (r == -1 && l != -1) || l > r {
+			return "-1"
+		}
+		// 如果存在引用，例如 "<A>"
+		if l != -1 && r != -1 {
+			// 截取引用的内容
+			ref := cell[l+1 : r]
+			// 引用必须为单个大写字母
+			if len(ref) != 1 || !unicode.IsUpper(rune(ref[0])) {
+				return "-1"
+			}
+			// 计算被引用单元格的索引，A 对应 0，B 对应 1，…… Z 对应 25
+			refIndex := int(ref[0] - 'A')
+			// 如果引用索引超出数组范围，说明引用不存在
+			if refIndex < 0 || refIndex >= len(cells) {
+				return "-1"
+			}
+			// 替换 "<X>" 为被引用单元格的内容
+			// 例如单元格B: "2<A>00"，被替换为 "2" + cells[0] + "00"
+			cells[i] = cell[:l] + cells[refIndex] + cell[r+1:]
+		}
+	}
+	return strings.Join(cells, ",")
+}
+
+/*
+字符串中所有整数的最小和
+输入字符串s，输出s中包含所有整数的最小和。说明:字符串s，只包含a-z A-Z +-;合法的整数包括1正整数一个或者多个0-9组成，
+如0230021022 负整数负号-开头，数字部分由一个或者多个0-9组成，如-0 -012 -23 -00023
+输入描述包含数字的字符串输出描述所有整数的最小和
+输入bb1234aa，输出10；
+输入bb12-34aa，输出-31
+*/
+
+func minSumOfString(s string) int {
+	n := len(s)
+	minSum, i := 0, 0
+	for i < n {
+		// 跳过非数字和非符号字符
+		// 如果当前字符不是 '+'、'-'、数字，则跳过
+		if !unicode.IsDigit(rune(s[i])) && s[i] != '+' && s[i] != '-' {
+			i++
+			continue
+		}
+		// 判断是否遇到正负号
+		sign := 1
+		// 如果遇到 '-' 且后面是数字，则这是负数块
+		if s[i] == '-' && i+1 < n && unicode.IsDigit(rune(s[i+1])) {
+			sign = -1
+			// 跳过符号
+			i++
+		} else if s[i] == '+' && i+1 < n && unicode.IsDigit(rune(s[i+1])) {
+			sign = 1
+			// 跳过符号
+			i++
+		}
+		// 此时，s[i] 应该为数字，否则跳过（防止输入错误）
+		if i >= n || !unicode.IsDigit(rune(s[i])) {
+			i++
+			continue
+		}
+		// 记录数字块的开始位置
+		start := i
+		// 取连续的数字
+		for i < n && unicode.IsDigit(rune(s[i])) {
+			i++
+		}
+		// 记录这个数字块
+		block := s[start:i]
+		if sign == 1 {
+			// 正数块：为了最小和，将每个数字拆分成单个的数字
+			for _, ch := range block {
+				num, _ := strconv.Atoi(string(ch))
+				minSum += num
+			}
+		} else {
+			// 负数块：整体作为一个数字
+			num, _ := strconv.Atoi(block)
+			minSum -= num
+		}
+	}
+	return minSum
 }

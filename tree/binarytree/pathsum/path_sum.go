@@ -105,30 +105,31 @@ func PathSum(root *entity.TreeNode, target int) [][]int {
 }
 
 // PathSumUseDfs DFS递归也能解决
-func PathSumUseDfs(root *entity.TreeNode, target int) [][]int {
+func PathSumUseDfs(root *entity.TreeNode, targetSum int) [][]int {
 	var res [][]int
 	if root == nil {
 		return res
 	}
-	var dfs func(*entity.TreeNode, []int)
-	dfs = func(node *entity.TreeNode, path []int) {
-		if node.Left == nil && node.Right == nil && sumOfArray(path) == target {
-			res = append(res, path)
+	var dfs func(*entity.TreeNode, int, []int)
+	dfs = func(node *entity.TreeNode, curSum int, path []int) {
+		if node == nil {
+			return
+		}
+		curSum += node.Val
+		path = append(path, node.Val)
+		if node.Left == nil && node.Right == nil && curSum == targetSum {
+			temp := make([]int, len(path))
+			copy(temp, path)
+			res = append(res, temp)
 		}
 		if node.Left != nil {
-			leftPath := make([]int, len(path))
-			copy(leftPath, path)
-			leftPath = append(leftPath, node.Left.Val)
-			dfs(node.Left, leftPath)
+			dfs(node.Left, curSum, path)
 		}
 		if node.Right != nil {
-			rightPath := make([]int, len(path))
-			copy(rightPath, path)
-			rightPath = append(rightPath, node.Right.Val)
-			dfs(node.Right, rightPath)
+			dfs(node.Right, curSum, path)
 		}
 	}
-	dfs(root, []int{root.Val})
+	dfs(root, 0, []int{})
 	return res
 }
 

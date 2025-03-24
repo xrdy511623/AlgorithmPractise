@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 	"math/rand"
+	"sort"
 	"strings"
 	"time"
 )
@@ -560,6 +561,86 @@ func MinSubArrayLen(target int, nums []int) int {
 		return 0
 	}
 	return minLength
+}
+
+/*
+最多购买宝石数目
+橱窗里有一排宝石，不同的宝石对应不同的价格，宝石的价格标记为 gems[i],0<=i<n, n = gems.length
+宝石可同时出售0个或多个，如果同时出售多个，则要求出售的宝石编号连续；
+例如客户最大购买宝石个数为m，购买的宝石编号必须为gems[i],gems[i+1]...gems[i+m-1](0<=i<n,m<=n)
+假设你当前拥有总面值为value的钱，请问最多能购买到多少个宝石,如无法购买宝石，则返回 0。
+
+输入描述
+第一行输入n，参数类型为int，取值范围：[0,10^6]，表示橱窗中宝石的总数量。
+之后n行分别表示从第0个到第n-1个宝石的价格，即gems[0]到gems[n-1]的价格，类型为int，取值范围：(0,1000]。
+之后一行输入v，类型为int，取值范围：[0,10^9]表示你拥有的钱。
+
+输出描述
+输出int类型的返回值，表示最大可购买的宝石数量。
+
+示例1
+输入：
+7
+8
+4
+6
+3
+1
+6
+7
+10
+
+输出：
+3
+示例2
+输入：
+0
+1
+
+输出：
+0
+
+说明：
+因为没有宝石，所以返回 0
+示例3
+输入：
+9
+6
+1
+3
+1
+8
+9
+3
+2
+4
+15
+
+输出：
+4
+*/
+
+/*
+思路:滑动窗口
+*/
+
+func mostGems(gems []int, sum int) int {
+	if sum == 0 {
+		return 0
+	}
+	// 初始化窗口最大长度，窗口左边界，窗口宝石价值总和为0
+	maxLength, l, curSum, n := 0, 0, 0, len(gems)
+	for r := 0; r < n; r++ {
+		curSum += gems[r]
+		// 当窗口总和超过 value 时，收缩左边界
+		for curSum > sum && l <= r {
+			curSum -= gems[l]
+			l++
+		}
+		// 更新最大长度（当前窗口长度为 right - left + 1
+		maxLength = utils.Max(maxLength, r-l+1)
+	}
+	return maxLength
 }
 
 /*
@@ -2680,4 +2761,222 @@ func longestSubarray(nums []int, limit int) int {
 		maxLength = utils.Max(maxLength, r-l+1)
 	}
 	return maxLength
+}
+
+/*
+简易内存池
+题目描述：
+请实现一个简易内存池,根据请求命令完成内存分配和释放。内存池支持两种操作命令，REQUEST和RELEASE，其格式为：
+
+REQUEST=请求的内存大小，表示请求分配指定大小内存.
+
+如果分配成功，返回分配到的内存首地址；
+如果内存不足，或指定的大小为0，则输出error；
+
+RELEASE=释放的内存首地址 表示释放掉之前分配的内存，
+释放成功无需输出，如果释放不存在的首地址则输出error；
+
+注意：
+1. 内存池总大小为100字节；
+2. 内存池地址分配必须是连续内存，并优先从低地址分配；
+3. 内存释放后可被再次分配，已释放的内存在空闲时不能被二次释放；
+4. 不会释放已申请的内存块的中间地址；
+5. 释放操作只是针对首地址所对应的单个内存块进行操作，不会影响其它内存块；
+
+
+输入描述：
+首行为整数 N , 表示操作命令的个数，取值范围：0 < N <= 100;
+接下来的N行, 每行将给出一个操作命令，操作命令和参数之间用 “=”分割;
+
+输出描述：
+
+1. 请求分配指定大小内存时，如果分配成功，返回分配到的内存首地址；如果内存不足，或指定的大小为0，则输出error；
+2. 释放掉之前分配的内存时，释放成功无需输出，如果释放不存在的首地址则输出error。
+
+示例1：
+输入
+2
+REQUEST=10
+REQUEST=20
+
+输出
+0
+10
+
+示例2：
+输入
+5
+REQUEST=10
+REQUEST=20
+RELEASE=0
+REQUEST=20
+REQUEST=10
+
+输出
+0
+10
+30
+0
+
+示例说明：
+第一条指令，申请地址0~9的10个字节内存，返回首地址0；
+第二条指令，申请地址10~29的20个字节内存，返回首地址10；
+第三条指令，释放首地址为0的内存申请，0~9的地址内存被释放，变为空闲，释放成功，无需输出；
+第四条指令，申请20字节内存，0~9的地址内存连续空间不足20字节，往后查找到30~49地址，返回首地址30；
+第五条指令，申请10字节内存，0~9的地址内存连续空间足够，返回首地址0；
+*/
+
+// MemoryBlock 表示一个内存块，包含首地址和大小
+type MemoryBlock struct {
+	// 内存块的首地址
+	Addr int
+	// 内存块的大小
+	Size int
+}
+
+// MemoryPool 管理内存池
+type MemoryPool struct {
+	// 已分配的内存块列表
+	Allocated []MemoryBlock
+	// 空闲内存块列表，按首地址升序排序
+	Free []MemoryBlock
+	// 内存池总大小
+	TotalSize int
+}
+
+// NewMemoryPool 初始化一个新的内存池
+func NewMemoryPool(totalSize int) *MemoryPool {
+	return &MemoryPool{
+		Allocated: []MemoryBlock{},
+		// 初始时整个内存为空闲
+		Free:      []MemoryBlock{{Addr: 0, Size: totalSize}},
+		TotalSize: totalSize,
+	}
+}
+
+// Request 分配指定大小的内存
+func (mp *MemoryPool) Request(size int) (int, string) {
+	// 请求大小无效
+	if size <= 0 {
+		return -1, "error"
+	}
+	for i, block := range mp.Free {
+		if block.Size >= size {
+			// 分配的首地址
+			addr := block.Addr
+			if block.Size == size {
+				// 完全使用该空闲内存块，移除它
+				mp.Free = append(mp.Free[:i], mp.Free[i+1:]...)
+			} else {
+				// 部分使用，更新该空闲内存块的首地址和大小
+				mp.Free[i].Addr += size
+				mp.Free[i].Size -= size
+			}
+			// 将分配的内存块记录到已分配内存块列表
+			mp.Allocated = append(mp.Allocated, MemoryBlock{Addr: addr, Size: size})
+			// 保持已分配内存块按首地址升序排序
+			sort.Slice(mp.Allocated, func(i, j int) bool {
+				return mp.Allocated[i].Addr < mp.Allocated[j].Addr
+			})
+			// 返回分配内存块的首地址
+			return addr, ""
+		}
+	}
+	// 无足够空闲块
+	return -1, "error"
+}
+
+// Release 释放指定首地址的内存块
+func (mp *MemoryPool) Release(addr int) string {
+	// 在已分配内存块中查找
+	for i, block := range mp.Allocated {
+		if block.Addr == addr {
+			// 找到，移除该内存块
+			released := block
+			mp.Allocated = append(mp.Allocated[:i], mp.Allocated[i+1:]...)
+			// 加入空闲内存块列表
+			mp.Free = append(mp.Free, released)
+			// 合并相邻空闲块
+			mp.MergeFreeBlocks()
+			return ""
+		}
+	}
+	// 未找到该内存地址
+	return "error"
+}
+
+func (mp *MemoryPool) MergeFreeBlocks() {
+	// 按首地址排序空闲内存块
+	sort.Slice(mp.Free, func(i, j int) bool {
+		return mp.Free[i].Addr < mp.Free[j].Addr
+	})
+	// 从头遍历，合并相邻空闲内存块
+	i, n := 0, len(mp.Free)-1
+	for i < n {
+		// 相邻，合并
+		if mp.Free[i].Addr+mp.Free[i].Size == mp.Free[i+1].Addr {
+			mp.Free[i].Size += mp.Free[i+1].Size
+			mp.Free = append(mp.Free[:i+1], mp.Free[i+2:]...)
+		} else {
+			i++
+		}
+	}
+}
+
+/*
+数组去重和排序
+给定一个乱序的数组，删除所有的重复元素，使得每个元素只出现一次，并且按照出现的次数从高到低进行排序，相同出现次数按照
+第一次出现顺序进行先后排序。
+
+输入描述
+一个数组，数组大小不超过100 数组元素值大小不超过100
+
+输出描述
+去重排序后的数组
+
+示例1
+输入：
+1,3,3,2,4,4,4,5
+
+输出：
+4,3,1,2,5
+*/
+
+type Item struct {
+	Val  int
+	Freq int
+	Pos  int
+}
+
+func removeDuplicatesAndSort(nums []int) []int {
+	n := len(nums)
+	mark := make(map[int]Item, n)
+	for i, num := range nums {
+		if item, ok := mark[num]; ok {
+			item.Freq++
+			mark[num] = item
+		} else {
+			item := Item{
+				Val:  num,
+				Freq: 1,
+				Pos:  i,
+			}
+			mark[num] = item
+		}
+	}
+	items := make([]Item, 0, len(mark))
+	for _, item := range mark {
+		items = append(items, item)
+	}
+	sort.Slice(items, func(i, j int) bool {
+		if items[i].Freq == items[j].Freq {
+			return items[i].Pos < items[j].Pos
+		}
+		return items[i].Freq > items[j].Freq
+	})
+	res := make([]int, len(items))
+	for i, item := range items {
+		res[i] = item.Val
+	}
+	return res
 }

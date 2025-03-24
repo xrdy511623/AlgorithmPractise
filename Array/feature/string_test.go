@@ -24,3 +24,16 @@ func TestHexToDecimal(t *testing.T) {
 	res := hexToDecimal(hex)
 	fmt.Println(res)
 }
+
+func TestReplaceVariables(t *testing.T) {
+	// 读取输入的 CSV 字符串
+	var input string
+	fmt.Scanln(&input)
+
+	res, ok := ReplaceVariables(input)
+	if !ok {
+		return
+	}
+	// 将替换后的单元格用逗号连接并输出
+	fmt.Println(res)
+}

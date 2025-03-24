@@ -1882,7 +1882,104 @@ func GetNext(p *TreeLinkNode) *TreeLinkNode {
 		current = parent
 		parent = parent.Father
 	}
-
 	// 如果没有找到后继，说明是中序遍历的最后一个节点
 	return nil
+}
+
+/*
+二叉树计算
+给出一个二叉树如下图所示：
+
+     6
+    / \
+   7   9
+    \  /
+    -2 6
+请由该二叉树生成一个新的二叉树，它满足其树中的每个节点将包含原始树中的左子树和右子树的和。
+
+      20 (7-2+9+6)
+     /   \
+    -2    6
+     \   /
+     0  0
+左子树表示该节点左侧叶子节点为根节点的一颗新树；右子树表示该节点右侧叶子节点为根节点的一颗新树
+
+输入描述
+2行整数，第1行表示二叉树的中序遍历，第2行表示二叉树的前序遍历，以空格分割
+输出描述
+1行整数，表示求和树的中序遍历，以空格分割
+
+示例1
+输入：
+-3 12 6 8 9 -10 -7
+8 12 -3 6 -10 9 -7
+
+输出：
+0 3 0 7 0 2 0
+*/
+
+/*
+思路:根据中序遍历和先序遍历序列构建原始树 → 以后序遍历的方式转换新树 → 中序遍历新树。
+*/
+
+func buildTreeFromPreAndIn(preorder []int, inorder []int) *entity.TreeNode {
+	if len(preorder) <= 0 || len(inorder) <= 0 || len(preorder) != len(inorder) {
+		return nil
+	}
+	hashTable := make(map[int]int)
+	// 构建中序遍历序列inorder中节点值与位置的映射关系
+	for i, v := range inorder {
+		hashTable[v] = i
+	}
+	preIndex := 0
+	var help func(int, int) *entity.TreeNode
+	help = func(left, right int) *entity.TreeNode {
+		// 递归终止条件，left>right
+		if left > right {
+			return nil
+		}
+		// 根节点的值一定是前序遍历序列的第一个元素
+		val := preorder[preIndex]
+		preIndex++
+		root := &entity.TreeNode{Val: val}
+		// 找到根节点值在中序遍历序列inorder中的位置index
+		index := hashTable[val]
+		// 则中序遍历序列inorder左子树范围为[:index]
+		root.Left = help(left, index-1)
+		// 中序遍历序列inorder右子树范围为[index+1:]
+		root.Right = help(index+1, right)
+		return root
+	}
+	return help(0, len(inorder)-1)
+}
+
+func transformTree(node *entity.TreeNode) (*entity.TreeNode, int) {
+	if node == nil {
+		return nil, 0
+	}
+	left, leftSum := transformTree(node.Left)
+	right, rightSum := transformTree(node.Right)
+	newNode := &entity.TreeNode{Val: leftSum + rightSum}
+	newNode.Left = left
+	newNode.Right = right
+	return newNode, leftSum + rightSum + node.Val
+}
+
+func inOrderTravel(node *entity.TreeNode) (res []int) {
+	if node == nil {
+		return res
+	}
+	res = append(res, inOrderTravel(node.Left)...)
+	res = append(res, node.Val)
+	res = append(res, inOrderTravel(node.Right)...)
+	return res
+}
+
+func computeBinaryTree(preOrder, inOrder []int) []int {
+	originalTree := buildTreeFromPreAndIn(preOrder, inOrder)
+	if originalTree == nil {
+		return []int{}
+	}
+	newRoot, _ := transformTree(originalTree)
+	return inOrderTravel(newRoot)
 }
