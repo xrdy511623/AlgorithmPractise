@@ -930,6 +930,75 @@ func findKthLargest(nums []int, k int) int {
 	return -10001
 }
 
+/*
+给定整数数组nums和整数k，请返回数组中k个最小的元素。
+你必须设计并实现时间复杂度为 O(n) 的算法解决此问题。
+示例 1:
+输入: [3,2,1,5,6,4] 和 k = 2
+输出: [1,2]
+
+示例2:
+输入: [3,2,3,1,2,4,5,5,6] 和 k = 4
+输出: [1,2,2,3]
+
+限制条件:
+1 <= k <= nums.length <= 10000
+-10000 <= nums[i] <= 10000
+
+*/
+
+func findKSmallestNumbers(nums []int, k int) []int {
+	freq := make([]int, 20001)
+	offset := 10000
+	for _, num := range nums {
+		freq[num+offset]++
+	}
+	res := make([]int, 0, k)
+	// 因为是求最小的k个数，所以从小到大遍历freq数组
+	for i := 0; i <= 20000; i++ {
+		if k <= 0 {
+			break
+		}
+		if freq[i] > 0 {
+			length := freq[i]
+			for j := 0; j < length; j++ {
+				k--
+				res = append(res, i-offset)
+				if k == 0 {
+					break
+				}
+			}
+		}
+	}
+	return res
+}
+
+func findKLargestNums(nums []int, k int) []int {
+	freq := make([]int, 20001)
+	offset := 10000
+	for _, num := range nums {
+		freq[num+offset]++
+	}
+	res := make([]int, 0, k)
+	// 因为是求最大的k个数，所以从大到小遍历freq数组
+	for i := 20000; i >= 0; i-- {
+		if k <= 0 {
+			break
+		}
+		if freq[i] > 0 {
+			length := freq[i]
+			for j := 0; j < length; j++ {
+				k--
+				res = append(res, i-offset)
+				if k == 0 {
+					break
+				}
+			}
+		}
+	}
+	return res
+}
+
 // FindKthLargest 用最大堆排序解决
 func FindKthLargest(nums []int, k int) int {
 	n := len(nums)
@@ -1849,100 +1918,120 @@ func largestNumber(nums []int) string {
 */
 
 /*
-思路:
-我们需要计算数组中的逆序对数目。一个逆序对 (i, j) 满足条件：
-i < j，且
-record[i] > record[j]
-对于一个数组，我们可以使用 归并排序（Merge Sort）的方法来计算逆序对。在归并排序的过程中，我们不仅能够排序数组，还能在
-合并的过程中统计逆序对的数量。
+思路:归并排序
+归并排序是一种分治算法，通过将数组递归划分为两个子数组，分别排序后再合并。在合并两个有序子数组时，可以高效地统计逆序对。
+具体来说：
+当合并两个子数组时，如果从右子数组中选择一个较小的元素放入结果数组，那么左子数组中剩余的所有元素都比这个元素大，
+因此都与它构成逆序对。
 
-归并排序（Merge Sort）思想：
-递归分割：将数组递归地分成两部分，直到每部分只有一个元素。
-合并阶段：将两个已经排好序的子数组合并成一个有序数组，在合并的过程中计算逆序对。
-统计逆序对：在合并时，如果 left[i] > right[j]，那么 left[i] 之后的所有元素都大于 right[j]，这就构成了多个逆序对。
+通过在合并过程中累加这些逆序对的数量，我们可以在排序的同时完成统计。
+
+算法步骤
+1 递归划分：
+将数组分为左右两个子数组，直到子数组长度为 1（单个元素有序）。
+
+2 合并与统计：
+合并两个有序子数组时，使用两个指针分别指向左右子数组的起始位置。
+
+比较指针指向的元素：
+如果左子数组的元素较小，则直接加入结果数组，不产生逆序对。
+
+如果右子数组的元素较小，则加入结果数组，同时左子数组中剩余的元素都与该元素构成逆序对，逆序对数量增加
+“左子数组剩余元素个数”。
+
+使用临时数组存储合并结果，最后复制回原数组。
+
+3 复杂度分析：
+时间复杂度：O(n log n)，归并排序的时间复杂度。
+空间复杂度：O(n)，需要额外的临时数组。
+
+这种方法高效且实现简单，非常适合解决逆序对计数问题。
+
 */
 
 // ReversePairs 计算数组中的所有逆序对。
 // 它通过调用 mergeAndCount 函数来进行归并排序并统计逆序对数量。
 func ReversePairs(arr []int) int {
 	n := len(arr)
-	if n <= 1 {
+	if n < 2 {
 		return 0
 	}
-	// 创建一个临时数组，用于辅助归并操作
 	temp := make([]int, n)
-	// 调用 mergeAndCount 来进行归并排序并统计逆序对
-	return mergeAndCount(arr, temp, 0, n-1)
+	return mergeSort(arr, temp, 0, n-1)
 }
 
-/*
-mergeAndCount 是递归分割并统计逆序对的核心函数。
-参数 arr 是当前需要处理的数组，temp 是辅助的临时数组用于合并操作。
-参数 left 和 right 分别是当前子数组的起始和结束位置。
-返回值 count 是逆序对的数量。
-*/
-func mergeAndCount(arr []int, temp []int, left, right int) int {
-	// 如果左边索引等于右边索引，说明已经分割到一个元素，不存在逆序对，直接返回
-	if left >= right {
+// mergeSort 函数：归并排序并统计逆序对总数
+// 参数 arr: 原数组
+// 参数 temp: 临时数组
+// 参数 l: 左边界
+// 参数 r: 右边界
+// 返回值: 该区间内的逆序对总数
+func mergeSort(arr, temp []int, l, r int) int {
+	// 单个元素，无逆序对
+	if l >= r {
 		return 0
 	}
-	// 找到中间位置，进行递归分割
-	mid := (left + right) / 2
-	// 递归处理左半部分，并统计逆序对
-	leftCount := mergeAndCount(arr, temp, left, mid)
-	// 递归处理右半部分，并统计逆序对
-	rightCount := mergeAndCount(arr, temp, mid+1, right)
-	// 合并左边和右边的两个部分，同时统计跨越左右部分的逆序对
-	count := mergeComplex(arr, temp, left, mid, right)
-	// 返回左部分的逆序对数 + 右部分的逆序对数 + 当前合并过程中的逆序对数
-	return leftCount + rightCount + count
+	mid := (l + r) / 2
+	// 递归处理左子数组
+	leftCount := mergeSort(arr, temp, l, mid)
+	// 递归处理右子数组
+	rightCount := mergeSort(arr, temp, mid+1, r)
+	// 合并并统计逆序对
+	cnt := mergeComplex(arr, temp, l, mid, r)
+	return leftCount + rightCount + cnt
 }
 
-/*
-mergeComplex 用于合并两个有序子数组并计算逆序对的数量。
-参数 arr 是需要处理的数组，temp 是辅助的临时数组，用于存储合并结果。
-参数 left, mid, right 分别表示当前子数组的起始、中间和结束位置。
-返回值 count 是当前合并过程中计算到的逆序对数。
-*/
-func mergeComplex(arr []int, temp []int, left, mid, right int) int {
-	// i 是左半部分的起始位置，j 是右半部分的起始位置，k 是合并后数组的位置，count用来记录逆序对的数量
-	i, j, k, count := left, mid+1, left, 0
+// mergeComplex 函数：合并两个有序子数组并统计逆序对数量
+// 参数 arr: 原数组
+// 参数 temp: 临时数组，用于存储合并结果
+// 参数 l: 左子数组起始索引
+// 参数 mid: 左子数组结束索引
+// 参数 r: 右子数组结束索引
+// 返回值: 当前合并过程中产生的逆序对数量
+func mergeComplex(arr, temp []int, l, mid, r int) int {
+	// 左子数组的指针
+	i := l
+	// 右子数组的指针
+	j := mid + 1
+	// 临时数组temp的指针
+	k := 0
+	// 逆序对计数器
+	cnt := 0
 	// 合并两个有序子数组
-	for i <= mid && j <= right {
+	for i <= mid && j <= r {
 		if arr[i] <= arr[j] {
-			// 如果左侧元素小于右侧元素，直接放入临时数组
+			// 左子数组元素小于等于右子数组元素，无逆序对
 			temp[k] = arr[i]
 			i++
+			k++
 		} else {
-			// 如果左侧元素大于右侧元素，说明有逆序对
-			// 因为左侧元素之后的所有元素都大于 arr[j]
+			// 左子数组元素大于右子数组元素，产生逆序对
 			temp[k] = arr[j]
-			// 当前 i 到 mid 之间的所有元素都大于 arr[j]
-			count += mid - i + 1
 			j++
+			k++
+			// 左子数组剩余元素都与 arr[j] 构成逆序对
+			cnt += mid - i + 1
 		}
-		k++
 	}
-
-	// 将左半部分剩余的元素放入临时数组
+	// 处理左子数组剩余元素
 	for i <= mid {
 		temp[k] = arr[i]
 		i++
 		k++
 	}
-
-	// 将右半部分剩余的元素放入临时数组
-	for j <= right {
+	// 处理右子数组剩余元素
+	for j <= r {
 		temp[k] = arr[j]
 		j++
 		k++
 	}
-	// 将临时数组中的元素复制回原数组
-	for m := left; m <= right; m++ {
-		arr[m] = temp[m]
+	// 将临时数组复制回原数组
+	t := 0
+	for m := l; m <= r; m++ {
+		arr[m] = temp[t]
+		t++
 	}
-	// 返回当前合并过程中的逆序对数量
-	return count
+	return cnt
 }
 
 /*
