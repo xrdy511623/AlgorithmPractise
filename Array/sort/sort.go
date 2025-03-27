@@ -2310,9 +2310,37 @@ medianFinder.addNum(3);    // arr[1, 2, 3]
 medianFinder.findMedian(); // return 2.0
 
 提示:
--105 <= num <= 105
+-10^5 <= num <= 10^5
 在调用 findMedian 之前，数据结构中至少有一个元素
-最多 5 * 104 次调用 addNum 和 findMedian
+最多 5 * 10^4 次调用 addNum 和 findMedian
+*/
+
+/*
+解题思路:双堆方法
+一个最大堆（MaxHeap）和一个最小堆（MinHeap）。：
+最大堆存储数据流中较小的一半元素，堆顶是这部分的最大值。
+最小堆存储数据流中较大的一半元素，堆顶是这部分的最小值。
+通过保持两个堆的大小平衡（相差不超过1），可以快速访问中位数相关的元素。
+
+AddNum 操作
+插入逻辑：
+如果最大堆为空或新元素 num 小于等于最大堆的堆顶，则将其插入最大堆。
+否则，将其插入最小堆。
+
+平衡逻辑：
+插入后检查两个堆的大小：
+如果最大堆的大小超过最小堆大小加1，则将最大堆的堆顶移到最小堆。
+如果最小堆的大小超过最大堆，则将最小堆的堆顶移到最大堆。
+
+这样保证两个堆的大小始终平衡或只相差1。
+
+FindMedian 操作
+如果最大堆的大小比最小堆大1（总数为奇数），中位数是最大堆的堆顶。
+如果两个堆的大小相等（总数为偶数），中位数是最大堆堆顶和最小堆堆顶的平均值。
+
+时间复杂度
+AddNum：O(log n)，因为堆的插入和弹出操作都是 O(log n)。
+FindMedian：O(1)，直接访问堆顶元素。
 */
 
 type MaxHeap []int
@@ -2672,11 +2700,12 @@ func crackPassword(password []int) string {
 	sort.Slice(strArr, func(i, j int) bool {
 		return utils.CompareAsc(strArr[i], strArr[j])
 	})
-	res := ""
+	var res strings.Builder
+	res.Grow(n)
 	for _, str := range strArr {
-		res += str
+		res.WriteString(str)
 	}
-	return res
+	return res.String()
 }
 
 /*

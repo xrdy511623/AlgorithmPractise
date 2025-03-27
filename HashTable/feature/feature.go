@@ -1213,3 +1213,38 @@ func markHotAndColdMemory(T int, pages []int) []PageFreq {
 	})
 	return hotPages
 }
+
+/*
+剑指offer 50  第一个只出现一次的字符
+在字符串 s 中找出第一个只出现一次的字符。如果没有，返回一个单空格。 s 只包含小写字母。
+示例 1：
+
+输入：arr = "abbccdeff"
+输出：'a'
+示例 2：
+
+输入：arr = "ccdd"
+输出：' '
+
+限制：
+0 <= arr.length <= 50000
+*/
+
+/*
+使用一个map，遍历一遍字符串s，计算出每个字符出现的次数
+再遍历一遍字符串s，找到第一个出现次数为1的字符
+*/
+
+func firstAppearOnceChar(s string) byte {
+	n := len(s)
+	mark := make(map[byte]int, n)
+	for i := 0; i < n; i++ {
+		mark[s[i]]++
+	}
+	for i := 0; i < n; i++ {
+		if mark[s[i]] == 1 {
+			return s[i]
+		}
+	}
+	return ' '
+}
