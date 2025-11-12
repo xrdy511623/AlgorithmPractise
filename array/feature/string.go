@@ -1,7 +1,7 @@
 package feature
 
 import (
-	"algorithm-practise/utils"
+	"algorithmpractise/utils"
 	"math"
 	"strconv"
 	"strings"

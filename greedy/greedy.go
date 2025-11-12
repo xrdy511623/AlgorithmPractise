@@ -2,7 +2,7 @@ package greedy
 
 import (
 	"algorithm-practise/tree/binarytree/entity"
-	"algorithm-practise/utils"
+	"algorithmpractise/utils"
 	"math"
 	"sort"
 	"strconv"

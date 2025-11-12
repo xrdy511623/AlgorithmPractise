@@ -5,7 +5,7 @@ simple package contains easy items
 */
 
 import (
-	"algorithm-practise/utils"
+	"algorithmpractise/utils"
 	"strconv"
 )
 

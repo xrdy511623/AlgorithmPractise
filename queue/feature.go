@@ -1,7 +1,7 @@
 package queue
 
 import (
-	"algorithm-practise/utils"
+	"algorithmpractise/utils"
 	"math"
 )
 

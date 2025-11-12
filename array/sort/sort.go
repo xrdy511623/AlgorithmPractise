@@ -1,7 +1,7 @@
 package sort
 
 import (
-	"algorithm-practise/utils"
+	"algorithmpractise/utils"
 	"bufio"
 	"container/heap"
 	"fmt"

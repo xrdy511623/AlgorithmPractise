@@ -1,7 +1,7 @@
 package sum
 
 import (
-	"algorithm-practise/utils"
+	"algorithmpractise/utils"
 	"math"
 	"sort"
 	"strconv"

@@ -1,7 +1,7 @@
 package stack
 
 import (
-	"algorithm-practise/utils"
+	"algorithmpractise/utils"
 	"math"
 	"strconv"
 	"strings"
@@ -1207,7 +1207,7 @@ leetcode 503 下一个更大的元素II
 
 /*
 思路:单调栈
-要解决这个问题，我们可以使用单调栈（Monotonic Stack）的方法。通过栈的数据结构，我们可以有效地解决这个问题，避免暴力搜索
+要解决这个问题，我们可以使用单调栈（Monotonic stack）的方法。通过栈的数据结构，我们可以有效地解决这个问题，避免暴力搜索
 带来的时间复杂度。
 
 问题分析

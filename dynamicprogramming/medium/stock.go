@@ -4,7 +4,7 @@ package medium
 medium contains middle level problems
 */
 
-import "algorithm-practise/utils"
+import "algorithmpractise/utils"
 
 /*
 1.1 leetcode 121 买卖股票的最佳时机

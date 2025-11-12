@@ -1,3 +1,3 @@
-module algorithm-practise
+module algorithmpractise
 
-go 1.16
+go 1.25

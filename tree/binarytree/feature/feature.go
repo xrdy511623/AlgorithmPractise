@@ -1,9 +1,9 @@
 package feature
 
 import (
-	Entity2 "algorithm-practise/linkedlist/entity"
 	"algorithm-practise/tree/binarytree/entity"
-	"algorithm-practise/utils"
+	Entity2 "algorithmpractise/linkedlist/entity"
+	"algorithmpractise/utils"
 	"fmt"
 	"math"
 	"reflect"

@@ -5,7 +5,7 @@ medium contains middle level problems
 */
 
 import (
-	"algorithm-practise/utils"
+	"algorithmpractise/utils"
 )
 
 /*

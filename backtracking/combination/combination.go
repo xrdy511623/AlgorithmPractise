@@ -1,7 +1,7 @@
 package combination
 
 import (
-	"algorithm-practise/utils"
+	"algorithmpractise/utils"
 	"math"
 	"sort"
 )

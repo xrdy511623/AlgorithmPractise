@@ -5,7 +5,7 @@ package hard contains complex dynamicProgramming problems
 */
 
 import (
-	"algorithm-practise/utils"
+	"algorithmpractise/utils"
 )
 
 /*
