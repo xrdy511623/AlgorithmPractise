@@ -30,10 +30,7 @@ func TestReplaceVariables(t *testing.T) {
 	var input string
 	fmt.Scanln(&input)
 
-	res, ok := ReplaceVariables(input)
-	if !ok {
-		return
-	}
+	res := ReplaceVariables(input)
 	// 将替换后的单元格用逗号连接并输出
 	fmt.Println(res)
 }
