@@ -1,8 +1,8 @@
 package complex
 
 import (
-	"algorithm-practise/linkedlist/entity"
-	"algorithm-practise/linkedlist/reverselinkedlist"
+	"algorithmpractise/linkedlist/entity"
+	"algorithmpractise/linkedlist/reverselinkedlist"
 )
 
 /*

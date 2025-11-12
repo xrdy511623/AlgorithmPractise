@@ -1,10 +1,11 @@
 package feature
 
 import (
-	"algorithm-practise/tree/binarytree/entity"
 	"fmt"
 	"reflect"
 	"testing"
+
+	"algorithmpractise/tree/binarytree/entity"
 )
 
 func TestRightSideView(t *testing.T) {

@@ -1,9 +1,10 @@
 package feature
 
 import (
-	"algorithm-practise/tree/binarytree/entity"
-	Entity2 "algorithmpractise/linkedlist/entity"
 	"math"
+
+	Entity2 "algorithmpractise/linkedlist/entity"
+	"algorithmpractise/tree/binarytree/entity"
 )
 
 /*

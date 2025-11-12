@@ -1,7 +1,7 @@
 package feature
 
 import (
-	"algorithm-practise/linkedlist/entity"
+	"algorithmpractise/linkedlist/entity"
 )
 
 /*

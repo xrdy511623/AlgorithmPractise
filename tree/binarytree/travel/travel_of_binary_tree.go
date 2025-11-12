@@ -1,7 +1,7 @@
 package travel
 
 import (
-	"algorithm-practise/tree/binarytree/entity"
+	"algorithmpractise/tree/binarytree/entity"
 	"algorithmpractise/utils"
 )
 

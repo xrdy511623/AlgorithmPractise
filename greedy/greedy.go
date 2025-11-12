@@ -1,11 +1,12 @@
 package greedy
 
 import (
-	"algorithm-practise/tree/binarytree/entity"
-	"algorithmpractise/utils"
 	"math"
 	"sort"
 	"strconv"
+
+	"algorithmpractise/tree/binarytree/entity"
+	"algorithmpractise/utils"
 )
 
 /*

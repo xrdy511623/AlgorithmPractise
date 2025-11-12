@@ -1,10 +1,11 @@
 package pathsum
 
 import (
-	"algorithm-practise/tree/binarytree/entity"
 	"fmt"
 	"reflect"
 	"testing"
+
+	"algorithmpractise/tree/binarytree/entity"
 )
 
 func TestPathSum(t *testing.T) {

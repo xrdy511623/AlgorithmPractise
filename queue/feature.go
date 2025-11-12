@@ -1,8 +1,9 @@
 package queue
 
 import (
-	"algorithmpractise/utils"
 	"math"
+
+	"algorithmpractise/utils"
 )
 
 /*

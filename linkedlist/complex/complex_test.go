@@ -1,10 +1,11 @@
 package complex
 
 import (
-	"algorithm-practise/linkedlist/entity"
 	"fmt"
 	"reflect"
 	"testing"
+
+	"algorithmpractise/linkedlist/entity"
 )
 
 func TestSortOddAscEvenDescList(t *testing.T) {

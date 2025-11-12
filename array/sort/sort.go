@@ -1,7 +1,6 @@
 package sort
 
 import (
-	"algorithmpractise/utils"
 	"bufio"
 	"container/heap"
 	"fmt"
@@ -12,6 +11,8 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+
+	"algorithmpractise/utils"
 )
 
 /*

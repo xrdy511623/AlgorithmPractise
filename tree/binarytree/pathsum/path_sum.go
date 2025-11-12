@@ -1,10 +1,11 @@
 package pathsum
 
 import (
-	"algorithm-practise/tree/binarytree/entity"
-	"algorithmpractise/utils"
 	"math"
 	"strconv"
+
+	"algorithmpractise/tree/binarytree/entity"
+	"algorithmpractise/utils"
 )
 
 /*

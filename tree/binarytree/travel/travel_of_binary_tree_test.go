@@ -1,10 +1,11 @@
 package travel
 
 import (
-	"algorithm-practise/tree/binarytree/entity"
 	"fmt"
 	"reflect"
 	"testing"
+
+	"algorithmpractise/tree/binarytree/entity"
 )
 
 func TestPreOrderTravel(t *testing.T) {

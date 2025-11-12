@@ -5,7 +5,7 @@ medium contains middle level problems
 */
 
 import (
-	"algorithm-practise/tree/binarytree/entity"
+	"algorithmpractise/tree/binarytree/entity"
 	"algorithmpractise/utils"
 )
 
